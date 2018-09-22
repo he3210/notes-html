@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ffmpeg 处理视频 &amp; gif 生成</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">ffmpeg 处理视频 &amp; gif 生成</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge2c26cc">1. 生成 gif</a>
+<ul>
+<li><a href="#org76ea9a2">1.1. 获取 mov 视频</a></li>
+<li><a href="#org7f7346c">1.2. 生成 gif</a></li>
+</ul>
+</li>
+<li><a href="#orgb1c9778">2. 获取不带音频的视频</a></li>
+<li><a href="#orga628760">3. 提取音频</a></li>
+<li><a href="#orga3b7bca">4. 视频时长裁剪</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge2c26cc" class="outline-2">
+<h2 id="orge2c26cc"><span class="section-number-2">1</span> 生成 gif</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org76ea9a2" class="outline-3">
+<h3 id="org76ea9a2"><span class="section-number-3">1.1</span> 获取 mov 视频</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>在 mac 上使用 <code>QuickTime Player</code> 录屏<br></li>
+<li>iphone 上拍摄视频<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7f7346c" class="outline-3">
+<h3 id="org7f7346c"><span class="section-number-3">1.2</span> 生成 gif</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ ffmpeg -ss 00:00:00.000 -t 00:00:09.000 -i <span style="color: #00afaf;">"emacs &#21015;&#32534;&#36753;.mov"</span> -pix_fmt rgb8 -r 7 <span style="color: #00afaf;">"emacs &#21015;&#32534;&#36753;.gif</span>
+</pre>
+</div>
+
+<p>
+特点：<br>
+</p>
+<ul class="org-ul">
+<li>未经过压缩，分辨率和视频相同<br></li>
+<li>自定义转换的开始时间点和持续时长<br></li>
+<li>自定义输出帧率<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ ffmpeg -ss 00:00:00.000 -t 00:00:09.000 -i <span style="color: #00afaf;">"emacs &#21015;&#32534;&#36753;.mov"</span> -pix_fmt rgb8 -s 1276x480 -r 7 <span style="color: #00afaf;">"emacs &#21015;&#32534;&#36753;.gif"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25351;&#23450;&#20998;&#36776;&#29575;</span>
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><code>-ss 00:00:00.000 -t 00:00:09.000</code></dt><dd>从视频的第0秒开始截取，截取 9 秒钟视频片段<br></dd>
+<dt><code>-i</code> </dt><dd>输入视频，其后跟视频路径<br></dd>
+<dt><code>pix_fmt rgb8</code> </dt><dd>RGB 颜色限制<br></dd>
+<dt><code>-s 1276x480</code> </dt><dd>输出分辨率。默认 gif 的分辨率为 mov 视频的分辨率，可以省略这个参数<br></dd>
+<dt><code>-r 7</code> </dt><dd>输出帧率为每秒 15 帧。根据需要最好范围在 [5, 15] 之间<br></dd>
+</dl>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb1c9778" class="outline-2">
+<h2 id="orgb1c9778"><span class="section-number-2">2</span> 获取不带音频的视频</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ ffmpeg -i bird.mov -vcodec copy -an bird.mp4
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><code>-an</code> </dt><dd>禁止输出音频<br></dd>
+<dt><code>-vcodec copy</code></dt><dd>复制视频编码<br></dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orga628760" class="outline-2">
+<h2 id="orga628760"><span class="section-number-2">3</span> 提取音频</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ ffmpeg -i input.mov -write_xing 0 output.mp3
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga3b7bca" class="outline-2">
+<h2 id="orga3b7bca"><span class="section-number-2">4</span> 视频时长裁剪</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-shell">$ ffmpeg -ss 00:00:01.000 -t 00:00:10.000 -i <span style="color: #00afaf;">"input.mov"</span> <span style="color: #00afaf;">"output.mov"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#31532;&#19968;&#31186;&#24320;&#22987;&#65292;&#33719;&#21462;10&#31186;&#30340;&#35270;&#39057;</span>
+$ ffmpeg -sseof -00:00:01.000 -i <span style="color: #00afaf;">"bird.mov"</span> <span style="color: #00afaf;">"bird.mp4"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#33719;&#21462;&#26368;&#21518;&#19968;&#31186;&#30340;&#35270;&#39057;&#65292;&#24182;&#36716;&#20026; mp4</span>
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><code>-sseof</code> </dt><dd>相对于文件末尾的开始时间<br></dd>
+</dl>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

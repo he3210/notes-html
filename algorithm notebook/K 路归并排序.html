@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K 路归并排序</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">K 路归并排序</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5ea25b7">1. 堆</a></li>
+<li><a href="#orge7e4038">2. 胜者树</a></li>
+<li><a href="#orgf710ad8">3. 败者树</a></li>
+</ul>
+</div>
+</div>
+<p>
+对于 K 路升序序列排序，最容易想到的方法是：依次取这 K 路序列的当前元素组成一个新序列（例如下面的序列 b），堆该序列进行两两比较，选出最小的数。循环 n 次就可以归并成一个长度为 n 的升序序列。时间复杂度为 O(nK)。<br>
+为了减小比较次数，可以使用堆、胜者树、败者树对此进行优化<br>
+</p>
+
+<p>
+以 b 序列 [10, 9, 20, 6, 12] 为例，分别使用堆、胜者树、败者树进行建堆或建树<br>
+</p>
+
+<div id="outline-container-org5ea25b7" class="outline-2">
+<h2 id="org5ea25b7"><span class="section-number-2">1</span> 堆</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+对序列 b 建小根堆如下<br>
+</p>
+
+
+<div class="figure">
+<p><img src="../images/K 路归并排序 建堆.png" alt="K 路归并排序 建堆.png" width="30%"><br>
+</p>
+</div>
+
+<p>
+归并思路：从 K 个序列中各取一个元素，并记录每个元素的来源数组，建立一个含 K 个元素的小根堆。此时堆顶就是最小的元素，取出堆顶元素，并从堆顶元素的来源序列中取下一个元素放入堆顶，然后向下调整。在向下调整过程中需要和其两个子结点比较，需要比较 2 次。<br>
+堆结点存储结构与下面类似：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">ElemType</span>
+{
+    <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">int</span> <span style="color: #0087ff;">value</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20803;&#32032;&#20540;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">src</span>;             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26469;&#28304;&#25968;&#32452;&#30340;&#32034;&#24341;</span>
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge7e4038" class="outline-2">
+<h2 id="orge7e4038"><span class="section-number-2">2</span> 胜者树</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+对序列 b 构建胜者树如下<br>
+</p>
+
+
+<div class="figure">
+<p><img src="../images/K 路归并排序 胜者树.png" alt="K 路归并排序 胜者树.png" width="35%"><br>
+</p>
+</div>
+
+<p>
+胜者树在向上调整的时候首先需要获得父结点，然后再获得兄弟结点，然后再比较。比堆少一半的比较次数<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf710ad8" class="outline-2">
+<h2 id="orgf710ad8"><span class="section-number-2">3</span> 败者树</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+对序列 b 构建败者树如下<br>
+</p>
+
+
+<div class="figure">
+<p><img src="../images/K 路归并排序 败者树.png" alt="K 路归并排序 败者树.png" width="40%"><br>
+</p>
+</div>
+
+<p>
+败者树在向上调整的时候，只需要获得父结点并比较即可。相较于胜者树，它不必获取兄弟结点了，减小了访存时间<br>
+</p>
+
+<p>
+败者树是一棵完全二叉树。叶子结点存放各归并段在归并过程中参加比较的记录，内部结点用来存放左右子树中失败者叶子结点的索引，胜者会继续向上进行比较，一直到根结点<br>
+叶子结点一般设置为 leaf[K]，叶子结点为 K 个。完全二叉树的内部枝干结点就会有 K-1 个，一般我们会设置内部结点为 branch[K]，多出来的一个 branch[0] 用来存放一次调整过程的最终胜者<br>
+</p>
+
+
+<div class="figure">
+<p><img src="../images/五路归并排序-败者树.png" alt="五路归并排序-败者树.png" width="40%"><br>
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">/*</span>
+<span style="color: #8a8a8a;">&#24403;&#21069;&#20195;&#30721;&#20026; K &#36335;&#38477;&#24207;&#25490;&#24207;</span>
+<span style="color: #8a8a8a;">&#27880;&#37322;&#37096;&#20998;&#20195;&#30721;&#20026; K &#36335;&#21319;&#24207;&#25490;&#24207;</span>
+<span style="color: #8a8a8a;">&#32570;&#28857;&#65306;</span>
+<span style="color: #8a8a8a;">  K &#36335;&#25968;&#25454;&#28304;&#24517;&#39035;&#31561;&#38271;</span>
+
+<span style="color: #8a8a8a;">&#25913;&#36827;&#26041;&#27861;&#65306;</span>
+<span style="color: #8a8a8a;">  &#21487;&#22686;&#21152;&#19968;&#20010;&#25968;&#32452; KArrEnd[K]&#65292;KArrEnd[i] &#34920;&#31034;&#31532; i &#20010;&#25968;&#25454;&#28304;&#30340;&#26368;&#21518;&#19968;&#20010;&#20803;&#32032;&#30340;&#19979;&#26631;</span>
+<span style="color: #8a8a8a;">*/</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdbool.h&gt;</span>
+
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">K</span> 5                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20849;&#26377; k &#36335;&#25968;&#32452;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">LEN</span> 6              <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27599;&#36335;&#25968;&#32452;&#38271;&#24230;&#20026; LEN</span>
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">#define INT_MAX 0x7fffffff // K &#36335;&#21512;&#24182;&#25104;&#21319;&#24207;&#24207;&#21015;&#26102;&#65292;&#24403;&#19968;&#36335;&#25968;&#25454;&#28304;&#20840;&#37096;&#36755;&#20986;&#21518;&#65292;&#20026;&#21494;&#32467;&#28857;&#22635;&#20805;&#30340;&#26368;&#22823;&#20540;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">INT_MIN</span> 0x80000000 <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">K &#36335;&#21512;&#24182;&#25104;&#38477;&#24207;&#24207;&#21015;&#26102;&#65292;&#24403;&#19968;&#36335;&#25968;&#25454;&#28304;&#20840;&#37096;&#36755;&#20986;&#21518;&#65292;&#20026;&#21494;&#32467;&#28857;&#22635;&#20805;&#30340;&#26368;&#23567;&#20540;</span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">K &#36335;&#21319;&#24207;&#25968;&#32452;&#65292;&#27599;&#32452; 6 &#20010;&#20803;&#32032;</span>
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">int KArr[K][LEN] =</span>
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">{</span>
+<span style="color: #8a8a8a;">//    </span><span style="color: #8a8a8a;">{5, 13, 25, 33, 49, 50},</span>
+<span style="color: #8a8a8a;">//    </span><span style="color: #8a8a8a;">{22, 24, 29, 35, 44, 55},</span>
+<span style="color: #8a8a8a;">//    </span><span style="color: #8a8a8a;">{8, 15, 26, 26, 43, 54},</span>
+<span style="color: #8a8a8a;">//    </span><span style="color: #8a8a8a;">{5, 16, 23, 30, 46, 56},</span>
+<span style="color: #8a8a8a;">//    </span><span style="color: #8a8a8a;">{9, 19, 21, 38, 45, 52}</span>
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">};</span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">K &#36335;&#38477;&#24207;&#25968;&#32452;&#65292;&#27599;&#32452; 6 &#20010;&#20803;&#32032;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">KArr</span>[K][LEN] =
+{
+    {50, 49, 33, 25, 13, 5},
+    {55, 44, 35, 29, 24, 22},
+    {54, 43, 26, 26, 15, 8},
+    {56, 46, 30, 23, 16, 5},
+    {52, 45, 38, 21, 19, 9}
+};
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36133;&#32773;&#26641;&#30340;&#26525;&#24178;&#32467;&#28857;&#65288;&#21363;&#38750;&#21494;&#23376;&#32467;&#28857;&#65289;&#65292;&#35760;&#24405;&#36133;&#32773;&#30340;&#32034;&#24341;&#20301;&#32622;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20854;&#20013;&#65292;branch[0]&#35760;&#24405;&#30528;&#20896;&#20891;&#32467;&#28857;&#30340;&#32034;&#24341;&#20301;&#32622;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">branch</span>[K];
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36133;&#32773;&#26641;&#30340;&#21494;&#23376;&#32467;&#28857;&#65292;K &#20010;&#21494;&#23376;&#32467;&#28857;&#21644; K &#36335;&#21319;&#24207;&#25968;&#32452;&#25968;&#25454;&#28304;&#19968;&#19968;&#23545;&#24212;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21363;&#31532;&#19968;&#20010;&#21494;&#23376;&#32467;&#28857;&#35760;&#24405;&#31532;&#19968;&#20010;&#25968;&#25454;&#28304;&#30340;&#24403;&#21069;&#20803;&#32032;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">leaf</span>[K];
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">KArrIter[i] &#35760;&#24405;&#31532; i &#36335;&#25968;&#32452;&#24403;&#21069;&#24050;&#36941;&#21382;&#21040;&#30340;&#20803;&#32032;&#19979;&#26631;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">KArrIter</span>[K] = {0};
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21028;&#26029;&#36133;&#32773;&#26641;&#30340;&#32988;&#36133;&#35268;&#21017;</span>
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">win</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">index1</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">index2</span>)
+{
+<span style="color: #8a8a8a;">//    </span><span style="color: #8a8a8a;">if(leaf[index1] &lt;= leaf[index2])</span>
+    <span style="color: #5f8700;">if</span>(leaf[index1] &gt; leaf[index2])
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#19979;&#26631;&#20026; index &#30340;&#25968;&#25454;&#28304;&#21462;&#19968;&#20010;&#20803;&#32032;&#65292;&#25918;&#21040;&#23545;&#24212;&#21494;&#23376;&#32467;&#28857;&#19978;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">fill_leaf_by_index</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">index</span>)
+{
+    <span style="color: #5f8700;">if</span>(KArrIter[index] &lt; LEN)
+        leaf[index] = KArr[index][KArrIter[index]++];
+    <span style="color: #5f8700;">else</span>
+<span style="color: #8a8a8a;">//        </span><span style="color: #8a8a8a;">leaf[index] = INT_MAX;</span>
+        leaf[index] = INT_MIN;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35843;&#25972;&#19979;&#26631;&#20026; IndexLeaf &#30340;&#21494;&#23376;&#32467;&#28857;&#12290;&#35843;&#25972;&#36807;&#31243;&#20026;&#65306;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21494;&#23376;&#32467;&#28857;&#21644;&#29238;&#32467;&#28857;&#27604;&#36739;&#65292;&#36133;&#32773;&#30041;&#22312;&#29238;&#32467;&#28857;&#20301;&#32622;&#65292;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#32988;&#32773;&#32487;&#32493;&#21644;&#29238;&#32467;&#28857;&#30340;&#29238;&#32467;&#28857;&#27604;&#36739;&#65292;&#30452;&#21040;&#25972;&#26869;&#26641;&#30340;&#26681;&#32467;&#28857;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">adjust</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">IndexLeaf</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">fa</span> = (K+IndexLeaf)/2;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35745;&#31639;&#19979;&#26631;&#20026; IndexLeaf &#21494;&#23376;&#32467;&#28857;&#30340;&#29238;&#32467;&#28857;&#19979;&#26631;</span>
+    <span style="color: #5f8700;">while</span>(fa &gt; 0)
+    {
+        <span style="color: #5f8700;">if</span>(win(branch[fa], IndexLeaf))
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20132;&#25442;&#20043;&#21518; IndexLeaf &#20445;&#23384;&#30340;&#26159;&#32988;&#32773;&#65292;branch[fa] &#20445;&#23384;&#30340;&#26159;&#36133;&#32773;</span>
+            IndexLeaf = branch[fa] + IndexLeaf - (branch[fa] = IndexLeaf);
+        fa /= 2;
+    }
+    branch[0] = IndexLeaf;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21021;&#22987;&#21270;&#26500;&#36896;&#36133;&#32773;&#26641;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">init_loser_tree</span>()
+{
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174; K &#20010;&#25968;&#25454;&#28304;&#21462;&#27599;&#20010;&#25968;&#25454;&#28304;&#30340;&#39318;&#20010;&#20803;&#32032;&#20026;&#21494;&#32467;&#28857;&#21021;&#22987;&#21270;</span>
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; K; ++i)
+        fill_leaf_by_index(i);
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312; K &#20010;&#21494;&#32467;&#28857;&#20013;&#25214;&#21040;&#20896;&#20891;&#32467;&#28857;&#30340;&#19979;&#26631;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">IndexWinner</span> = 0;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 1; i &lt; K; ++i)
+        <span style="color: #5f8700;">if</span>(win(i, IndexWinner))
+            IndexWinner = i;
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#21494;&#23376;&#32467;&#28857;&#21021;&#22987;&#21270;&#20026;&#20896;&#20891;&#32467;&#28857;</span>
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; K; ++i)
+        branch[i] = IndexWinner;
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#21518;&#21521;&#21069;&#35843;&#25972;&#27599;&#19968;&#20010;&#21494;&#23376;&#32467;&#28857;</span>
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = K-1; i &gt;= 0; --i)
+        adjust(i);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26377;&#24207;&#36755;&#20986;&#26368;&#38752;&#21069;&#30340; topK &#20010;&#25968;&#25454;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">merge</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">topK</span>)
+{
+    <span style="color: #5f8700;">if</span>(topK &gt; K*LEN)
+        topK = K*LEN;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">top</span>;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; topK; ++i)
+    {
+        top = branch[0];
+        printf(<span style="color: #00afaf;">"%d "</span>, leaf[top]);
+        fill_leaf_by_index(top);
+        adjust(top);
+    }
+    printf(<span style="color: #00afaf;">"\n"</span>);
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">argc</span>, <span style="color: #af8700;">char</span>** <span style="color: #0087ff;">argv</span>)
+{
+    init_loser_tree();
+    merge(30);
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

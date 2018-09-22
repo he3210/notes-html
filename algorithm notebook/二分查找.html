@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>二分查找</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">二分查找</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org14ded89">1. 二分查找</a></li>
+<li><a href="#org0a9ff3d">2. 扩展算法</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org14ded89" class="outline-2">
+<h2 id="org14ded89"><span class="section-number-2">1</span> 二分查找</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+适合二分查找的存储结构必须具有随机存取的特性<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">Binary_Search</span>(<span style="color: #af8700;">Elemtype</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>, <span style="color: #af8700;">Elemtype</span> <span style="color: #0087ff;">key</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">mid</span>;
+    <span style="color: #5f8700;">while</span>(low &lt;= high)
+    {
+        mid = low + (high - low)/2;
+
+        <span style="color: #5f8700;">if</span>(A[mid] == key)
+            <span style="color: #5f8700;">return</span> mid;
+        <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(A[mid] &gt; key)
+            high = mid - 1;
+        <span style="color: #5f8700;">else</span>
+            low = mid + 1;
+    }
+
+    <span style="color: #5f8700;">return</span> -1;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0a9ff3d" class="outline-2">
+<h2 id="org0a9ff3d"><span class="section-number-2">2</span> 扩展算法</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+有一个循环有序数组A，如：{7, 8, 9, 0, 1, 2, 3, 4, 5, 6}，不知道最小值的位置。如何从这样的数组中寻找一个特定的元素呢？<br>
+分析：如下图，首先判断mid位于两个子递增序列中的左边递增序列，还是右边递增序列<br>
+</p>
+
+
+<div class="figure">
+<p><img src="../images/二分查找.png" alt="二分查找.png" width="22%"><br>
+</p>
+</div>
+
+<p>
+该算法不支持含有重复元素的序列。例如：[2, 2, 2, 3, 2, 2, 2]。事实上，在这种情况下，只能依次遍历<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">search</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">key</span>)
+{
+    <span style="color: #5f8700;">while</span>(low &lt;= high)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">mid</span> = low + (high - low)/2;
+        <span style="color: #5f8700;">if</span>(A[mid] == key)
+            <span style="color: #5f8700;">return</span> mid;
+        <span style="color: #5f8700;">else</span>
+        {
+            <span style="color: #5f8700;">if</span>(A[low] &lt;= A[mid])        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#31181;&#24773;&#20917;&#65292;mid&#22312;&#24038;&#20391;</span>
+            {
+                <span style="color: #5f8700;">if</span>(key &gt; A[mid])        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key&#22312;mid&#24038;&#20391;</span>
+                    high = mid - 1;
+                <span style="color: #5f8700;">else</span>                    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key&#22312;mid&#21491;&#20391;</span>
+                {
+                    <span style="color: #5f8700;">if</span>(key &gt;= A[low])
+                        high = mid - 1;
+                    <span style="color: #5f8700;">else</span>
+                        low = mid + 1;
+                }
+            }
+            <span style="color: #5f8700;">else</span>                        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#20108;&#31181;&#24773;&#20917;mid&#22312;&#21491;&#20391;</span>
+            {
+                <span style="color: #5f8700;">if</span>(key &lt; A[mid])        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key&#22312;mid&#24038;&#20391;</span>
+                    high = mid - 1;
+                <span style="color: #5f8700;">else</span>                    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key&#22312;mid&#21491;&#20391;</span>
+                {
+                    <span style="color: #5f8700;">if</span>(key &lt;= A[high])
+                        low = mid + 1;
+                    <span style="color: #5f8700;">else</span>
+                        high = mid - 1;
+                }
+            }
+        }
+    }
+
+    <span style="color: #5f8700;">return</span> -1;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

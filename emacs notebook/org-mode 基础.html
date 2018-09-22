@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>org-mode 基础</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">org-mode 基础</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge1b2a54">1. 参考</a></li>
+<li><a href="#org491eafc">2. 标题</a></li>
+<li><a href="#orga70c07e">3. 列表</a></li>
+<li><a href="#org4d4f30a">4. 脚注</a></li>
+<li><a href="#orgd983984">5. 超链接</a>
+<ul>
+<li><a href="#orga16e887">5.1. 快捷键</a></li>
+<li><a href="#orge308986">5.2. 内部链接</a></li>
+<li><a href="#orgaab08cd">5.3. 例子</a></li>
+</ul>
+</li>
+<li><a href="#orge7bd0a7">6. <span class="todo TODO">TODO</span> 标签</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge1b2a54" class="outline-2">
+<h2 id="orge1b2a54"><span class="section-number-2">1</span> 参考</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><a href="https://orgmode.org/worg/org-tutorials/">官方手册</a><br></li>
+<li><a href="https://orgmode.org/worg/orgcard.html">快捷键官方手册</a><br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org491eafc" class="outline-2">
+<h2 id="org491eafc"><span class="section-number-2">2</span> 标题</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+标题最多 10 级<br>
+<a id="org99773ef"></a><br>
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">标题快捷键</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">TAB</td>
+<td class="org-left">折叠/打开当前标题</td>
+</tr>
+
+<tr>
+<td class="org-left">Shift-TAB</td>
+<td class="org-left">折叠/打开当前文档的标题</td>
+</tr>
+
+<tr>
+<td class="org-left">C-u TAB</td>
+<td class="org-left">控制整个 buffer 的折叠状态。折叠成标题&#x2013;折叠成目录&#x2013;不折叠</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">M-UP/DOWN</td>
+<td class="org-left">调整标题在文档中的位置。可连同子标题一起调整位置</td>
+</tr>
+
+<tr>
+<td class="org-left">M-LEFT/RIGHT</td>
+<td class="org-left">快速提升或降低标题级别。该标题下的相关正文同步调整缩进</td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-t</td>
+<td class="org-left">切换当前标题的状态（TODO 等）</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">C-c C-n</td>
+<td class="org-left">移动光标到下一标题</td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-p</td>
+<td class="org-left">移动光标到上一标题</td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-f</td>
+<td class="org-left">移动光标到和当前标题同等级的下一个标题</td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-b</td>
+<td class="org-left">移动光标到和当前标题同等级的上一个标题</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">C-u C-u M-RET</td>
+<td class="org-left">在当前标题内容的最后，另起一行创建一个同级标题</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orga70c07e" class="outline-2">
+<h2 id="orga70c07e"><span class="section-number-2">3</span> 列表</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+如果在本级列表内换行，就需要在新行前面加个空格<br>
+</p>
+
+<dl class="org-dl">
+<dt><code>无序列表</code></dt><dd>以 <code>-</code> <code>*</code> <code>+</code> 字符开头<br></dd>
+<dt><code>有序列表</code></dt><dd>以 <code>1.</code>  <code>1)</code> 字符开头<br></dd>
+</dl>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">列表快捷键</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">C-c -</td>
+<td class="org-left">改变列表展示方式</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">M-UP/DOWN</td>
+<td class="org-left">上下调整列表位置</td>
+</tr>
+
+<tr>
+<td class="org-left">M-LEFT/RIGHT</td>
+<td class="org-left">左右提升或降低列表级别</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org4d4f30a" class="outline-2">
+<h2 id="org4d4f30a"><span class="section-number-2">4</span> 脚注</h2>
+<div class="outline-text-2" id="text-4">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">脚注快捷键</th>
+<th scope="col" class="org-left">描述<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">C-c C-x f</td>
+<td class="org-left">在当前光标位置自动添加一个脚注，并跳转光标到文档末尾的脚注描述位置</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgd983984" class="outline-2">
+<h2 id="orgd983984"><span class="section-number-2">5</span> 超链接</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orga16e887" class="outline-3">
+<h3 id="orga16e887"><span class="section-number-3">5.1</span> 快捷键</h3>
+<div class="outline-text-3" id="text-5-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">超链接快捷键</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">C-c C-l</td>
+<td class="org-left">编辑/插入一个超链接</td>
+</tr>
+
+<tr>
+<td class="org-left">C-u C-c C-l</td>
+<td class="org-left">插入一个文件超链接（如果有中文，使用该快捷键会有时跳转不了。这时需要手动输入中文）</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">C-c C-o</td>
+<td class="org-left">用浏览器打开这个超链接</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">C-c C-x C-n</td>
+<td class="org-left">下一个链接</td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-x C-p</td>
+<td class="org-left">上一个链接</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orge308986" class="outline-3">
+<h3 id="orge308986"><span class="section-number-3">5.2</span> 内部链接</h3>
+<div class="outline-text-3" id="text-5-2">
+<ol class="org-ol">
+<li><p>
+跳转到被 <code>&lt;&lt;&gt;&gt;</code> 定义的地方。用法如下例：<br>
+</p>
+<pre class="example">
+&lt;&lt;test&gt;&gt;
+[[test][跳转到 test]]
+</pre></li>
+<li>如果1)不存在, 会跳转到 <code>#+NAME</code> 命名和链接相同的地方<br></li>
+<li>前两步都失败, 会尝试寻找精确匹配的标题<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgaab08cd" class="outline-3">
+<h3 id="orgaab08cd"><span class="section-number-3">5.3</span> 例子</h3>
+<div class="outline-text-3" id="text-5-3">
+<pre class="example">
+[[file:org-mode 表格.org::*自动计算][跳转到文档 org-mode 表格.org 的一个标题上：自动计算]]
+[[*列表][跳转到本文的标题：列表]]
+[[file:org-mode 基础.org::test][跳转到本文的 &lt;&lt;test&gt;&gt;，它位于标题快捷键表格上面]]
+[[test][同上，跳转到 &lt;&lt;test&gt;&gt;]]
+</pre>
+
+<p>
+<a href="org-mode 表格.html#org0fd1c78">跳转到文档 org-mode 表格.org 的一个标题上：自动计算</a><br>
+<a href="#orga70c07e">跳转到本文的标题：列表</a><br>
+<a href="org-mode 基础.html#org99773ef">跳转到本文的 &lt;&lt;test&gt;&gt;，它位于标题快捷键表格上面</a><br>
+<a href="#org99773ef">同上，跳转到 &lt;&lt;test&gt;&gt;</a><br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge7bd0a7" class="outline-2">
+<h2 id="orge7bd0a7"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> 标签</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+区别于 CSDN博客 和 evernote 的标签，org-mode 的标签支持为每个标题都设置标签。<br>
+标签主要是用于分类和搜索的。但是标签是用户自己设置的，可能该打的标签没打，导致搜索不到。我更倾向于在命令行使用搜索命令搜索笔记。不做笔记<br>
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">&#33050;&#27880;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+This is a footnote for test.<br>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

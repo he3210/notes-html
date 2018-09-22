@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>选择排序</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">选择排序</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1e7bc98">1. 简单选择排序</a></li>
+<li><a href="#orgde1316f">2. 堆排</a>
+<ul>
+<li><a href="#org5d5efee">2.1. 大根堆实例一</a></li>
+<li><a href="#orgc772972">2.2. 大根堆实例二</a></li>
+<li><a href="#org67263de">2.3. 总结</a></li>
+<li><a href="#orgb303ff4">2.4. 优化</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+选择排序基本思想：每一趟（例如第 i 趟）在后面 n-i+1（i = 1, 2, &#x2026;, n-1)个待排序元素中选取关键字最小的元素，作为有序子序列的第 i 个元素，直到第 n-1 趟做完，待排序元素只剩下1个，就不用再选了<br>
+选择排序包括简单选择排序和堆排<br>
+</p>
+
+<div id="outline-container-org1e7bc98" class="outline-2">
+<h2 id="org1e7bc98"><span class="section-number-2">1</span> 简单选择排序</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">SelectSort</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #5f8700;">for</span>(i = 0; i != n-1; ++i)
+    {
+        min = i;
+        <span style="color: #5f8700;">for</span>(j = i+1; j != n; ++j)
+        {
+            <span style="color: #5f8700;">if</span>(A[min].key &gt; A[j].key)
+                min = j;
+        }
+        <span style="color: #5f8700;">if</span>(min != i)
+            swap(A[min], A[i]);
+    }
+}
+</pre>
+</div>
+
+<p>
+时间复杂度始终是 O(n<sup>2</sup>)，空间复杂度为 O(1)<br>
+稳定性：不稳定<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgde1316f" class="outline-2">
+<h2 id="orgde1316f"><span class="section-number-2">2</span> 堆排</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org5d5efee" class="outline-3">
+<h3 id="org5d5efee"><span class="section-number-3">2.1</span> 大根堆实例一</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+特点：<br>
+</p>
+<ul class="org-ul">
+<li>堆中元素从下标 1 开始，下标 0 不存储堆中元素<br></li>
+<li>下标为 k 的结点的父结点为 k/2，子结点为 2*k、2*k+1<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24418;&#21442;k&#26159;&#21521;&#19978;&#35843;&#25972;&#30340;&#32467;&#28857;&#65292;&#20063;&#26159;&#22534;&#30340;&#20803;&#32032;&#20010;&#25968;&#12290;&#35813;&#20989;&#25968;&#21487;&#20197;&#29992;&#20110;&#28155;&#21152;&#26032;&#32467;&#28857;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">AdjustUp</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
+{
+    A[0] = A[k];
+    i = k/2;
+    <span style="color: #5f8700;">while</span>(k &gt; 1 &amp;&amp; A[0].key &gt; A[i].key)
+    {
+        A[k] = A[i];
+        k = i;
+        i = k/2;
+    }
+    A[k] = A[0];
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24418;&#21442;k&#34920;&#31034;&#21521;&#19979;&#35843;&#25972;&#31532;k&#20010;&#32467;&#28857;&#12290;&#35813;&#20989;&#25968;&#21487;&#20197;&#29992;&#20110;&#21024;&#38500;&#32467;&#28857;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">AdjustDown</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
+{
+    A[0] = A[k];
+    <span style="color: #5f8700;">for</span>(i = 2*k; i &lt;= n; i *= 2)
+    {
+        <span style="color: #5f8700;">if</span>(i &lt; n &amp;&amp; A[i+1].key &gt; A[i].key)
+            ++i;
+        <span style="color: #5f8700;">if</span>(A[i].key &gt; A[0].key)
+        {
+            A[k] = A[i];
+            k = i;
+        }
+        <span style="color: #5f8700;">else</span>
+            <span style="color: #5f8700;">break</span>;
+    }
+    A[k] = A[0];
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24314;&#31435;&#22823;&#39030;&#22534;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">BuildMaxHeap</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #5f8700;">for</span>(i = n/2; i != 0; --i)
+        AdjustDown(A, n, k);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#23567;&#21040;&#22823;&#25490;&#24207;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">HeapSort</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    BuildMaxHeap(A, n);
+    <span style="color: #5f8700;">for</span>(i = n; i != 1; --i)
+    {
+        swap(A[1], A[i]);
+        AdjustDown(A, i-1, 1);
+    }
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21024;&#38500;&#31532;k&#20010;&#32467;&#28857;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">DelNode</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
+{
+    <span style="color: #5f8700;">if</span>(A[k].key == A[n].key)
+        <span style="color: #5f8700;">return</span> (--n);
+    <span style="color: #5f8700;">if</span>(A[k].key &lt; A[n].key)
+    {
+        A[k] = A[n--];
+        AdjustUp(A, k);
+    }
+    <span style="color: #5f8700;">else</span>
+    {
+        A[k] = A[n--];
+        AdjustDown(A, n, k);
+    }
+    <span style="color: #5f8700;">return</span> n;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21521;&#22823;&#39030;&#22534;&#28155;&#21152;&#26032;&#32467;&#28857;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">AddNode</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">node</span>)
+{
+    A[++n] = node;
+    AdjustUp(A, n);
+    <span style="color: #5f8700;">return</span> n;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc772972" class="outline-3">
+<h3 id="orgc772972"><span class="section-number-3">2.2</span> 大根堆实例二</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+特点：<br>
+</p>
+<ul class="org-ul">
+<li>堆中元素从下标 0 开始存储<br></li>
+<li>下标为 k 的结点的父结点为 (k-1)/2，子结点为 2*k+1、2*k+2<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string.h&gt;</span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25226;&#19979;&#26631;&#20026; k &#30340;&#32467;&#28857;&#21521;&#19978;&#35843;&#25972;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">AdjustUp</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">x</span> = A[k];
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = (k-1)/2;
+    <span style="color: #5f8700;">while</span>(k &gt; 0 &amp;&amp; x &gt; A[i])
+    {
+        A[k] = A[i];
+        k = i;
+        i = (i-1)/2;
+    }
+    A[k] = x;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25226;&#19979;&#26631;&#20026; k &#30340;&#32467;&#28857;&#21521;&#19979;&#35843;&#25972;&#12290;n &#34920;&#31034;&#22534;&#20013;&#29616;&#26377; n &#20010;&#20803;&#32032;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">AdjustDown</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">x</span> = A[k];
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 2*k + 1; i &lt; n; i = 2*i + 1)
+    {
+        <span style="color: #5f8700;">if</span>(i + 1 &lt; n &amp;&amp; A[i+1] &gt; A[i])
+            ++i;
+        <span style="color: #5f8700;">if</span>(x &lt; A[i])
+        {
+            A[k] = A[i];
+            k = i;
+        }
+        <span style="color: #5f8700;">else</span>
+            <span style="color: #5f8700;">break</span>;
+    }
+    A[k] = x;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23545;&#38271;&#24230;&#20026; n &#30340;&#25968;&#32452;&#26500;&#24314;&#22823;&#26681;&#22534;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">BuildMaxHeap</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = (n-1-1)/2; i &gt;= 0; --i)
+        AdjustDown(A, n, i);
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">swap</span>(<span style="color: #af8700;">int</span>* <span style="color: #0087ff;">a</span>, <span style="color: #af8700;">int</span>* <span style="color: #0087ff;">b</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">t</span> = *a;
+    *a = *b;
+    *b = t;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23545;&#25968;&#32452; A &#36827;&#34892;&#21319;&#24207;&#25490;&#24207;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">HeapSort</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    BuildMaxHeap(A, n);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = n-1; i &gt; 0; --i)
+    {
+        swap(&amp;A[0], &amp;A[i]);
+        AdjustDown(A, i, 0);
+    }
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21024;&#38500;&#31532; k &#20010;&#32467;&#28857;&#12290;&#36820;&#22238;&#22534;&#20013;&#21097;&#20313;&#32467;&#28857;&#20010;&#25968;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">DelNode</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
+{
+    <span style="color: #5f8700;">if</span>(A[k] == A[n-1])
+        <span style="color: #5f8700;">return</span> --n;
+    <span style="color: #5f8700;">else</span>
+    {
+        <span style="color: #5f8700;">if</span>(A[k] &lt; A[n-1])
+        {
+            A[k] = A[n-1];
+            AdjustUp(A, k);
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            A[k] = A[n-1];
+            AdjustDown(A, n-1, k);
+        }
+    }
+    <span style="color: #5f8700;">return</span> --n;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21521;&#22823;&#26681;&#22534;&#20013;&#28155;&#21152;&#26032;&#32467;&#28857; node</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">AddNode</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">node</span>)
+{
+    A[n] = node;
+    AdjustUp(A, n);
+    <span style="color: #5f8700;">return</span> n+1;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#23567; k &#20010;&#25968;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20256;&#20837;&#38271;&#24230;&#20026; n &#30340;&#25968;&#32452; A&#65292;&#20351;&#29992;&#25968;&#32452; B &#36820;&#22238;&#26368;&#23567;&#30340; k &#20010;&#25968;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">MinK</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">B</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
+{
+    <span style="color: #5f8700;">if</span>(k &lt; n)
+        memmove(B, A, <span style="color: #af8700;">k</span>*<span style="color: #5f8700;">sizeof</span>(<span style="color: #af8700;">int</span>));
+    <span style="color: #5f8700;">else</span>
+    {
+        memmove(B, A, <span style="color: #af8700;">n</span>*<span style="color: #5f8700;">sizeof</span>(<span style="color: #af8700;">int</span>));
+        <span style="color: #5f8700;">return</span> n;
+    }
+
+    BuildMaxHeap(B, k);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = k; i &lt; n; ++i)
+    {
+        <span style="color: #5f8700;">if</span>(A[i] &lt; B[0])
+        {
+            B[0] = A[i];
+            AdjustDown(B, k, 0);
+        }
+        <span style="color: #5f8700;">else</span>
+            <span style="color: #5f8700;">continue</span>;
+    }
+    <span style="color: #5f8700;">return</span> k;
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">PrintArray</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; n; ++i)
+        printf(<span style="color: #00afaf;">"%d "</span>, A[i]);
+    putchar(10);
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[32] = {2, 4, 3, 7, 1, 5, 9, 8, 0};
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span> = 9;
+    printf(<span style="color: #00afaf;">"&#21021;&#22987;&#24207;&#21015;&#20026;&#65306;\n"</span>);
+    PrintArray(A, n);
+
+    BuildMaxHeap(A, n);
+    printf(<span style="color: #00afaf;">"\n&#24314;&#31435;&#22823;&#39030;&#22534;&#21518;&#30340;&#24207;&#21015;&#20026;&#65306;\n"</span>);
+    PrintArray(A, n);
+
+    HeapSort(A, n);    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22534;&#25490;&#24207;&#21518;&#30772;&#22351;&#20102;&#22534;&#30340;&#32467;&#26500;&#65292;&#22914;&#26524;&#35201;&#20351;&#29992;&#38656;&#35201;&#37325;&#26032;&#24314;&#31435;&#22823;&#39030;&#22534;</span>
+    printf(<span style="color: #00afaf;">"\n&#22534;&#25490;&#21518;&#24207;&#21015;&#20026;&#65306;\n"</span>);
+    PrintArray(A, n);
+
+    printf(<span style="color: #00afaf;">"\n&#37325;&#26032;&#24314;&#31435;&#22823;&#39030;&#22534;&#12289;&#28155;&#21152;&#26032;&#32467;&#28857;&#12289;&#25490;&#24207;&#21518;&#30340;&#24207;&#21015;&#20998;&#21035;&#20026;&#65306;\n"</span>);
+    BuildMaxHeap(A, n);
+    PrintArray(A, n);
+    n = AddNode(A, n, 66);
+    PrintArray(A, n);
+    HeapSort(A, n);
+    PrintArray(A, n);
+
+    printf(<span style="color: #00afaf;">"\n&#37325;&#26032;&#24314;&#31435;&#22823;&#39030;&#22534;&#12289;&#21024;&#38500;&#26032;&#32467;&#28857;&#12289;&#25490;&#24207;&#21518;&#30340;&#24207;&#21015;&#20998;&#21035;&#20026;&#65306;\n"</span>);
+    BuildMaxHeap(A, n);
+    PrintArray(A, n);
+    n = DelNode(A, n, 3);
+    PrintArray(A, n);
+    HeapSort(A, n);
+    PrintArray(A, n);
+
+    printf(<span style="color: #00afaf;">"\n&#24207;&#21015;&#12289;&#24207;&#21015;&#30340;&#26368;&#23567;&#30340; k &#20010;&#25968;&#20998;&#21035;&#20026;&#65306;\n"</span>);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">AA</span>[32] = {2, 4, 3, 7, 1, 5, 9, 8, 0};
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span> = 8;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">BB</span>[k];
+    k = MinK(AA, 9, BB, k);
+    PrintArray(AA, 9);
+    PrintArray(BB, k);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org67263de" class="outline-3">
+<h3 id="org67263de"><span class="section-number-3">2.3</span> 总结</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+最好、最坏、平均时间复杂度 O(nlog<sub>2</sub>n)<br>
+空间复杂度 O(1)<br>
+稳定性：不稳定<br>
+</p>
+
+<p>
+建堆的时间复杂度为 O(n)，推导如下:<br>
+我们建立最大堆是从倒数第一个非子结点开始的，那么该结点的最大堆调整是1次，因为最多只跟它的子结点调整一次就可以得到最大堆，然后此类结点最多有多少个呢？根据树的性质，我们可以得出个数为 2h-1, h 为整个树的高度。我们暂且取此点为 S1，此点高度为1；<br>
+那么 S1 的父结点 S2 需要几次，并且他的高度为2，没错，调整两次,同时有 2h-2 个该类结点。 如此类推, S3 调整三次，&#x2026;，Sn 调整 N 次。<br>
+总的比较次数就是：比较次数×该类结点个数之和<br>
+也就是：<br>
+</p>
+
+<blockquote>
+<p>
+1*2h-1  +  2*2h-2 +  3*2h-3 <del>&#x2026;</del> (h-1)*21 + h*20<br>
+(s1结点)  (s2结点)  (S3结点) &#x2026; (S(h-1))  (S(h)结点)<br>
+这其实就是我们高中学的等比数列求和。<br>
+该式子可以变成：<br>
+2h-1 + 2h-2 + 2h-3 <del>&#x2026;</del> 21 + 20          = (2h-1)(这个结果可以根据等比求和公式求出，此处略)<br>
++<br>
+2h-2 + 2h-3 <del>&#x2026;</del> 21 + 20                         = (2h-1 -1)<br>
++<br>
+2h-3 <del>&#x2026;</del> 21 + 20                                      = (2h-2-1)<br>
++<br>
+&#x2026;<br>
+20                                                                           = 21-1<br>
+通过上面的化简，我们可以得出另外一个公式就是：<br>
+2h+ 2h-1 + 2h-2+ 2h-3 <del>&#x2026;</del> 21 - h<br>
+在利用等比数列求和公式得出：<br>
+2h+1 - 2 - h<br>
+这个就是我们总的时间：此时带入 h=logn<br>
+就等于 2*n-2-logn<br>
+根据 BIG-O 定理，时间复杂度就是 O(n).<br>
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgb303ff4" class="outline-3">
+<h3 id="orgb303ff4"><span class="section-number-3">2.4</span> 优化</h3>
+<div class="outline-text-3" id="text-2-4">
+<ul class="org-ul">
+<li><p>
+对堆进行封装<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">min_heap</span>
+{
+    <span style="color: #af8700;">ElemType</span>** <span style="color: #0087ff;">p</span>; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21160;&#24577;&#20998;&#37197;&#30340;&#20869;&#23384;&#31354;&#38388;&#22320;&#22336;&#12290;&#22534;&#20013;&#23384;&#25918;&#30340;&#20803;&#32032;&#20026;&#25351;&#21521; ElemType &#31867;&#22411;&#30340;&#25351;&#38024;</span>
+    <span style="color: #af8700;">unsigned</span> <span style="color: #0087ff;">n</span>, <span style="color: #0087ff;">a</span>;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">n &#20026;&#22534;&#20013;&#20803;&#32032;&#20010;&#25968;&#65292;a &#20026;&#22534;&#30340;&#20869;&#23384;&#23481;&#37327;</span>
+} <span style="color: #af8700;">min_heap_t</span>;
+</pre>
+</div></li>
+<li>堆的容量可增大<br></li>
+<li>堆中存放的元素使用指针表示。防止直接拷贝整个元素<br></li>
+</ul>
+
+<p>
+为达到如上优化目的，可参考 libevent 中小根堆的实现<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

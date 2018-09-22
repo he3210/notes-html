@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>libevent 源码之 signal 事件处理</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">libevent 源码之 signal 事件处理</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgbb42a11">1. signal 事件集成策略</a></li>
+<li><a href="#org2974349">2. 主要数据结构</a></li>
+<li><a href="#orgc0de1aa">3. 内部信号读事件初始化</a></li>
+<li><a href="#orgc9585a3">4. 信号事件的注册</a></li>
+<li><a href="#org0b4be4d">5. 注册信号</a></li>
+<li><a href="#org0b12eba">6. 信号发生后执行的代码</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbb42a11" class="outline-2">
+<h2 id="orgbb42a11"><span class="section-number-2">1</span> signal 事件集成策略</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+集成思想:<br>
+如果当 signal 发生时，并不立即调用该信号相应的事件处理函数。而是通过管道或其他方式（libevent 使用的通知方式是 socketpair）通知 I/O 复用程序哪些信号发生了。然后将发生的信号对应的信号事件插入到激活事件队列中，然后再统一与 I/O 事件以及 Timer 事件一起处理。<br>
+</p>
+
+<p>
+集成步骤:<br>
+</p>
+<ol class="org-ol">
+<li>创建 socketpair<br></li>
+<li>为这个 socketpair 的读 socket 在 libevent 的 event_base 实例上生成并注册一个内部的 persist 读事件（我称之为内部信号读事件）。<br></li>
+<li>设置信号捕获函数。有信号发生，信号捕获函数在 socketpair 写端写入信号值<br></li>
+<li>I/O 多路复用函数中监听到内部信号读事件激活，即可将之与其他 I/O 事件、超时事件一起处理。这样就把 signal 事件、I/O 事件、超时事件集成到一起了<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org2974349" class="outline-2">
+<h2 id="org2974349"><span class="section-number-2">2</span> 主要数据结构</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> {
+    <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">eventop</span> *<span style="color: #0087ff;">evsigsel</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36825;&#20010; event_base &#20351;&#29992;&#30340;&#20449;&#21495;&#21518;&#31471;&#12290;&#21253;&#25324;&#28155;&#21152;&#20449;&#21495;&#12289;&#21024;&#38500;&#20449;&#21495;&#30340;&#26041;&#27861;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">evsig_info</span> <span style="color: #0087ff;">sig</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_signal_map</span> <span style="color: #0087ff;">sigmap</span>;
+};
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31649;&#29702; signal &#30340;&#32467;&#26500;&#20307;&#12290;&#20027;&#35201;&#29992;&#20110;&#38598;&#25104; signal &#20107;&#20214;</span>
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">evsig_info</span> {
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> <span style="color: #0087ff;">ev_signal</span>;             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25105;&#31216;&#23427;&#20026;&#20869;&#37096;&#20449;&#21495;&#35835;&#20107;&#20214;</span>
+    <span style="color: #af8700;">evutil_socket_t</span> <span style="color: #0087ff;">ev_signal_pair</span>[2];  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">socket pair&#12290;ev_signal_pair[0] &#20026;&#20889; socket&#65292;ev_signal_pair[1] &#20026;&#35835; socket</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">ev_signal_added</span>;     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35760;&#24405; ev_signal &#20107;&#20214;&#26159;&#21542;&#24050;&#32463;&#27880;&#20876;&#20102;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">ev_n_signals_added</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#32479;&#35745;&#24403;&#21069;&#30417;&#21548;&#30340;&#20449;&#21495;&#25968;&#37327;</span>
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">sh_old &#20445;&#23384;&#30528;&#21407;&#20808;&#30340;&#20449;&#21495;&#22788;&#29702;&#26041;&#24335;&#12290;&#20027;&#35201;&#29992;&#20110;&#21024;&#38500;&#20449;&#21495;&#26102;&#65292;&#36824;&#21407;&#20449;&#21495;&#30340;&#21407;&#20808;&#22788;&#29702;&#26041;&#24335;</span>
+<span style="color: #d75f00;">#ifdef</span> _EVENT_HAVE_SIGACTION
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">sigaction</span> **<span style="color: #0087ff;">sh_old</span>;
+<span style="color: #d75f00;">#else</span>
+    <span style="color: #af8700;">ev_sighandler_t</span> **<span style="color: #0087ff;">sh_old</span>;
+<span style="color: #d75f00;">#endif</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">sh_old_max</span>;          <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20998;&#37197;&#30340; *sh_old &#30340;&#26368;&#22823;&#25968;&#37327;&#12290;&#35813;&#23383;&#27573;&#29992;&#20110;&#21028;&#26029;&#26159;&#21542;&#38656;&#35201;&#20026; sh_old &#37325;&#26032;&#20998;&#37197;&#31354;&#38388;</span>
+};
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31867;&#20284;&#19968;&#20010; map&#65292;&#20351;&#29992;&#20449;&#21495;&#20540;&#21487;&#30452;&#25509;&#32034;&#24341;&#21040; event_base &#20013;&#22312;&#35813;&#20449;&#21495;&#19978;&#27880;&#20876;&#30340;&#25152;&#26377;&#20449;&#21495;&#20107;&#20214;</span>
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_signal_map</span> {
+    <span style="color: #af8700;">void</span> **<span style="color: #0087ff;">entries</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">void** &#24403;&#20026; evmap_signal** &#26102;&#65292;entries[sig_num] &#31867;&#22411;&#20026; evmap_signal*</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">nentries</span>;
+};
+
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">evmap_signal</span> {
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_list</span> <span style="color: #0087ff;">events</span>;
+};
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><code>内部信号读事件</code></dt><dd>signal socket pair 的读 socket 向 event_base 注册读事件时生成的 event。它是为了把 signal 集成到 libevent 中而使用的一个内部事件<br></dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orgc0de1aa" class="outline-2">
+<h2 id="orgc0de1aa"><span class="section-number-2">3</span> 内部信号读事件初始化</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+初始化步骤：<br>
+</p>
+<ul class="org-ul">
+<li>创建 socketpair<br></li>
+<li>为 socketpair 设置 FD_CLOEXEC 和 O_NONBLOCK 标志<br></li>
+<li>生成一个内部信号读事件，特点是：内部事件、persist、优先级最高。注意：该事件并没有注册，只是保存在 event_base 中了<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21021;&#22987;&#21270; epoll&#65292;&#36820;&#22238;&#19968;&#20010; epollop &#25351;&#38024;&#12290;&#21019;&#24314; epoll fd&#65292;&#20026; epoll_event&#20998;&#37197;&#21021;&#22987;&#31354;&#38388;&#65292;&#21019;&#24314;&#20449;&#21495;&#30340; socket pair &#24182;&#29983;&#25104;&#19968;&#20010; signal event</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> *
+<span style="color: #0087ff;">epoll_init</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>)
+{
+    ...
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21019;&#24314; signal socket pair&#65292;&#24182;&#20026; socket pair &#30340;&#35835; socket &#22312; libevent &#30340; event_base &#23454;&#20363;&#19978;&#29983;&#25104;&#19968;&#20010;&#26368;&#39640;&#20248;&#20808;&#32423;&#30340; persist &#35835;&#20107;&#20214;</span>
+    evsig_init(base);
+
+    <span style="color: #5f8700;">return</span> (epollop);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21021;&#22987;&#21270;&#20869;&#37096;&#20449;&#21495;&#35835;&#20107;&#20214;&#65306;&#21019;&#24314;&#19968;&#23545; signal socket pair&#65292;&#24182;&#20026; socket pair &#30340;&#35835; socket &#29983;&#25104;&#19968;&#20010;&#26368;&#39640;&#20248;&#20808;&#32423;&#30340; persist &#35835;&#20107;&#20214;</span>
+<span style="color: #af8700;">int</span>
+<span style="color: #0087ff;">evsig_init</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>)
+{
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21019;&#24314; signal socket pair&#65292;base-&gt;sig.ev_signal_pair[0] &#29992;&#20110;&#20889;&#65292;base-&gt;sig.ev_signal_pair[1] &#29992;&#20110;&#35835;</span>
+    <span style="color: #5f8700;">if</span> (evutil_socketpair(
+            AF_UNIX, SOCK_STREAM, 0, base-&gt;sig.ev_signal_pair) == -1) {
+<span style="color: #d75f00;">#ifdef</span> WIN32
+        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Make this nonfatal on win32, where sometimes people</span>
+<span style="color: #8a8a8a;">           have localhost firewalled. </span><span style="color: #8a8a8a;">*/</span>
+        event_sock_warn(-1, <span style="color: #00afaf;">"%s: socketpair"</span>, __func__);
+<span style="color: #d75f00;">#else</span>
+        event_sock_err(1, -1, <span style="color: #00afaf;">"%s: socketpair"</span>, __func__);
+<span style="color: #d75f00;">#endif</span>
+        <span style="color: #5f8700;">return</span> -1;
+    }
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622; FD_CLOEXEC</span>
+    evutil_make_socket_closeonexec(base-&gt;sig.ev_signal_pair[0]);
+    evutil_make_socket_closeonexec(base-&gt;sig.ev_signal_pair[1]);
+    base-&gt;sig.sh_old = <span style="color: #00afaf;">NULL</span>;
+    base-&gt;sig.sh_old_max = 0;
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622; O_NONBLOCK</span>
+    evutil_make_socket_nonblocking(base-&gt;sig.ev_signal_pair[0]);
+    evutil_make_socket_nonblocking(base-&gt;sig.ev_signal_pair[1]);
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29983;&#25104;&#19968;&#20010;&#20013;&#31561;&#20248;&#20808;&#30340; persist &#30340; I/O &#35835;&#20107;&#20214;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25105;&#31216;&#23427;&#20026;&#20869;&#37096;&#20449;&#21495;&#35835;&#20107;&#20214;&#65292;&#20107;&#20214;&#31867;&#22411;&#20026; EV_READ&#65292;&#32780;&#19981;&#26159; EV_SIGNAL&#12290;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36825;&#20010;&#20107;&#20214;&#25226; I/O &#21644; signal &#20107;&#20214;&#38598;&#25104;&#22312;&#19968;&#36215;</span>
+    event_assign(&amp;base-&gt;sig.ev_signal, base, base-&gt;sig.ev_signal_pair[1],
+        EV_READ | EV_PERSIST, evsig_cb, base);
+
+    base-&gt;sig.ev_signal.ev_flags |= EVLIST_INTERNAL;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26631;&#35760;&#20026; libevent &#30340;&#20869;&#37096;&#20107;&#20214;</span>
+    event_priority_set(&amp;base-&gt;sig.ev_signal, 0);      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35843;&#25972;&#20449;&#21495;&#20107;&#20214;&#20248;&#20808;&#32423;&#20026;&#26368;&#39640;&#32423;</span>
+
+    base-&gt;evsigsel = &amp;evsigops;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622;&#20449;&#21495;&#21518;&#31471;</span>
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+
+<span style="color: #5f8700;">static</span> <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">eventop</span> <span style="color: #0087ff;">evsigops</span> = {
+    <span style="color: #00afaf;">"signal"</span>,
+    <span style="color: #00afaf;">NULL</span>,
+    evsig_add,
+    evsig_del,
+    <span style="color: #00afaf;">NULL</span>,
+    <span style="color: #00afaf;">NULL</span>,
+    0, 0, 0
+};
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><code>内部信号读事件的回调函数</code></dt><dd>用于读取发生的 signal，并把这些 signal 对应的所有信号事件放入激活队列<br></dd>
+<dt><code>信号后端</code></dt><dd>包含一些方法，比如：信号添加、信号删除<br></dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orgc9585a3" class="outline-2">
+<h2 id="orgc9585a3"><span class="section-number-2">4</span> 信号事件的注册</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+调用顺序为：<br>
+event_add 注册信号事件 &#x2013;&gt; event_add_internal &#x2013;&gt; evmap_signal_add<br>
+</p>
+
+<p>
+其中<br>
+</p>
+<ul class="org-ul">
+<li>event_add 函数加了锁<br></li>
+<li>event_add_internal 除了调用 evmap_signal_add 之外，还有就是做了一些超时事件的处理。比如：一个事件即是信号事件又是超时事件<br></li>
+<li>evmap_signal_add 函数是注册信号事件的主逻辑<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">int</span>
+<span style="color: #0087ff;">event_add</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> *<span style="color: #0087ff;">ev</span>, <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> *<span style="color: #0087ff;">tv</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">res</span>;
+
+    <span style="color: #5f8700;">if</span> (EVUTIL_FAILURE_CHECK(<span style="color: #d70000;">!</span>ev-&gt;ev_base)) {
+        event_warnx(<span style="color: #00afaf;">"%s: event has no event_base set."</span>, __func__);
+        <span style="color: #5f8700;">return</span> -1;
+    }
+
+    EVBASE_ACQUIRE_LOCK(ev-&gt;ev_base, th_base_lock);
+
+    res = event_add_internal(ev, tv, 0);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">0 &#34920;&#31034;&#20256;&#20837;&#30340; tv &#26159;&#26102;&#38388;&#38388;&#38548;&#32780;&#19981;&#26159;&#32477;&#23545;&#26102;&#38388;</span>
+
+    EVBASE_RELEASE_LOCK(ev-&gt;ev_base, th_base_lock);
+
+    <span style="color: #5f8700;">return</span> (res);
+}
+
+<span style="color: #5f8700;">static</span> <span style="color: #5f8700;">inline</span> <span style="color: #af8700;">int</span>
+<span style="color: #0087ff;">event_add_internal</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> *<span style="color: #0087ff;">ev</span>, <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> *<span style="color: #0087ff;">tv</span>,
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">tv_is_absolute</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span> = ev-&gt;ev_base;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">res</span> = 0;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">notify</span> = 0;
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20027;&#39064;&#19981;&#30456;&#20851;&#20195;&#30721;</span>
+    ...
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; ev &#26159; I/O &#20107;&#20214;&#25110; signal &#20107;&#20214;&#65292;&#19988; ev &#19981;&#22312;&#27880;&#20876;&#20107;&#20214;&#38431;&#21015;&#21644;&#28608;&#27963;&#20107;&#20214;&#38431;&#21015;&#20013;&#65292;&#23558;&#20854;&#25554;&#20837;&#21040;&#30456;&#24212;&#38431;&#21015;&#20013;</span>
+    <span style="color: #5f8700;">if</span> ((ev-&gt;ev_events &amp; (EV_READ|EV_WRITE|EV_SIGNAL)) &amp;&amp;
+        <span style="color: #d70000;">!</span>(ev-&gt;ev_flags &amp; (EVLIST_INSERTED|EVLIST_ACTIVE))) {
+        <span style="color: #5f8700;">if</span> (ev-&gt;ev_events &amp; (EV_READ|EV_WRITE))                 <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; event &#26159; I/O &#20107;&#20214;</span>
+            res = evmap_io_add(base, ev-&gt;ev_fd, ev);            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#28155;&#21152;&#21040; event_base.event_io_map&#65292;&#24182;&#27880;&#20876;&#21040; I/O &#22810;&#36335;&#22797;&#29992;&#21518;&#31471;&#19978;</span>
+        <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span> (ev-&gt;ev_events &amp; EV_SIGNAL)                     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; event &#26159; signal &#20107;&#20214;</span>
+            res = evmap_signal_add(base, (<span style="color: #af8700;">int</span>)ev-&gt;ev_fd, ev);   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#28155;&#21152;&#21040; event_base.event_signal_map</span>
+        <span style="color: #5f8700;">if</span> (res != -1) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#19978;&#19968;&#27493;&#25805;&#20316;&#27809;&#26377;&#22833;&#36133;</span>
+            event_queue_insert(base, ev, EVLIST_INSERTED);      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25554;&#20837;&#21040;&#27880;&#20876;&#20107;&#20214;&#38431;&#21015;</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#19978;&#19968;&#27493;&#22312; evmap_io_add &#25110; evmap_signal_add &#20989;&#25968;&#20869;&#37096;&#25191;&#34892;&#20102;&#28155;&#21152;&#25805;&#20316;</span>
+        <span style="color: #5f8700;">if</span> (res == 1) {
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38656;&#35201; notify &#20027;&#32447;&#31243;&#12290;</span>
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21407;&#22240;&#65306;&#24403;&#20027;&#32447;&#31243;&#22312;&#25191;&#34892; event_base_dispatch &#36827;&#20837; I/O &#22810;&#36335;&#22797;&#29992;&#20989;&#25968;&#26102;&#65292;&#20250;&#22788;&#20110;&#20241;&#30496;&#29366;&#24577;&#65292;&#20241;&#30496;&#21069;&#35299;&#38145;</span>
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24403;&#27425;&#32447;&#31243;&#21521; event_base &#28155;&#21152;&#26032;&#20107;&#20214;&#26102;&#65292;&#38656;&#35201;&#21450;&#26102;&#21796;&#37266;&#20027;&#32447;&#31243;&#65292;&#21578;&#30693;&#20854;&#26377;&#26032;&#20107;&#20214;&#21152;&#20837;</span>
+            notify = 1;
+            res = 0;
+        }
+    }
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36229;&#26102;&#20107;&#20214;&#30340;&#22788;&#29702;&#12290;&#20027;&#39064;&#19981;&#30456;&#20851;&#20195;&#30721;</span>
+    ...
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27880;&#20876; signal &#20107;&#20214;</span>
+<span style="color: #af8700;">int</span>
+<span style="color: #0087ff;">evmap_signal_add</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">sig</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> *<span style="color: #0087ff;">ev</span>)
+{
+    <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">eventop</span> *<span style="color: #0087ff;">evsel</span> = base-&gt;evsigsel;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_signal_map</span> *<span style="color: #0087ff;">map</span> = &amp;base-&gt;sigmap;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">evmap_signal</span> *<span style="color: #0087ff;">ctx</span> = <span style="color: #00afaf;">NULL</span>;
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; event_signal_map &#30340;&#20869;&#23384;&#31354;&#38388;&#19981;&#22815;&#65292;&#25193;&#23481;</span>
+    <span style="color: #5f8700;">if</span> (sig &gt;= map-&gt;nentries) {
+        <span style="color: #5f8700;">if</span> (evmap_make_space(
+            map, sig, <span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">evmap_signal</span> *)) == -1)
+            <span style="color: #5f8700;">return</span> (-1);
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20026; ctx &#36171;&#20540;&#12290;&#22914;&#26524; event_signal_map &#19978; sig &#23545;&#24212;&#30340; evmap_signal &#20026;&#31354;&#65292;&#23601;&#20026;&#20854;&#20998;&#37197;&#31354;&#38388;&#24182;&#21021;&#22987;&#21270;&#65307;&#21542;&#21017;&#30452;&#25509;&#20026; ctx &#36171;&#20540;</span>
+    GET_SIGNAL_SLOT_AND_CTOR(ctx, map, sig, evmap_signal, evmap_signal_init,
+        base-&gt;evsigsel-&gt;fdinfo_len);
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#39318;&#27425;&#20026;&#36825;&#20010;&#20449;&#21495;&#27880;&#20876;&#20107;&#20214;&#65292;&#23601;&#27880;&#20876;&#35813;&#20449;&#21495;&#21040;&#20449;&#21495;&#21518;&#31471;&#12290;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">evsel-&gt;add &#20989;&#25968;&#25351;&#38024;&#25351;&#21521;&#20989;&#25968; evsig_add</span>
+    <span style="color: #5f8700;">if</span> (TAILQ_EMPTY(&amp;ctx-&gt;events)) {
+        <span style="color: #5f8700;">if</span> (evsel-&gt;add(base, ev-&gt;ev_fd, 0, EV_SIGNAL, <span style="color: #00afaf;">NULL</span>)
+            == -1)
+            <span style="color: #5f8700;">return</span> (-1);
+    }
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25554;&#20837;&#21040;&#38431;&#23614;</span>
+    TAILQ_INSERT_TAIL(&amp;ctx-&gt;events, ev, ev_signal_next);
+
+    <span style="color: #5f8700;">return</span> (1);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0b4be4d" class="outline-2">
+<h2 id="org0b4be4d"><span class="section-number-2">5</span> 注册信号</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+注册信号和注册信号事件的区别：<br>
+</p>
+<ul class="org-ul">
+<li>信号事件就是带有 EV_SIGNAL 标志的事件<br></li>
+<li>注册信号表示 libevent 要关注某个信号，只有信号注册了，才能有这个信号对应的事件<br></li>
+</ul>
+
+<p>
+注册信号要做的工作有：<br>
+</p>
+<ul class="org-ul">
+<li>保存旧的信号处理方式到 event_base，用于删除信号时恢复<br></li>
+<li>设置新的信号处理方式。例如：信号处理函数（即是信号抓捕函数，用于发送信号值到 socketpair 写端）、当前信号正在处理时来了其它信号该如何处理、SA_RESTART 标志<br></li>
+<li>如果内部信号读事件没有注册，则注册之<br></li>
+</ul>
+
+<p>
+从代码中可以看出，当短时间发生多个信号，libevent 的处理逻辑是：<br>
+</p>
+<ul class="org-ul">
+<li>对于异种信号，当正在执行 A 信号的抓捕函数时，如果此时来了其它任何信号都会暂时屏蔽。会先处理完 A 信号，再去处理其它信号。而不是递归处理信号<br></li>
+<li>对于同种信号，当正在执行 A 信号的抓捕函数时，如果此时来了多个 A 信号，当处理完这个 A 信号时，内核只会再向进程发送一个 A 信号<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20449;&#21495;&#21518;&#31471;&#27880;&#20876;&#20449;&#21495;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21442;&#25968; old events p &#37117;&#27809;&#26377;&#29992;&#21040;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">int</span>
+<span style="color: #0087ff;">evsig_add</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>, <span style="color: #af8700;">evutil_socket_t</span> <span style="color: #0087ff;">evsignal</span>, <span style="color: #af8700;">short</span> <span style="color: #0087ff;">old</span>, <span style="color: #af8700;">short</span> <span style="color: #0087ff;">events</span>, <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">p</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">evsig_info</span> *<span style="color: #0087ff;">sig</span> = &amp;base-&gt;sig;
+    (<span style="color: #af8700;">void</span>)p;
+
+    EVUTIL_ASSERT(evsignal &gt;= 0 &amp;&amp; evsignal &lt; NSIG);
+
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">catch signals if they happen quickly </span><span style="color: #8a8a8a;">*/</span>
+    EVSIGBASE_LOCK();
+    <span style="color: #5f8700;">if</span> (evsig_base != base &amp;&amp; evsig_base_n_signals_added) {
+        event_warnx(<span style="color: #00afaf;">"Added a signal to event base %p with signals "</span>
+            <span style="color: #00afaf;">"already added to event_base %p.  Only one can have "</span>
+            <span style="color: #00afaf;">"signals at a time with the %s backend.  The base with "</span>
+            <span style="color: #00afaf;">"the most recently added signal or the most recent "</span>
+            <span style="color: #00afaf;">"event_base_loop() call gets preference; do "</span>
+            <span style="color: #00afaf;">"not rely on this behavior in future Libevent versions."</span>,
+            base, evsig_base, base-&gt;evsel-&gt;name);
+    }
+    evsig_base = base;
+    evsig_base_n_signals_added = ++sig-&gt;ev_n_signals_added;
+    evsig_base_fd = base-&gt;sig.ev_signal_pair[0];
+    EVSIGBASE_UNLOCK();
+
+    event_debug((<span style="color: #00afaf;">"%s: %d: changing signal handler"</span>, __func__, (<span style="color: #af8700;">int</span>)evsignal));
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622;&#20449;&#21495;&#30340;&#22788;&#29702;&#26041;&#24335;</span>
+    <span style="color: #5f8700;">if</span> (_evsig_set_handler(base, (<span style="color: #af8700;">int</span>)evsignal, evsig_handler) == -1) {
+        <span style="color: #5f8700;">goto</span> <span style="color: #00afaf;">err</span>;
+    }
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20869;&#37096;&#20449;&#21495;&#35835;&#20107;&#20214;&#22312;&#36825;&#37324;&#27880;&#20876;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#20043;&#21069;&#36824;&#27809;&#26377;&#27880;&#20876;&#36807;&#20449;&#21495;&#20107;&#20214;&#65292;&#23601;&#38656;&#35201;&#27880;&#20876;&#20869;&#37096;&#20449;&#21495;&#35835;&#20107;&#20214;</span>
+    <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>sig-&gt;ev_signal_added) {
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36825;&#37324;&#35843;&#29992;&#20102; event_add &#20989;&#25968;&#12290;&#32780;&#20989;&#25968; evsig_add &#30340;&#35843;&#29992;&#36335;&#24452;&#20026;&#65306;</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">event_add &#27880;&#20876;&#20449;&#21495;&#20107;&#20214; --&gt; event_add_internal  --&gt; evmap_signal_add --&gt; evsig_add</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#28982;&#21518;&#22312; evsig_add &#20989;&#25968;&#20013;&#21448;&#35843;&#29992;&#20102; event_add&#65292;&#22312;&#36825;&#37324;&#36882;&#24402;&#35843;&#29992;&#20102; event_add &#20989;&#25968;&#12290;&#25152;&#20197; event_add &#21152;&#30340;&#38145;&#26159;&#36882;&#24402;&#38145;</span>
+        <span style="color: #5f8700;">if</span> (event_add(&amp;sig-&gt;ev_signal, <span style="color: #00afaf;">NULL</span>))
+            <span style="color: #5f8700;">goto</span> <span style="color: #00afaf;">err</span>;
+        sig-&gt;ev_signal_added = 1;
+    }
+
+    <span style="color: #5f8700;">return</span> (0);
+
+<span style="color: #00afaf;">err</span>:
+    EVSIGBASE_LOCK();
+    --evsig_base_n_signals_added;
+    --sig-&gt;ev_n_signals_added;
+    EVSIGBASE_UNLOCK();
+    <span style="color: #5f8700;">return</span> (-1);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622;&#25351;&#23450;&#20449;&#21495;&#30340;&#22788;&#29702;&#26041;&#24335;&#65288;&#20449;&#21495;&#22788;&#29702;&#20989;&#25968;&#12289;&#24403;&#21069;&#20449;&#21495;&#27491;&#22312;&#22788;&#29702;&#26102;&#26469;&#20102;&#20854;&#23427;&#20449;&#21495;&#35813;&#22914;&#20309;&#22788;&#29702;&#12289;&#31561;&#65289;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23427;&#20250;&#20026;&#20449;&#21495;&#20445;&#23384;&#26087;&#30340;&#22788;&#29702;&#26041;&#24335;&#65292;&#20445;&#23384;&#22312; base-&gt;sig.sh_old[evsignal]</span>
+<span style="color: #af8700;">int</span>
+<span style="color: #0087ff;">_evsig_set_handler</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>,
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">evsignal</span>, <span style="color: #af8700;">void</span> (<span style="color: #af8700;">__cdecl</span> *<span style="color: #0087ff;">handler</span>)(<span style="color: #af8700;">int</span>))
+{
+<span style="color: #d75f00;">#ifdef</span> _EVENT_HAVE_SIGACTION
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">sigaction</span> <span style="color: #0087ff;">sa</span>;
+<span style="color: #d75f00;">#else</span>
+    <span style="color: #af8700;">ev_sighandler_t</span> <span style="color: #0087ff;">sh</span>;
+<span style="color: #d75f00;">#endif</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">evsig_info</span> *<span style="color: #0087ff;">sig</span> = &amp;base-&gt;sig;
+    <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">p</span>;
+
+    <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#20026; sig-&gt;sh_old &#20998;&#37197;&#31354;&#38388;</span>
+    <span style="color: #5f8700;">if</span> (evsignal &gt;= sig-&gt;sh_old_max) {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">new_max</span> = evsignal + 1;
+        event_debug((<span style="color: #00afaf;">"%s: evsignal (%d) &gt;= sh_old_max (%d), resizing"</span>,
+                __func__, evsignal, sig-&gt;sh_old_max));
+        p = mm_realloc(sig-&gt;sh_old, <span style="color: #af8700;">new_max</span> * <span style="color: #5f8700;">sizeof</span>(*sig-&gt;sh_old));
+        <span style="color: #5f8700;">if</span> (p == <span style="color: #00afaf;">NULL</span>) {
+            event_warn(<span style="color: #00afaf;">"realloc"</span>);
+            <span style="color: #5f8700;">return</span> (-1);
+        }
+
+        memset((<span style="color: #af8700;">char</span> *)p + sig-&gt;sh_old_max * <span style="color: #5f8700;">sizeof</span>(*sig-&gt;sh_old),
+            0, (new_max - sig-&gt;sh_old_max) * <span style="color: #5f8700;">sizeof</span>(*sig-&gt;sh_old));
+
+        sig-&gt;sh_old_max = new_max;
+        sig-&gt;sh_old = p;
+    }
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20026; sig-&gt;sh_old[evsignal] &#20998;&#37197;&#31354;&#38388;</span>
+    sig-&gt;sh_old[evsignal] = mm_malloc(<span style="color: #5f8700;">sizeof</span> *sig-&gt;sh_old[evsignal]);
+    <span style="color: #5f8700;">if</span> (sig-&gt;sh_old[evsignal] == <span style="color: #00afaf;">NULL</span>) {
+        event_warn(<span style="color: #00afaf;">"malloc"</span>);
+        <span style="color: #5f8700;">return</span> (-1);
+    }
+
+<span style="color: #d75f00;">#ifdef</span> _EVENT_HAVE_SIGACTION
+    memset(&amp;sa, 0, <span style="color: #5f8700;">sizeof</span>(sa));
+    sa.sa_handler = handler;
+    sa.sa_flags |= SA_RESTART;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">SA_RESTART &#26631;&#24535;&#34920;&#31034;&#34987;&#20449;&#21495;&#25171;&#26029;&#30340;&#31995;&#32479;&#35843;&#29992;&#20250;&#33258;&#21160;&#37325;&#26032;&#21457;&#36215;</span>
+    sigfillset(&amp;sa.sa_mask);     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#25152;&#26377;&#20449;&#21495;&#21152;&#20837;&#20449;&#21495;&#38598;</span>
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174; sigaction &#20989;&#25968;&#35843;&#29992;&#21487;&#20197;&#30475;&#20986;&#65306;&#24403;&#27491;&#22312;&#22788;&#29702; evsignal &#20449;&#21495;&#26102;&#65292;&#22914;&#26524;&#27492;&#26102;&#26469;&#20102;&#20854;&#23427;&#20219;&#20309;&#20449;&#21495;&#37117;&#20250;&#26242;&#26102;&#23631;&#34109;&#12290;&#20250;&#20808;&#22788;&#29702;&#23436; evsignal &#20449;&#21495;&#65292;&#20877;&#21435;&#22788;&#29702;&#20854;&#23427;&#20449;&#21495;&#12290;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36824;&#26377;&#23601;&#26159;&#20445;&#23384;&#20102; evsignal &#20449;&#21495;&#21407;&#20808;&#30340;&#22788;&#29702;&#26041;&#24335;&#65292;&#20445;&#23384;&#22312; base-&gt;sig.sh_old[evsignal]</span>
+    <span style="color: #5f8700;">if</span> (sigaction(evsignal, &amp;sa, sig-&gt;sh_old[evsignal]) == -1) {
+        event_warn(<span style="color: #00afaf;">"sigaction"</span>);
+        mm_free(sig-&gt;sh_old[evsignal]);
+        sig-&gt;sh_old[evsignal] = <span style="color: #00afaf;">NULL</span>;
+        <span style="color: #5f8700;">return</span> (-1);
+    }
+<span style="color: #d75f00;">#else</span>
+    <span style="color: #5f8700;">if</span> ((sh = signal(evsignal, handler)) == SIG_ERR) {
+        event_warn(<span style="color: #00afaf;">"signal"</span>);
+        mm_free(sig-&gt;sh_old[evsignal]);
+        sig-&gt;sh_old[evsignal] = <span style="color: #00afaf;">NULL</span>;
+        <span style="color: #5f8700;">return</span> (-1);
+    }
+    *sig-&gt;sh_old[evsignal] = sh;
+<span style="color: #d75f00;">#endif</span>
+
+    <span style="color: #5f8700;">return</span> (0);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">libevent &#20013;&#25152;&#26377;&#20449;&#21495;&#30340;&#25235;&#25429;&#20989;&#25968;&#12290;&#23427;&#30340;&#24037;&#20316;&#23601;&#26159;&#25226;&#21457;&#29983;&#30340;&#20449;&#21495;&#20540;&#21457;&#36865;&#21040; signal socketpair &#30340;&#20889;&#31471;&#12290;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">I/O &#22810;&#36335;&#22797;&#29992;&#21518;&#31471;&#23601;&#20250;&#26816;&#27979;&#21040; &#20869;&#37096;&#20449;&#21495;&#35835;&#20107;&#20214;&#35302;&#21457;&#65292;&#22312;&#20854;&#22238;&#35843;&#20989;&#25968;&#20013;&#35835;&#21462;&#21457;&#29983;&#30340;&#20449;&#21495;&#20540;&#12290;&#28982;&#21518;&#35302;&#21457;&#25152;&#26377;&#19982;&#27492;&#20449;&#21495;&#30456;&#20851;&#30340;&#20107;&#20214;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> <span style="color: #0087ff;">__cdecl</span>
+evsig_handler(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">sig</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">save_errno</span> = errno;
+<span style="color: #d75f00;">#ifdef</span> WIN32
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">socket_errno</span> = EVUTIL_SOCKET_ERROR();
+<span style="color: #d75f00;">#endif</span>
+    <span style="color: #af8700;">ev_uint8_t</span> <span style="color: #0087ff;">msg</span>;
+
+    <span style="color: #5f8700;">if</span> (evsig_base == <span style="color: #00afaf;">NULL</span>) {
+        event_warnx(
+            <span style="color: #00afaf;">"%s: received signal %d, but have no base configured"</span>,
+            __func__, sig);
+        <span style="color: #5f8700;">return</span>;
+    }
+
+<span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> _EVENT_HAVE_SIGACTION
+    signal(sig, evsig_handler);
+<span style="color: #d75f00;">#endif</span>
+
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Wake up our notification mechanism </span><span style="color: #8a8a8a;">*/</span>
+    msg = sig;
+    send(evsig_base_fd, (<span style="color: #af8700;">char</span>*)&amp;msg, 1, 0);
+    errno = save_errno;
+<span style="color: #d75f00;">#ifdef</span> WIN32
+    EVUTIL_SET_SOCKET_ERROR(socket_errno);
+<span style="color: #d75f00;">#endif</span>
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org0b12eba" class="outline-2">
+<h2 id="org0b12eba"><span class="section-number-2">6</span> 信号发生后执行的代码</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+执行逻辑如下：<br>
+</p>
+<ol class="org-ol">
+<li>信号发生<br></li>
+<li>信号抓捕函数（evsig_handler）执行，把信号值写入 socketpair 写端<br></li>
+<li>I/O 多路复用后端检测到 socketpair 读端有数据，内部信号读事件激活，将该事件让人激活队列，最终会执行该事件的回调函数。<br></li>
+<li>内部信号读事件的回调函数会从 socketpair 读端读取发生的信号值，然后把该信号对应的所有信号事件放入激活队列尾部<br></li>
+<li>因为内部信号读事件优先级最高，信号事件优先级 &lt;= 内部信号读事件；又因为激活的信号事件插入了激活队列队尾。所以激活的信号事件在内部信号读事件之后得到执行。而不会等到 event_base_loop 的下一次循环<br></li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35813;&#22238;&#35843;&#20989;&#25968;&#30340;&#20316;&#29992;&#26159;&#65306;&#35835;&#21462;&#20449;&#21495; socketpair &#30340;&#25152;&#26377;&#21457;&#29983;&#30340;&#20449;&#21495;&#25968;&#25454;&#65292;&#28982;&#21518;&#26681;&#25454;&#27599;&#19968;&#20010;&#20449;&#21495;&#20540;&#28608;&#27963;&#19982;&#27492;&#20449;&#21495;&#20851;&#32852;&#30340;&#25152;&#26377;&#20449;&#21495;&#20107;&#20214;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span>
+<span style="color: #0087ff;">evsig_cb</span>(<span style="color: #af8700;">evutil_socket_t</span> <span style="color: #0087ff;">fd</span>, <span style="color: #af8700;">short</span> <span style="color: #0087ff;">what</span>, <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">arg</span>)
+{
+    <span style="color: #5f8700;">static</span> <span style="color: #af8700;">char</span> <span style="color: #0087ff;">signals</span>[1024];
+    <span style="color: #af8700;">ev_ssize_t</span> <span style="color: #0087ff;">n</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">ncaught</span>[NSIG];       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#19968;&#20010;&#25968;&#32452;&#12290;&#19979;&#26631;&#20195;&#34920;&#20449;&#21495;&#20540;&#65292;&#23545;&#24212;&#30340;&#20540;&#20195;&#34920;&#20449;&#21495;&#21457;&#29983;&#30340;&#27425;&#25968;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>;
+
+    base = arg;
+
+    memset(&amp;ncaught, 0, <span style="color: #5f8700;">sizeof</span>(ncaught));
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#35835; socket &#35835;&#21462;&#21040; signal &#20449;&#24687;&#65292;&#24182;&#32479;&#35745;&#21040; ncaught</span>
+    <span style="color: #5f8700;">while</span> (1) {
+        n = recv(fd, signals, <span style="color: #5f8700;">sizeof</span>(signals), 0);
+        <span style="color: #5f8700;">if</span> (n == -1) {
+            <span style="color: #af8700;">int</span> <span style="color: #0087ff;">err</span> = evutil_socket_geterror(fd);
+            <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span> EVUTIL_ERR_RW_RETRIABLE(err))
+                event_sock_err(1, fd, <span style="color: #00afaf;">"%s: recv"</span>, __func__);
+            <span style="color: #5f8700;">break</span>;
+        } <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span> (n == 0) {
+            <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">XXX warn? </span><span style="color: #8a8a8a;">*/</span>
+            <span style="color: #5f8700;">break</span>;
+        }
+        <span style="color: #5f8700;">for</span> (i = 0; i &lt; n; ++i) {
+            <span style="color: #af8700;">ev_uint8_t</span> <span style="color: #0087ff;">sig</span> = signals[i];
+            <span style="color: #5f8700;">if</span> (sig &lt; NSIG)
+                ncaught[sig]++;
+        }
+    }
+
+    EVBASE_ACQUIRE_LOCK(base, th_base_lock);
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382;&#27599;&#19968;&#20010;&#21457;&#29983;&#30340;&#20449;&#21495;&#65292;&#28608;&#27963;&#20449;&#21495;&#23545;&#24212;&#30340;&#20107;&#20214;&#21015;&#34920;</span>
+    <span style="color: #5f8700;">for</span> (i = 0; i &lt; NSIG; ++i) {
+        <span style="color: #5f8700;">if</span> (ncaught[i])
+            evmap_signal_active(base, i, ncaught[i]);
+    }
+    EVBASE_RELEASE_LOCK(base, th_base_lock);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#28608;&#27963; base &#20013;&#30340; sig &#20449;&#21495;&#20851;&#32852;&#30340;&#25152;&#26377;&#20107;&#20214;</span>
+<span style="color: #af8700;">void</span>
+<span style="color: #0087ff;">evmap_signal_active</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>, <span style="color: #af8700;">evutil_socket_t</span> <span style="color: #0087ff;">sig</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">ncalls</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_signal_map</span> *<span style="color: #0087ff;">map</span> = &amp;base-&gt;sigmap;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">evmap_signal</span> *<span style="color: #0087ff;">ctx</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> *<span style="color: #0087ff;">ev</span>;
+
+    EVUTIL_ASSERT(sig &lt; map-&gt;nentries);
+    GET_SIGNAL_SLOT(ctx, map, sig, evmap_signal);    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312; event_base &#23454;&#20363;&#20013;&#30340;&#20449;&#21495;--&#20107;&#20214;&#21015;&#34920;&#26144;&#23556;&#20013;&#25214;&#21040; sig &#26144;&#23556;&#30340;&#20107;&#20214;&#21015;&#34920;</span>
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382; sig &#20851;&#32852;&#30340; event_list&#65292;&#28608;&#27963;&#20854;&#20013;&#30340;&#27599;&#19968;&#20010;&#20107;&#20214;</span>
+    TAILQ_FOREACH(ev, &amp;ctx-&gt;events, ev_signal_next)
+        event_active_nolock(ev, EV_SIGNAL, ncalls);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#22240;&#20026; res(&#20363;&#22914;&#65306;EV_SIGNAL, EV_READ &#31561;) &#32780;&#28608;&#27963;&#30340;&#20107;&#20214; ev &#25554;&#20837;&#21040;&#28608;&#27963;&#20107;&#20214;&#38431;&#21015;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21442;&#25968; ncalls &#21482;&#26377;&#24403;&#20107;&#20214;&#26159; EV_SIGNAL &#26102;&#25165;&#26377;&#24847;&#20041;</span>
+<span style="color: #af8700;">void</span>
+<span style="color: #0087ff;">event_active_nolock</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> *<span style="color: #0087ff;">ev</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">res</span>, <span style="color: #af8700;">short</span> <span style="color: #0087ff;">ncalls</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>;
+
+    event_debug((<span style="color: #00afaf;">"event_active: %p (fd "</span>EV_SOCK_FMT<span style="color: #00afaf;">"), res %d, callback %p"</span>,
+        ev, EV_SOCK_ARG(ev-&gt;ev_fd), (<span style="color: #af8700;">int</span>)res, ev-&gt;ev_callback));
+
+
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">We get different kinds of events, add them together </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; event &#24050;&#32463;&#22788;&#20110;&#28608;&#27963;&#38431;&#21015;&#20013;&#20102;&#65292;&#20026;&#23427;&#28155;&#21152;&#26032;&#30340;&#28608;&#27963;&#31867;&#22411;&#65288;&#20363;&#22914;&#65306;&#19968;&#20010;&#20107;&#20214;&#22240;&#20026;&#35835;&#23601;&#32490;&#28608;&#27963;&#65292;&#21448;&#22240;&#20026;&#36229;&#26102;&#20102;&#32780;&#28608;&#27963;&#65289;&#65292;&#28982;&#21518;&#30452;&#25509;&#36820;&#22238;</span>
+    <span style="color: #5f8700;">if</span> (ev-&gt;ev_flags &amp; EVLIST_ACTIVE) {
+        ev-&gt;ev_res |= res;
+        <span style="color: #5f8700;">return</span>;
+    }
+
+    base = ev-&gt;ev_base;
+
+    EVENT_BASE_ASSERT_LOCKED(base);
+
+    ev-&gt;ev_res = res;
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#35813;&#20107;&#20214;&#20248;&#20808;&#32423;&#27604;&#24403;&#21069;&#27491;&#22312;&#22788;&#29702;&#30340;&#20107;&#20214;&#20248;&#20808;&#32423;&#22823;&#65292;&#31435;&#21363;&#36827;&#34892;&#19979;&#19968;&#36718; event_base_loop &#24490;&#29615;</span>
+    <span style="color: #5f8700;">if</span> (ev-&gt;ev_pri &lt; base-&gt;event_running_priority)
+        base-&gt;event_continue = 1;
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20449;&#21495;&#20107;&#20214;</span>
+    <span style="color: #5f8700;">if</span> (ev-&gt;ev_events &amp; EV_SIGNAL) {
+<span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> _EVENT_DISABLE_THREAD_SUPPORT
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#20027;&#32447;&#31243;&#27491;&#22312;&#25191;&#34892; ev &#30340;&#22238;&#35843;&#20989;&#25968;&#65292;&#19988;&#35813;&#32447;&#31243;&#19981;&#26159;&#20027;&#32447;&#31243;&#65292;&#23601;&#31561;&#24453;&#20027;&#32447;&#31243;&#25191;&#34892;&#23436; ev &#30340;&#22238;&#35843;&#20989;&#25968;&#65292;&#20877;&#25226; ev &#21152;&#20837;&#21040;&#28608;&#27963;&#38431;&#21015;</span>
+        <span style="color: #5f8700;">if</span> (base-&gt;current_event == ev &amp;&amp; <span style="color: #d70000;">!</span>EVBASE_IN_THREAD(base)) {
+            ++base-&gt;current_event_waiters;
+            EVTHREAD_COND_WAIT(base-&gt;current_event_cond, base-&gt;th_base_lock);
+        }
+<span style="color: #d75f00;">#endif</span>
+        ev-&gt;ev_ncalls = ncalls;
+        ev-&gt;ev_pncalls = <span style="color: #00afaf;">NULL</span>;
+    }
+
+    event_queue_insert(base, ev, EVLIST_ACTIVE);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25554;&#20837;&#28608;&#27963;&#20107;&#20214;&#38431;&#21015;</span>
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#35813;&#32447;&#31243;&#26159;&#27425;&#32447;&#31243;&#65292;&#23601;&#25552;&#37266;&#20027;&#32447;&#31243;&#20572;&#27490; waiting&#65292;&#26469;&#22788;&#29702;&#28608;&#27963;&#20107;&#20214;&#21644;&#35201;&#24310;&#36831;&#25191;&#34892;&#30340;&#20107;&#20214;</span>
+    <span style="color: #5f8700;">if</span> (EVBASE_NEED_NOTIFY(base))
+        evthread_notify_base(base);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35813;&#20989;&#25968;&#22788;&#29702;&#28608;&#27963;&#30340;&#20449;&#21495;&#20107;&#20214;&#65292;&#25191;&#34892;&#20854;&#22238;&#35843;&#20989;&#25968;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #5f8700;">inline</span> <span style="color: #af8700;">void</span>
+<span style="color: #0087ff;">event_signal_closure</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> *<span style="color: #0087ff;">ev</span>)
+{
+    <span style="color: #af8700;">short</span> <span style="color: #0087ff;">ncalls</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">should_break</span>;
+
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Allows deletes to work </span><span style="color: #8a8a8a;">*/</span>
+    ncalls = ev-&gt;ev_ncalls;
+    <span style="color: #5f8700;">if</span> (ncalls != 0)
+        ev-&gt;ev_pncalls = &amp;ncalls;
+    EVBASE_RELEASE_LOCK(base, th_base_lock);
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38656;&#35201;&#25191;&#34892; ncalls &#27425;&#22238;&#35843;&#20989;&#25968;</span>
+    <span style="color: #5f8700;">while</span> (ncalls) {
+        ncalls--;
+        ev-&gt;ev_ncalls = ncalls;
+        <span style="color: #5f8700;">if</span> (ncalls == 0)
+            ev-&gt;ev_pncalls = <span style="color: #00afaf;">NULL</span>;
+        (*ev-&gt;ev_callback)(ev-&gt;ev_fd, ev-&gt;ev_res, ev-&gt;ev_arg);
+
+        EVBASE_ACQUIRE_LOCK(base, th_base_lock);
+        should_break = base-&gt;event_break;
+        EVBASE_RELEASE_LOCK(base, th_base_lock);
+
+        <span style="color: #5f8700;">if</span> (should_break) {
+            <span style="color: #5f8700;">if</span> (ncalls != 0)
+                ev-&gt;ev_pncalls = <span style="color: #00afaf;">NULL</span>;
+            <span style="color: #5f8700;">return</span>;
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

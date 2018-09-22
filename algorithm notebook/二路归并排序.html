@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>二路归并排序</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">二路归并排序</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3112130">1. 二路归并排序思想</a></li>
+<li><a href="#org757fc8a">2. 借助一个辅助数组的递归实现</a></li>
+<li><a href="#org730faac">3. 不借助辅助数组的递归实现（原地归并排序）</a></li>
+<li><a href="#org67350f4">4. 算法题</a>
+<ul>
+<li><a href="#orgb441e4a">4.1. 合并二个排好序的链表</a></li>
+<li><a href="#org2d48ff9">4.2. 合并两个排好序的数组</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3112130" class="outline-2">
+<h2 id="org3112130"><span class="section-number-2">1</span> 二路归并排序思想</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+递归的二路归并排序算法是基于分治的，其过程如下：<br>
+分解：将含有 n 个元素的序列分成 2 个各含 n/2 个元素的子序列，对这 2 个子序列递归地进行排序<br>
+合并：合并 2 个已排好序的子序列得到排序结果<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org757fc8a" class="outline-2">
+<h2 id="org757fc8a"><span class="section-number-2">2</span> 借助一个辅助数组的递归实现</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">B</span>[1024];
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">merge</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">mid</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = low; i &lt;= high; ++i)
+        B[i] = A[i];
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = low, <span style="color: #0087ff;">j</span> = mid + 1, <span style="color: #0087ff;">k</span> = low;
+    <span style="color: #5f8700;">for</span>(;i &lt;= mid &amp;&amp; j &lt;= high; ++k)
+    {
+        <span style="color: #5f8700;">if</span>(B[i] &lt;= B[j])
+            A[k] = B[i++];
+        <span style="color: #5f8700;">else</span>
+            A[k] = B[j++];
+    }
+    <span style="color: #5f8700;">while</span>(i &lt;= mid)
+        A[k++] = B[i++];
+    <span style="color: #5f8700;">while</span>(j &lt;= high)
+        A[k++] = B[j++];
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">merge_sort</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #5f8700;">if</span>(low &lt; high)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">mid</span> = low + (high-low)/2;
+        merge_sort(A, low, mid);
+        merge_sort(A, mid+1, high);
+        merge(A, low, mid, high);
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org730faac" class="outline-2">
+<h2 id="org730faac"><span class="section-number-2">3</span> 不借助辅助数组的递归实现（原地归并排序）</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36870;&#24207;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">reverse</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #5f8700;">while</span>(low &lt; high)
+    {
+        A[low] = A[low] + A[high] - (A[high] = A[low]);
+        ++low;
+        --high;
+    }
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23545;&#24207;&#21015; A &#20013;&#19979;&#26631;&#20174; low &#21040; high &#30340;&#20803;&#32032;&#24490;&#29615;&#24038;&#31227; offset</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">loop_shift_left</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">offset</span>)
+{
+    reverse(A, low, low+offset-1);
+    reverse(A, low+offset, high);
+    reverse(A, low, high);
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">merge</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">mid</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = low, <span style="color: #0087ff;">j</span> = mid+1;
+    <span style="color: #5f8700;">while</span>(i &lt; j &amp;&amp; j &lt;= high)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">step</span> = 0;
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">i &#20174;&#24038;&#21521;&#21491;&#31227;&#21160;&#65292;&#25214;&#21040;&#19968;&#20010; A[i] &gt; A[j] &#30340;&#32034;&#24341; i&#65292;&#35813;&#32034;&#24341;&#24038;&#36793;&#30340;&#20803;&#32032;&#19981;&#22823;&#20110; A[j]</span>
+        <span style="color: #5f8700;">while</span>(i &lt; j &amp;&amp; A[i] &lt;= A[j])
+            ++i;
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">j &#20174;&#24038;&#21521;&#21491;&#31227;&#21160;&#65292;&#25214;&#21040;&#19968;&#20010; A[j] &gt;= A[i] &#30340;&#32034;&#24341; j&#65292;&#35813;&#32034;&#24341;&#24038;&#36793;&#30340;&#20803;&#32032;&#37117;&#23567;&#20110; A[i]</span>
+        <span style="color: #5f8700;">while</span>(j &lt;= high &amp;&amp; A[j] &lt; A[i])
+        {
+            ++j;
+            ++step;
+        }
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#32034;&#24341; j &#24038;&#36793;&#30340;&#20803;&#32032;&#25918;&#21040;&#32034;&#24341; i &#30340;&#21491;&#36793;&#12290;&#21363;&#24490;&#29615;&#24038;&#31227; j-i-step &#20010;&#20803;&#32032;</span>
+        loop_shift_left(A, i, j-1, j-i-step);
+        i += step;
+    }
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">merge_sort</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #5f8700;">if</span>(low &lt; high)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">mid</span> = low + (high-low)/2;
+        merge_sort(A, low, mid);
+        merge_sort(A, mid+1, high);
+        merge(A, low, mid, high);
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org67350f4" class="outline-2">
+<h2 id="org67350f4"><span class="section-number-2">4</span> 算法题</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgb441e4a" class="outline-3">
+<h3 id="orgb441e4a"><span class="section-number-3">4.1</span> 合并二个排好序的链表</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">data</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">next</span>;
+};
+
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>* <span style="color: #0087ff;">merge</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>* <span style="color: #0087ff;">L1</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>* <span style="color: #0087ff;">L2</span>)
+{
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> == L1)
+        <span style="color: #5f8700;">return</span> L2;
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> == L2)
+        <span style="color: #5f8700;">return</span> L1;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>* <span style="color: #0087ff;">H</span>;
+
+    <span style="color: #5f8700;">if</span>(L1-&gt;data &lt;= L2-&gt;data)
+    {
+        H = L1;
+        L1 = L1-&gt;next;
+    }
+    <span style="color: #5f8700;">else</span>
+    {
+        H = L2;
+        L2 = L2-&gt;next;
+    }
+
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>* <span style="color: #0087ff;">pcur</span> = H;
+    <span style="color: #5f8700;">while</span>(L1 &amp;&amp; L2)
+    {
+        <span style="color: #5f8700;">if</span>(L1-&gt;data &lt;= L2-&gt;data)
+        {
+            pcur-&gt;next = L1;
+            pcur = pcur-&gt;next;
+            L1 = L1-&gt;next;
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            pcur-&gt;next = L2;
+            pcur = pcur-&gt;next;
+            L2 = L2-&gt;next;
+        }
+    }
+
+    <span style="color: #5f8700;">if</span>(L1)
+        pcur-&gt;next = L1;
+    <span style="color: #5f8700;">if</span>(L2)
+        pcur-&gt;next = L2;
+
+    <span style="color: #5f8700;">return</span> H;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2d48ff9" class="outline-3">
+<h3 id="org2d48ff9"><span class="section-number-3">4.2</span> 合并两个排好序的数组</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+问题描述：已知两个 int 型有序数组 A 和 B，数组 A 的末尾有足够空间容纳 B，写一个函数将 B 合并到 A<br>
+思路：可以先计算出元素总数，然后从数组末尾开始合并<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">merge</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">B</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">na</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">nb</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = na - 1;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = nb - 1;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span> = na + nb - 1;
+    <span style="color: #5f8700;">while</span>(i &gt;= 0 &amp;&amp; j &gt;= 0)
+    {
+        <span style="color: #5f8700;">if</span>(B[j] &gt;= A[i])
+            A[k--] = B[j--];
+        <span style="color: #5f8700;">else</span>
+            A[k--] = A[i--];
+    }
+    <span style="color: #5f8700;">while</span>(j &gt;= 0)
+        A[k--] = B[j--];
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>搭建我的笔记系统</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">搭建我的笔记系统</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge878798">1. 为什么选用 org-mode 构建？</a></li>
+<li><a href="#orge13e6df">2. 笔记系统目录结构</a></li>
+<li><a href="#orge5ed766">3. org-mode 导出成网站的配置</a></li>
+</ul>
+</div>
+</div>
+<p>
+本站点就是这样构建的<br>
+</p>
+
+<div id="outline-container-orge878798" class="outline-2">
+<h2 id="orge878798"><span class="section-number-2">1</span> 为什么选用 org-mode 构建？</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+之前一直使用 evernote + gitbook 等工具记笔记。然而每个都有各自很大的缺点<br>
+</p>
+<ul class="org-ul">
+<li>evernote 其它的都好，就是文本编辑器太过垃圾，用的越久越无法忍受。<br></li>
+<li>gitbook 是基于 markdown 的，它的每篇文档都是一个 markdown 文件。但 markdown 过于轻量，不支持复杂格式。<br></li>
+</ul>
+<p>
+而 org-mode 可以满足我的要求<br>
+</p>
+
+<ul class="org-ul">
+<li>表格功能强大<br></li>
+<li>支持 latex<br></li>
+<li>基于大纲，清晰明了<br></li>
+<li>支持导出各种格式。例如：配置后可以导出成一个网站，能在各种终端上用浏览器直接访问。<br></li>
+<li>可以根据自己的想法编写 CSS 和 HTML 定制笔记系统的外观，想要什么样的就要什么样的<br></li>
+<li>导出成网页后，只需一个链接就可以共享给别人<br></li>
+</ul>
+
+<p>
+搭建笔记系统的目标：<br>
+</p>
+<ul class="org-ul">
+<li>要有一个导航栏<br></li>
+<li>主页存放经常访问的笔记。如 shell 命令、快捷键等<br></li>
+<li>对笔记进行分类。比如：shell 笔记、算法笔记<br></li>
+<li>采用 google 搜索<br></li>
+<li>目录浮于右上角，点击隐藏，再点击显示<br></li>
+<li>简单美观<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge13e6df" class="outline-2">
+<h2 id="orge13e6df"><span class="section-number-2">2</span> 笔记系统目录结构</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ tree -N -I <span style="color: #00afaf;">"algorithm|libevent|test"</span> notes
+notes                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25645;&#24314;&#30340;&#31508;&#35760;&#31995;&#32479;&#30446;&#24405;</span>
+&#9500;&#9472;&#9472; html                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23548;&#20986;&#25104; h5 &#30340;&#31508;&#35760;&#26412;</span>
+&#9492;&#9472;&#9472; org                     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">org &#30446;&#24405;</span>
+    &#9500;&#9472;&#9472; css                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23384;&#25918; css &#26679;&#24335;</span>
+    &#9474;&#160;&#160; &#9492;&#9472;&#9472; style.css
+    &#9500;&#9472;&#9472; gallery.org         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30011;&#24266;</span>
+    &#9500;&#9472;&#9472; images              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25152;&#26377;&#30340;&#22270;&#29255;&#37117;&#20445;&#23384;&#22312;&#36825;&#37324;</span>
+    &#9500;&#9472;&#9472; index.org           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20027;&#39029;&#65292;&#21487;&#20197;&#20445;&#23384;&#19968;&#20123;&#32463;&#24120;&#38656;&#35201;&#21442;&#32771;&#30340;&#31508;&#35760;&#30340;&#38142;&#25509;&#65292;&#20174;&#32780;&#33021;&#24555;&#36895;&#35775;&#38382;</span>
+    &#9500;&#9472;&#9472; links.org           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20248;&#31168;&#30340;&#21338;&#23458;&#38142;&#25509;</span>
+    &#9500;&#9472;&#9472; notebooks.org       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21019;&#24314;&#30340;&#25152;&#26377;&#31508;&#35760;&#26412;&#37117;&#22312;&#36825;&#37324;</span>
+    &#9500;&#9472;&#9472; emacs notebook      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23384;&#25918; emacs &#31508;&#35760;&#30340;&#31508;&#35760;&#26412;</span>
+    &#9474;&#160;&#160; &#9492;&#9472;&#9472; emacs.org       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31508;&#35760;&#30446;&#24405;</span>
+    &#9500;&#9472;&#9472; libevent notebook   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31508;&#35760;&#26412;</span>
+    &#9474;&#160;&#160; &#9492;&#9472;&#9472; libevent.org    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31508;&#35760;&#30446;&#24405;</span>
+    &#9500;&#9472;&#9472; shell notebook
+    &#9474;&#160;&#160; &#9492;&#9472;&#9472; shell.org
+    &#9492;&#9472;&#9472; templates           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">html &#27169;&#29256;&#30446;&#24405;&#12290;&#23548;&#20986; html &#26102;&#20250;&#26681;&#25454;&#30456;&#20851;&#37197;&#32622;&#25226;&#36825;&#20123;&#27169;&#29256;&#25918;&#21040; html &#30340;&#21512;&#36866;&#20301;&#32622;</span>
+        &#9500;&#9472;&#9472; html-head.html  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">html head</span>
+        &#9500;&#9472;&#9472; postamble.html  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25918;&#21040; html &#30340;&#23614;&#37096;</span>
+        &#9492;&#9472;&#9472; preamble.html   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25918;&#21040; html &#30340;&#24320;&#22987;&#37096;&#20998;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge5ed766" class="outline-2">
+<h2 id="orge5ed766"><span class="section-number-2">3</span> org-mode 导出成网站的配置</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+我的 emacs org-mode 的配置文件是 <code>init-org.el</code> ，向该文件添加如下配置<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #5f8700;">require</span> '<span style="color: #00afaf;">org</span>)
+(<span style="color: #5f8700;">require</span> '<span style="color: #00afaf;">ox-html</span>)
+(<span style="color: #5f8700;">require</span> '<span style="color: #00afaf;">ox-publish</span>)
+(<span style="color: #5f8700;">require</span> '<span style="color: #00afaf;">htmlize</span>)
+
+(<span style="color: #5f8700;">setq</span> org-export-with-entities t)   <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986;&#26102;&#26159;&#21542;&#36827;&#34892;&#36716;&#20041;&#12290;&#26597;&#30475;&#36716;&#20041;&#23383;&#31526;&#21629;&#20196;&#65306;M-x org-entities-help&#12290;&#20363;&#22914;&#65306;&#23558; org &#25991;&#26723;&#20013;&#30340; \vbar &#36716;&#20041;&#25104; html &#20013;&#30340; |</span>
+
+<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">HTML&#27169;&#26495;&#30446;&#24405;</span>
+(<span style="color: #5f8700;">defvar</span> <span style="color: #0087ff;">*site-template-directory*</span> <span style="color: #00afaf;">"~/notes/org/templates"</span>)
+
+(<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">read-html-template</span> (template-file)
+  (<span style="color: #5f8700;">with-temp-buffer</span>
+    (insert-file-contents (concat *site-template-directory* <span style="color: #00afaf;">"/"</span> template-file))
+    (buffer-string)))
+
+(<span style="color: #5f8700;">setq</span> org-publish-project-alist
+      '(
+        (<span style="color: #00afaf;">"org-notes"</span>  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">org &#32452;&#20214;&#12290;&#20027;&#35201;&#26159;&#25226; org &#26681;&#25454;&#19979;&#21015;&#30340;&#37197;&#32622;&#35268;&#21017;&#36716;&#25442;&#25104; h5 &#25918;&#21040;&#30446;&#26631;&#25991;&#20214;&#22841;&#20869;</span>
+         <span style="color: #5f8700;">:base-directory</span> <span style="color: #00afaf;">"~/notes/org"</span>
+         <span style="color: #5f8700;">:base-extension</span> <span style="color: #00afaf;">"org"</span>
+         <span style="color: #5f8700;">:publishing-directory</span> <span style="color: #00afaf;">"~/notes/html"</span>
+         <span style="color: #5f8700;">:recursive</span> t
+         <span style="color: #5f8700;">:publishing-function</span> org-html-publish-to-html    <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#21457;&#24067;&#30340;&#26041;&#24335;&#12290;&#36825;&#37324;&#26159; org &#36716;&#25442;&#25104; html</span>
+         <span style="color: #5f8700;">:headline-levels</span> 4
+         <span style="color: #5f8700;">:language</span> <span style="color: #00afaf;">"zh-CN"</span>              <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#35774;&#32622;&#20026; zh-CN &#20250;&#24433;&#21709;&#19968;&#20123;&#19996;&#35199;&#12290;&#27604;&#22914;&#65306;&#30446;&#24405;&#20250;&#26174;&#31034;&#20026;&#27721;&#23383;</span>
+         <span style="color: #5f8700;">:section-numbers</span> t             <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#26159;&#21542;&#20026;&#26631;&#39064;&#32534;&#21495;</span>
+         <span style="color: #5f8700;">:with-toc</span> t                    <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#26159;&#21542;&#21019;&#24314; table of contents</span>
+         <span style="color: #5f8700;">:with-latex</span> t                  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#26159;&#21542;&#21487;&#20197;&#20351;&#29992; latex</span>
+         <span style="color: #5f8700;">:html-doctype</span> <span style="color: #00afaf;">"html5"</span>          <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986; h5</span>
+         <span style="color: #5f8700;">:with-sub-superscript</span> {}       <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#31105;&#29992; _ &#36716;&#20041;&#25104;&#19979;&#26631;&#65292;^&#36716;&#20041;&#25104;&#19978;&#26631;&#12290;&#20294;&#21152; {} &#23601;&#21487;&#20197;&#36716;&#20041;&#20102;</span>
+         <span style="color: #5f8700;">:author</span> <span style="color: #00afaf;">"XXX"</span>
+         <span style="color: #5f8700;">:email</span> <span style="color: #00afaf;">"XXX"</span>
+         <span style="color: #5f8700;">:preserve-breaks</span> t             <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#26159;&#21542;&#20445;&#30041;&#25442;&#34892;&#31526;&#12290;&#22914;&#26524;&#35774;&#32622;&#20026; nil&#65292;&#23548;&#20986;&#21518;&#23601;&#20250;&#22810;&#34892;&#25991;&#26412;&#26174;&#31034;&#22312;&#19968;&#34892;</span>
+         <span style="color: #5f8700;">:html-head-include-default-style</span> nil  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#21462;&#28040;&#40664;&#35748;&#30340; css</span>
+         <span style="color: #5f8700;">:html-head-include-scripts</span> nil        <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#21462;&#28040;&#40664;&#35748;&#30340; javascript &#20195;&#30721;</span>
+         <span style="color: #5f8700;">:exclude</span> <span style="color: #00afaf;">"test*</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">.*</span><span style="color: #d70000;">\</span><span style="color: #00afaf;">.test</span><span style="color: #d70000;">\</span><span style="color: #00afaf;">.org"</span>      <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">test &#20026;&#21069;&#32512;&#30340;&#25991;&#20214;&#21644;&#25991;&#20214;&#22841;&#37117;&#19981;&#23548;&#20986; html</span>
+         <span style="color: #5f8700;">:include</span> (<span style="color: #00afaf;">"./test/math.org"</span> <span style="color: #00afaf;">"./test/worg.org"</span> <span style="color: #00afaf;">"./test/o-blog.org"</span>)          <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#34429;&#28982; math.org &#22312; test &#25991;&#20214;&#22841;&#37324;&#65292;&#20294;&#20381;&#28982;&#20250;&#23548;&#20986;&#21040; html&#65292;&#26174;&#28982; include &#27604; exclude &#20248;&#20808;</span>
+         )
+        (<span style="color: #00afaf;">"static"</span>   <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#38745;&#24577;&#32452;&#20214;&#65292;&#34920;&#31034;&#36825;&#20123;&#25991;&#20214;&#21407;&#23553;&#19981;&#21160;&#30340;&#25335;&#36125;&#21040;&#30446;&#26631;&#25991;&#20214;&#22841;</span>
+         <span style="color: #5f8700;">:base-directory</span> <span style="color: #00afaf;">"~/notes/org"</span>
+         <span style="color: #5f8700;">:base-extension</span> <span style="color: #00afaf;">"css</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">js</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">png</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">jpg</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">gif</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">pdf</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">mp3</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">ogg</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">swf</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">txt</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">asc"</span>
+         <span style="color: #5f8700;">:publishing-directory</span> <span style="color: #00afaf;">"~/notes/html"</span>
+         <span style="color: #5f8700;">:recursive</span> t
+         <span style="color: #5f8700;">:publishing-function</span> org-publish-attachment) <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#21457;&#24067;&#26041;&#24335;&#12290;&#21407;&#23553;&#19981;&#21160;&#30340;&#25335;&#36125;</span>
+        (<span style="color: #00afaf;">"notes"</span> <span style="color: #5f8700;">:components</span> (<span style="color: #00afaf;">"org-notes"</span> <span style="color: #00afaf;">"static"</span>))  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#31508;&#35760;&#26412;&#21457;&#24067;&#32452;&#20214;</span>
+        ))
+
+<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">html-head.html &#25991;&#20214;&#20013;&#35774;&#32622;&#20102; CSS &#26679;&#24335;</span>
+<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">css &#25991;&#20214;&#22914;&#26524;&#20462;&#25913;&#20102;&#65292;&#23601;&#38656;&#35201;&#37325;&#26032;&#21152;&#36733;&#35813; el &#25991;&#20214;&#65292;&#36825;&#26679;&#25165;&#33021;&#30475;&#21040; html &#26679;&#24335;&#30340;&#21464;&#21270;</span>
+<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">preamble.html &#25991;&#20214;&#21253;&#21547;&#23548;&#33322;&#26639; html&#12289;&#28857;&#20987;&#30446;&#24405;&#30340; js &#20195;&#30721;&#12289;google &#25628;&#32034;&#31561;&#20195;&#30721;</span>
+<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">postamble.html &#25991;&#20214;&#21253;&#21547;&#20102;&#32593;&#31449;&#22768;&#26126;</span>
+(<span style="color: #5f8700;">setq</span> org-html-head (read-html-template <span style="color: #00afaf;">"html-head.html"</span>))
+(<span style="color: #5f8700;">setq</span> org-html-preamble (read-html-template <span style="color: #00afaf;">"preamble.html"</span>))
+(<span style="color: #5f8700;">setq</span> org-html-postamble (read-html-template <span style="color: #00afaf;">"postamble.html"</span>))
+
+<span style="color: #8a8a8a;">;;; </span><span style="color: #8a8a8a;">&#35774;&#32622;Mathjax&#24211;&#30340;&#36335;&#24452;</span>
+(add-to-list 'org-html-mathjax-options '(path <span style="color: #00afaf;">"https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"</span>))
+
+(<span style="color: #5f8700;">provide</span> '<span style="color: #00afaf;">init-org</span>)
+</pre>
+</div>
+
+
+<p>
+我的 emacs 自定义函数的配置文件是 <code>init-func.el</code> ，向其中添加导出笔记本系统的函数<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#35813;&#20989;&#25968;&#20250;&#24378;&#21046;&#23548;&#20986;&#25152;&#26377;&#25991;&#20214;&#65292;&#21363;&#20351;&#35813;&#25991;&#20214;&#27809;&#26377;&#20462;&#25913;&#36807;&#12290;&#21542;&#21017;&#65292;&#21487;&#33021;&#20986;&#29616;&#26377;&#20123;&#25991;&#20214;&#20462;&#25913;&#20102;&#65292;&#20294;&#26159;&#23548;&#20986;&#30340;&#36824;&#26159;&#26087;&#25991;&#20214;</span>
+(<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">export-my-notes</span>()
+  (<span style="color: #5f8700;">interactive</span>)
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#37197;&#33394;&#38382;&#39064;&#12290;&#38656;&#35201;&#35774;&#32622;&#20026; 256 &#33394;&#12290;&#21542;&#21017;&#65292;&#22312;&#32456;&#31471;&#19979;&#30340; emacs &#20013;&#25191;&#34892;&#35813;&#20989;&#25968;&#65292;&#23548;&#20986;&#30340;&#20195;&#30721;&#22359;&#39068;&#33394;&#28151;&#20081;</span>
+  (<span style="color: #5f8700;">setq</span> solarized-termcolors 256)
+  (load-theme 'solarized t)
+
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986; notes &#21040; html</span>
+  (load-file <span style="color: #00afaf;">"~/.emacs.d/lisp/init-org.el"</span>)  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#20026;&#20160;&#20040;&#35201;&#20877;&#27425;&#21152;&#36733;&#37197;&#32622;&#25991;&#20214;&#21602;&#65311;&#22240;&#20026;&#20462;&#25913; CSS &#39118;&#26684;&#21518;&#65292;emacs &#20013;&#20445;&#23384; CSS &#20869;&#23481;&#30340;&#21464;&#37327;&#36824;&#26159;&#26087;&#30340; CSS</span>
+  (org-publish-project <span style="color: #00afaf;">"notes"</span> t)  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">t &#34920;&#31034;&#24378;&#21046;&#23548;&#20986;</span>
+
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986;&#23436;&#27605;&#21518;&#65292;&#37197;&#33394;&#20877;&#25913;&#22238;&#26469;&#65292;&#38450;&#27490; solarized &#22312;&#32456;&#31471;&#20013;&#39068;&#33394;&#28151;&#20081;</span>
+  (<span style="color: #5f8700;">setq</span> solarized-termcolors 16)
+  (load-theme 'solarized t)
+  )
+</pre>
+</div>
+
+<p>
+我的 emacs 快捷键配置文件是 <code>init-keybindings.el</code> ，向其中添加快捷键<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(global-set-key (kbd <span style="color: #00afaf;">"C-c e n"</span>) 'export-my-notes)
+</pre>
+</div>
+
+<p>
+写完笔记后，就可以使用快捷键 <code>C-c en</code> 直接把笔记发布到 <code>notes/html</code> 目录。<br>
+再通过 git 命令进行版本控制，在网站主机上拉取网站仓库就可以在网上访问笔记了。<br>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

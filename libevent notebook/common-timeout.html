@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>libevent 源码之 common-timeout</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">libevent 源码之 common-timeout</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgbb55bfc">1. 为什么要用 common-timeout 呢？</a></li>
+<li><a href="#org42c7e1f">2. common-timeout 原理</a></li>
+<li><a href="#orgf064bb2">3. 基本数据结构</a></li>
+<li><a href="#common-timeout 标志">4. common-timeout 标志</a></li>
+<li><a href="#orgcedf773">5. 初始化一个 common-timeout 超时时长</a></li>
+<li><a href="#orgb881ff8">6. common-timeout 超时事件回调函数</a></li>
+<li><a href="#orgb45263d">7. 注册事件到 common-timeout 队列</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbb55bfc" class="outline-2">
+<h2 id="orgbb55bfc"><span class="section-number-2">1</span> 为什么要用 common-timeout 呢？</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+小根堆插入和删除操作事件复杂度都是 <code>O(logN)</code> ，但如果把大量具有相同超时时长的 event 放到小根堆上，效率会下降很多。<br>
+</p>
+
+<ul class="org-ul">
+<li>common-timeout 是专门处理：有大量超时事件的超时时长相同的这种情况<br></li>
+<li>小根堆是用在：各个超时事件的超时时长是随机的这种情况<br></li>
+</ul>
+
+<p>
+这样，小根堆和 common-timeout 配合就可以提高一些效率<br>
+需要注意的是： <b>超时时间 = 调用 event_add 时的时间 + 超时时长</b> （超时时长就是一个时间间隔）<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org42c7e1f" class="outline-2">
+<h2 id="org42c7e1f"><span class="section-number-2">2</span> common-timeout 原理</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+对于具有相同的超时时长的超时事件，可以把它们按照超时时间升序地放到一个 <b>common-timeout 队列</b> 中。<br>
+那么队首元素必定最先超时，然后第二元素第二个超时，&#x2026;<br>
+根据 <b>队列中元素按顺序依次超时</b> 这一特点，libevent 专门为该队列创建了一个代表事件 —— <b>common-timeout 超时事件</b> ，它的超时时间被设置为队首元素的超时时间（即该事件超时队首元素必定超时），由它代替队列中的元素插入到小根堆中。<br>
+主要算法如下：<br>
+</p>
+
+<ul class="org-ul">
+<li>common-timeout 超时事件超时后，在其 callback 函数中检查队首元素是否超时。<br></li>
+<li>如果队首元素超时，取出队首元素，直接放入激活队列。然后继续检查队首元素是否超时；<br></li>
+<li>如果队首元素未超时，就把队首元素的超时时间赋值给 common-timeout 超时事件，重新注册 common-timeout 事件。注册 common-timeout 超时事件时，会把它插入最小堆中，用最小堆监控该事件是否超时。如果 common-timeout 超时事件激活了，就又调用它的回调函数，又是一个循环。<br></li>
+</ul>
+
+<p>
+这样就不用把大量具有相同超时时长的超时事件放入小根堆了。<br>
+而只需把这些相同超时时长的超时事件按时间顺序放入 <b>common-timeout 队列</b> ，生成一个代表事件 —— <b>common-timeout 超时事件</b> ，把该事件放入最小堆。<br>
+从而减轻了小根堆的负担。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf064bb2" class="outline-2">
+<h2 id="orgf064bb2"><span class="section-number-2">3</span> 基本数据结构</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span> {
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25105;&#21483;&#23427; common-timeout &#38431;&#21015;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_list</span> <span style="color: #0087ff;">events</span>;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24102; common-timeout &#26631;&#24535;&#30340;&#36229;&#26102;&#26102;&#38271;&#65292;&#25105;&#31216;&#23427;&#20026; common-timeout &#36229;&#26102;&#26102;&#38271;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> <span style="color: #0087ff;">duration</span>;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25105;&#21483;&#23427; common-timeout &#36229;&#26102;&#20107;&#20214;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20869;&#37096;&#20107;&#20214;&#65292;&#20248;&#20808;&#32423;&#26368;&#39640;&#65292;&#22238;&#35843;&#20989;&#25968;&#20026;&#65306;common_timeout_callback</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35813;&#36229;&#26102;&#20107;&#20214;&#30340;&#36229;&#26102;&#26102;&#38388;&#20250;&#35774;&#32622;&#20026; common-timeout &#38431;&#21015;&#30340;&#38431;&#39318;&#20803;&#32032;&#30340;&#36229;&#26102;&#26102;&#38388;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35843;&#29992; event_add_internal &#36827;&#34892;&#27880;&#20876;&#26102;&#65292;&#36229;&#26102; common-timeout &#21435;&#25481;&#20102; common-timeout &#26631;&#24535;&#65292;&#34920;&#26126;&#27880;&#20876;&#21040;&#23567;&#26681;&#22534;&#20013;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> <span style="color: #0087ff;">timeout_event</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>;
+};
+
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> {
+...
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25105;&#21483;&#23427; common-timeout &#25968;&#32452;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22240;&#20026;&#21487;&#20197;&#26377;&#22810;&#20010;&#19981;&#21516;&#26102;&#38271;&#30340; common-timeout &#38431;&#21015;&#65292;&#25925;&#24471;&#26159;&#25968;&#32452;&#12290;&#25968;&#32452;&#20803;&#32032;&#26159;&#25351;&#21521; common_timeout_list &#30340;&#25351;&#38024;</span>
+    <span style="color: #5f8700;">struct</span> common_timeout_list **common_timeout_queues;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n_common_timeouts</span>;            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25968;&#32452;&#38271;&#24230;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n_common_timeouts_allocated</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25968;&#32452;&#23481;&#37327;</span>
+...
+};
+</pre>
+</div>
+
+<p>
+存储结构如下图：<br>
+</p>
+
+
+<div class="figure">
+<p><img src="../images/common-timeout 存储结构.png" alt="common-timeout 存储结构.png"><br>
+</p>
+</div>
+
+<dl class="org-dl">
+<dt><code>common-timeout 队列</code></dt><dd>具有相同超时时长的超时事件的队列，超时时间从队首到队尾是递增的<br></dd>
+<dt><code>common-timeout 超时事件</code></dt><dd>它是 common-timeout 队列中所有元素的代表。它和队首元素超时时间相同的超时事件。只要它超时了，就说明队首元素也超时了，也应该被激活<br></dd>
+<dt><code>common-timeout 数组</code></dt><dd>指的是 event_base.common_timeout_queues，它有 n_common_timeouts 个不同超时时长的元素。受 <a href="#common-timeout 标志">common-timeout 标志</a> 限制，n_common_timeouts 最大值为 256<br></dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-org06872a7" class="outline-2">
+<h2 id="common-timeout 标志"><a id="org06872a7"></a><span class="section-number-2">4</span> common-timeout 标志</h2>
+<div class="outline-text-2" id="text-common-timeout 标志">
+<p>
+在 libevent 中使用 struct timeval 结构体来存储超时时间（或者超时时长），结构体如下：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span>
+{
+    <span style="color: #af8700;">__time_t</span> <span style="color: #0087ff;">tv_sec</span>;        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Seconds. </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #af8700;">__suseconds_t</span> <span style="color: #0087ff;">tv_usec</span>;  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Microseconds. </span><span style="color: #8a8a8a;">*/</span>
+};
+</pre>
+</div>
+
+<p>
+<b>那么如何区分一个 struct timeval 对象是否是 common-timeout 超时时间（超时时长）呢？</b><br>
+</p>
+
+<p>
+timeval.tv_usec 的单位是微秒，最大值为 999999，再大就进位到秒了。所以，只需 20 比特位就足以存储毫秒值了。但 timeval.tv_usec 的类型是 int 或 long，至少有 32 比特。<br>
+</p>
+
+<p>
+<b>libevent 是这样区分的：</b><br>
+</p>
+<ul class="org-ul">
+<li>timeval.tv_usec 的低 20 比特存储毫秒值<br></li>
+<li>中间 8 比特存储用来记录 common-timeout 数组的下标值。不过这也限制了数组的长度，数组最大长度为 256。超时事件根据这 8 比特可以直接索引到具有相同超时时长的 common-timeout 队列<br></li>
+<li>高 4 比特位作为标志位，标志它是一个专门用于 common-timeout 的时间<br></li>
+</ul>
+
+<p>
+相关代码如下：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">MICROSECONDS_MASK</span>       COMMON_TIMEOUT_MICROSECONDS_MASK   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20302; 20 &#27604;&#29305;&#20301;&#25513;&#30721;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">COMMON_TIMEOUT_IDX_MASK</span> 0x0ff00000  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">common-timeout &#27425; 8 &#27604;&#29305;&#20301;&#25513;&#30721;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">COMMON_TIMEOUT_IDX_SHIFT</span> 20
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">COMMON_TIMEOUT_MASK</span>     0xf0000000  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">common-timeout &#26368;&#39640;&#30340; 4 &#27604;&#29305;&#20301;&#25513;&#30721;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">COMMON_TIMEOUT_MAGIC</span>    0x50000000  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">common-timeout &#26631;&#24535;</span>
+
+<span style="color: #5f8700;">static</span> <span style="color: #5f8700;">inline</span> <span style="color: #af8700;">int</span>
+<span style="color: #0087ff;">is_common_timeout</span>(<span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> *<span style="color: #0087ff;">tv</span>,
+    <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">idx</span>;
+    <span style="color: #5f8700;">if</span> ((tv-&gt;tv_usec &amp; COMMON_TIMEOUT_MASK) != COMMON_TIMEOUT_MAGIC)
+        <span style="color: #5f8700;">return</span> 0;
+    idx = COMMON_TIMEOUT_IDX(tv);
+    <span style="color: #5f8700;">return</span> idx &lt; base-&gt;n_common_timeouts;
+}
+</pre>
+</div>
+
+<p>
+在超时事件注册时，如果超时时间（超时时长）带有 common-timeout 标志，就把超时事件插入到 common-timeout 队列中；否则插入到小根堆中。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcedf773" class="outline-2">
+<h2 id="orgcedf773"><span class="section-number-2">5</span> 初始化一个 common-timeout 超时时长</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>如果该超时时长有对应的 common-timeout 队列，为其加上 common-timeout 标志直接返回；否则，为其分配应有的空间并初始化<br></li>
+<li>返回带 common-timeout 标志的超时时长<br></li>
+<li>需要注意的是：应该由该函数返回 common-timeout 超时时长，而不应该也不能自己手动为 struct timeval 变量加入 common-timeout 标志<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">MAX_COMMON_TIMEOUTS</span> 256  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#22810; common-timeout &#38431;&#21015;&#30340;&#20010;&#25968;</span>
+
+<span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> *
+<span style="color: #0087ff;">event_base_init_common_timeout</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span>,
+    <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> *<span style="color: #0087ff;">duration</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> <span style="color: #0087ff;">tv</span>;
+    <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> *<span style="color: #0087ff;">result</span>=<span style="color: #00afaf;">NULL</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span> *<span style="color: #0087ff;">new_ctl</span>;
+
+    <span style="color: #0087ff;">EVBASE_ACQUIRE_LOCK</span>(base, th_base_lock);n
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21028;&#26029;&#26102;&#38388;&#30340;&#24494;&#31186;&#23383;&#27573;&#26159;&#21542;&#38656;&#35201;&#36827;&#20301;</span>
+    <span style="color: #5f8700;">if</span> (duration-&gt;tv_usec &gt; 1000000) {
+        memcpy(&amp;tv, duration, <span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span>));
+        <span style="color: #5f8700;">if</span> (is_common_timeout(duration, base))
+            tv.tv_usec &amp;= MICROSECONDS_MASK;
+        tv.tv_sec += tv.tv_usec / 1000000;
+        tv.tv_usec %= 1000000;
+        duration = &amp;tv;
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382; common-timeout &#25968;&#32452;&#65292;&#26597;&#30475;&#26159;&#21542;&#26377;&#21644; duration &#21305;&#37197;&#30340; common_timeout_list&#12290;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#26377;&#23601;&#30452;&#25509;&#36820;&#22238;&#65292;&#21542;&#21017;&#38656;&#35201;&#20026;&#35813; timeval &#20998;&#37197;&#26032;&#30340; common_timeout_list &#20869;&#23384;</span>
+    <span style="color: #5f8700;">for</span> (i = 0; i &lt; base-&gt;n_common_timeouts; ++i) {
+        <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span> *<span style="color: #0087ff;">ctl</span> =
+            base-&gt;common_timeout_queues[i];
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#25214;&#21040;&#21305;&#37197;&#30340; common_timeout_list&#65292;&#30452;&#25509;&#36820;&#22238;</span>
+        <span style="color: #5f8700;">if</span> (duration-&gt;tv_sec == ctl-&gt;duration.tv_sec &amp;&amp;
+            duration-&gt;tv_usec ==
+            (ctl-&gt;duration.tv_usec &amp; MICROSECONDS_MASK)) {
+            EVUTIL_ASSERT(is_common_timeout(&amp;ctl-&gt;duration, base));
+            result = &amp;ctl-&gt;duration;
+            <span style="color: #5f8700;">goto</span> <span style="color: #00afaf;">done</span>;
+        }
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; common_timeout_list &#36798;&#21040;&#26368;&#22823;&#30003;&#35831;&#20010;&#25968;&#65292;&#23601;&#19981;&#33021;&#20877;&#20998;&#37197;&#20102;&#65292;&#30452;&#25509;&#36820;&#22238;</span>
+    <span style="color: #5f8700;">if</span> (base-&gt;n_common_timeouts == MAX_COMMON_TIMEOUTS) {
+        event_warnx(<span style="color: #00afaf;">"%s: Too many common timeouts already in use; "</span>
+            <span style="color: #00afaf;">"we only support %d per event_base"</span>, __func__,
+            MAX_COMMON_TIMEOUTS);
+        <span style="color: #5f8700;">goto</span> <span style="color: #00afaf;">done</span>;
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; base-&gt;common_timeout_queues &#31354;&#38388;&#19981;&#36275;&#65292;&#20026;&#20854;&#25193;&#23481;</span>
+    <span style="color: #5f8700;">if</span> (base-&gt;n_common_timeouts_allocated == base-&gt;n_common_timeouts) {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span> = base-&gt;n_common_timeouts &lt; 16 ? 16 :
+            base-&gt;n_common_timeouts*2;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21021;&#22987;&#20540;&#20026; 16 &#20010; common_timeout_list&#65292;&#20043;&#21518;&#27599;&#27425;&#25193;&#22823;&#20026;&#21407;&#20808;&#30340; 2 &#20493;</span>
+        <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span> **<span style="color: #0087ff;">newqueues</span> =
+            mm_realloc(base-&gt;common_timeout_queues,
+            <span style="color: #af8700;">n</span>*<span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_queue</span> *));
+        <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>newqueues) {
+            event_warn(<span style="color: #00afaf;">"%s: realloc"</span>,__func__);
+            <span style="color: #5f8700;">goto</span> <span style="color: #00afaf;">done</span>;
+        }
+        base-&gt;n_common_timeouts_allocated = n;
+        base-&gt;common_timeout_queues = newqueues;
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#30003;&#35831;&#26032;&#30340; common_timeout_list &#31354;&#38388;&#65292;&#24182;&#21021;&#22987;&#21270;&#20854;&#21508;&#20010;&#25104;&#21592;</span>
+    new_ctl = mm_calloc(1, <span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span>));
+    <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>new_ctl) {
+        event_warn(<span style="color: #00afaf;">"%s: calloc"</span>,__func__);
+        <span style="color: #5f8700;">goto</span> <span style="color: #00afaf;">done</span>;
+    }
+    TAILQ_INIT(&amp;new_ctl-&gt;events);
+    new_ctl-&gt;duration.tv_sec = duration-&gt;tv_sec;
+    new_ctl-&gt;duration.tv_usec =
+        duration-&gt;tv_usec | COMMON_TIMEOUT_MAGIC |
+        (base-&gt;n_common_timeouts &lt;&lt; COMMON_TIMEOUT_IDX_SHIFT);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622; common-timeout &#36229;&#26102;&#26102;&#38271;</span>
+    evtimer_assign(&amp;new_ctl-&gt;timeout_event, base,
+        common_timeout_callback, new_ctl);               <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29983;&#25104;&#19968;&#20010; common-timeout &#36229;&#26102;&#20107;&#20214;</span>
+    new_ctl-&gt;timeout_event.ev_flags |= EVLIST_INTERNAL;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">common-timeout &#20107;&#20214;&#20026;&#20869;&#37096;&#20107;&#20214;</span>
+    event_priority_set(&amp;new_ctl-&gt;timeout_event, 0);      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">common-timeout &#20107;&#20214;&#20248;&#20808;&#32423;&#35774;&#20026;&#26368;&#39640;</span>
+    new_ctl-&gt;base = base;
+
+    base-&gt;common_timeout_queues[base-&gt;n_common_timeouts++] = new_ctl;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25226; common_timeout_list &#25918;&#21040; event_base &#19978;</span>
+    result = &amp;new_ctl-&gt;duration;
+
+<span style="color: #00afaf;">done</span>:
+    <span style="color: #5f8700;">if</span> (result)
+        <span style="color: #0087ff;">EVUTIL_ASSERT</span>(is_common_timeout(result, base));
+
+    <span style="color: #0087ff;">EVBASE_RELEASE_LOCK</span>(base, th_base_lock);
+    <span style="color: #5f8700;">return</span> result;
+}
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb881ff8" class="outline-2">
+<h2 id="orgb881ff8"><span class="section-number-2">6</span> common-timeout 超时事件回调函数</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li>如果队首元素超时，取出队首元素，直接放入激活队列。然后继续检查队首元素是否超时；<br></li>
+<li>如果队首元素未超时，就把队首元素的超时时间赋值给 common-timeout 超时事件，重新注册 common-timeout 事件。注册 common-timeout 超时事件时，会把它插入最小堆中，用最小堆监控该事件是否超时。如果 common-timeout 超时事件激活了，就又调用它的回调函数，又是一个循环。<br></li>
+<li>如果 common-timeout 队列为空，直接退出回调函数<br></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27880;&#20876; common-timeout &#36229;&#26102;&#20107;&#20214;&#21040;&#23567;&#26681;&#22534;&#65292;&#23427;&#20250;&#25554;&#20837;&#21040; event_base &#30340;&#26368;&#23567;&#22534;&#65292;&#30001;&#26368;&#23567;&#22534;&#30417;&#25511;&#35813;&#20107;&#20214;&#30340;&#36229;&#26102;&#24773;&#20917;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span>
+<span style="color: #0087ff;">common_timeout_schedule</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span> *<span style="color: #0087ff;">ctl</span>,
+    <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> *<span style="color: #0087ff;">now</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> *<span style="color: #0087ff;">head</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> <span style="color: #0087ff;">timeout</span> = head-&gt;ev_timeout;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24102;&#26377; common-timeout &#26631;&#24535;&#30340;&#36229;&#26102;&#20107;&#20214;</span>
+    timeout.tv_usec &amp;= MICROSECONDS_MASK;       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#28165;&#38500; common-timeout &#26631;&#24535;</span>
+    event_add_internal(&amp;ctl-&gt;timeout_event, &amp;timeout, 1);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27880;&#20876; common-timeout &#36229;&#26102;&#20107;&#20214;&#12290;&#20351;&#29992;&#30340;&#26159;&#32477;&#23545;&#26102;&#38388;&#65292;&#19988;&#19981;&#24102;&#26377; common-timeout &#26631;&#24535;</span>
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">common-timeout &#36229;&#26102;&#20107;&#20214;&#22238;&#35843;&#20989;&#25968;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span>
+<span style="color: #0087ff;">common_timeout_callback</span>(<span style="color: #af8700;">evutil_socket_t</span> <span style="color: #0087ff;">fd</span>, <span style="color: #af8700;">short</span> <span style="color: #0087ff;">what</span>, <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">arg</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> <span style="color: #0087ff;">now</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span> *<span style="color: #0087ff;">ctl</span> = arg;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span> = ctl-&gt;base;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> *<span style="color: #0087ff;">ev</span> = <span style="color: #00afaf;">NULL</span>;
+    EVBASE_ACQUIRE_LOCK(base, th_base_lock);
+    gettime(base, &amp;now);
+    <span style="color: #5f8700;">while</span> (1) {
+        ev = TAILQ_FIRST(&amp;ctl-&gt;events);
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; ev &#19981;&#23384;&#22312;&#25110;&#30528;&#24050;&#32463;&#26377;&#36229;&#26102;&#20107;&#20214;&#28608;&#27963;</span>
+        <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>ev || ev-&gt;ev_timeout.tv_sec &gt; now.tv_sec ||
+            (ev-&gt;ev_timeout.tv_sec == now.tv_sec &amp;&amp;
+            (ev-&gt;ev_timeout.tv_usec&amp;MICROSECONDS_MASK) &gt; now.tv_usec))
+            <span style="color: #5f8700;">break</span>;
+        event_del_internal(ev);                  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174; event_base &#27880;&#38144;&#20107;&#20214; ev</span>
+        event_active_nolock(ev, EV_TIMEOUT, 1);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#22240;&#20026;&#36229;&#26102;&#32780;&#28608;&#27963;&#30340;&#20107;&#20214; ev &#25554;&#20837;&#21040;&#28608;&#27963;&#38431;&#21015;</span>
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; ev &#23384;&#22312;&#65292;&#20462;&#25913; common-timeout &#20107;&#20214; timeout_event &#30340;&#36229;&#26102;&#26102;&#38388;&#65292;&#24182;&#37325;&#26032;&#27880;&#20876; timeout_event</span>
+    <span style="color: #5f8700;">if</span> (ev)
+        common_timeout_schedule(ctl, &amp;now, ev);
+    EVBASE_RELEASE_LOCK(base, th_base_lock);
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb45263d" class="outline-2">
+<h2 id="orgb45263d"><span class="section-number-2">7</span> 注册事件到 common-timeout 队列</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li>参数 tv 带有 common-timeout 标志，会把超时事件插入到相应的 common-timeout 队列<br></li>
+<li>参数 tv 不带 common-timeout 标志，并且不空，会把超时事件插入到小根堆中<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">static</span> <span style="color: #5f8700;">inline</span> <span style="color: #af8700;">int</span>
+<span style="color: #0087ff;">event_add_internal</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event</span> *<span style="color: #0087ff;">ev</span>, <span style="color: #5f8700;">const</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> *<span style="color: #0087ff;">tv</span>,
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">tv_is_absolute</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> *<span style="color: #0087ff;">base</span> = ev-&gt;ev_base;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">res</span> = 0;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">notify</span> = 0;
+
+    EVENT_BASE_ASSERT_LOCKED(base);
+    _event_debug_assert_is_setup(ev);
+
+    ...... <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20027;&#39064;&#19981;&#30456;&#20851;&#30340; debug &#20195;&#30721;</span>
+
+    EVUTIL_ASSERT(<span style="color: #d70000;">!</span>(ev-&gt;ev_flags &amp; ~EVLIST_ALL));
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">tv &#19981;&#20026; NULL&#65292;&#35828;&#26126; ev &#20026;&#36229;&#26102;&#20107;&#20214;&#12290;&#33509; ev &#19981;&#22312; timeout &#26368;&#23567;&#22534;&#25110; common-timeout &#20013;&#65292;&#20026;&#20854;&#22312;&#26368;&#23567;&#22534;&#20013;&#39044;&#30041;&#19968;&#20010;&#20301;&#32622;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26377;&#21487;&#33021;&#22312;&#23567;&#26681;&#22534;&#20013;&#20026; ev &#39044;&#30041;&#20301;&#32622;&#20102;&#65292;&#20294; ev &#26368;&#21518;&#25554;&#20837;&#21040; common-timeout &#38431;&#21015;&#20013;&#20102;&#12290;&#20294;&#24182;&#19981;&#30861;&#20107;&#12290;</span>
+    <span style="color: #5f8700;">if</span> (tv != <span style="color: #00afaf;">NULL</span> &amp;&amp; <span style="color: #d70000;">!</span>(ev-&gt;ev_flags &amp; EVLIST_TIMEOUT)) {
+        <span style="color: #5f8700;">if</span> (min_heap_reserve(&amp;base-&gt;timeheap,
+            1 + min_heap_size(&amp;base-&gt;timeheap)) == -1)
+            <span style="color: #5f8700;">return</span> (-1);  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">ENOMEM == errno </span><span style="color: #8a8a8a;">*/</span>
+    }
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20027;&#39064;&#19981;&#30456;&#20851;&#20195;&#30721;</span>
+    ......  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#35813;&#20107;&#20214;&#26159; I/O &#20107;&#20214;&#25110; signal &#20107;&#20214;&#65292;&#19988;&#23427;&#19981;&#22312;&#27880;&#20876;&#20107;&#20214;&#38431;&#21015;&#21644;&#28608;&#27963;&#20107;&#20214;&#38431;&#21015;&#20013;&#65292;&#23558;&#20854;&#25554;&#20837;&#21040;&#30456;&#24212;&#38431;&#21015;&#20013;</span>
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#20107;&#20214;&#29616;&#22312;&#24050;&#32463;&#22788;&#20110;&#30456;&#24212;&#38431;&#21015;&#20013;&#65292;&#19988;&#35813;&#20107;&#20214;&#26159;&#36229;&#26102;&#20107;&#20214;&#65292;&#23601;&#38656;&#35201;&#20026;&#20107;&#20214;&#35774;&#32622;&#36229;&#26102;&#26102;&#38388;</span>
+    <span style="color: #5f8700;">if</span> (res != -1 &amp;&amp; tv != <span style="color: #00afaf;">NULL</span>) {
+        <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> <span style="color: #0087ff;">now</span>;
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">common_timeout</span>;
+
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29992;&#25143;&#25226;&#36825;&#20010;&#20107;&#20214;&#35774;&#32622;&#25104;&#20102; EV_PERSIST&#65292;&#21363;&#27704;&#20037;&#20107;&#20214;</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23545;&#20110;&#27704;&#20037;&#36229;&#26102;&#20107;&#20214;&#65292;&#35760;&#24405;&#29992;&#25143;&#35774;&#32622;&#30340;&#36229;&#26102;&#26102;&#38271;</span>
+        <span style="color: #5f8700;">if</span> (ev-&gt;ev_closure == EV_CLOSURE_PERSIST &amp;&amp; <span style="color: #d70000;">!</span>tv_is_absolute)
+            ev-&gt;ev_io_timeout = *tv;
+
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#36229;&#26102;&#20107;&#20214;&#24050;&#32463;&#22312;&#36229;&#26102;&#38431;&#21015;&#20013;&#65292;&#23601;&#38656;&#35201;&#25226;&#23427;&#20174;&#36229;&#26102;&#38431;&#21015;&#20013;&#20808;&#21024;&#25481;</span>
+        <span style="color: #5f8700;">if</span> (ev-&gt;ev_flags &amp; EVLIST_TIMEOUT) {
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#35813;&#36229;&#26102;&#20107;&#20214;&#26159;&#22534;&#39030;&#20803;&#32032;&#65292;&#23601;&#38656;&#35201;&#21796;&#37266;&#20027;&#32447;&#31243;&#12290;&#22240;&#20026;&#37325;&#26032;&#20026;&#35813;&#36229;&#26102;&#20107;&#20214;&#35774;&#32622;&#36229;&#26102;&#20540;</span>
+            <span style="color: #5f8700;">if</span> (min_heap_elt_is_top(ev))
+                notify = 1;
+            event_queue_remove(base, ev, EVLIST_TIMEOUT);
+        }
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#35813;&#20107;&#20214;&#22240;&#20026;&#36229;&#26102;&#32780;&#34987;&#28608;&#27963;&#65292;&#23558;&#20854;&#20174;&#28608;&#27963;&#38431;&#21015;&#31227;&#38500;</span>
+        <span style="color: #5f8700;">if</span> ((ev-&gt;ev_flags &amp; EVLIST_ACTIVE) &amp;&amp;
+            (ev-&gt;ev_res &amp; EV_TIMEOUT)) {
+            <span style="color: #5f8700;">if</span> (ev-&gt;ev_events &amp; EV_SIGNAL) {
+                <span style="color: #5f8700;">if</span> (ev-&gt;ev_ncalls &amp;&amp; ev-&gt;ev_pncalls) {
+                    *ev-&gt;ev_pncalls = 0;
+                }
+            }
+
+            event_queue_remove(base, ev, EVLIST_ACTIVE);
+        }
+
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35745;&#31639;&#20107;&#20214;&#30340;&#36229;&#26102;&#26102;&#38388;&#65288;&#32477;&#23545;&#26102;&#38388;&#65289;&#12290;&#22312; libevent &#20869;&#37096;&#32943;&#23450;&#24471;&#20351;&#29992;&#36229;&#26102;&#26102;&#38388;&#65288;&#32477;&#23545;&#26102;&#38388;&#65289;&#32780;&#19981;&#24212;&#35813;&#26159;&#36229;&#26102;&#26102;&#38271;&#65288;&#30456;&#23545;&#26102;&#38388;&#65289;&#26469;&#36827;&#34892;&#36229;&#26102;&#31649;&#29702;</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">libevent &#30340;&#36229;&#26102;&#26102;&#38271;&#26159;&#30456;&#23545;&#20110;&#35843;&#29992; event_add &#30340;&#26102;&#38388;&#65292;&#32780;&#19981;&#26159; event_base_dispatch &#30340;&#26102;&#38388;</span>
+        gettime(base, &amp;now);
+
+        common_timeout = is_common_timeout(tv, base);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29992;&#26469;&#21028;&#26029;&#35813; timeval &#26159;&#21542;&#24102;&#26377; common-timeout &#26631;&#24535;</span>
+        <span style="color: #5f8700;">if</span> (tv_is_absolute) {
+            ev-&gt;ev_timeout = *tv;
+        }
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35745;&#31639;&#24102; common-timeout &#26631;&#24535;&#30340;&#36229;&#26102;&#26102;&#38388;&#65288;&#32477;&#23545;&#26102;&#38388;&#65289;</span>
+        <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span> (common_timeout) {
+            <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> <span style="color: #0087ff;">tmp</span> = *tv;
+            tmp.tv_usec &amp;= MICROSECONDS_MASK;              <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21462;&#30495;&#27491;&#30340;&#26102;&#38388;&#37096;&#20998;&#65292;common-timeout &#26631;&#24535;&#20301;&#21644;&#19979;&#26631;&#20301;&#19981;&#35201;</span>
+            evutil_timeradd(&amp;now, &amp;tmp, &amp;ev-&gt;ev_timeout);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36716;&#21270;&#20026;&#32477;&#23545;&#26102;&#38388;</span>
+            ev-&gt;ev_timeout.tv_usec |=
+                (tv-&gt;tv_usec &amp; ~MICROSECONDS_MASK);        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#32477;&#23545;&#26102;&#38388;&#21152;&#19978; common-timeout &#26631;&#24535;&#20301;&#21644;&#19979;&#26631;&#20301;</span>
+        } <span style="color: #5f8700;">else</span> {
+            evutil_timeradd(&amp;now, tv, &amp;ev-&gt;ev_timeout);
+        }
+
+        event_debug((
+             <span style="color: #00afaf;">"event_add: timeout in %d seconds, call %p"</span>,
+             (<span style="color: #af8700;">int</span>)tv-&gt;tv_sec, ev-&gt;ev_callback));
+
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; ev &#36229;&#26102;&#26102;&#38388;&#24102; common-timeout &#26631;&#35760;&#65292;&#23601;&#25554;&#20837;&#21040; common-timeout &#38431;&#21015;</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; ev &#36229;&#26102;&#26102;&#38388;&#19981;&#24102; common-timeout &#26631;&#35760;&#65292;&#23601;&#25554;&#20837;&#21040;&#23567;&#26681;&#22534;</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24182;&#32473;&#20107;&#20214; ev &#25171;&#19978; EVLIST_TIMEOUT &#26631;&#24535;&#65292;&#35828;&#26126;&#36229;&#26102;&#20107;&#20214;&#24050;&#32463;&#25554;&#20837;&#21040;&#36229;&#26102;&#38431;&#21015;&#65288;common-timeout &#38431;&#21015;&#25110;&#23567;&#26681;&#22534;&#65289;</span>
+        event_queue_insert(base, ev, EVLIST_TIMEOUT);
+
+        <span style="color: #5f8700;">if</span> (common_timeout) {
+            <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span> *<span style="color: #0087ff;">ctl</span> =
+                get_common_timeout_list(base, &amp;ev-&gt;ev_timeout);
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">common-timeout &#36229;&#26102;&#20107;&#20214;&#23601;&#26159;&#22312;&#36825;&#37324;&#27880;&#20876;&#30340;&#12290;</span>
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#26032;&#25554;&#20837;&#30340;&#36229;&#26102;&#20107;&#20214;&#26159; common-timeout &#38431;&#21015;&#30340;&#39318;&#20010;&#20107;&#20214;&#65292;&#23601;&#38656;&#35201;&#27880;&#20876; common-timeout &#36229;&#26102;&#20107;&#20214;&#12290;&#30001;&#26368;&#23567;&#22534;&#30417;&#25511; common-timeout &#36229;&#26102;&#20107;&#20214;&#30340;&#36229;&#26102;&#24773;&#20917;&#12290;</span>
+            <span style="color: #5f8700;">if</span> (ev == TAILQ_FIRST(&amp;ctl-&gt;events)) {
+                common_timeout_schedule(ctl, &amp;now, ev);
+            }
+        }
+        <span style="color: #5f8700;">else</span> {
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#26412;&#27425;&#25554;&#20837;&#30340;&#26159;&#26368;&#23567;&#30340;&#65292;&#23601;&#38656;&#35201;&#21796;&#37266;&#20027;&#32447;&#31243;&#65292;&#21578;&#35785;&#20854;&#26368;&#23567;&#36229;&#26102;&#20540;&#24050;&#32463;&#21464;&#20102;</span>
+            <span style="color: #5f8700;">if</span> (min_heap_elt_is_top(ev))
+                notify = 1;
+        }
+    }
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#24403;&#21069;&#32447;&#31243;&#19981;&#26159;&#20027;&#32447;&#31243;&#19988;&#27880;&#20876;&#20107;&#20214;&#25104;&#21151;&#65292;&#23601;&#21796;&#37266;&#20027;&#32447;&#31243;</span>
+    <span style="color: #5f8700;">if</span> (res != -1 &amp;&amp; notify &amp;&amp; EVBASE_NEED_NOTIFY(base))
+        evthread_notify_base(base);
+
+    _event_debug_note_add(ev);
+
+    <span style="color: #5f8700;">return</span> (res);
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

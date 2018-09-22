@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publishing Org-mode files to HTML</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">Publishing Org-mode files to HTML</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgba03915">1. Introduction</a></li>
+<li><a href="#org9360d6e">2. Basics</a></li>
+<li><a href="#org0c01c08">3. Publishing the <i>org</i> project</a>
+<ul>
+<li><a href="#org9f87764">3.1. The <i>notes</i> component</a></li>
+<li><a href="#org684661f">3.2. The <i>static</i> component</a></li>
+<li><a href="#org5e47e55">3.3. The <i>publish</i> component</a></li>
+<li><a href="#org3c6ebdb">3.4. Pooh - can we publish now?</a></li>
+</ul>
+</li>
+<li><a href="#orgf8a380e">4. Adding directories</a></li>
+<li><a href="#org0197015">5. Overwrite the defaults</a>
+<ul>
+<li><a href="#org3556725">5.1. The export options template</a></li>
+<li><a href="#org668b7a1">5.2. Special comment section</a></li>
+</ul>
+</li>
+<li><a href="#orgfaa81d1">6. Tired of export templates?</a>
+<ul>
+<li><a href="#org31ff1f8">6.1. More level files</a></li>
+</ul>
+</li>
+<li><a href="#orgc9e0928">7. More Projects</a>
+<ul>
+<li><a href="#orgd0896d1">7.1. The <i>inherit</i> component</a>
+<ul>
+<li><a href="#org69d6e11">7.1.1. One more Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org73aad6d">8. Overview</a>
+<ul>
+<li><a href="#orgc7aa921">8.1. The sitemap</a></li>
+<li><a href="#orga6a3651">8.2. org-info.js</a></li>
+</ul>
+</li>
+<li><a href="#org68a6737">9. Special symbols</a></li>
+<li><a href="#org7eca0a3">10. Further reading</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgba03915" class="outline-2">
+<h2 id="orgba03915"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+This Tutorial describes one of many ways to publishing Org-mode files to<br>
+XHTML. We use the publishing mechanism to keep the <code>*.html</code> files separated<br>
+from our <code>*.org</code> files and to access them via web browser. Simply exporting the<br>
+Org-mode files to HTML would leave them in <code>~/org/</code>.<br>
+</p>
+
+<p>
+The XHTML files we create will work every where, on any host, with or without<br>
+network access, and even when accessed through the <code>file:///</code> protocol. To<br>
+achieve this goal, we use<br>
+</p>
+
+<ul class="org-ul">
+<li>no absolute paths in HTML,<br></li>
+<li>no server side scripting to navigate our output directories,<br></li>
+<li>no <code>base</code> element (which is optional as of XHTML 1.0 strict) and<br></li>
+<li>no software, but emacs, Org-mode and a web browser.<br></li>
+</ul>
+
+<p>
+All this means, we are able to check and use the result of work immediately,<br>
+everywhere.<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9360d6e" class="outline-2">
+<h2 id="org9360d6e"><span class="section-number-2">2</span> Basics</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Throughout this tutorial, let's assume that all our Org-mode files live beneath<br>
+<code>~/org/</code> and we publish them to <code>~/public_html/</code>.<br>
+</p>
+
+<p>
+Let's further assume you're already familiar with the note taking basics in<br>
+org and able to add a little content to the Org-mode files we add to our project<br>
+during this tutorial. Please add at least one headline to each of the files.<br>
+</p>
+
+<p>
+The first thing to do is to create the folder <code>~/org</code>. This is where our notes<br>
+files live. Inside <code>~/org/</code> we have a folder <code>css/</code> for stylesheets and<br>
+scripts, and a folder called <code>img/</code> (guess what's in there).<br>
+</p>
+
+<p>
+The first file we add to that folder (and to subdirectories later on) is called<br>
+<code>index.org</code>. This name was choosen, since Org will publish the files to those<br>
+with the basename of the source file plus the extension <code>.html</code> <sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>. Thus<br>
+<code>~/org/index.org</code> will once be <code>~/public_html/index.html</code> &#x2013; the startpage.<br>
+</p>
+
+<p>
+Let's add another file and call it <code>~/org/remember.org</code>. After adding a<br>
+stylesheet, <code>~/org/</code> looks like this:<br>
+</p>
+
+<pre class="example">
+~/org/
+   |- css/
+   |  `- stylesheet.css
+   |- img/
+   |- index.org
+   `- remember.org
+
+</pre>
+
+<p>
+When ever you want to add link to a file, do it the usual way. To link from<br>
+<code>index.org</code> to <code>remember.org</code>, just write<br>
+</p>
+<pre class="example">
+[[file:remember.org][remember]]
+
+</pre>
+<p>
+Org will convert those links to HTML links for you on export:<br>
+</p>
+<pre class="example">
+&lt;a href="./remember.html"&gt;remember&lt;/a&gt;
+
+</pre>
+
+<p>
+Same is true for images. To add an image, put it in <code>~/org/img/test.jpg</code> and<br>
+refer to it by<br>
+</p>
+<pre class="example">
+[[file:img/test.jpg]]
+
+</pre>
+
+<p>
+You may test your links by clicking on them. To test image links you may also<br>
+try to turn on <code>iimage-mode</code> <sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> which works without problems here.<br>
+</p>
+
+<p>
+Optionally, set up the stylesheet as shown in section <a href="#org3e3f91f">Special comment<br>
+section</a>. The recommended way is to use a real stylesheet though.<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0c01c08" class="outline-2">
+<h2 id="org0c01c08"><span class="section-number-2">3</span> Publishing the <i>org</i> project</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+To publish the <code>~/org/</code> project to HTML, we'll have to setup the variable<br>
+<code>org-publish-project-alist</code> <sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>.  I tend to split each project in three basic<br>
+<i>components</i> as described in the manual. We need these different components,<br>
+since we want org to use two different functions to publish dynamic content<br>
+(org =&gt; html) and static content like scripts, images, stylesheets or even<br>
+.htaccess files (org =&gt; copy). The third component is just for convenience and<br>
+tells org to execute the former ones.<br>
+</p>
+
+<p>
+<code>org-publish-project-alist</code> may be adjusted using customize (<code>M-x
+  customize-variable RET org-publish-project-alist RET</code>), but I prefere to<br>
+use an extra file to setup my projects, since there are quite a few. To follow<br>
+this tutorial use the <code>*scratch*</code> buffer and put all the Lisp in this section<br>
+in there.<br>
+</p>
+
+<p>
+First of all, enter this into the <code>*scratch*</code> buffer:<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #5f8700;">require</span> '<span style="color: #00afaf;">ox-publish</span>)
+(<span style="color: #5f8700;">setq</span> org-publish-project-alist
+      '(
+
+       <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">... add all the components here (see below)...</span>
+
+      ))
+</pre>
+</div>
+
+<p>
+Be sure to put all the <i>components</i> below right there where the comment line<br>
+is now.<br>
+</p>
+</div>
+
+<div id="outline-container-org9f87764" class="outline-3">
+<h3 id="org9f87764"><span class="section-number-3">3.1</span> The <i>notes</i> component</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+The <i>notes</i> component publishes all the Org-mode files to HTML. Hence the<br>
+<code>publishing-function</code> is set to <code>org-publish-org-to-html</code>. Here is an example<br>
+of the notes component:<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #00afaf;">"org-notes"</span>
+ <span style="color: #5f8700;">:base-directory</span> <span style="color: #00afaf;">"~/org/"</span>
+ <span style="color: #5f8700;">:base-extension</span> <span style="color: #00afaf;">"org"</span>
+ <span style="color: #5f8700;">:publishing-directory</span> <span style="color: #00afaf;">"~/public_html/"</span>
+ <span style="color: #5f8700;">:recursive</span> t
+ <span style="color: #5f8700;">:publishing-function</span> org-html-publish-to-html
+ <span style="color: #5f8700;">:headline-levels</span> 4             <span style="color: #8a8a8a;">; </span><span style="color: #8a8a8a;">Just the default for this project.</span>
+ <span style="color: #5f8700;">:auto-preamble</span> t
+ )
+</pre>
+</div>
+
+<p>
+Note, that <code>headline-levels</code> may be adjusted on a per file basis to overwrite<br>
+the default.<br>
+</p>
+
+<p>
+The most important settings here are:<br>
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>base-directory</code></td>
+<td class="org-left">The components root directory.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>base-extension</code></td>
+<td class="org-left">Filename suffix without the dot.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>publishing-directory</code></td>
+<td class="org-left">The base directory where all our files will be published.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>recursive</code></td>
+<td class="org-left">If <code>t</code>, include subdirectories - we want that. Subdirectories in <code>:publishing-directory</code> are created if they don't yet exist.</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>publishing-function</code></td>
+<td class="org-left">If and how org should process the files in this component. In this case: convert the Org-mode files to HTML.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org684661f" class="outline-3">
+<h3 id="org684661f"><span class="section-number-3">3.2</span> The <i>static</i> component</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+The <i>static</i> component just copies files (and their folders) from<br>
+<code>:base-directory</code> to <code>:publishing-directory</code> without changing them. Thus<br>
+let's tell Org-mode to use the function <code>org-publish-attachment</code>:<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #00afaf;">"org-static"</span>
+ <span style="color: #5f8700;">:base-directory</span> <span style="color: #00afaf;">"~/org/"</span>
+ <span style="color: #5f8700;">:base-extension</span> <span style="color: #00afaf;">"css</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">js</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">png</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">jpg</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">gif</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">pdf</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">mp3</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">ogg</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">swf"</span>
+ <span style="color: #5f8700;">:publishing-directory</span> <span style="color: #00afaf;">"~/public_html/"</span>
+ <span style="color: #5f8700;">:recursive</span> t
+ <span style="color: #5f8700;">:publishing-function</span> org-publish-attachment
+ )
+</pre>
+</div>
+
+<p>
+<b>Note</b> that <code>:publishing-function</code> is set to <code>org-publish-attachment</code>.<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5e47e55" class="outline-3">
+<h3 id="org5e47e55"><span class="section-number-3">3.3</span> The <i>publish</i> component</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+To publish all with one command, we add the <i>publish</i> component. For this<br>
+component I usually drop the suffix and just use the basename of the<br>
+project.<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #00afaf;">"org"</span> <span style="color: #5f8700;">:components</span> (<span style="color: #00afaf;">"org-notes"</span> <span style="color: #00afaf;">"org-static"</span>))
+</pre>
+</div>
+
+<p>
+Now <code>M-x org-publish-project RET org RET</code> publishes everything<br>
+recursively to <code>~/public_html/</code>. Target directories are created, if they<br>
+don't yet exist.<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3c6ebdb" class="outline-3">
+<h3 id="org3c6ebdb"><span class="section-number-3">3.4</span> Pooh - can we publish now?</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+The good message is <b>yes, we can</b>. Just one little hump. Since we've put the<br>
+definition for our publishing components in the <code>*scratch*</code> buffer, again,<br>
+make sure all the <i>components</i> are enclosed by the lines<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #5f8700;">require</span> '<span style="color: #00afaf;">org-publish</span>)
+(<span style="color: #5f8700;">setq</span> org-publish-project-alist
+      '(
+
+       <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">... all the components ...</span>
+
+      ))
+</pre>
+</div>
+
+<p>
+Move to the end of the first line and press <code>C-x C-e</code> to load<br>
+<code>org-publish</code>. Now go to the end of the last line and press <code>C-x C-e</code><br>
+again. Repeat the last step after every change to your<br>
+<code>org-publish-project-alist</code>.<br>
+</p>
+
+<p>
+To publish your Org-mode files just type<br>
+<code>M-x org-publish-project RET org RET</code> or use one of the shortcuts listed in<br>
+the manual. If nothing went wrong, you should now be able to point your<br>
+browser to <a href="http://localhost/~user/">http://localhost/~user/</a>, if <code>mod_userdir</code> is set up. If<br>
+not, simply navigate to <a href="file:///home/user/public_html">file:///home/user/public_html</a> (you might use<br>
+<i>file -&gt; open</i> from the file menu of your browser.<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf8a380e" class="outline-2">
+<h2 id="orgf8a380e"><span class="section-number-2">4</span> Adding directories</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+As we add more and more files to <code>~/org/</code>, we will soon end up with filenames<br>
+like '<code>networking-ssh-sshd-config.org</code>' or longer. What we need is a<br>
+directory structure:<br>
+</p>
+
+<pre class="example">
+~/org/
+  |- css/
+  |  `- stylesheet.css
+  |- Emacs
+  |  |- index.org
+  |  |- gnus.org
+  |  |- org.org
+  |  `- snippets.org
+  |- img/
+  |- index.org
+  `- remember.org
+
+</pre>
+
+<p>
+If we hadn't added<br>
+</p>
+<pre class="example">
+:recursive t
+
+</pre>
+<p>
+in the <i>notes</i> and <i>static</i> components already, we would have to do it now at<br>
+the latest to export the subdirectories too.<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0197015" class="outline-2">
+<h2 id="org0197015"><span class="section-number-2">5</span> Overwrite the defaults</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+The defaults set by <code>org-publish-project-alist</code> may be overwritten. You might<br>
+want to justify the export properties for single files. Be it the level of<br>
+headlines, include extry scripts or different stylesheets. Org offers ways to adjust<br>
+the settings for a single file.<br>
+</p>
+</div>
+
+<div id="outline-container-org3556725" class="outline-3">
+<h3 id="org3556725"><span class="section-number-3">5.1</span> The export options template</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+The first choice is the <i>export options template</i> on top of the file. When in<br>
+an Org-mode file, you may insert basic information using <code>C-c C-e #</code><br>
+(<code>org-export-dispatch</code>) plus "template".  You will be prompted for a template<br>
+choice.  "default" will provide a template for common options, and "html"<br>
+will provide a template for HTML-specific options.<br>
+</p>
+
+<p>
+WARNING: Do <b>not</b> copy lines from the sample output below into your<br>
+files. The template might change from release to release. Instead,<br>
+insert a template as above and delete any entries that are not<br>
+applicable.<br>
+</p>
+
+<p>
+The default option inserts the following lines:<br>
+</p>
+
+<pre class="example">
+#+TITLE: filename with the extension omitted
+#+DATE: &lt;2013-06-04 Tue&gt;
+#+AUTHOR: Your name
+#+EMAIL: Your email address
+#+OPTIONS: ':t *:t -:t ::t &lt;:t H:3 \n:nil ^:t arch:headline author:t c:nil
+#+OPTIONS: creator:comment d:(not LOGBOOK) date:t e:t email:nil f:t inline:t
+#+OPTIONS: num:t p:nil pri:nil stat:t tags:t tasks:t tex:t timestamp:t toc:t
+#+OPTIONS: todo:t |:t
+#+CREATOR: Emacs 24.3.50.3 (Org mode 8.0.3)
+#+DESCRIPTION:
+#+EXCLUDE_TAGS: noexport
+#+KEYWORDS:
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+
+</pre>
+
+<p>
+and the html option will add the following:<br>
+</p>
+
+<pre class="example">
+#+OPTIONS: html-postamble:auto html-preamble:t tex:t
+#+CREATOR: &lt;a href="http://www.gnu.org/software/emacs/"&gt;Emacs&lt;/a&gt; 24.3.50.3 (&lt;a href="https://orgmode.org"&gt;Org&lt;/a&gt; mode 8.0.3)
+#+HTML_CONTAINER: div
+#+HTML_DOCTYPE: xhtml-strict
+#+HTML_HEAD:
+#+HTML_HEAD_EXTRA:
+#+HTML_HTML5_FANCY:
+#+HTML_INCLUDE_SCRIPTS:
+#+HTML_INCLUDE_STYLE:
+#+HTML_LINK_HOME:
+#+HTML_LINK_UP:
+#+HTML_MATHJAX:
+#+INFOJS_OPT:
+
+</pre>
+
+<p>
+All we have to do now is to alter the options to match our needs. All the<br>
+options are listed in the wonderful Org-mode manual. Note though, that these<br>
+options are only parsed on startup (i.e., when you first open the file). To<br>
+explicitly apply your new options move on any of those lines and press <code>C-c</code><br>
+twice.<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org668b7a1" class="outline-3">
+<h3 id="org668b7a1"><span class="section-number-3">5.2</span> <a id="org3e3f91f">Special comment section</a></h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+Also, CSS style variables may be using a special section may be<br>
+#insert/appended to Org-mode files:<br>
+</p>
+
+<pre class="example">
+* COMMENT html style specifications
+
+# Local Variables:
+# org-export-html-style: "&lt;link rel=\"stylesheet\" type=\"text/css\" href=\"css/stylesheet.css\" /&gt;"
+# End:
+
+</pre>
+
+<p>
+<code>css/stylesheet.css</code> suits the needs for a file in the root folder. Use <br>
+<code>../css/stylesheet.css</code> in a subfolder (first level), <br>
+<code>../../css/stylesheet.css</code> for a file in a sub-sub-folder.<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfaa81d1" class="outline-2">
+<h2 id="orgfaa81d1"><span class="section-number-2">6</span> Tired of export templates?</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+If you're like me, you will soon get tired of adding the same export options<br>
+template to numerous files and adjust the title and paths in it. Luckily,<br>
+Org-mode supports laziness and offers an additional way to set up files. All<br>
+we need is a directory (e.g. <code>~/.emacs.d/org-templates/</code>) and create the<br>
+following files there:<br>
+</p>
+
+<ul class="org-ul">
+<li><code>level-0.org</code> <br>
+This file contains all export options lines. The <a href="#org3e3f91f">special comment section</a><br>
+will not work for files in subdirectories. Hence we always use the export<br>
+options line<br>
+:#+STYLE: &lt;link rel="stylesheet" type="text/css" href="stylesheet.css" /&gt;<br>
+&#x2026;suitable for each file in the projects root folder<br>
+(<code>~/org/</code> or <code>~/B/</code> in the examples). Just drop the <code>#+TITLE</code> since this<br>
+will be different for every file and automatically set on export (based on<br>
+the filename if omitted).<br></li>
+<li><code>level-1.org</code> <br>
+This file contains all export options lines for the stylesheet suitable for<br>
+each file in a subfolder of the projects root folder (e.g. <code>~/org/emacs/</code><br>
+or <code>~/org/networking/</code>). Just drop the <code>#+TITLE</code> again. The options line<br>
+for the stylesheet looks like this:<br>
+:#+STYLE: &lt;link rel="stylesheet" type="text/css" href="../stylesheet.css" /&gt;<br></li>
+
+<li>Add more files for more levels.<br></li>
+</ul>
+
+<p>
+Now remove the <a href="#org3e3f91f">special comment section</a> from the end of your Org-mode files in<br>
+the project folders and change the export options template to<br>
+</p>
+
+<pre class="example">
+#+SETUPFILE: ~/.emacs.d/org-templates/level-N.org
+#+TITLE: My Title
+
+</pre>
+
+<p>
+Replace <code>N</code> with distance to the root folder (<code>0</code>, <code>1</code> etc.) of your project<br>
+and press <code>C-c</code> twice while still on this line to apply the<br>
+changes. Subsequent lines still overwrite the settings for just this one file.<br>
+</p>
+</div>
+
+
+<div id="outline-container-org31ff1f8" class="outline-3">
+<h3 id="org31ff1f8"><span class="section-number-3">6.1</span> More level files</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+Also, these <i>level-N</i> files give us the chance to easily switch between different<br>
+export setups. As an example, we could have a separate stylesheet and<br>
+<code>org-info.js</code> setup for presentations, and put the appropriate options in a<br>
+file named <code>level-0-slides.org</code>:<br>
+</p>
+
+<pre class="example">
+#+INFOJS_OPT: path:org-info.js
+#+INFOJS_OPT: toc:nil view:slide
+#+STYLE: &lt;link rel="stylesheet" type="text/css" href="slides.css" /&gt;
+
+</pre>
+
+<p>
+Now it's as simple as typing '<i>-slides</i>' to change the appearance of any file<br>
+in our project.<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc9e0928" class="outline-2">
+<h2 id="orgc9e0928"><span class="section-number-2">7</span> More Projects</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+As we get used to note taking in org, we might add an <code>org</code> directory to most<br>
+of our projects. All those projects are published as well. Project '<code>~/B/</code>'<br>
+is published to '<code>~/public_html/B/</code>', '<code>~/C/</code>' is published to<br>
+'<code>~/public_html/C/</code>', and so on. This leads to the problem of common<br>
+stylesheets and current JavaScripts &#x2014; and to a new <i>component</i>.<br>
+</p>
+</div>
+
+<div id="outline-container-orgd0896d1" class="outline-3">
+<h3 id="orgd0896d1"><span class="section-number-3">7.1</span> The <i>inherit</i> component</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+Once we get tired of copying the static files from one project to another, the<br>
+following configuration does the trick for us. We simply add the <i>inherit</i><br>
+component, that imports all the static files from our <code>~/org/</code> directory <sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>.<br>
+From now on, it will be sufficient to edit stylesheets and scripts just<br>
+there.<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #00afaf;">"B-inherit"</span>
+ <span style="color: #5f8700;">:base-directory</span> <span style="color: #00afaf;">"~/org/"</span>
+ <span style="color: #5f8700;">:recursive</span> t
+ <span style="color: #5f8700;">:base-extension</span> <span style="color: #00afaf;">"css</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">js"</span>
+ <span style="color: #5f8700;">:publishing-directory</span> <span style="color: #00afaf;">"~/public_html/B/"</span>
+ <span style="color: #5f8700;">:publishing-function</span> org-publish-attachment
+)
+
+(<span style="color: #00afaf;">"B-org"</span>
+<span style="color: #5f8700;">:base-directory</span> <span style="color: #00afaf;">"~/B/"</span>
+<span style="color: #5f8700;">:auto-index</span> t
+<span style="color: #5f8700;">:index-filename</span> <span style="color: #00afaf;">"sitemap.org"</span>
+<span style="color: #5f8700;">:index-title</span> <span style="color: #00afaf;">"Sitemap"</span>
+<span style="color: #5f8700;">:recursive</span> t
+<span style="color: #5f8700;">:base-extension</span> <span style="color: #00afaf;">"org"</span>
+<span style="color: #5f8700;">:publishing-directory</span> <span style="color: #00afaf;">"~/public_html/B/"</span>
+<span style="color: #5f8700;">:publishing-function</span> org-publish-org-to-html
+<span style="color: #5f8700;">:headline-levels</span> 3
+<span style="color: #5f8700;">:auto-preamble</span> t
+)
+(<span style="color: #00afaf;">"B-static"</span>
+ <span style="color: #5f8700;">:base-directory</span> <span style="color: #00afaf;">"~/B/"</span>
+ <span style="color: #5f8700;">:recursive</span> t
+ <span style="color: #5f8700;">:base-extension</span> <span style="color: #00afaf;">"css</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">js</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">png</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">jpg</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">gif</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">pdf</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">mp3</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">ogg</span><span style="color: #af8700;">\\</span><span style="color: #d75f00;">|</span><span style="color: #00afaf;">swf"</span>
+ <span style="color: #5f8700;">:publishing-directory</span> <span style="color: #00afaf;">"~/public_html/B/"</span>
+ <span style="color: #5f8700;">:publishing-function</span> org-publish-attachment)
+
+(<span style="color: #00afaf;">"B"</span> <span style="color: #5f8700;">:components</span> (<span style="color: #00afaf;">"B-inherit"</span> <span style="color: #00afaf;">"B-notes"</span> <span style="color: #00afaf;">"B-static"</span>))
+</pre>
+</div>
+
+<p>
+<b>Note</b>, that the inheritance trick works for non org directories. You might<br>
+want to keep all your stylesheets and scripts in a single place, or even add<br>
+more <i>inheritance</i> to your projects, to import sources from upstream.<br>
+</p>
+
+<p>
+<b>Note</b> also, that <code>B-inherit</code> exports directly to the web. If you want to track<br>
+the changes to <code>~org/*.css</code> directly in <code>~/B</code>, you must ensure, that <code>B-inherit</code> is<br>
+the first component in <code>B</code> since the components in <code>B</code> are executed in<br>
+the sequence listed: first get the new stylesheet into <code>B</code>, then execute<br>
+<code>B-static</code>.<br>
+</p>
+</div>
+
+<div id="outline-container-org69d6e11" class="outline-4">
+<h4 id="org69d6e11"><span class="section-number-4">7.1.1</span> One more Example</h4>
+<div class="outline-text-4" id="text-7-1-1">
+<p>
+As I use org-info.js and track Worg git, I use "<code>inherit-org-info-js</code>" in all<br>
+my <code>org</code> projects:<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #00afaf;">"inherit-org-info-js"</span>
+ <span style="color: #5f8700;">:base-directory</span> <span style="color: #00afaf;">"~/develop/org/Worg/code/org-info-js/"</span>
+ <span style="color: #5f8700;">:recursive</span> t
+ <span style="color: #5f8700;">:base-extension</span> <span style="color: #00afaf;">"js"</span>
+ <span style="color: #5f8700;">:publishing-directory</span> <span style="color: #00afaf;">"~/org/"</span>
+ <span style="color: #5f8700;">:publishing-function</span> org-publish-attachment)
+
+<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">... all the rest ... ;;</span>
+
+(<span style="color: #00afaf;">"B"</span> <span style="color: #5f8700;">:components</span> (<span style="color: #00afaf;">"inherit-org-info-js"</span> <span style="color: #00afaf;">"B-inherit"</span> <span style="color: #00afaf;">"B-notes"</span> <span style="color: #00afaf;">"B-static"</span>))
+(<span style="color: #00afaf;">"C"</span> <span style="color: #5f8700;">:components</span> (<span style="color: #00afaf;">"inherit-org-info-js"</span> <span style="color: #00afaf;">"C-inherit"</span> <span style="color: #00afaf;">"C-notes"</span> <span style="color: #00afaf;">"C-static"</span>))
+(<span style="color: #00afaf;">"D"</span> <span style="color: #5f8700;">:components</span> (<span style="color: #00afaf;">"inherit-org-info-js"</span> <span style="color: #00afaf;">"D-inherit"</span> <span style="color: #00afaf;">"D-notes"</span> <span style="color: #00afaf;">"D-static"</span>))
+(<span style="color: #00afaf;">"E"</span> <span style="color: #5f8700;">:components</span> (<span style="color: #00afaf;">"inherit-org-info-js"</span> <span style="color: #00afaf;">"E-inherit"</span> <span style="color: #00afaf;">"E-notes"</span> <span style="color: #00afaf;">"E-static"</span>))
+</pre>
+</div>
+
+<p>
+&#x2026;means, <code>B</code> <code>C</code> <code>D</code> and <code>E</code> use my local stylesheets and always the latest<br>
+version of <code>org-info.js</code>.<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org73aad6d" class="outline-2">
+<h2 id="org73aad6d"><span class="section-number-2">8</span> Overview</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Once there are lots of files and subdirectories, we're in the need of ways to<br>
+easily navigate our notes in a browser. What we need now, is an index, an<br>
+overview of all our note files.<br>
+</p>
+</div>
+
+<div id="outline-container-orgc7aa921" class="outline-3">
+<h3 id="orgc7aa921"><span class="section-number-3">8.1</span> The sitemap</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+Org-modes great publishing also generates a recursive sitemap. Its name<br>
+defaults to <code>sitemap.org</code>, which get's in our way, since we have a real<br>
+startpage as <code>sitemap.html</code> <sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>. Fortunately there is a configuration<br>
+option to change the name of the generated sitemap. To generate the sitemap,<br>
+add these lines to the <i>notes</i> component:<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #5f8700;">:auto-sitemap</span> t                <span style="color: #8a8a8a;">; </span><span style="color: #8a8a8a;">Generate sitemap.org automagically...</span>
+<span style="color: #5f8700;">:sitemap-filename</span> <span style="color: #00afaf;">"sitemap.org"</span>  <span style="color: #8a8a8a;">; </span><span style="color: #8a8a8a;">... call it sitemap.org (it's the default)...</span>
+<span style="color: #5f8700;">:sitemap-title</span> <span style="color: #00afaf;">"Sitemap"</span>         <span style="color: #8a8a8a;">; </span><span style="color: #8a8a8a;">... with title 'Sitemap'.</span>
+</pre>
+</div>
+
+<p>
+The sitemap will reflect the tree structure of the project. To access the<br>
+sitemap easily, we could do two things:<br>
+</p>
+
+<ol class="org-ol">
+<li>Setup the '<i>UP</i>' link of the Startpage to link to <code>sitemap.html</code> (see next<br>
+section),<br></li>
+<li>use the '<code>#+INCLUDE: sitemap.org</code>' directive. Most of my Org-mode files<br>
+contain a chapter called "<i>Links</i>" at the end of the file, which contains<br>
+a subsection <i>Sitemap</i> that in turn just consists of that<br>
+diretive. For the <code>index.org</code> files in the root directory, I include the<br>
+sitemap as the first section.<br></li>
+</ol>
+
+<p>
+You can also change the position of folders with <code>:sitemap-sort-folders</code>,<br>
+this can be set to <code>last</code> or <code>first</code> (default), to display folders last or<br>
+first.<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga6a3651" class="outline-3">
+<h3 id="orga6a3651"><span class="section-number-3">8.2</span> org-info.js</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+Another way to get additional links to navigate the structure is<br>
+org-info.js. Let's set it up like this (either in every file, or in<br>
+<code>org-level-N.org</code>, where <code>N &gt; 0</code>):<br>
+</p>
+
+<pre class="example">
+#+LINK_UP: index.html
+
+</pre>
+
+<p>
+This makes the little <i>UP</i> link ('<code>h</code>') point to the <code>index.html</code> in the<br>
+current directory.<br>
+</p>
+
+<p>
+The <code>index.org</code> in the root of the project has the <i>index file</i> as section 2<br>
+(which I may reach pressing '<code>n</code>' then), and the same option set like this:<br>
+</p>
+
+<pre class="example">
+#+LINK_UP: sitemap.html
+
+</pre>
+
+<p>
+For an <code>index.org</code> in a subdirectory:<br>
+</p>
+
+<pre class="example">
+#+LINK_UP: ../index.html
+
+</pre>
+
+<p>
+The <code>LINK_HOME</code> always points to the same file:<br>
+</p>
+
+<pre class="example">
+#+LINK_HOME: http://localhost/~user/index.html
+
+</pre>
+
+<p>
+Please consider replacing the last one with a relative path (which will be<br>
+different for every level of subdirectories).<br>
+</p>
+
+<p>
+No matter where we are, we may always press <code>H n</code> and we face the sitemap.<br>
+No matter where we are, we may always press <code>h</code> to move up the tree.<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org68a6737" class="outline-2">
+<h2 id="org68a6737"><span class="section-number-2">9</span> Special symbols</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+This is a list of LaTeX symbols understood by Org-mode. You may use most of<br>
+those LaTeX symbols to get the desired results (shown in the first column)<br>
+when exporting to HTML. Note though, that not all symbols are translated to<br>
+HTML. They are listed anyway, since they may be used for LaTeX export<br>
+nonetheless. Some characters in the first column are invisible (spaces). To<br>
+see them, mark the part of the table using the mouse.<br>
+</p>
+
+<p>
+You may produce special HTML characters for verbatim <code>#+BEGIN\_HTML</code> sections<br>
+using <a href="http://www-atm.physics.ox.ac.uk/user/iwi/charmap.html">http://www-atm.physics.ox.ac.uk/user/iwi/charmap.html</a> (download link on<br>
+the bottom of that page).<br>
+</p>
+
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Symbol</th>
+<th scope="col" class="org-left">LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">&nbsp;</td>
+<td class="org-left"><code>\nbsp</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&iexcl;</td>
+<td class="org-left"><code>\iexcl</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&cent;</td>
+<td class="org-left"><code>\cent</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&pound;</td>
+<td class="org-left"><code>\pound</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&curren;</td>
+<td class="org-left"><code>\curren</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&yen;</td>
+<td class="org-left"><code>\yen</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&brvbar;</td>
+<td class="org-left"><code>\brvbar</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&vert;</td>
+<td class="org-left"><code>\vert</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&sect;</td>
+<td class="org-left"><code>\sect</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&uml;</td>
+<td class="org-left"><code>\uml</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&copy;</td>
+<td class="org-left"><code>\copy</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&ordf;</td>
+<td class="org-left"><code>\ordf</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&laquo;</td>
+<td class="org-left"><code>\laquo</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&not;</td>
+<td class="org-left"><code>\not</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div id="outline-container-org7eca0a3" class="outline-2">
+<h2 id="org7eca0a3"><span class="section-number-2">10</span> Further reading</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+For more information you might want to read the great Org-mode manual. One of<br>
+the nicest mailing lists on this planet, BTW, is emacs-orgmode (archive)<br>
+where you might as well find answers to your questions.<br>
+</p>
+
+
+<p>
+Have fun!<br>
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">&#33050;&#27880;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+You may customize the file suffix for exported files like this:<br>
+<code>M-x customize RET org-export-html-extension</code>.<br>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+&#x2026;by typing <code>M-x iimage-mode RET</code>. iimage-mode even shows *.svg images, if<br>
+<code>librsvg</code> was present on compile time. FIXME: is this true for emacs22 ?<br>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+All components of <code>org-publish-projects-alist</code> are documented in the Org Mode<br>
+Manual.<br>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+Files may be copied from arbitrary src directories to any target directory<br>
+desired.<br>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">
+This is primarily because of the behaviour of servers. When we navigate<br>
+to <a href="https://orgmode.org/worg/">https://orgmode.org/worg/</a> we will face the <code>index.html</code> if present.<br>
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

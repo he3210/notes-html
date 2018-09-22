@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>交换排序</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">交换排序</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9f1bbd9">1. 冒泡排序</a></li>
+<li><a href="#org9e566a1">2. 快排</a>
+<ul>
+<li><a href="#org6622e36">2.1. 两个下标分别从首、尾向中间扫描</a></li>
+<li><a href="#orgda8a74b">2.2. 两个指针一前一后向后扫描</a></li>
+</ul>
+</li>
+<li><a href="#org406795f">3. 相关算法</a>
+<ul>
+<li><a href="#org004545a">3.1. 荷兰国旗问题</a></li>
+<li><a href="#orge4d02da">3.2. 找到最小 k 个数</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9f1bbd9" class="outline-2">
+<h2 id="org9f1bbd9"><span class="section-number-2">1</span> 冒泡排序</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+基本思想：假设待排序表长为 n，从前向后（从后向前）两两比较相邻元素的值，若为逆序（即 A[i-1] &gt; A[i]），则交换它们，直到序列比较完，这是一趟冒泡排序。一次冒泡排序确定一个元素的位置，这样最多 n-1 躺冒泡就能把所有元素排好序<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#21069;&#21521;&#21518;&#20882;&#27873;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">BubbleSort</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #5f8700;">for</span>(i = n-1; i &gt;= 1; --i)
+    {
+        flag = <span style="color: #00afaf;">false</span>;     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#34920;&#31034;&#26412;&#36255;&#20882;&#27873;&#26159;&#21542;&#21457;&#29983;&#20132;&#25442;&#30340;&#26631;&#24535;</span>
+        <span style="color: #5f8700;">for</span>(j = 0; j &lt; i; ++j)
+        {
+            <span style="color: #5f8700;">if</span>(A[j].key &gt; A[j+1].key)
+            {
+                swap(A[j], A[j+1]);
+                flag = <span style="color: #00afaf;">true</span>;
+            }
+        }
+        <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">false</span> == flag)
+            <span style="color: #5f8700;">return</span>;
+    }
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#21518;&#21521;&#21069;&#20882;&#27873;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">BubbleSort</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #5f8700;">for</span>(i = 0; i &lt;= n-2; ++i)
+    {
+        flag = <span style="color: #00afaf;">false</span>;
+        <span style="color: #5f8700;">for</span>(j = n-1; j &gt; i; --j)
+        {
+            <span style="color: #5f8700;">if</span>(A[j].key &lt; A[j-1].key)
+            {
+                swap(A[j], A[j-1]);
+                flag = <span style="color: #00afaf;">true</span>;
+            }
+        }
+        <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">false</span> == flag)
+            <span style="color: #5f8700;">return</span>;
+    }
+}
+</pre>
+</div>
+
+<p>
+冒泡排序总结：<br>
+平均时间复杂度为 O(n<sup>2</sup>)， 最坏情况下的时间复杂度为 O(n<sup>2</sup>)，最好情况下的时间复杂度为 O(n)<br>
+空间复杂度为 O(1)<br>
+稳定性：稳定<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9e566a1" class="outline-2">
+<h2 id="org9e566a1"><span class="section-number-2">2</span> 快排</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org6622e36" class="outline-3">
+<h3 id="org6622e36"><span class="section-number-3">2.1</span> 两个下标分别从首、尾向中间扫描</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+基本思想：假设待排序表长为n，从前向后（从后向前）两两比较相邻元素的值，若为逆序（即 A[i-1] &gt; A[i]），则交换它们，直到序列比较完，这是一趟冒泡排序。一次冒泡排序确定一个元素的位置，这样最多 n-1 躺冒泡就能把所有元素排好序<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">Partition</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">pivot</span> = A[low];
+    <span style="color: #5f8700;">while</span>(low &lt; high)
+    {
+        <span style="color: #5f8700;">while</span>(low &lt; high &amp;&amp; A[high] &gt;= pivot) --high;
+        A[low] = A[high];
+        <span style="color: #5f8700;">while</span>(low &lt; high &amp;&amp; A[low] &lt;= pivot) ++low;
+        A[high] = A[low];
+    }
+    A[low] = pivot;
+    <span style="color: #5f8700;">return</span> low;
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">QuickSort</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #5f8700;">if</span>(low &lt; high)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">pivotIndex</span> = Partition(A, low, high);
+        QuickSort(A, low, pivotIndex-1);
+        QuickSort(A, pivotIndex+1, high);
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgda8a74b" class="outline-3">
+<h3 id="orgda8a74b"><span class="section-number-3">2.2</span> 两个指针一前一后向后扫描</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+基本思想：设置两个下标 i、j，在子序列 {A[0], A[1], &#x2026;, A[j]} 中，使下标 i 左边的元素比基准值小，右边的元素比基准值大，j 不断向后扫描，扫描结束即确定基准值的最终位置<br>
+特点：在一次划分中基准值左边的元素相对位置不变<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20004;&#20010;&#25351;&#38024;&#19968;&#21069;&#19968;&#21518;&#21521;&#21518;&#25195;&#25551;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">partition</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = low-1, <span style="color: #0087ff;">j</span> = low;
+    <span style="color: #5f8700;">for</span>(; j &lt;= high; ++j)
+    {
+        <span style="color: #5f8700;">if</span>(A[j] &lt;= A[high])     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622;A[high]&#20026;&#22522;&#20934;&#28857;</span>
+            swap(A[j], A[++i]);
+    }
+    <span style="color: #5f8700;">return</span> i;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20004;&#20010;&#25351;&#38024;&#19968;&#21518;&#19968;&#21069;&#21521;&#21069;&#25195;&#25551;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">Partition</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = high+1, <span style="color: #0087ff;">j</span> = high;
+    <span style="color: #5f8700;">for</span>(; j &gt;= low; --j)
+    {
+        <span style="color: #5f8700;">if</span>(A[j] &gt;= A[low])     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622;A[low]&#20026;&#22522;&#20934;&#28857;</span>
+            swap(A[j], A[--i]);
+    }
+    <span style="color: #5f8700;">return</span> i;
+}
+</pre>
+</div>
+
+<p>
+快排总结：<br>
+时间复杂度：平均时间复杂度为 O(nlog<sub>2</sub>n) ，理想情况下时间复杂度为 O(nlog<sub>2</sub>n)，当初始序列表基本有序或基本逆序时得到最坏情况下的时间复杂度 O(n2)<br>
+空间复杂度：平均空间复杂度为 O(log<sub>2</sub>n)，最坏情况下空间复杂度为 O(n)<br>
+稳定性：不稳定<br>
+快排优化：<br>
+</p>
+<ol class="org-ol">
+<li>递归过程中划分得到的子序列规模较小时不要继续递归调用快排，可以采用直接插入排序算法进行后续的排序工作<br></li>
+<li>选取一个可以将序列中分的基准值。比如从首、尾、中间选取3个元素，取其中间值当基准值<br></li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org406795f" class="outline-2">
+<h2 id="org406795f"><span class="section-number-2">3</span> 相关算法</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org004545a" class="outline-3">
+<h3 id="org004545a"><span class="section-number-3">3.1</span> 荷兰国旗问题</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+问题描述：<br>
+现有红白蓝三个不同颜色的小球，乱序排列在一起，请重新排列这些小球，使得红白蓝三色的同颜色的球在一起。这个问题之所以叫荷兰国旗问题，是因为我们可以将红白蓝三色小球想象成条状物，有序排列后正好组成荷兰国旗。<br>
+分析：红白蓝分别对应数字 0、1、2。这个问题类似于快排中的一次划分过程，不过要采用3个指针，一前 begin，一中 cur，一后 end<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">Partition</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">begin</span> = low-1, <span style="color: #0087ff;">cur</span> = low, <span style="color: #0087ff;">end</span> = high+1;
+    <span style="color: #5f8700;">while</span>(cur &lt; end)
+    {
+        <span style="color: #5f8700;">if</span>(A[cur] == 0)
+        {
+            ++begin;
+            A[begin] = A[begin]+A[cur]-(A[cur] = A[begin]);
+            ++cur;
+        }
+        <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(A[cur] == 1)
+        {
+            ++cur;
+        }
+        <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(A[cur] == 2)
+        {
+            --end;     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35813;&#21477;&#25191;&#34892;&#23436;&#21518;&#65292;A[end]&#24182;&#27809;&#26377;&#36827;&#34892;&#25490;&#24207;</span>
+            A[end] = A[end]+A[cur]-(A[cur] = A[end]);     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25191;&#34892;&#23436;&#20132;&#25442;&#21518;&#19981;&#33021;&#25191;&#34892;++cur&#65292;&#22240;&#20026;&#20132;&#25442;&#21069;A[end]&#24182;&#27809;&#26377;&#25490;&#24207;&#65288;A[end]&#26159;&#20132;&#25442;&#21518;&#30340;A[cur]),&#25152;&#20197;&#38656;&#35201;&#23545;A[cur]&#36827;&#34892;&#25490;&#24207;</span>
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge4d02da" class="outline-3">
+<h3 id="orge4d02da"><span class="section-number-3">3.2</span> 找到最小 k 个数</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+描述：输入 n 个整数，输出其中最小的 k 个<br>
+分析：使用快排的一次划分，如果划分得到的下标刚好是 k-1，那么这个下标左侧的 k-1 个数字就是最小的 k 个数<br>
+</p>
+<ul class="org-ul">
+<li>若 pivotIndex == k-1，则找到这 k 个数<br></li>
+<li>若 pivotIndex &gt; k-1，则在序列左侧继续查找<br></li>
+<li>若 pivotIndex &lt; k-1，则在序列右侧继续查找<br></li>
+</ul>
+<p>
+时间复杂度为 O(n)<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">GetMinK</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span> = 0, <span style="color: #0087ff;">high</span> = n-1;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">pivotIndex</span> = Partition(A, low, high);
+    <span style="color: #5f8700;">while</span>(pivotIndex != k-1)
+    {
+        <span style="color: #5f8700;">if</span>(pivotIndex &gt; k-1)
+        {
+            high = pivotIndex-1;
+            pivotIndex = Partition(A, low, high);
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            low = pivotIndex+1;
+            pivotIndex = Partition(A, low, high);
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

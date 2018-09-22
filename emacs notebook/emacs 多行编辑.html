@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>emacs 多行编辑</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">emacs 多行编辑</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7999db1">1. emacs 列编辑</a></li>
+<li><a href="#org34ccf65">2. 选中多列相同内容同时编辑</a>
+<ul>
+<li><a href="#orgb3f2211">2.1. 配置后的快捷键</a></li>
+<li><a href="#org502cc4b">2.2. 插件 expand-region</a></li>
+<li><a href="#org5e23118">2.3. 插件 iedit</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7999db1" class="outline-2">
+<h2 id="org7999db1"><span class="section-number-2">1</span> emacs 列编辑</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+快捷键如下表<br>
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">列编辑快捷键</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">C-x r k</td>
+<td class="org-left">剪切一个矩形块</td>
+</tr>
+
+<tr>
+<td class="org-left">C-x r y</td>
+<td class="org-left">粘贴一个矩形块</td>
+</tr>
+
+<tr>
+<td class="org-left">C-x r o</td>
+<td class="org-left">插入一个矩形块</td>
+</tr>
+
+<tr>
+<td class="org-left">C-x r c</td>
+<td class="org-left">清除一个矩形块(使其变成空白)</td>
+</tr>
+
+<tr>
+<td class="org-left">C-x r t</td>
+<td class="org-left">在选定区域的所有列前插入相同的字符串</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+示例一：添加多行注释<br>
+先按快捷键 <code>Ctrl-Space</code> 进入选中模式，选中一个区域，再按快捷键 <code>C-x r t</code> ，然后输入 <code>;; RET</code> <br>
+</p>
+
+<div class="figure">
+<p><img src="../images/emacs 列编辑.gif" alt="emacs 列编辑.gif" width="50%"><br>
+</p>
+</div>
+
+<p>
+示例二：删除多行注释<br>
+先按快捷键 <code>Ctrl-Space</code> 进入多行编辑模式，选中一个区域，再按快捷键 <code>C-x r k</code><br>
+</p>
+
+<div class="figure">
+<p><img src="../images/emacs 列编辑2.gif" alt="emacs 列编辑2.gif" width="50%"><br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org34ccf65" class="outline-2">
+<h2 id="org34ccf65"><span class="section-number-2">2</span> 选中多列相同内容同时编辑</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgb3f2211" class="outline-3">
+<h3 id="orgb3f2211"><span class="section-number-3">2.1</span> 配置后的快捷键</h3>
+<div class="outline-text-3" id="text-2-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">快捷键</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">C-c f</td>
+<td class="org-left">按照语义扩大选中区域</td>
+</tr>
+
+<tr>
+<td class="org-left">C-c b</td>
+<td class="org-left">按照语义缩小选中区域</td>
+</tr>
+
+<tr>
+<td class="org-left">C-c i</td>
+<td class="org-left">选中该 buffer 中所有和选中区域相同的内容</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+常用用法：在 emacs 中使用搜索命令得到的 mini buffer 中，使用快捷键 <code>C-c f</code> <code>C-c b</code> 或者 <code>Ctrl-Space</code> 选中一个区域后，按快捷键 <code>C-c i</code> 选中该 mini buffer 中的所有相同区域。这样就可以同时编辑多个文本片段了<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org502cc4b" class="outline-3">
+<h3 id="org502cc4b"><span class="section-number-3">2.2</span> 插件 expand-region</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+该插件用于按照语义智能选中一段文本<br>
+官方推荐使用快捷键 <code>C-=</code> 扩大文本。我在终端下使用 emacs，但是在终端 emacs 中按快捷键 <code>C-=</code> 时， <code>ctrl</code> 会被终端吞掉，所以我改用为 <code>C-c f</code> 。 <code>C-c b</code> 同理<br>
+</p>
+
+<p>
+添加配置<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#25353; &lt;C-c f&gt; &#25193;&#22823;&#36873;&#20013;&#21306;&#22495;&#65292;&#25353; &lt;C-c b&gt; &#32553;&#23567;&#36873;&#20013;&#21306;&#22495;</span>
+(global-set-key (kbd <span style="color: #00afaf;">"C-c f"</span>) 'er/expand-region)
+(global-set-key (kbd <span style="color: #00afaf;">"C-c b"</span>) 'er/contract-region)
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="../images/emacs expand-region.gif" alt="emacs expand-region.gif" width="40%"><br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5e23118" class="outline-3">
+<h3 id="org5e23118"><span class="section-number-3">2.3</span> 插件 iedit</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+该插件用于根据选中的内容，来选中 buffer 中所有相同的文本<br>
+官方使用快捷键 <code>C-;</code> ，这里改用 <code>C-c i</code><br>
+</p>
+
+<p>
+添加配置<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#22914;&#26524;&#27809;&#26377;&#36827;&#20837;&#36873;&#20013;&#27169;&#24335;&#65292;&#23601;&#36873;&#20013;&#20809;&#26631;&#19979;&#30340;&#21333;&#35789;&#65292;&#24182;&#21516;&#26102;&#36873;&#20013;&#22312;&#35813; buffer &#20013;&#30340;&#25152;&#26377;&#35813;&#21333;&#35789;</span>
+<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#22914;&#26524;&#24050;&#32463;&#22312;&#36873;&#20013;&#20102;&#19968;&#20010;&#21306;&#22495;&#65292;&#23601;&#36873;&#20013;&#35813; buffer &#20013;&#30340;&#25152;&#26377;&#21644;&#35813;&#21306;&#22495;&#30456;&#21516;&#30340;&#20869;&#23481;</span>
+(global-set-key (kbd <span style="color: #00afaf;">"C-c i"</span>) 'iedit-mode)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>

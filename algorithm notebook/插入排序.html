@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-09-22 Sat 14:06 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>插入排序</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">插入排序</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org2d842f4">1. 直接插入排序</a></li>
+<li><a href="#org69a6e63">2. 希尔排序</a></li>
+</ul>
+</div>
+</div>
+<p>
+插入排序的基本思想：每次将一个待排序的记录，按其关键字的大小插入到前面已经排好序的子序列中，知道全部记录插入完成。<br>
+</p>
+
+<div id="outline-container-org2d842f4" class="outline-2">
+<h2 id="org2d842f4"><span class="section-number-2">1</span> 直接插入排序</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+算法思想：每次将一个待排序的记录，按其关键字的大小插入到前面已经排好序的子序列中，直到全部记录插入完成。<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21319;&#24207;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">InsertSort</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #0087ff;">j</span>;
+    <span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">x</span>;
+    <span style="color: #5f8700;">for</span>(i = 1; i &lt; n; ++i)
+    {
+        x = A[i];
+        <span style="color: #5f8700;">for</span>(j = i-1; j &gt;= 0 &amp;&amp; A[j].key &gt; x.key; --j)
+            A[j+1] = A[j];
+        A[j+1] = x;
+    }
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38477;&#24207;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">InsertSort</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #0087ff;">j</span>;
+    <span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">x</span>;
+    <span style="color: #5f8700;">for</span>(i = 1; i &lt; n; ++i)
+    {
+        x = A[i];     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">x &#21482;&#26159;&#26242;&#23384;&#21333;&#20803;&#65292;&#19981;&#26159;&#21736;&#20853;</span>
+        <span style="color: #5f8700;">for</span>(j = i-1; j &gt;= 0 &amp;&amp; A[j].key &lt; x.key; --j)
+            A[j+1] = A[j];
+        A[j+1] = x;
+    }
+}
+</pre>
+</div>
+
+<p>
+直接插入排序总结：<br>
+时间复杂度 O(n<sup>2</sup>) ，空间复杂度 O(1)<br>
+在最好的情况下，表中元素已经有序，此时每插入一个元素，都只需比较一次而不用移动元素，因而时间复杂度为 O(n)<br>
+稳定性：稳定<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org69a6e63" class="outline-2">
+<h2 id="org69a6e63"><span class="section-number-2">2</span> 希尔排序</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+算法思想：对于序列 {A[0], A[1], &#x2026;, A[n]} 分割成形如 {A[i], A[i+d], A[i+2d], &#x2026;, A[i+kd]} 的子表，对每个子表进行直接插入排序，当整个表中元素已呈基本有序时，再对全体记录进行一次直接插入排序<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21319;&#24207;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">ShellSort</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #0087ff;">j</span>;
+    <span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">x</span>;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">dk</span> = n/2; dk &gt;= 1; dk /= 2)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27493;&#38271;&#20174; n/2 &#21040; 1</span>
+    {
+        <span style="color: #5f8700;">for</span>(i = dk; i &lt; n; ++i)
+        {
+            x = A[i];     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">x&#26242;&#23384;&#24403;&#21069;&#20803;&#32032;</span>
+            <span style="color: #5f8700;">for</span>(j = i-dk; j &gt;= 0 &amp;&amp; A[j].key &gt; x.key; j -= dk)
+                A[j+dk] = A[j];
+            A[j+dk] = x;
+        }
+    }
+}
+</pre>
+</div>
+
+<p>
+希尔排序总结：<br>
+时间复杂度：时间复杂度依赖于增量序列的函数，时间复杂度分析比较困难。当 n 在某个特定范围时，希尔排序的时间复杂度约为 O(n<sup>1.3</sup>)，在最坏的情况下希尔排序的时间复杂度是 O(n<sup>2</sup>)<br>
+空间复杂度：O(1)<br>
+稳定性：不稳定<br>
+例如：序列 {3, <code>2</code>, 2} ，经过一次希尔排序后，序列为 {2, <code>2</code>, 3}，最终序列为 {2, <code>2</code>, 3}<br>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>
