@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-05 Fri 20:11 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ac 自动机</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7691209-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  document.addEventListener('DOMContentLoaded',function() {
+      document.getElementById("table-of-contents").onclick = function() {
+          var elem = document.getElementById("text-table-of-contents");
+          elem.style.display = elem.style.display == "block" ? "none" : "block";
+      }
+  });
+
+  var url = document.location.href;
+  var orgsource = url.substring(0, url.lastIndexOf("."))+".org.html";
+  function show_org_source(){
+      document.location.href = orgsource;
+  }
+</script>
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">ac 自动机</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9ff8133">1. 参考</a></li>
+<li><a href="#org38eab78">2. 问题</a></li>
+<li><a href="#org51bd1d4">3. 解题思路</a></li>
+<li><a href="#orgf594d7e">4. Aho–Corasick algorithm</a></li>
+<li><a href="#org66389fe">5. 算法</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9ff8133" class="outline-2">
+<h2 id="org9ff8133"><span class="section-number-2">1</span> 参考</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/AC%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%AE%97%E6%B3%95">wiki-AC自动机算法</a><br></li>
+<li><a href="http://www.yoonper.com/post.php?id=76">YoonPer</a><br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org38eab78" class="outline-2">
+<h2 id="org38eab78"><span class="section-number-2">2</span> 问题</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+给一个很长的文本，长度为 n，然后再给 m 个模式串。求这 m 个模式串中有多少个是这个文本的子串。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org51bd1d4" class="outline-2">
+<h2 id="org51bd1d4"><span class="section-number-2">3</span> 解题思路</h2>
+<div class="outline-text-2" id="text-3">
+<ol class="org-ol">
+<li><code>暴力破解</code>  时间复杂度为 O(n*m*len(m))，显然时间复杂度太高<br></li>
+<li><code>kmp</code>  使用 kmp 让每一个模式串与文本匹配。时间复杂度为 O((n + len(m))*m)<br></li>
+<li><p>
+<code>trie 树</code>  使用 m 个模式串构造一个 trie 树，然后用文本和 trie 树进行匹配，匹配完后文本自增一，继续从 trie 树的根结点开始匹配。时间复杂度为 O(n*len(m))<br>
+trie 树结点的数据结构如下<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">next</span>[26];
+    <span style="color: #af8700;">bool</span> <span style="color: #0087ff;">is_end</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27169;&#24335;&#20018;&#32467;&#23614;&#26631;&#24535;</span>
+}
+</pre>
+</div></li>
+<li><p>
+<code>Aho–Corasick algorithm</code>  ac 自动机算法简单来说就类似于 kmp + trie 的组合算法。它的 trie 树结点的数据结构如下<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">next</span>[26];
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">fail</span>;
+    <span style="color: #af8700;">bool</span> <span style="color: #0087ff;">is_end</span>;
+};
+</pre>
+</div>
+<p>
+在 kmp 算法中是如何避免母串在匹配过程中指针回溯的呢？它使用 next 数组记录了失配时指针应该跳转的位置，避免了不必要的前移、浪费时间。<br>
+同理，ac 自动机中 trie 树结点多了一个 fail 指针，fail指针指向当前匹配失败时的跳转结点<br>
+ac 自动机算法时间复杂度为 O(n+len(m)*m)<br>
+</p></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgf594d7e" class="outline-2">
+<h2 id="orgf594d7e"><span class="section-number-2">4</span> Aho–Corasick algorithm</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+在<a href="https://zh.wikipedia.org/wiki/AC%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%AE%97%E6%B3%95">维基百科</a>中 AC 自动机的简介如下<br>
+</p>
+<pre class="example">
+在计算机科学中，Aho–Corasick算法是由Alfred V. Aho和Margaret J.Corasick 发明的字符串搜索算法，[1]用于在输入的一串字符串中匹配有限组“字典”中的子串。它与普通字符串匹配的不同点在于同时与所有字典串进行匹配。算法均摊情况下具有近似于线性的时间复杂度，约为字符串的长度加所有匹配的数量。然而由于需要找到所有匹配数，如果每个子串互相匹配（如字典为a，aa，aaa，aaaa，输入的字符串为aaaa），算法的时间复杂度会近似于匹配的二次函数。
+
+该算法主要依靠构造一个有限状态机（类似于在一个trie树中添加失配指针）来实现。这些额外的失配指针允许在查找字符串失败时进行回退（例如设Trie树的单词cat匹配失败，但是在Trie树中存在另一个单词cart，失配指针就会指向前缀ca），转向某前缀的其他分支，免于重复匹配前缀，提高算法效率。
+
+当一个字典串集合是已知的(例如一个计算机病毒库), 就可以以离线方式先将自动机求出并储存以供日后使用，在这种情况下，算法的时间复杂度为输入字符串长度和匹配数量之和。
+
+UNIX系统中的一个命令fgrep就是以AC自动机算法作为基础实现的。
+</pre>
+</div>
+</div>
+<div id="outline-container-org66389fe" class="outline-2">
+<h2 id="org66389fe"><span class="section-number-2">5</span> 算法</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+hihocoder #1036<br>
+输入：第一行为模式串数量 m，然后输入 m 行模式串，然后输入一行文本<br>
+输出：模式串中有多少个文本的子串<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdio&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstring&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;queue&gt;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1000010
+
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
+{
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">fail</span>;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22833;&#37197;&#25351;&#38024;&#12290;&#25351;&#21521;&#21305;&#37197;&#22833;&#36133;&#26102;&#30340;&#22238;&#36864;&#20301;&#32622;</span>
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">next</span>[26];
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20540;&#22495;&#12290;&#23427;&#21487;&#20197;&#26159;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">1.&#31867;&#22411;&#26159; bool&#65292;&#27169;&#24335;&#20018;&#32467;&#26463;&#26631;&#24535;&#65307;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">2.&#31867;&#22411;&#26159; int&#65292;&#27169;&#24335;&#20018;&#32534;&#21495;&#65307;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">3.&#31867;&#22411;&#26159; char*&#65292;&#24403;&#35813;&#32467;&#28857;&#26159;&#27169;&#24335;&#20018;&#30340;&#23614;&#32467;&#28857;&#26102;&#65292;&#23427;&#25351;&#21521;&#27169;&#24335;&#20018;&#12290;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312;&#36825;&#37324;&#23427;&#26159;&#31532;1&#31181;&#24773;&#20917;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">count</span>;
+    <span style="color: #0087ff;">node</span>()
+    {
+        fail = <span style="color: #00afaf;">NULL</span>;
+        count = 0;
+        memset(next, 0, <span style="color: #5f8700;">sizeof</span>(next));
+    }
+}*<span style="color: #0087ff;">root</span>;
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25554;&#20837;&#27169;&#24335;&#20018;&#65292;&#26500;&#24314; trie &#26641;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">insert</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">word</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">t</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p</span> = root;
+    <span style="color: #5f8700;">while</span>(*word)
+    {
+        t = *word - <span style="color: #00afaf;">'a'</span>;
+        <span style="color: #5f8700;">if</span>(p-&gt;next[t] == <span style="color: #00afaf;">NULL</span>)
+            p-&gt;next[t] = new node();
+        p = p-&gt;next[t];
+        ++word;
+    }
+    ++p-&gt;count;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312; trie &#26641;&#22522;&#30784;&#19978;&#26500;&#36896; fail &#25351;&#38024;&#65292;&#26500;&#24314; ac &#33258;&#21160;&#26426;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">build_ac</span>()
+{
+    std::queue&lt;node*&gt; q;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20511;&#21161;&#38431;&#21015;&#36827;&#34892; BFS</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#23618;&#32467;&#28857;&#30340; fail &#25351;&#38024;&#25351;&#21521;&#26681;&#32467;&#28857;</span>
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; 26; ++i)
+    {
+        <span style="color: #5f8700;">if</span>(root-&gt;next[i])
+        {
+            root-&gt;next[i]-&gt;fail = root;
+            q.push(root-&gt;next[i]);
+        }
+    }
+
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">fail</span>;
+    <span style="color: #5f8700;">while</span>(<span style="color: #d70000;">!</span>q.empty())
+    {
+        p=q.front();
+        q.pop();
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382;&#24403;&#21069;&#20998;&#25903;&#21487;&#33021;&#23384;&#22312;&#30340; 26 &#20010;&#23401;&#23376;</span>
+        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; 26; ++i)
+        {
+            <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>p-&gt;next[i])
+                <span style="color: #5f8700;">continue</span>;
+            fail = p-&gt;fail;
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382;&#21644;&#24403;&#21069;&#20998;&#25903; p &#20855;&#26377;&#30456;&#21516;&#21518;&#32512;&#30340;&#20854;&#23427;&#20998;&#25903;&#65292;&#30452;&#21040;&#25214;&#21040;&#19968;&#20010;&#20855;&#26377;&#30456;&#21516;&#23401;&#23376;&#32467;&#28857;&#30340;&#20998;&#25903; b</span>
+            <span style="color: #5f8700;">while</span>(fail)
+            {
+                <span style="color: #5f8700;">if</span>(fail-&gt;next[i])
+                {
+                    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25214;&#21040;&#20998;&#25903; b &#21518;&#65292;&#35774;&#32622; p &#30340;&#23401;&#23376;&#30340; fail &#25351;&#38024;&#25351;&#21521; b &#30340;&#23401;&#23376;</span>
+                    p-&gt;next[i]-&gt;fail=fail-&gt;next[i];
+                    <span style="color: #5f8700;">break</span>;
+                }
+                fail=fail-&gt;fail;
+            }
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#27809;&#26377;&#25214;&#21040;&#20998;&#25903; b&#65292;&#35774;&#32622; p &#30340;&#23401;&#23376;&#30340; fail &#25351;&#38024;&#25351;&#21521; root</span>
+            <span style="color: #5f8700;">if</span>(p-&gt;next[i]-&gt;fail==<span style="color: #00afaf;">NULL</span>)
+                p-&gt;next[i]-&gt;fail=root;
+            q.push(p-&gt;next[i]);
+        }
+    }
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21305;&#37197;&#25991;&#26412;&#65292;&#36820;&#22238;&#31526;&#21512;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">find</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">text</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">count</span> = 0;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">t</span>;
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p</span> = root;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23545;&#20110;&#25991;&#26412; abcde&#65292;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">1.&#31532;&#19968;&#27425; while &#24490;&#29615;&#65306;&#22312; trie &#26641;&#19978;&#20174;&#26681;&#32467;&#28857;&#21521;&#21069;&#21305;&#37197; a&#12290;&#22914;&#26524;&#21305;&#37197;&#25104;&#21151;&#23601;&#21521;&#21069;&#36208;&#19968;&#27493;&#65307;&#22833;&#37197;&#23601;&#26681;&#25454; fail  &#25351;&#38024;&#22238;&#36864;&#21040;&#21644;&#24403;&#21069;&#20998;&#25903;&#26377;&#30456;&#21516;&#21518;&#32512;&#30340;&#20854;&#23427;&#20998;&#25903;&#65288;&#19988;&#35813;&#20998;&#25903;&#20855;&#26377;&#23401;&#23376;&#32467;&#28857; a&#65289;&#65292;&#28982;&#21518;&#21521;&#21069;&#36208;&#19968;&#27493;&#12290;&#21305;&#37197;&#20043;&#21518;&#65292;&#24403;&#21069;&#25152;&#22312;&#30340;&#20998;&#25903;&#20301;&#32622;&#26159; p&#12290;&#26368;&#21518;&#32479;&#35745;&#24403;&#21069;&#20998;&#25903; p &#21644;&#19982; p &#20855;&#26377;&#30456;&#21516;&#21518;&#32512;&#30340;&#25152;&#26377;&#20854;&#23427;&#20998;&#25903;&#19978;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;&#12290;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">2.&#31532;&#20108;&#27425; while &#24490;&#29615;&#65306;&#26681;&#25454;&#19978;&#19968;&#27493;&#30340; p &#30340;&#20301;&#32622;&#65292;&#32487;&#32493;&#21521;&#21069;&#21305;&#37197; b&#12290;... &#21516;&#27493;&#39588;1</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">3.&#31532;&#19977;&#27425; while &#24490;&#29615;&#65306;&#26681;&#25454;&#19978;&#19968;&#27493;&#30340; p &#30340;&#20301;&#32622;&#65292;&#32487;&#32493;&#21521;&#21069;&#21305;&#37197; c&#12290;... &#21516;&#27493;&#39588;1</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">...</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#21518;&#24471;&#21040;&#21305;&#37197;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;</span>
+    <span style="color: #5f8700;">while</span>(*text)
+    {
+        t = *text - <span style="color: #00afaf;">'a'</span>;
+        <span style="color: #5f8700;">while</span>(p-&gt;next[t] == <span style="color: #00afaf;">NULL</span> &amp;&amp; p != root)
+            p = p-&gt;fail;
+        p = p-&gt;next[t];
+        <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>p)
+            p = root;
+
+        <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">fail</span> = p;
+        <span style="color: #5f8700;">while</span>(fail != root &amp;&amp; fail-&gt;count != -1)
+        {
+            count += fail-&gt;count;
+            fail-&gt;count = -1;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622;&#20026; -1&#65292;&#36991;&#20813;&#37325;&#22797;&#32479;&#35745;&#21629;&#20013;&#30340;&#27169;&#24335;&#20018;</span>
+            fail = fail-&gt;fail;
+        }
+        ++text;
+    }
+    <span style="color: #5f8700;">return</span> count;
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>;
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">word</span>[N], <span style="color: #0087ff;">text</span>[N];
+    root = new node();
+    scanf(<span style="color: #00afaf;">"%d"</span>, &amp;n);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; n; ++i)
+    {
+        scanf(<span style="color: #00afaf;">"%s"</span>, word);
+        insert(word);
+    }
+    build_ac();
+    scanf(<span style="color: #00afaf;">"%s"</span>, text);
+    printf(<span style="color: #00afaf;">"Found %d pattern strings\n"</span>, find(text));
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+
+<p>
+执行结果如下<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ g++ main.cpp -o main
+$ ./main
+6
+aaabc
+aaac
+abcc
+ac
+bcd
+<span style="color: #5f8700;">cd</span>
+aaaaaaaaaaabaaadaaac
+Found 2 pattern strings
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+</div>
+</body>
+</html>
