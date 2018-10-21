@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-10-06 Sat 21:52 -->
+<!-- 2018-10-21 Sun 12:58 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ac 自动机</title>
@@ -34,17 +34,17 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9ff8133">1. 参考</a></li>
-<li><a href="#org38eab78">2. 问题</a></li>
-<li><a href="#org51bd1d4">3. 解题思路</a></li>
-<li><a href="#orgf594d7e">4. Aho–Corasick algorithm</a></li>
-<li><a href="#org66389fe">5. 算法</a></li>
+<li><a href="#org6a23ad2">1. 参考</a></li>
+<li><a href="#orgda01d4a">2. 问题</a></li>
+<li><a href="#orgd78eaba">3. 解题思路</a></li>
+<li><a href="#org6926d92">4. Aho–Corasick algorithm</a></li>
+<li><a href="#org3857b0a">5. 算法</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9ff8133" class="outline-2">
-<h2 id="org9ff8133"><span class="section-number-2">1</span> 参考</h2>
+<div id="outline-container-org6a23ad2" class="outline-2">
+<h2 id="org6a23ad2"><span class="section-number-2">1</span> 参考</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><a href="https://zh.wikipedia.org/wiki/AC%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%AE%97%E6%B3%95">wiki-AC自动机算法</a><br></li>
@@ -53,8 +53,8 @@
 </div>
 </div>
 
-<div id="outline-container-org38eab78" class="outline-2">
-<h2 id="org38eab78"><span class="section-number-2">2</span> 问题</h2>
+<div id="outline-container-orgda01d4a" class="outline-2">
+<h2 id="orgda01d4a"><span class="section-number-2">2</span> 问题</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 给一个很长的文本，长度为 n，然后再给 m 个模式串。求这 m 个模式串中有多少个是这个文本的子串。<br>
@@ -62,8 +62,8 @@
 </div>
 </div>
 
-<div id="outline-container-org51bd1d4" class="outline-2">
-<h2 id="org51bd1d4"><span class="section-number-2">3</span> 解题思路</h2>
+<div id="outline-container-orgd78eaba" class="outline-2">
+<h2 id="orgd78eaba"><span class="section-number-2">3</span> 解题思路</h2>
 <div class="outline-text-2" id="text-3">
 <ol class="org-ol">
 <li><code>暴力破解</code>  时间复杂度为 O(n*m*len(m))，显然时间复杂度太高<br></li>
@@ -101,25 +101,33 @@ ac 自动机算法时间复杂度为 O(n+len(m)*m)<br>
 </div>
 </div>
 
-<div id="outline-container-orgf594d7e" class="outline-2">
-<h2 id="orgf594d7e"><span class="section-number-2">4</span> Aho–Corasick algorithm</h2>
+<div id="outline-container-org6926d92" class="outline-2">
+<h2 id="org6926d92"><span class="section-number-2">4</span> Aho–Corasick algorithm</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 在<a href="https://zh.wikipedia.org/wiki/AC%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%AE%97%E6%B3%95">维基百科</a>中 AC 自动机的简介如下<br>
 </p>
-<pre class="example">
-在计算机科学中，Aho–Corasick算法是由Alfred V. Aho和Margaret J.Corasick 发明的字符串搜索算法，[1]用于在输入的一串字符串中匹配有限组“字典”中的子串。它与普通字符串匹配的不同点在于同时与所有字典串进行匹配。算法均摊情况下具有近似于线性的时间复杂度，约为字符串的长度加所有匹配的数量。然而由于需要找到所有匹配数，如果每个子串互相匹配（如字典为a，aa，aaa，aaaa，输入的字符串为aaaa），算法的时间复杂度会近似于匹配的二次函数。
+<blockquote>
+<p>
+在计算机科学中，Aho–Corasick算法是由Alfred V. Aho和Margaret J.Corasick 发明的字符串搜索算法，[1]用于在输入的一串字符串中匹配有限组“字典”中的子串。它与普通字符串匹配的不同点在于同时与所有字典串进行匹配。算法均摊情况下具有近似于线性的时间复杂度，约为字符串的长度加所有匹配的数量。然而由于需要找到所有匹配数，如果每个子串互相匹配（如字典为a，aa，aaa，aaaa，输入的字符串为aaaa），算法的时间复杂度会近似于匹配的二次函数。<br>
+</p>
 
-该算法主要依靠构造一个有限状态机（类似于在一个trie树中添加失配指针）来实现。这些额外的失配指针允许在查找字符串失败时进行回退（例如设Trie树的单词cat匹配失败，但是在Trie树中存在另一个单词cart，失配指针就会指向前缀ca），转向某前缀的其他分支，免于重复匹配前缀，提高算法效率。
+<p>
+该算法主要依靠构造一个有限状态机（类似于在一个trie树中添加失配指针）来实现。这些额外的失配指针允许在查找字符串失败时进行回退（例如设Trie树的单词cat匹配失败，但是在Trie树中存在另一个单词cart，失配指针就会指向前缀ca），转向某前缀的其他分支，免于重复匹配前缀，提高算法效率。<br>
+</p>
 
-当一个字典串集合是已知的(例如一个计算机病毒库), 就可以以离线方式先将自动机求出并储存以供日后使用，在这种情况下，算法的时间复杂度为输入字符串长度和匹配数量之和。
+<p>
+当一个字典串集合是已知的(例如一个计算机病毒库), 就可以以离线方式先将自动机求出并储存以供日后使用，在这种情况下，算法的时间复杂度为输入字符串长度和匹配数量之和。<br>
+</p>
 
-UNIX系统中的一个命令fgrep就是以AC自动机算法作为基础实现的。
-</pre>
+<p>
+UNIX系统中的一个命令fgrep就是以AC自动机算法作为基础实现的。<br>
+</p>
+</blockquote>
 </div>
 </div>
-<div id="outline-container-org66389fe" class="outline-2">
-<h2 id="org66389fe"><span class="section-number-2">5</span> 算法</h2>
+<div id="outline-container-org3857b0a" class="outline-2">
+<h2 id="org3857b0a"><span class="section-number-2">5</span> 算法</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 hihocoder #1036<br>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-10-06 Sat 21:52 -->
+<!-- 2018-10-21 Sun 12:58 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>libevent 源码之 signal 事件处理</title>
@@ -34,18 +34,18 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbb42a11">1. signal 事件集成策略</a></li>
-<li><a href="#org2974349">2. 主要数据结构</a></li>
-<li><a href="#orgc0de1aa">3. 内部信号读事件初始化</a></li>
-<li><a href="#orgc9585a3">4. 信号事件的注册</a></li>
-<li><a href="#org0b4be4d">5. 注册信号</a></li>
-<li><a href="#org0b12eba">6. 信号发生后执行的代码</a></li>
+<li><a href="#org5990dd8">1. signal 事件集成策略</a></li>
+<li><a href="#org2cb20c9">2. 主要数据结构</a></li>
+<li><a href="#org3ea728e">3. 内部信号读事件初始化</a></li>
+<li><a href="#org7d691c1">4. 信号事件的注册</a></li>
+<li><a href="#org3ec46c8">5. 注册信号</a></li>
+<li><a href="#orga619db0">6. 信号发生后执行的代码</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbb42a11" class="outline-2">
-<h2 id="orgbb42a11"><span class="section-number-2">1</span> signal 事件集成策略</h2>
+<div id="outline-container-org5990dd8" class="outline-2">
+<h2 id="org5990dd8"><span class="section-number-2">1</span> signal 事件集成策略</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 集成思想:<br>
@@ -64,8 +64,8 @@
 </div>
 </div>
 
-<div id="outline-container-org2974349" class="outline-2">
-<h2 id="org2974349"><span class="section-number-2">2</span> 主要数据结构</h2>
+<div id="outline-container-org2cb20c9" class="outline-2">
+<h2 id="org2cb20c9"><span class="section-number-2">2</span> 主要数据结构</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> {
@@ -108,8 +108,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgc0de1aa" class="outline-2">
-<h2 id="orgc0de1aa"><span class="section-number-2">3</span> 内部信号读事件初始化</h2>
+<div id="outline-container-org3ea728e" class="outline-2">
+<h2 id="org3ea728e"><span class="section-number-2">3</span> 内部信号读事件初始化</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 初始化步骤：<br>
@@ -192,8 +192,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgc9585a3" class="outline-2">
-<h2 id="orgc9585a3"><span class="section-number-2">4</span> 信号事件的注册</h2>
+<div id="outline-container-org7d691c1" class="outline-2">
+<h2 id="org7d691c1"><span class="section-number-2">4</span> 信号事件的注册</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 调用顺序为：<br>
@@ -299,8 +299,8 @@ event_add 注册信号事件 &#x2013;&gt; event_add_internal &#x2013;&gt; evmap_
 </div>
 </div>
 
-<div id="outline-container-org0b4be4d" class="outline-2">
-<h2 id="org0b4be4d"><span class="section-number-2">5</span> 注册信号</h2>
+<div id="outline-container-org3ec46c8" class="outline-2">
+<h2 id="org3ec46c8"><span class="section-number-2">5</span> 注册信号</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 注册信号和注册信号事件的区别：<br>
@@ -481,8 +481,8 @@ evsig_handler(<span style="color: #af8700;">int</span> <span style="color: #0087
 </div>
 </div>
 </div>
-<div id="outline-container-org0b12eba" class="outline-2">
-<h2 id="org0b12eba"><span class="section-number-2">6</span> 信号发生后执行的代码</h2>
+<div id="outline-container-orga619db0" class="outline-2">
+<h2 id="orga619db0"><span class="section-number-2">6</span> 信号发生后执行的代码</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 执行逻辑如下：<br>

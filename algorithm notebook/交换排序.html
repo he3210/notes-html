@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-10-06 Sat 21:52 -->
+<!-- 2018-10-21 Sun 12:58 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>交换排序</title>
@@ -34,25 +34,25 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9f1bbd9">1. 冒泡排序</a></li>
-<li><a href="#org9e566a1">2. 快排</a>
+<li><a href="#orgac013d8">1. 冒泡排序</a></li>
+<li><a href="#orgebc6f3e">2. 快排</a>
 <ul>
-<li><a href="#org6622e36">2.1. 两个下标分别从首、尾向中间扫描</a></li>
-<li><a href="#orgda8a74b">2.2. 两个指针一前一后向后扫描</a></li>
+<li><a href="#org1d3800a">2.1. 两个下标分别从首、尾向中间扫描</a></li>
+<li><a href="#org1f91db2">2.2. 两个指针一前一后向后扫描</a></li>
 </ul>
 </li>
-<li><a href="#org406795f">3. 相关算法</a>
+<li><a href="#orge4aa145">3. 相关算法</a>
 <ul>
-<li><a href="#org004545a">3.1. 荷兰国旗问题</a></li>
-<li><a href="#orge4d02da">3.2. 找到最小 k 个数</a></li>
+<li><a href="#org572330c">3.1. 荷兰国旗问题</a></li>
+<li><a href="#org988ca9f">3.2. 找到最小 k 个数</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9f1bbd9" class="outline-2">
-<h2 id="org9f1bbd9"><span class="section-number-2">1</span> 冒泡排序</h2>
+<div id="outline-container-orgac013d8" class="outline-2">
+<h2 id="orgac013d8"><span class="section-number-2">1</span> 冒泡排序</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 基本思想：假设待排序表长为 n，从前向后（从后向前）两两比较相邻元素的值，若为逆序（即 A[i-1] &gt; A[i]），则交换它们，直到序列比较完，这是一趟冒泡排序。一次冒泡排序确定一个元素的位置，这样最多 n-1 躺冒泡就能把所有元素排好序<br>
@@ -108,12 +108,12 @@
 </div>
 </div>
 
-<div id="outline-container-org9e566a1" class="outline-2">
-<h2 id="org9e566a1"><span class="section-number-2">2</span> 快排</h2>
+<div id="outline-container-orgebc6f3e" class="outline-2">
+<h2 id="orgebc6f3e"><span class="section-number-2">2</span> 快排</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org6622e36" class="outline-3">
-<h3 id="org6622e36"><span class="section-number-3">2.1</span> 两个下标分别从首、尾向中间扫描</h3>
+<div id="outline-container-org1d3800a" class="outline-3">
+<h3 id="org1d3800a"><span class="section-number-3">2.1</span> 两个下标分别从首、尾向中间扫描</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 基本思想：假设待排序表长为n，从前向后（从后向前）两两比较相邻元素的值，若为逆序（即 A[i-1] &gt; A[i]），则交换它们，直到序列比较完，这是一趟冒泡排序。一次冒泡排序确定一个元素的位置，这样最多 n-1 躺冒泡就能把所有元素排好序<br>
@@ -148,8 +148,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgda8a74b" class="outline-3">
-<h3 id="orgda8a74b"><span class="section-number-3">2.2</span> 两个指针一前一后向后扫描</h3>
+<div id="outline-container-org1f91db2" class="outline-3">
+<h3 id="org1f91db2"><span class="section-number-3">2.2</span> 两个指针一前一后向后扫描</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 基本思想：设置两个下标 i、j，在子序列 {A[0], A[1], &#x2026;, A[j]} 中，使下标 i 左边的元素比基准值小，右边的元素比基准值大，j 不断向后扫描，扫描结束即确定基准值的最终位置<br>
@@ -198,12 +198,12 @@
 </div>
 </div>
 
-<div id="outline-container-org406795f" class="outline-2">
-<h2 id="org406795f"><span class="section-number-2">3</span> 相关算法</h2>
+<div id="outline-container-orge4aa145" class="outline-2">
+<h2 id="orge4aa145"><span class="section-number-2">3</span> 相关算法</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org004545a" class="outline-3">
-<h3 id="org004545a"><span class="section-number-3">3.1</span> 荷兰国旗问题</h3>
+<div id="outline-container-org572330c" class="outline-3">
+<h3 id="org572330c"><span class="section-number-3">3.1</span> 荷兰国旗问题</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 问题描述：<br>
@@ -239,8 +239,8 @@
 </div>
 </div>
 
-<div id="outline-container-orge4d02da" class="outline-3">
-<h3 id="orge4d02da"><span class="section-number-3">3.2</span> 找到最小 k 个数</h3>
+<div id="outline-container-org988ca9f" class="outline-3">
+<h3 id="org988ca9f"><span class="section-number-3">3.2</span> 找到最小 k 个数</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 描述：输入 n 个整数，输出其中最小的 k 个<br>

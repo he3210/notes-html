@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-10-06 Sat 21:52 -->
+<!-- 2018-10-21 Sun 12:58 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>搭建我的笔记系统</title>
@@ -34,10 +34,12 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge878798">1. 为什么选用 org-mode 构建？</a></li>
-<li><a href="#orge13e6df">2. 笔记系统目录结构</a></li>
-<li><a href="#orge5ed766">3. org-mode 导出成网站的配置</a></li>
-<li><a href="#orgff446fd">4. 补充1&#x2013;代码块右侧显示代码类型</a></li>
+<li><a href="#org7d8c8db">1. 为什么选用 org-mode 构建？</a></li>
+<li><a href="#org8df2a04">2. 笔记系统最终目录结构</a></li>
+<li><a href="#orgd58f182">3. org-mode 导出成网站的基本配置</a></li>
+<li><a href="#org4fb6dc4">4. 后续优化1&#x2013;代码块右侧显示代码类型</a></li>
+<li><a href="#org34b3559">5. 后续优化2&#x2013;生产环境测试环境分离</a></li>
+<li><a href="#org1fbc2fc">6. 后续优化3&#x2013;目录聚焦当前大纲</a></li>
 </ul>
 </div>
 </div>
@@ -45,8 +47,8 @@
 本站点就是这样构建的<br>
 </p>
 
-<div id="outline-container-orge878798" class="outline-2">
-<h2 id="orge878798"><span class="section-number-2">1</span> 为什么选用 org-mode 构建？</h2>
+<div id="outline-container-org7d8c8db" class="outline-2">
+<h2 id="org7d8c8db"><span class="section-number-2">1</span> 为什么选用 org-mode 构建？</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 之前一直使用 evernote + gitbook 等工具记笔记。然而每个都有各自很大的缺点<br>
@@ -69,22 +71,22 @@
 </ul>
 
 <p>
-搭建笔记系统的目标：<br>
+搭建笔记系统的几个目标：<br>
 </p>
 <ul class="org-ul">
 <li>要有一个导航栏<br></li>
 <li>主页存放经常访问的笔记。如 shell 命令、快捷键等<br></li>
 <li>对笔记进行分类。比如：shell 笔记、算法笔记<br></li>
 <li>采用 google 搜索<br></li>
-<li>目录浮于右上角，点击隐藏，再点击显示<br></li>
+<li>目录浮于右上角，点击隐藏，再点击显示;目录聚焦当前大纲。<br></li>
 <li>简单美观<br></li>
 <li>代码高亮<br></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge13e6df" class="outline-2">
-<h2 id="orge13e6df"><span class="section-number-2">2</span> 笔记系统目录结构</h2>
+<div id="outline-container-org8df2a04" class="outline-2">
+<h2 id="org8df2a04"><span class="section-number-2">2</span> 笔记系统最终目录结构</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ tree -N -I <span style="color: #00afaf;">"algorithm|libevent|test"</span> notes
@@ -104,17 +106,21 @@ notes                       <span style="color: #8a8a8a;"># </span><span style="
     &#9474;&#160;&#160; &#9492;&#9472;&#9472; libevent.org    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31508;&#35760;&#30446;&#24405;</span>
     &#9500;&#9472;&#9472; shell notebook
     &#9474;&#160;&#160; &#9492;&#9472;&#9472; shell.org
-    &#9492;&#9472;&#9472; templates           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">html &#27169;&#29256;&#30446;&#24405;&#12290;&#23548;&#20986; html &#26102;&#20250;&#26681;&#25454;&#30456;&#20851;&#37197;&#32622;&#25226;&#36825;&#20123;&#27169;&#29256;&#25918;&#21040; html &#30340;&#21512;&#36866;&#20301;&#32622;</span>
-        &#9500;&#9472;&#9472; html-head.html  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">html head</span>
-        &#9500;&#9472;&#9472; postamble.html  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25918;&#21040; html &#30340;&#23614;&#37096;</span>
-        &#9492;&#9472;&#9472; preamble.html   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25918;&#21040; html &#30340;&#24320;&#22987;&#37096;&#20998;</span>
+    &#9474;&#9472;&#9472; templates           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">html &#27169;&#29256;&#30446;&#24405;&#12290;&#23548;&#20986; html &#26102;&#20250;&#26681;&#25454;&#30456;&#20851;&#37197;&#32622;&#25226;&#36825;&#20123;&#27169;&#29256;&#25918;&#21040; html &#30340;&#21512;&#36866;&#20301;&#32622;&#12290;&#29983;&#20135;&#29615;&#22659;&#20351;&#29992;&#35813;&#30446;&#24405;n</span>
+    &#9474;   &#9500;&#9472;&#9472; html-head.html  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">html head</span>
+    &#9474;   &#9500;&#9472;&#9472; postamble.html  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25918;&#21040; html &#30340;&#23614;&#37096;</span>
+    &#9474;   &#9492;&#9472;&#9472; preamble.html   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25918;&#21040; html &#30340;&#24320;&#22987;&#37096;&#20998;</span>
+    &#9492;&#9472;&#9472; templates-test      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#27979;&#35797;&#29615;&#22659;&#20351;&#29992;&#36825;&#20010;&#30446;&#24405;&#32780;&#19981;&#29992; templates</span>
+        &#9500;&#9472;&#9472; html-head.html
+        &#9500;&#9472;&#9472; postamble.html
+        &#9492;&#9472;&#9472; preamble.html
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orge5ed766" class="outline-2">
-<h2 id="orge5ed766"><span class="section-number-2">3</span> org-mode 导出成网站的配置</h2>
+<div id="outline-container-orgd58f182" class="outline-2">
+<h2 id="orgd58f182"><span class="section-number-2">3</span> org-mode 导出成网站的基本配置</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 我的 emacs org-mode 的配置文件是 <code>init-org.el</code> ，向该文件添加如下配置<br>
@@ -168,10 +174,10 @@ notes                       <span style="color: #8a8a8a;"># </span><span style="
         (<span style="color: #00afaf;">"notes"</span> <span style="color: #5f8700;">:components</span> (<span style="color: #00afaf;">"org-notes"</span> <span style="color: #00afaf;">"static"</span>))  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#31508;&#35760;&#26412;&#21457;&#24067;&#32452;&#20214;</span>
         ))
 
-<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">html-head.html &#25991;&#20214;&#20013;&#35774;&#32622;&#20102; CSS &#26679;&#24335;</span>
 <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">css &#25991;&#20214;&#22914;&#26524;&#20462;&#25913;&#20102;&#65292;&#23601;&#38656;&#35201;&#37325;&#26032;&#21152;&#36733;&#35813; el &#25991;&#20214;&#65292;&#36825;&#26679;&#25165;&#33021;&#30475;&#21040; html &#26679;&#24335;&#30340;&#21464;&#21270;</span>
-<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">preamble.html &#25991;&#20214;&#21253;&#21547;&#23548;&#33322;&#26639; html&#12289;&#28857;&#20987;&#30446;&#24405;&#30340; js &#20195;&#30721;&#12289;google &#25628;&#32034;&#31561;&#20195;&#30721;</span>
-<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">postamble.html &#25991;&#20214;&#21253;&#21547;&#20102;&#32593;&#31449;&#22768;&#26126;</span>
+<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">html-head.html &#25991;&#20214;&#29992;&#26469;&#35774;&#32622; html &#30340; &lt;head&gt; &#37096;&#20998;&#12290;&#35813;&#25991;&#20214;&#20013;&#24341;&#20837;&#20102; CSS &#25991;&#20214;</span>
+<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">preamble.html &#25991;&#20214;&#21253;&#21547;&#23548;&#33322;&#26639; html&#12289;&#35895;&#27468;&#25628;&#32034;</span>
+<span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">postamble.html &#25991;&#20214;&#21253;&#21547;&#20102;&#32593;&#31449;&#22768;&#26126;&#12289;&#24341;&#20837;&#20102; js &#25991;&#20214;</span>
 (<span style="color: #5f8700;">setq</span> org-html-head (read-html-template <span style="color: #00afaf;">"html-head.html"</span>))
 (<span style="color: #5f8700;">setq</span> org-html-preamble (read-html-template <span style="color: #00afaf;">"preamble.html"</span>))
 (<span style="color: #5f8700;">setq</span> org-html-postamble (read-html-template <span style="color: #00afaf;">"postamble.html"</span>))
@@ -222,8 +228,8 @@ notes                       <span style="color: #8a8a8a;"># </span><span style="
 </p>
 </div>
 </div>
-<div id="outline-container-orgff446fd" class="outline-2">
-<h2 id="orgff446fd"><span class="section-number-2">4</span> 补充1&#x2013;代码块右侧显示代码类型</h2>
+<div id="outline-container-org4fb6dc4" class="outline-2">
+<h2 id="org4fb6dc4"><span class="section-number-2">4</span> 后续优化1&#x2013;代码块右侧显示代码类型</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 如果代码块是 shell 脚本，代码块右上角显示 shell；如果是 python 代码，右上角显示 python&#x2026;<br>
@@ -266,97 +272,136 @@ notes                       <span style="color: #8a8a8a;"># </span><span style="
 }
 
 <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Languages per Org manual </span><span style="color: #8a8a8a;">*/</span>
-<span style="color: #0087ff;">pre.src-asymptote:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Asymptote'</span>; }
 <span style="color: #0087ff;">pre.src-awk:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'awk'</span>; }
 <span style="color: #0087ff;">pre.src-C:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'C'</span>; }
 <span style="color: #0087ff;">pre.src-c:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'C'</span>; }
-<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">pre.src-C++ doesn't work in CSS </span><span style="color: #8a8a8a;">*/</span>
-<span style="color: #0087ff;">pre.src-clojure:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Clojure'</span>; }
 <span style="color: #0087ff;">pre.src-css:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'CSS'</span>; }
-<span style="color: #0087ff;">pre.src-D:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'D'</span>; }
-<span style="color: #0087ff;">pre.src-ditaa:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'ditaa'</span>; }
-<span style="color: #0087ff;">pre.src-dot:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Graphviz'</span>; }
-<span style="color: #0087ff;">pre.src-calc:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Emacs Calc'</span>; }
 <span style="color: #0087ff;">pre.src-emacs-lisp:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Emacs Lisp'</span>; }
-<span style="color: #0087ff;">pre.src-fortran:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Fortran'</span>; }
-<span style="color: #0087ff;">pre.src-gnuplot:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'gnuplot'</span>; }
-<span style="color: #0087ff;">pre.src-haskell:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Haskell'</span>; }
-<span style="color: #0087ff;">pre.src-java:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Java'</span>; }
-<span style="color: #0087ff;">pre.src-js:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Javascript'</span>; }
-<span style="color: #0087ff;">pre.src-latex:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'LaTeX'</span>; }
-<span style="color: #0087ff;">pre.src-ledger:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Ledger'</span>; }
-<span style="color: #0087ff;">pre.src-lisp:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Lisp'</span>; }
-<span style="color: #0087ff;">pre.src-lilypond:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Lilypond'</span>; }
-<span style="color: #0087ff;">pre.src-lua:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Lua'</span>; }
-<span style="color: #0087ff;">pre.src-matlab:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'MATLAB'</span>; }
-<span style="color: #0087ff;">pre.src-mscgen:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Mscgen'</span>; }
-<span style="color: #0087ff;">pre.src-ocaml:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Objective Caml'</span>; }
-<span style="color: #0087ff;">pre.src-octave:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Octave'</span>; }
-<span style="color: #0087ff;">pre.src-org:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Org mode'</span>; }
-<span style="color: #0087ff;">pre.src-oz:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'OZ'</span>; }
-<span style="color: #0087ff;">pre.src-plantuml:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Plantuml'</span>; }
-<span style="color: #0087ff;">pre.src-processing:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Processing.js'</span>; }
-<span style="color: #0087ff;">pre.src-python:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Python'</span>; }
-<span style="color: #0087ff;">pre.src-R:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'R'</span>; }
-<span style="color: #0087ff;">pre.src-ruby:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Ruby'</span>; }
-<span style="color: #0087ff;">pre.src-sass:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Sass'</span>; }
-<span style="color: #0087ff;">pre.src-scheme:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Scheme'</span>; }
-<span style="color: #0087ff;">pre.src-screen:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Gnu Screen'</span>; }
-<span style="color: #0087ff;">pre.src-sed:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'sed'</span>; }
-<span style="color: #0087ff;">pre.src-sh:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'sh'</span>; }
-<span style="color: #0087ff;">pre.src-sql:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'SQL'</span>; }
-<span style="color: #0087ff;">pre.src-sqlite:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'SQLite'</span>; }
-<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">additional languages in org.el's org-babel-load-languages alist </span><span style="color: #8a8a8a;">*/</span>
-<span style="color: #0087ff;">pre.src-forth:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Forth'</span>; }
-<span style="color: #0087ff;">pre.src-io:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'IO'</span>; }
-<span style="color: #0087ff;">pre.src-J:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'J'</span>; }
-<span style="color: #0087ff;">pre.src-makefile:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Makefile'</span>; }
-<span style="color: #0087ff;">pre.src-maxima:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Maxima'</span>; }
-<span style="color: #0087ff;">pre.src-perl:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Perl'</span>; }
-<span style="color: #0087ff;">pre.src-picolisp:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Pico Lisp'</span>; }
-<span style="color: #0087ff;">pre.src-scala:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Scala'</span>; }
-<span style="color: #0087ff;">pre.src-shell:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'shell'</span>; }
-<span style="color: #0087ff;">pre.src-ebnf2ps:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'ebfn2ps'</span>; }
-<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">additional language identifiers per "defun org-babel-execute"</span>
-<span style="color: #8a8a8a;">       in ob-*.el </span><span style="color: #8a8a8a;">*/</span>
-<span style="color: #0087ff;">pre.src-cpp:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'C++'</span>; }
-<span style="color: #0087ff;">pre.src-abc:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'ABC'</span>; }
-<span style="color: #0087ff;">pre.src-coq:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Coq'</span>; }
-<span style="color: #0087ff;">pre.src-groovy:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Groovy'</span>; }
-<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">additional language identifiers from org-babel-shell-names in</span>
-<span style="color: #8a8a8a;">     ob-shell.el: ob-shell is the only babel language using a lambda to put</span>
-<span style="color: #8a8a8a;">     the execution function name together. </span><span style="color: #8a8a8a;">*/</span>
-<span style="color: #0087ff;">pre.src-bash:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'bash'</span>; }
-<span style="color: #0087ff;">pre.src-csh:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'csh'</span>; }
-<span style="color: #0087ff;">pre.src-ash:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'ash'</span>; }
-<span style="color: #0087ff;">pre.src-dash:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'dash'</span>; }
-<span style="color: #0087ff;">pre.src-ksh:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'ksh'</span>; }
-<span style="color: #0087ff;">pre.src-mksh:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'mksh'</span>; }
-<span style="color: #0087ff;">pre.src-posh:before  </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'posh'</span>; }
-<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Additional Emacs modes also supported by the LaTeX listings package </span><span style="color: #8a8a8a;">*/</span>
-<span style="color: #0087ff;">pre.src-ada:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Ada'</span>; }
-<span style="color: #0087ff;">pre.src-asm:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Assembler'</span>; }
-<span style="color: #0087ff;">pre.src-caml:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Caml'</span>; }
-<span style="color: #0087ff;">pre.src-delphi:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Delphi'</span>; }
-<span style="color: #0087ff;">pre.src-html:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'HTML'</span>; }
-<span style="color: #0087ff;">pre.src-idl:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'IDL'</span>; }
-<span style="color: #0087ff;">pre.src-mercury:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Mercury'</span>; }
-<span style="color: #0087ff;">pre.src-metapost:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'MetaPost'</span>; }
-<span style="color: #0087ff;">pre.src-modula-2:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Modula-2'</span>; }
-<span style="color: #0087ff;">pre.src-pascal:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Pascal'</span>; }
-<span style="color: #0087ff;">pre.src-ps:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'PostScript'</span>; }
-<span style="color: #0087ff;">pre.src-prolog:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Prolog'</span>; }
-<span style="color: #0087ff;">pre.src-simula:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Simula'</span>; }
-<span style="color: #0087ff;">pre.src-tcl:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'tcl'</span>; }
-<span style="color: #0087ff;">pre.src-tex:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'TeX'</span>; }
-<span style="color: #0087ff;">pre.src-plain-tex:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Plain TeX'</span>; }
-<span style="color: #0087ff;">pre.src-verilog:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Verilog'</span>; }
-<span style="color: #0087ff;">pre.src-vhdl:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'VHDL'</span>; }
-<span style="color: #0087ff;">pre.src-xml:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'XML'</span>; }
-<span style="color: #0087ff;">pre.src-nxml:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'XML'</span>; }
-<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">add a generic configuration mode; LaTeX export needs an additional</span>
-<span style="color: #8a8a8a;">     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs </span><span style="color: #8a8a8a;">*/</span>
-<span style="color: #0087ff;">pre.src-conf:before </span>{ <span style="color: #5f8700;">content</span>: <span style="color: #00afaf;">'Configuration File'</span>; }
+<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">... </span><span style="color: #8a8a8a;">*/</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org34b3559" class="outline-2">
+<h2 id="org34b3559"><span class="section-number-2">5</span> 后续优化2&#x2013;生产环境测试环境分离</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+init-func.el 中的笔记导出函数改为<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">export-my-notes-internal</span>()
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#37197;&#33394;&#38382;&#39064;&#12290;&#38656;&#35201;&#35774;&#32622;&#20026; 256 &#33394;&#12290;&#21542;&#21017;&#65292;&#22312;&#32456;&#31471;&#19979;&#30340; emacs &#20013;&#25191;&#34892;&#35813;&#20989;&#25968;&#65292;&#23548;&#20986;&#30340;&#20195;&#30721;&#22359;&#39068;&#33394;&#28151;&#20081;</span>
+  (<span style="color: #5f8700;">setq</span> solarized-termcolors 256)
+  (load-theme 'solarized t)
+
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986; notes &#21040; html</span>
+  (load-file <span style="color: #00afaf;">"~/.emacs.d/lisp/init-org.el"</span>)  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#38656;&#35201;&#37325;&#26032;&#21152;&#36733; init-org.el&#65292;&#21542;&#21017; css &#31561;&#25991;&#20214;&#20462;&#25913;&#21518;&#26080;&#27861;&#37325;&#26032;&#21457;&#24067;</span>
+  (org-publish-project <span style="color: #00afaf;">"notes"</span> t)
+
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986;&#23436;&#27605;&#21518;&#65292;&#37197;&#33394;&#20877;&#25913;&#22238;&#26469;&#65292;&#38450;&#27490; solarized &#22312;&#32456;&#31471;&#20013;&#39068;&#33394;&#28151;&#20081;</span>
+  (<span style="color: #5f8700;">setq</span> solarized-termcolors 16)
+  (load-theme 'solarized t)
+  )
+
+(<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">export-my-notes-test</span>()
+  (<span style="color: #5f8700;">interactive</span>)
+  (<span style="color: #5f8700;">setq</span> *site-template-directory* <span style="color: #00afaf;">"~/notes/org/templates-test"</span>)
+  (export-my-notes-internal)
+  )
+
+(<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">export-my-notes</span>()
+  (<span style="color: #5f8700;">interactive</span>)
+  (<span style="color: #5f8700;">setq</span> *site-template-directory* <span style="color: #00afaf;">"~/notes/org/templates"</span>)
+  (export-my-notes-internal)
+  )
+</pre>
+</div>
+
+<p>
+init-keybindings.el 中的快捷键改为<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(global-set-key (kbd <span style="color: #00afaf;">"C-c e n"</span>) 'export-my-notes-test)    <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986; notes &#31508;&#35760;&#26412;&#21040; html&#65292;&#27979;&#35797;&#29615;&#22659;</span>
+(global-set-key (kbd <span style="color: #00afaf;">"C-c e N"</span>) 'export-my-notes)         <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#29983;&#20135;&#29615;&#22659;</span>
+</pre>
+</div>
+
+<p>
+最后，根目录下添加目录 template-test。向其中添加测试环境的内容<br>
+</p>
+</div>
+</div>
+<div id="outline-container-org1fbc2fc" class="outline-2">
+<h2 id="org1fbc2fc"><span class="section-number-2">6</span> 后续优化3&#x2013;目录聚焦当前大纲</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+使用 jquery 来实现<br>
+</p>
+
+<p>
+postamble.html 中添加 2 行<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-html">&lt;<span style="color: #0087ff;">script</span> <span style="color: #0087ff;">src</span>=<span style="color: #00afaf;">"file:/Users/he/notes/html/css/jquery-2.1.3.min.js"</span>&gt;&lt;/<span style="color: #0087ff;">script</span>&gt;
+&lt;<span style="color: #0087ff;">script</span> <span style="color: #0087ff;">src</span>=<span style="color: #00afaf;">"file:/Users/he/notes/html/css/main.js"</span>&gt;&lt;/<span style="color: #0087ff;">script</span>&gt;
+</pre>
+</div>
+
+<p>
+main.js 内容为：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">table-of-contents &#23450;&#20301;&#24403;&#21069;&#25152;&#22312;&#30446;&#24405; */</span>
+window.ego_toc = $(<span style="color: #00afaf;">'#text-table-of-contents ul li'</span>);
+<span style="color: #5f8700;">if</span>(0 != window.ego_toc.length){
+    window.ego_toc_h = $(<span style="color: #00afaf;">'#table-of-contents h2'</span>);
+    window.ego_toc_h_text = $(<span style="color: #00afaf;">'#table-of-contents h2'</span>).text();
+    window.ego_n = 0;
+    window.ego_tmp = ego_n;
+    window.ego_head = $(<span style="color: #00afaf;">':header'</span>).filter(<span style="color: #00afaf;">'[id*=org]'</span>);
+    $(window).scroll(<span style="color: #5f8700;">function</span> () {
+        <span style="color: #5f8700;">var</span> <span style="color: #0087ff;">startPoint</span>=0;
+        <span style="color: #5f8700;">var</span> <span style="color: #0087ff;">endPoint</span>=ego_head.length-1;
+        <span style="color: #5f8700;">var</span> <span style="color: #0087ff;">offsetValue</span>=window.pageYOffset+60;
+        <span style="color: #5f8700;">if</span>(ego_head.eq(ego_tmp).offset().top&gt;offsetValue || offsetValue&gt;ego_head.eq((ego_tmp+1)&gt;(ego_head.length-1)?(ego_head.length-1):(ego_tmp+1)).offset().top){
+            <span style="color: #5f8700;">while</span>((startPoint+1) &lt; endPoint){
+                <span style="color: #5f8700;">if</span>(ego_head.eq(Math.floor((startPoint+endPoint)/2)).offset().top &gt; offsetValue){
+                    endPoint = Math.floor((startPoint+endPoint)/2);
+                }
+                <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(ego_head.eq(Math.floor((startPoint+endPoint)/2)).offset().top &lt; offsetValue){
+                    startPoint = Math.floor((startPoint+endPoint)/2);
+                }
+                <span style="color: #5f8700;">else</span>{
+                    <span style="color: #5f8700;">break</span>;
+                }
+            }
+            <span style="color: #5f8700;">if</span>(offsetValue&gt;ego_head.eq(ego_head.length-1).offset().top){
+                ego_n=ego_head.length-1;
+            }
+            <span style="color: #5f8700;">else</span>{
+                ego_n = startPoint;
+            }
+
+            ego_toc.eq(ego_tmp).children(<span style="color: #00afaf;">'a'</span>).css(<span style="color: #00afaf;">'color'</span>, <span style="color: #00afaf;">'green'</span>);
+            ego_tmp = ego_n;
+            ego_toc.eq(ego_tmp).children(<span style="color: #00afaf;">'a'</span>).css(<span style="color: #00afaf;">'color'</span>, <span style="color: #00afaf;">'#3c3c3c'</span>);
+            <span style="color: #5f8700;">if</span>(window.pageYOffset &lt; 10){
+                ego_toc_h[0].textContent = ego_toc_h_text;
+            }
+            <span style="color: #5f8700;">else</span>{
+                ego_toc_h[0].textContent = ego_toc.eq(ego_tmp)[0].children.item(0).textContent;
+            }
+            <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">ego_n = parseInt(ego_str.slice(-1));</span>
+        }
+    });}
+
+<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#28857;&#20987;&#30446;&#24405;&#26174;&#31034;&#20840;&#37096;&#30446;&#24405;&#65292;&#20877;&#27425;&#28857;&#20987;&#38544;&#34255; */</span>
+document.addEventListener(<span style="color: #00afaf;">'DOMContentLoaded'</span>,<span style="color: #5f8700;">function</span>() {
+    document.getElementById(<span style="color: #00afaf;">"table-of-contents"</span>).onclick = <span style="color: #5f8700;">function</span>() {
+        <span style="color: #5f8700;">var</span> <span style="color: #0087ff;">elem</span> = document.getElementById(<span style="color: #00afaf;">"text-table-of-contents"</span>);
+        elem.style.display = elem.style.display == <span style="color: #00afaf;">"block"</span> ? <span style="color: #00afaf;">"none"</span> : <span style="color: #00afaf;">"block"</span>;
+    }
+});
 </pre>
 </div>
 </div>
