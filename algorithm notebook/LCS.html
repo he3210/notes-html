@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCS</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">LCS</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org42c931c">1. 问题</a></li>
+<li><a href="#org6934244">2. 状态转移方程</a></li>
+<li><a href="#org4d38e8c">3. 动态规划</a></li>
+<li><a href="#orga1b50de">4. 备忘录</a></li>
+</ul>
+</div>
+</div>
+<p>
+LCS(Longest Common Subsequence) 问题即最长公共子序列问题。<br>
+例如：字符串 ABCBDAB 和 BDCABA，字符串 BCBA 和 BDAB 都是它们的最长公共子序列<br>
+</p>
+
+<div id="outline-container-org42c931c" class="outline-2">
+<h2 id="org42c931c"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+请编写一个函数，输入两个字符串，求它们的最长公共子序列长度。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6934244" class="outline-2">
+<h2 id="org6934244"><span class="section-number-2">2</span> 状态转移方程</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+\[
+c[i, j]=\left\{
+\begin{array}{lcl}
+0                                &      & {i = 0\ or\ j = 0}\\
+c[i - 1, j - 1] + 1              &      & {i, j > 0\ and\ x_i = y_j}\\
+max\{c[i, j - 1], c[i - 1, j]\}  &      & {i, j > 0\ and\ x_i \neq y_j}
+\end{array} \right.
+\]<br>
+</p>
+
+<p>
+设两个字符串是 X 和 Y，<br>
+i 为字符串 X 的下标，j 为字符串 Y 的下标<br>
+x<sub>i</sub> 是字符串 X 的第 i 个字符。同理，y<sub>j</sub> 是字符串 Y 的第 j 个字符<br>
+c[i, j] 是 X 的前 i 个字符和 Y 的前 j 个字符的最长公共子序列<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4d38e8c" class="outline-2">
+<h2 id="org4d38e8c"><span class="section-number-2">3</span> 动态规划</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">c</span>[100][100];
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">LCS_LENGTH</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span>* <span style="color: #0087ff;">X</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span>* <span style="color: #0087ff;">Y</span>)
+{
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24322;&#24120;&#21028;&#26029;</span>
+    <span style="color: #5f8700;">if</span>(X == <span style="color: #00afaf;">NULL</span> || Y == <span style="color: #00afaf;">NULL</span>)
+        <span style="color: #5f8700;">return</span> 0;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36793;&#30028;&#21021;&#22987;&#21270;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len_x</span> = strlen(X);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len_y</span> = strlen(Y);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt;= len_x; ++i)
+        c[i][0] = 0;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = 1; j &lt;= len_y; ++j)
+        c[0][j] = 0;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22635;&#34920;</span>
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 1; i &lt;= len_x; ++i)
+        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = 1; j &lt;= len_y; ++j)
+        {
+            <span style="color: #5f8700;">if</span>(X[i] == Y[j])
+                c[i][j] = c[i - 1][j - 1] + 1;
+            <span style="color: #5f8700;">else</span>
+                c[i][j] = c[i - 1][j] &gt; c[i][j - 1] ? c[i - 1][j] : c[i][j - 1];
+        }
+    <span style="color: #5f8700;">return</span> c[len_x][len_y];
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga1b50de" class="outline-2">
+<h2 id="orga1b50de"><span class="section-number-2">4</span> 备忘录</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #d75f00;"># define</span> <span style="color: #0087ff;">INF</span> -1
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">c</span>[100][100];
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">LCS_MEMO</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span>* <span style="color: #0087ff;">X</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span>* <span style="color: #0087ff;">Y</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span>)
+{
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26597;&#35810;&#23376;&#38382;&#39064;&#30340;&#35299;</span>
+    <span style="color: #5f8700;">if</span>(c[i][j] != INF)
+        <span style="color: #5f8700;">return</span> c[i][j];
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22788;&#29702;&#36793;&#30028;</span>
+    <span style="color: #5f8700;">if</span>(i == 0 || j == 0)
+        c[i][j] = 0;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22635;&#34920;</span>
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(X[i] == Y[j])
+        <span style="color: #5f8700;">return</span> LCS_MEMO(X, Y, i - 1, j - 1) + 1;
+    <span style="color: #5f8700;">else</span>
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span> = LCS_MEMO(X, Y, i - 1, j);
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">q</span> = LCS_MEMO(X, Y, i, j - 1);
+        c[i][j] = p &gt; q ? p : q;
+    }
+    <span style="color: #5f8700;">return</span> c[i][j];
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">LCS_LENGTH</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span>* <span style="color: #0087ff;">X</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span>* <span style="color: #0087ff;">Y</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len_x</span> = strlen(X);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len_y</span> = strlen(Y);
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23376;&#38382;&#39064;&#30340;&#35299;&#21021;&#22987;&#21270;&#20026;&#19968;&#20010;&#29305;&#27530;&#20540;</span>
+    memset(c, INF, <span style="color: #5f8700;">sizeof</span>(c));
+    <span style="color: #5f8700;">return</span> LCS_MEMO(X, Y, len_x, len_y);
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

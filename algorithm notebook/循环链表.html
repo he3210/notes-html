@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>循环链表</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">循环链表</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf3fc8dc">1. 判断单链表是否有环</a></li>
+<li><a href="#orgba694b8">2. 寻找循环链表的入口</a>
+<ul>
+<li><a href="#orgf861e26">2.1. 问题</a></li>
+<li><a href="#orgc5b04ef">2.2. 分析</a></li>
+</ul>
+</li>
+<li><a href="#org2b21a50">3. 找出两个单链表的第一个公共结点</a>
+<ul>
+<li><a href="#org65be657">3.1. 问题</a></li>
+<li><a href="#org523956e">3.2. 分析</a></li>
+<li><a href="#org5782ecd">3.3. 代码</a></li>
+</ul>
+</li>
+<li><a href="#orgf1d526c">4. 环状单向链表去重</a>
+<ul>
+<li><a href="#org0d83793">4.1. 问题</a></li>
+<li><a href="#orgcae9fc8">4.2. 代码</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf3fc8dc" class="outline-2">
+<h2 id="orgf3fc8dc"><span class="section-number-2">1</span> 判断单链表是否有环</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24555;&#24930;&#25351;&#38024;&#21028;&#26029;&#21333;&#38142;&#34920;&#20013;&#26159;&#21542;&#26377;&#29615;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">isloop</span>(<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p</span>)
+{
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">n1</span> = p;
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">n2</span> = p;
+    <span style="color: #5f8700;">while</span>(<span style="color: #00afaf;">NULL</span> != n2 &amp;&amp; <span style="color: #00afaf;">NULL</span> != n2-&gt;next)
+    {
+        n1 = n1-&gt;next;
+        n2 = n2-&gt;next-&gt;next;
+        <span style="color: #5f8700;">if</span>(n1 == n2)
+            <span style="color: #5f8700;">return</span> 1;
+    }
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgba694b8" class="outline-2">
+<h2 id="orgba694b8"><span class="section-number-2">2</span> 寻找循环链表的入口</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgf861e26" class="outline-3">
+<h3 id="orgf861e26"><span class="section-number-3">2.1</span> 问题</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+假设一链表存在环，如何找到环的入口<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc5b04ef" class="outline-3">
+<h3 id="orgc5b04ef"><span class="section-number-3">2.2</span> 分析</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+设链表起始点到环入口长度为 a，环长度为 r<br>
+快慢指针相遇前，慢指针在环内走了 x 步，快指针走了 n 圈加 x 步<br>
+</p>
+
+<p>
+相遇前慢指针共走了 a + x 步<br>
+相遇前快指针共走了 a + x  + nr 步<br>
+所以有 2*(a+x) = a+x+nr，可得 a+x = nr<br>
+即得 a=(n-1)r+r-x<br>
+上式的含义是：慢指针从头开始单步走，快指针从相遇点开始单步走，再次相遇即是环的入口<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#19968;&#20010;&#38142;&#34920;&#23384;&#22312;&#29615;&#65292;&#23547;&#25214;&#29615;&#30340;&#20837;&#21475;</span>
+<span style="color: #af8700;">node</span>* <span style="color: #0087ff;">find_entrance</span>(<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">h</span>)
+{
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">n1</span> = h;
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">n2</span> = h;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26597;&#25214;&#24555;&#24930;&#25351;&#38024;&#22312;&#29615;&#20013;&#30340;&#30456;&#36935;&#28857;</span>
+    <span style="color: #5f8700;">while</span>(<span style="color: #00afaf;">NULL</span> != n2 &amp;&amp; <span style="color: #00afaf;">NULL</span> != n2-&gt;next)
+    {
+        n1 = n1-&gt;next;
+        n2 = n2-&gt;next-&gt;next;
+        <span style="color: #5f8700;">if</span>(n1 == n2)
+            <span style="color: #5f8700;">break</span>;
+    }
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> == n2 || <span style="color: #00afaf;">NULL</span> == n2-&gt;next)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24930;&#25351;&#38024;&#20174;&#22836;&#24320;&#22987;&#21333;&#27493;&#36208;&#65292;&#24555;&#25351;&#38024;&#20174;&#30456;&#36935;&#28857;&#24320;&#22987;&#21333;&#27493;&#36208;&#65292;&#20877;&#27425;&#30456;&#36935;&#21363;&#26159;&#29615;&#30340;&#20837;&#21475;</span>
+    n1 = h;
+    <span style="color: #5f8700;">while</span>(n1 != n2)
+    {
+        n1 = n1-&gt;next;
+        n2 = n2-&gt;next;
+    }
+    <span style="color: #5f8700;">return</span> n2;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2b21a50" class="outline-2">
+<h2 id="org2b21a50"><span class="section-number-2">3</span> 找出两个单链表的第一个公共结点</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org65be657" class="outline-3">
+<h3 id="org65be657"><span class="section-number-3">3.1</span> 问题</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+两个单向链表，判断它们是否相交。若相交，找出它们的第一个公共结点<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org523956e" class="outline-3">
+<h3 id="org523956e"><span class="section-number-3">3.2</span> 分析</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+首先判断2个单链表是否有环，分为三种情况<br>
+</p>
+<ul class="org-ul">
+<li>都没有环。如果相交，必定从第一个公共结点开始，之后的所有结点都重合<br></li>
+<li>一个存在环，另一个不存在环。必定不会相交<br></li>
+<li>都存在环。需判断任意一个链表上快慢指针相遇的那个结点，在不在另外一个链表上。若在，则相交；否则不相交。若相交，又分两种情况：<br>
+<ul class="org-ul">
+<li>两个链表的入口点并不是环上的同一个结点，此时，可以定义任一入口点为相交的第一个结点；<br></li>
+<li>两个链表的入口点是环上的同一点，此时，它们的第一个公共结点可能并不在环上<br></li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5782ecd" class="outline-3">
+<h3 id="org5782ecd"><span class="section-number-3">3.3</span> 代码</h3>
+<div class="outline-text-3" id="text-3-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">data</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">next</span>;
+}<span style="color: #af8700;">node</span>;
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33719;&#21462;&#19968;&#27573;&#21333;&#38142;&#34920;&#38271;&#24230;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">get_length</span>(<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">h1</span>, <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">tail</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len</span> = 0;
+    <span style="color: #5f8700;">while</span>(h1 != tail)
+    {
+        h1 = h1-&gt;next;
+        ++len;
+    }
+    <span style="color: #5f8700;">return</span> len;
+}
+
+<span style="color: #af8700;">node</span>* <span style="color: #0087ff;">find_1st_common_node</span>(<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">h1</span>, <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">h2</span>)
+{
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> == h1 || <span style="color: #00afaf;">NULL</span> == h2)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">a1</span> = isloop(h1);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">a2</span> = isloop(h2);
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#37117;&#19981;&#23384;&#22312;&#29615;</span>
+    <span style="color: #5f8700;">if</span>(a1 == 0 &amp;&amp; a2 == 0)
+    {
+        <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p1</span>, *<span style="color: #0087ff;">p2</span>;
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len1</span> = get_length(h1, <span style="color: #00afaf;">NULL</span>);
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len2</span> = get_length(h2, <span style="color: #00afaf;">NULL</span>);
+        <span style="color: #5f8700;">if</span>(len1 &lt; len2)
+        {
+            p1 = h2;
+            p2 = h1;
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            p1 = h1;
+            p2 = h2;
+        }
+
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">offset</span> = len1-len2;
+        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; offset; ++i)
+            p1 = p1-&gt;next;
+        <span style="color: #5f8700;">while</span>(p1 &amp;&amp; p2 &amp;&amp; p1 != p2)
+        {
+            p1 = p1-&gt;next;
+            p2 = p2-&gt;next;
+        }
+        <span style="color: #5f8700;">if</span>(p1 == p2)
+            <span style="color: #5f8700;">return</span> p1;
+        <span style="color: #5f8700;">else</span>
+            <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#37117;&#23384;&#22312;&#29615;</span>
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(a1 == 1 &amp;&amp; a2 == 1)
+    {
+        <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">pentr1</span> = find_entrance(h1);
+        <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">pentr2</span> = find_entrance(h2);
+        <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p1</span> = pentr1;
+        <span style="color: #5f8700;">while</span>(p1 &amp;&amp; p1 != pentr1 &amp;&amp; p1 != pentr2)
+            p1 = p1-&gt;next;
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#30456;&#20132;&#65292;&#20837;&#21475;&#28857;&#30456;&#21516;</span>
+        <span style="color: #5f8700;">if</span>(pentr1 == pentr2)
+        {
+            <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">pa</span>, *<span style="color: #0087ff;">pb</span>;
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35745;&#31639;&#21333;&#21521;&#38142;&#34920;&#20174;&#22836;&#32467;&#28857;&#21040;&#29615;&#20837;&#21475;&#32467;&#28857;&#30340;&#38271;&#24230;&#65288;&#21253;&#21547;&#20837;&#21475;&#32467;&#28857;&#65289;</span>
+            <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len1</span> = get_length(h1, pentr1) + 1;
+            <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len2</span> = get_length(h2, pentr2) + 1;
+            <span style="color: #5f8700;">if</span>(len1 &lt; len2)
+            {
+                pa = h2;
+                pb = h1;
+            }
+            <span style="color: #5f8700;">else</span>
+            {
+                pa = h1;
+                pb = h2;
+            }
+
+            <span style="color: #af8700;">int</span> <span style="color: #0087ff;">offset</span> = len1-len2;
+            <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; offset; ++i)
+                pa = pa-&gt;next;
+            <span style="color: #5f8700;">while</span>(pa != pentr1-&gt;next &amp;&amp; pb != pentr2-&gt;next &amp;&amp; pa != pb)
+            {
+                pa = pa-&gt;next;
+                pb = pb-&gt;next;
+            }
+            <span style="color: #5f8700;">if</span>(pa == pb)
+                <span style="color: #5f8700;">return</span> pa;
+            <span style="color: #5f8700;">else</span>
+                <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+        }
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#30456;&#20132;&#65292;&#20837;&#21475;&#28857;&#19981;&#21516;&#12290;&#36820;&#22238;&#20219;&#19968;&#19968;&#20010;&#20837;&#21475;&#28857;</span>
+        <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(p1 == pentr2)
+            <span style="color: #5f8700;">return</span> pentr2;
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#19981;&#30456;&#20132;</span>
+        <span style="color: #5f8700;">else</span>
+            <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#19968;&#20010;&#23384;&#22312;&#29615;&#19968;&#20010;&#19981;&#23384;&#22312;&#29615;</span>
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf1d526c" class="outline-2">
+<h2 id="orgf1d526c"><span class="section-number-2">4</span> 环状单向链表去重</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org0d83793" class="outline-3">
+<h3 id="org0d83793"><span class="section-number-3">4.1</span> 问题</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+编码实现环状单向链表（尾指针直接指向头指针，中间没有空结点），去除连续的重复元素的操作<br>
+例如： 1(头) -&gt; 2 -&gt; 2 -&gt; 3 -&gt; 3 -&gt; 1 -&gt; 1(头)<br>
+去重后的结果是 1 -&gt; 2 -&gt; 3<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcae9fc8" class="outline-3">
+<h3 id="orgcae9fc8"><span class="section-number-3">4.2</span> 代码</h3>
+<div class="outline-text-3" id="text-4-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20998;&#26512;&#65306;&#36941;&#21382;&#27599;&#19968;&#20010;&#32467;&#28857;&#65292;&#36793;&#36941;&#21382;&#36793;&#21435;&#38500;&#20854;&#21518;&#30340;&#37325;&#22797;&#20803;&#32032;</span>
+<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">unique</span>(<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">h</span>)
+{
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> == h || <span style="color: #00afaf;">NULL</span> == h-&gt;next)
+        <span style="color: #5f8700;">return</span> h;
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">pre</span> = h;
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">cur</span> = h-&gt;next;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382;&#27599;&#19968;&#20010;&#32467;&#28857;</span>
+    <span style="color: #5f8700;">while</span>(cur != h)
+    {
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21435;&#38500;&#32467;&#28857;&#21518;&#38754;&#30456;&#21516;&#30340;&#20803;&#32032;</span>
+        <span style="color: #5f8700;">while</span>(pre-&gt;data == cur-&gt;data &amp;&amp; cur != h)
+        {
+            pre-&gt;next = cur-&gt;next;
+            free(q);
+            cur = pre-&gt;next;
+        }
+        <span style="color: #5f8700;">if</span>(cur == h)
+            <span style="color: #5f8700;">break</span>;
+        pre = cur;
+        cur = cur-&gt;next;
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22788;&#29702;&#22836;&#32467;&#28857;&#21644;&#23614;&#32467;&#28857;&#30456;&#21516;&#30340;&#29305;&#27530;&#24773;&#20917;</span>
+    <span style="color: #5f8700;">if</span>(cur-&gt;data == pre-&gt;data &amp;&amp; pre != h)
+    {
+        pre-&gt;next = cur-&gt;next;
+        free(cur);
+        <span style="color: #5f8700;">return</span> pre;
+    }
+    <span style="color: #5f8700;">return</span> cur;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

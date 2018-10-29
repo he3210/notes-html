@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>栈转化递归函数为非递归</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">栈转化递归函数为非递归</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5f115c2">1. 问题</a></li>
+<li><a href="#orgab399d6">2. 递归</a></li>
+<li><a href="#org459732f">3. 非递归</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5f115c2" class="outline-2">
+<h2 id="org5f115c2"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+利用一个栈实现一下递归函数的非递归计算<br>
+</p>
+
+<p>
+\[
+P_n(x)=\left\{
+\begin{array}{lcl}
+1                                &      & {n = 0}\\
+2x                               &      & {n = 1}\\
+2xP_{n-1}(x) - 2(n-1)P_{n-2}(x)  &      & {n > 1}
+\end{array} \right.
+\]<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgab399d6" class="outline-2">
+<h2 id="orgab399d6"><span class="section-number-2">2</span> 递归</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">double</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">double</span> <span style="color: #0087ff;">x</span>)
+{
+    <span style="color: #5f8700;">if</span>(n == 0)
+        <span style="color: #5f8700;">return</span> 1;
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(n == 1)
+        <span style="color: #5f8700;">return</span> 2*x;
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> 2*x*fun(n-1, x) - 2*(n-1)*fun(n-2, x);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org459732f" class="outline-2">
+<h2 id="org459732f"><span class="section-number-2">3</span> 非递归</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
+<span style="color: #af8700;">double</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">double</span> <span style="color: #0087ff;">x</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">stack</span>
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>;
+        <span style="color: #af8700;">double</span> <span style="color: #0087ff;">p</span>;
+    }<span style="color: #0087ff;">st</span>[N];
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">top</span> = -1;
+    <span style="color: #af8700;">double</span> <span style="color: #0087ff;">p1</span> = 1, <span style="color: #0087ff;">p2</span> = 2*x;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = n; i &gt;= 2; --i)
+        st[++top].n = i;
+    <span style="color: #5f8700;">while</span>(top &gt;= 0)
+    {
+        st[top].p = 2*x*p2 - 2*(st[top].n-1)*p1;
+        p1 = p2;
+        p2 = st[top].p;
+        --top;
+    }
+    <span style="color: #5f8700;">return</span> p2;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

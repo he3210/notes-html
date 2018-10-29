@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>前序中序构造二叉树</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">前序中序构造二叉树</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9c406a3">1. 问题</a></li>
+<li><a href="#org8b35001">2. 递归实现</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9c406a3" class="outline-2">
+<h2 id="org9c406a3"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+输入二叉树的前序遍历序列和中序遍历序列，重建该二叉树<br>
+假设输入的前序遍历序列和中序遍历序列都不包含重复数字<br>
+例如输入<br>
+前序遍历序列 {1, 2, 4, 7, 3, 5, 6, 8, 9}<br>
+中序遍历序列 {4, 7, 2, 1, 5, 3, 8, 6, 9}<br>
+</p>
+
+<pre class="example">
+            1
+        /       \
+    2               3
+ /               /     \
+4               5       6
+ \                     / \
+  7                   8   9
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org8b35001" class="outline-2">
+<h2 id="org8b35001"><span class="section-number-2">2</span> 递归实现</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24453;&#25913;&#36827;&#65306;&#26410;&#37322;&#25918;&#20869;&#23384;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21487;&#20197;&#25226;&#21160;&#24577;&#20998;&#37197;&#24471;&#21040;&#30340;&#20869;&#23384;&#20445;&#23384;&#22312;&#19968;&#20010;&#38431;&#21015;&#37324;&#38754;&#65292;&#20986;&#29616;&#24322;&#24120;&#23601;&#21487;&#20197;&#37322;&#25918;&#20869;&#23384;</span>
+<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">ConstructCore</span>(<span style="color: #af8700;">int</span> *<span style="color: #0087ff;">StartPreOrder</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">EndPreOrder</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">StartInOrder</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">EndInOrder</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">RootVal</span> = StartPreOrder[0];
+    <span style="color: #af8700;">node</span>* <span style="color: #0087ff;">root</span> = (<span style="color: #af8700;">node</span>*)malloc(<span style="color: #5f8700;">sizeof</span>(node));
+    root-&gt;data = RootVal;
+    root-&gt;lchild = root-&gt;rchild = <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #5f8700;">if</span>(StartPreOrder == EndPreOrder)
+    {
+        <span style="color: #5f8700;">if</span>(StartInOrder == EndInOrder) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36793;&#30028;&#26465;&#20214;</span>
+            <span style="color: #5f8700;">return</span> root;
+        <span style="color: #5f8700;">else</span>    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#27861;&#36755;&#20837;</span>
+            throw std::exception();
+    }
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312;&#20013;&#24207;&#36941;&#21382;&#20013;&#26597;&#25214;&#26681;&#32467;&#28857;&#30340;&#20540;</span>
+    <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">p</span> = StartInOrder;
+    <span style="color: #5f8700;">while</span>(p &lt;= EndInOrder &amp;&amp; *p != RootVal)
+        ++p;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#27861;&#36755;&#20837;</span>
+    <span style="color: #5f8700;">if</span>(p &gt; EndInOrder)
+        <span style="color: #af8700;">throw</span> <span style="color: #0087ff;">std</span>::exception();
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">LeftLen</span> = p - StartInOrder;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24038;&#23376;&#26641;&#30340;&#38271;&#24230;</span>
+    <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">LeftPreOrderEnd</span> = StartPreOrder + LeftLen;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20808;&#24207;&#36941;&#21382;&#24207;&#21015;&#20013;&#24038;&#23376;&#26641;&#30340;&#26411;&#23614;&#19979;&#26631;</span>
+    <span style="color: #5f8700;">if</span>(LeftLen &gt; 0)
+        root-&gt;lchild = ConstructCore(StartPreOrder+1, LeftPreOrderEnd, StartInOrder, p-1);
+    <span style="color: #5f8700;">if</span>(LeftLen &lt; EndPreOrder-StartPreOrder)
+        root-&gt;rchild = ConstructCore(LeftPreOrderEnd+1, EndPreOrder, p+1, EndInOrder);
+    <span style="color: #5f8700;">return</span> root;
+}
+
+<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">Construct</span>(<span style="color: #af8700;">int</span> *<span style="color: #0087ff;">PreOrder</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">InOrder</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">length</span>)
+{
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> == PreOrder || <span style="color: #00afaf;">NULL</span> == InOrder || length &lt;= 0)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #5f8700;">return</span> ConstructCore(PreOrder, PreOrder+length-1, InOrder, InOrder+length-1);
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

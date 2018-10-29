@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>共享栈</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">共享栈</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc21aa01">1. 介绍</a></li>
+<li><a href="#org54cc2a3">2. 出栈入栈操作</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc21aa01" class="outline-2">
+<h2 id="orgc21aa01"><span class="section-number-2">1</span> 介绍</h2>
+<div class="outline-text-2" id="text-1">
+
+<div class="figure">
+<p><img src="../images/共享栈.png" alt="共享栈.png"><br>
+</p>
+</div>
+
+<p>
+判空条件：s.top0 = -1时0号栈为空，s.top1 = N 时1号栈为空<br>
+判满条件：s.top1-s.top0 = 1 时栈满<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org54cc2a3" class="outline-2">
+<h2 id="org54cc2a3"><span class="section-number-2">2</span> 出栈入栈操作</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">elem_type</span> <span style="color: #af8700;">int</span>
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span>
+{
+    <span style="color: #af8700;">elem_type</span> <span style="color: #0087ff;">stack</span>[N];
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">top</span>[2];
+}<span style="color: #af8700;">share_stack</span>;
+<span style="color: #af8700;">share_stack</span> <span style="color: #0087ff;">s</span>;
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">push</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, elem_type &amp;x)
+{
+    <span style="color: #5f8700;">if</span>(i != 0 || i != 1)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    <span style="color: #5f8700;">if</span>(s.top[1] - s.top[0] == 1)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    <span style="color: #5f8700;">switch</span>(i):
+    {
+        <span style="color: #5f8700;">case</span> 0:
+            s.stack[++top[0]] = x;
+            <span style="color: #5f8700;">break</span>;
+        <span style="color: #5f8700;">case</span> 1: s.stack[--top[1]] = x;
+            <span style="color: #5f8700;">break</span>;
+    }
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">pop</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, elem_type &amp;x)
+{
+    <span style="color: #5f8700;">if</span>(i != 0 || i != 1)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    <span style="color: #5f8700;">switch</span>(i):
+    {
+        <span style="color: #5f8700;">case</span> 0:
+            <span style="color: #5f8700;">if</span>(s.top[0] == -1)
+                <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+            x = s.stack[top[0]--];
+            <span style="color: #5f8700;">break</span>;
+        <span style="color: #5f8700;">case</span> 1:
+            <span style="color: #5f8700;">if</span>(s.top[1] == N)
+                <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+            x = s.stack[top[1]++];
+            <span style="color: #5f8700;">break</span>;
+    }
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

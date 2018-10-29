@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>链式队列</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">链式队列</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgda25541">1. 数据结构</a></li>
+<li><a href="#orge422c90">2. 操作</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgda25541" class="outline-2">
+<h2 id="orgda25541"><span class="section-number-2">1</span> 数据结构</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
+{
+    <span style="color: #af8700;">elem_type</span> <span style="color: #0087ff;">data</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">next</span>;
+}<span style="color: #af8700;">node</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">queue</span>
+{
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">front</span>, *<span style="color: #0087ff;">rear</span>;
+}<span style="color: #af8700;">queue</span>;
+<span style="color: #af8700;">queue</span> <span style="color: #0087ff;">q</span>;
+</pre>
+</div>
+
+<p>
+通常把链式队列设计成一个带头结点的单链表<br>
+front 指向头结点（q.data = NULL 的结点），rear 指向尾结点<br>
+判空条件：q.front = q.rear<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge422c90" class="outline-2">
+<h2 id="orge422c90"><span class="section-number-2">2</span> 操作</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">init_queue</span>(queue &amp;q)
+{
+    q.front = q.rear = (<span style="color: #af8700;">node</span>*)malloc(<span style="color: #5f8700;">sizeof</span>(node));
+    q.front-&gt;next = <span style="color: #00afaf;">NULL</span>;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">is_empty</span>(queue &amp;q)
+{
+    <span style="color: #5f8700;">if</span>(q.front == q.rear)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">enqueue</span>(queue &amp;q, elem_type &amp;x)
+{
+    s = (<span style="color: #af8700;">node</span>*)malloc(<span style="color: #5f8700;">sizeof</span>(node));
+    s-&gt;data = x;
+    s-&gt;next = <span style="color: #00afaf;">NULL</span>;
+    q.rear-&gt;next = s;
+    q.rear = s;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">dequeue</span>(queue &amp;q, elem_type &amp;x)
+{
+    <span style="color: #5f8700;">if</span>(q.front == q.rear)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    p = q.front-&gt;next;
+    x = p-&gt;data;
+    q.front-&gt;next = p-&gt;next;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22788;&#29702;&#38431;&#21015;&#20013;&#21482;&#26377;&#19968;&#20010;&#32467;&#28857;&#26102;&#20986;&#38431;&#21015;&#30340;&#24773;&#20917;</span>
+    <span style="color: #5f8700;">if</span>(q.rear == p)
+        q.rear= q.front;
+    free(q);
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

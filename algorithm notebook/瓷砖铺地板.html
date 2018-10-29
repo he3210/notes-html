@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>瓷砖铺地板</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">瓷砖铺地板</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6d3680f">1. 问题</a></li>
+<li><a href="#org2eee856">2. 状态转移方程</a></li>
+<li><a href="#org93e8a06">3. 递归求解</a></li>
+<li><a href="#org97e8f08">4. 动态规划（自顶向下）</a></li>
+<li><a href="#org3538d8a">5. 动态规划（自底向上）</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6d3680f" class="outline-2">
+<h2 id="org6d3680f"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+求用 1*2 的瓷砖覆盖 2*n 的地板有几种方式<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2eee856" class="outline-2">
+<h2 id="org2eee856"><span class="section-number-2">2</span> 状态转移方程</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+\[
+F(n)=\left\{
+\begin{array}{lcl}
+1       &      & {n = 1}\\
+2       &      & {n = 2}\\
+F(n - 1) + F(n - 2) & & {n > 2}
+\end{array} \right.
+\]<br>
+其中，n 为瓷砖的数量，F(n) 为问题的解<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org93e8a06" class="outline-2">
+<h2 id="org93e8a06"><span class="section-number-2">3</span> 递归求解</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">Fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #5f8700;">if</span>(n == 1)
+        <span style="color: #5f8700;">return</span> 1;
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span> (n == 2)
+        <span style="color: #5f8700;">return</span> 2;
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> Fun(n - 1) + Fun(n - 2);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org97e8f08" class="outline-2">
+<h2 id="org97e8f08"><span class="section-number-2">4</span> 动态规划（自顶向下）</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[1000]={0};
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">Fun2</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    assert(n &gt; 0);
+    <span style="color: #5f8700;">if</span>(m[n] != 0)
+        <span style="color: #5f8700;">return</span> m[n];
+    <span style="color: #5f8700;">if</span>(n == 1)
+        m[n] = 1;
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(n == 2)
+        m[n] = 2;
+    <span style="color: #5f8700;">else</span>
+        m[n] = Fun2(n - 1) + Fun2(n - 2);
+    <span style="color: #5f8700;">return</span> m[n];
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3538d8a" class="outline-2">
+<h2 id="org3538d8a"><span class="section-number-2">5</span> 动态规划（自底向上）</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[1000]={0};
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">Fun3</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    assert(n &gt; 0);
+    m[1] = 1;
+    m[2] = 2;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 3; i &lt;= n; ++i)
+        m[i] = m[i - 1] + m[i - 2];
+    <span style="color: #5f8700;">return</span> m[n];
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

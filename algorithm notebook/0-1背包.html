@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0-1背包</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">0-1背包</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgba7be0b">1. 问题</a></li>
+<li><a href="#org8652f68">2. 分析</a></li>
+<li><a href="#org4d756e2">3. 状态转移方程</a></li>
+<li><a href="#orgc9a7426">4. 动态规划</a></li>
+<li><a href="#orgf9a9cb2">5. 备忘录</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgba7be0b" class="outline-2">
+<h2 id="orgba7be0b"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+总共有3件物品，背包可容纳5磅的东西。物品1重1磅，物品2重2磅，价值100元，物品3重3磅，价值120元，怎么才能最大化背包所装物品的价值<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8652f68" class="outline-2">
+<h2 id="org8652f68"><span class="section-number-2">2</span> 分析</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+设 i 为第 i 件物品，j 为背包容量<br>
+c[i] 为第 i 件物品的重量，w[i] 为第 i 件物品的价值<br>
+j &lt; c[i] 表示物品重量大于背包容量，此时显然不放第 i 件物品<br>
+当 j &gt;= c[i] 时，分两种情况：<br>
+</p>
+<ol class="org-ol">
+<li>不放第 i 件物品，此时问题转化为"将前 i-1 件物品放入容量为 j-c[i] 的背包中"<br></li>
+<li>放第 i 件物品，此时问题转化为"将前 i-1 件物品放入容量为 j 的背包中"<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org4d756e2" class="outline-2">
+<h2 id="org4d756e2"><span class="section-number-2">3</span> 状态转移方程</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+\[
+f[i][j]=\left\{
+\begin{array}{lcl}
+0                                        &      & {i = 0\ or\ j = 0}\\
+f[i-1][j]                                &      & {i, j > 0\ and\ j < c[i]}\\
+max\{f[i-1][j], f[i-1][j-c[i]] + w[i]\}  &      & {i, j > 0\ and\ j \ge c[i]}
+\end{array} \right.
+\]<br>
+</p>
+
+<p>
+其中，i 为第 i 件物品，j 为背包容量<br>
+c[i] 为第 i 件物品的重量，w[i] 为第 i 件物品的价值<br>
+f[i][j] 为问题的解<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc9a7426" class="outline-2">
+<h2 id="orgc9a7426"><span class="section-number-2">4</span> 动态规划</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[128][128];
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">c &#20445;&#23384;&#21508;&#20010;&#29289;&#21697;&#30340;&#37325;&#37327;&#65292;w &#20445;&#23384;&#21508;&#20010;&#29289;&#21697;&#20215;&#20540;&#65292;n &#29289;&#21697;&#25968;&#37327;&#65292;v &#32972;&#21253;&#23481;&#37327;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">c</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">w</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">v</span>)
+{
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt;= n; ++i)
+        m[i][0] = 0;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = 1; j &lt;= v; ++j)
+        m[0][j] = 0;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 1; i &lt;= n; ++i)
+        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = 1; j &lt;= v; ++j)
+            <span style="color: #5f8700;">if</span>(j &lt; c[i])
+                m[i][j] = m[i-1][j];
+            <span style="color: #5f8700;">else</span>
+                m[i][j] = m[i-1][j] &gt; m[i-1][j-c[i]] + w[i] ? m[i-1][j] : m[i-1][j-c[i]] + w[i];
+    <span style="color: #5f8700;">return</span> m[n][v];
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">max_value</span>()
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span> = 3, <span style="color: #0087ff;">v</span> = 5;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">c</span>[4] = {0, 1, 2, 3};
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">w</span>[4] = {0, 60, 100, 120};
+    <span style="color: #5f8700;">return</span> fun(c, w, n, v);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf9a9cb2" class="outline-2">
+<h2 id="orgf9a9cb2"><span class="section-number-2">5</span> 备忘录</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">INF</span> -1
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[128][128];
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">c &#20445;&#23384;&#21508;&#20010;&#29289;&#21697;&#30340;&#37325;&#37327;&#65292;w &#20445;&#23384;&#21508;&#20010;&#29289;&#21697;&#20215;&#20540;&#65292;n &#29289;&#21697;&#25968;&#37327;&#65292;v &#32972;&#21253;&#23481;&#37327;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">fun2</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">c</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">w</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span>)
+{
+    <span style="color: #5f8700;">if</span>(m[i][j] != INF)
+        <span style="color: #5f8700;">return</span> m[i][j];
+    <span style="color: #5f8700;">if</span>(i == 0 || j == 0)
+        m[i][j] = 0;
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(j &lt; c[i])
+        m[i][j] = fun2(c, w, i-1, j);
+    <span style="color: #5f8700;">else</span>
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span> = fun2(c, w, i-1, j);
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">b</span> = fun2(c, w, i-1, j-c[i]) + w[i];
+        m[i][j] = a &gt; b ? a : b;
+    }
+    <span style="color: #5f8700;">return</span> m[i][j];
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">max_value</span>() 
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span> = 3, <span style="color: #0087ff;">v</span> = 5;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">c</span>[4] = {0, 1, 2, 3};
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">w</span>[4] = {0, 60, 100, 120};
+
+    memset(m, INF, <span style="color: #5f8700;">sizeof</span>(m));
+    <span style="color: #5f8700;">return</span> fun2(c, w, n, v);
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

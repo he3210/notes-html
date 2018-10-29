@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>动态规划</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">动态规划</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1f010af">1. 动态规划基本要素</a>
+<ul>
+<li><a href="#org5a0ffbd">1.1. 最优子结构</a></li>
+<li><a href="#org219baef">1.2. 重叠子问题</a></li>
+</ul>
+</li>
+<li><a href="#orgaa24e99">2. 备忘录方法</a></li>
+<li><a href="#org0ec0bb6">3. 动态规划、备忘录、递归区别</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1f010af" class="outline-2">
+<h2 id="org1f010af"><span class="section-number-2">1</span> 动态规划基本要素</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org5a0ffbd" class="outline-3">
+<h3 id="org5a0ffbd"><span class="section-number-3">1.1</span> 最优子结构</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+当问题的最优解包含了其子问题的最优解时，称该问题具有最优子结构性质<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org219baef" class="outline-3">
+<h3 id="org219baef"><span class="section-number-3">1.2</span> 重叠子问题</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+动态规划算法对每个问题只解一次，将其解保存在一个表格中，当再次需要解此问题时，用常数时间查看一下结果。因此，用动态规划算法通常只需要多项式时间<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaa24e99" class="outline-2">
+<h2 id="orgaa24e99"><span class="section-number-2">2</span> 备忘录方法</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+用一个表格来保存已解决的子问题的答案，用的时候查表即可。<br>
+采用的递归方式是自顶向下。<br>
+控制结构与直接递归相同，区别在于备忘录方式为每个解过的子问题建立备忘录。<br>
+初始化为每个子问题的记录存入一个特殊的值，表示并未求解。在求解过程中，查看相应记录如果是特殊值，表示未求解，否则只要取出该子问题的解答即可<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0ec0bb6" class="outline-2">
+<h2 id="org0ec0bb6"><span class="section-number-2">3</span> 动态规划、备忘录、递归区别</h2>
+<div class="outline-text-2" id="text-3">
+<ol class="org-ol">
+<li>动态规划是自底向上；备忘录是自顶向下；递归是自顶向下<br></li>
+<li>动态规划每个子问题都要解一次，但不会求解重复子问题；备忘录方法只解哪些确实需要解的子问题；递归方法每个子问题都要解一次，包括重复子问题<br></li>
+</ol>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>二叉树结点的最大距离</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">二叉树结点的最大距离</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org253114c">1. 问题</a></li>
+<li><a href="#org9762b83">2. 分析</a></li>
+<li><a href="#orgb0e34aa">3. 递归实现（后序遍历）</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org253114c" class="outline-2">
+<h2 id="org253114c"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+如果我们把二叉树视为一个图，父子结点之间的连线视为双向的，我们定义"距离"为两结点之间边的个数。<br>
+写一个程序求一棵二叉树中相距最远的两个结点之间的距离<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9762b83" class="outline-2">
+<h2 id="org9762b83"><span class="section-number-2">2</span> 分析</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+二叉树的最大距离存在两种情况，取其中距离最大的一种：<br>
+</p>
+<ul class="org-ul">
+<li>路径经过左子树的最深结点，通过根结点，再到右子树的最深结点<br></li>
+<li>路径不穿过根结点，而是左子树或右子树的最大距离路径，取其大着<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb0e34aa" class="outline-2">
+<h2 id="orgb0e34aa"><span class="section-number-2">3</span> 递归实现（后序遍历）</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27714;&#20108;&#21449;&#26641;&#20013;&#32467;&#28857;&#30340;&#26368;&#22823;&#36317;&#31163;</span>
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">RESULT</span>
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">maxDistance</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">maxDepth</span>;
+};
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">max</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">b</span>)
+{
+    <span style="color: #5f8700;">return</span> a &gt; b ? a : b;
+}
+
+<span style="color: #af8700;">RESULT</span> <span style="color: #0087ff;">GetMaxDistance</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
+{
+    <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>T)
+    {
+        <span style="color: #af8700;">RESULT</span> <span style="color: #0087ff;">empty</span> = {0, -1};
+        <span style="color: #5f8700;">return</span> empty;
+    }
+    <span style="color: #af8700;">RESULT</span> <span style="color: #0087ff;">lmd</span> = GetMaxDistance(T-&gt;lchild);
+    <span style="color: #af8700;">RESULT</span> <span style="color: #0087ff;">rmd</span> = GetMaxDistance(T-&gt;rchild);
+    <span style="color: #af8700;">RESULT</span> <span style="color: #0087ff;">ret</span>;
+    ret.maxDepth = max(lmd.maxDepth + 1, rmd.maxDepth + 1);
+    ret.maxDistance = max(max(lmd.maxDistance, rmd.maxDistance), lmd.maxDepth + rmd.maxDepth + 2);
+    <span style="color: #5f8700;">return</span> ret;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

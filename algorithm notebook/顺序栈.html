@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>顺序栈</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">顺序栈</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org028ea5e">1. 存储结构</a></li>
+<li><a href="#org127d603">2. 栈的操作</a></li>
+<li><a href="#org2ff5e8a">3. 判断链表字符串是否中心对称</a>
+<ul>
+<li><a href="#orgaf3d215">3.1. 问题</a></li>
+<li><a href="#org5bbc5c9">3.2. 代码</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org028ea5e" class="outline-2">
+<h2 id="org028ea5e"><span class="section-number-2">1</span> 存储结构</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">stack</span>
+{
+    <span style="color: #af8700;">elem_type</span> <span style="color: #0087ff;">data</span>[N];
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">top</span>;
+}<span style="color: #af8700;">stack</span>;
+</pre>
+</div>
+
+<p>
+栈顶指针：设栈为 s，初始化栈顶指针为 s.top = -1<br>
+栈空条件：s.top = -1<br>
+栈满条件：s.top = N-1<br>
+栈的长度：s.top+1<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org127d603" class="outline-2">
+<h2 id="org127d603"><span class="section-number-2">2</span> 栈的操作</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">elem_type</span> <span style="color: #af8700;">int</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">init_stack</span>(stack &amp;s)
+{
+    s.top = -1;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">is_empty</span>(stack &amp;s)
+{
+    <span style="color: #5f8700;">if</span>(s.top == -1)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">push</span>(stack &amp;s, elem_type &amp;x)
+{
+    <span style="color: #5f8700;">if</span>(s.top == N-1)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    s.data[++s.top] = x;
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">pop</span>(stack &amp;s, elem_type &amp;x)
+{
+    <span style="color: #5f8700;">if</span>(s.top == -1)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    x = s.data[s.top--];
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">get_top</span>(stack &amp;s, elem_type &amp;x)
+{
+    <span style="color: #5f8700;">if</span>(s.top == -1)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    x = s.data[s.top];
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">stack_length</span>(stack &amp;s)
+{
+    <span style="color: #5f8700;">return</span> s.top+1;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2ff5e8a" class="outline-2">
+<h2 id="org2ff5e8a"><span class="section-number-2">3</span> 判断链表字符串是否中心对称</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgaf3d215" class="outline-3">
+<h3 id="orgaf3d215"><span class="section-number-3">3.1</span> 问题</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+设单链表无表头，第一个结点指针为 h，结点结构由 data 和 next 两个域构成。<br>
+其中 data 域为 char 型。<br>
+试设计算法判断该链表的前 n 个字符是否中心对称。<br>
+例如 xyx、xyyx、都是中心对称<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5bbc5c9" class="outline-3">
+<h3 id="org5bbc5c9"><span class="section-number-3">3.2</span> 代码</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">bool</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">h</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">s</span>[n/2], <span style="color: #0087ff;">i</span>;
+    <span style="color: #5f8700;">for</span>(i = 0; h &amp;&amp; i &lt; n/2; ++i)
+    {
+        s[i] = h-&gt;data;
+        h = h-&gt;next;
+    }
+    <span style="color: #5f8700;">if</span>(i != n/2)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+
+    --i;
+    <span style="color: #5f8700;">if</span>(n%2 == 1)
+        h = h-&gt;next;
+    <span style="color: #5f8700;">while</span>(h &amp;&amp; i &gt;= 0 &amp;&amp; h-&gt;data == s[i])
+    {
+        h = h-&gt;next;
+        --i;
+    }
+    <span style="color: #5f8700;">if</span>(i == -1)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

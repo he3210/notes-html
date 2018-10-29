@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-10-29 Mon 11:27 -->
+<!-- 2018-10-29 Mon 19:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>org-mode 基础</title>
@@ -9,6 +9,28 @@
 <meta name="author" content="时中贺">
 <link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
 <link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="preamble" class="status">
@@ -46,6 +68,7 @@
 </ul>
 </li>
 <li><a href="#orgd53839f">6. <span class="todo TODO">TODO</span> 标签</a></li>
+<li><a href="#org1a17b2c">7. 插入 latex 公式</a></li>
 </ul>
 </div>
 </div>
@@ -320,6 +343,16 @@
 区别于 CSDN博客 和 evernote 的标签，org-mode 的标签支持为每个标题都设置标签。<br>
 标签主要是用于分类和搜索的。但是标签是用户自己设置的，可能该打的标签没打，导致搜索不到。我更倾向于使用搜索命令或 google 搜索笔记。不做笔记<br>
 </p>
+</div>
+</div>
+
+<div id="outline-container-org1a17b2c" class="outline-2">
+<h2 id="org1a17b2c"><span class="section-number-2">7</span> 插入 latex 公式</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li>使用 <code>$ $</code> 在行内插入。例如 <code>$\displaystyle \min_{x_1,\dots x_T}$</code> \(\displaystyle \min_{x_1,\dots x_T}\)<br></li>
+<li>使用 <code>$$ $$</code> 在行间插入。例如 <code>$$\displaystyle \min_{x_1,\dots x_T}$$</code> ：\[\displaystyle \min_{x_1,\dots x_T}\]<br></li>
+</ul>
 </div>
 </div>
 <div id="footnotes">

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>完全二叉树（Complete Binary Tree）</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">完全二叉树（Complete Binary Tree）</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3b5276b">1. 顺序存储表示完全二叉树</a></li>
+<li><a href="#orgbfeb6fa">2. 二叉堆</a>
+<ul>
+<li><a href="#orgcff9e3b">2.1. 二叉堆应用：堆排</a></li>
+</ul>
+</li>
+<li><a href="#orge9daee2">3. 完全二叉树应用：多路归并排序-败者树</a></li>
+<li><a href="#orgad0ebec">4. 判断二叉树是否是完全二叉树</a></li>
+</ul>
+</div>
+</div>
+<p>
+一个高度为 h，有 n 个结点的二叉树，并且仅当其每一个结点都与高度为 h<br>
+的满二叉树中编号为 1～n 的结点一一对应时，称为完全二叉树<br>
+</p>
+
+<div id="outline-container-org3b5276b" class="outline-2">
+<h2 id="org3b5276b"><span class="section-number-2">1</span> 顺序存储表示完全二叉树</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+设数组 A[n] 从下标 0 开始存储一棵完全二叉树<br>
+A[i]（\(0 \leq i < n\)）的子结点偏移量为 2*i+1，2*i+2。父结点偏移量为(i-1)/2<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbfeb6fa" class="outline-2">
+<h2 id="orgbfeb6fa"><span class="section-number-2">2</span> 二叉堆</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+二叉堆就是一棵完全二叉树。<br>
+父结点的键值总是小于（或大于）任何一个子结点的键值，且每个结点的左子树和右子树都是一个二叉堆。<br>
+当父结点的键值总是大于或等于任何一个子结点的键值时为最大堆。<br>
+当父结点的键值总是小于或等于任何一个子结点的键值时为最小堆。<br>
+</p>
+</div>
+
+<div id="outline-container-orgcff9e3b" class="outline-3">
+<h3 id="orgcff9e3b"><span class="section-number-3">2.1</span> 二叉堆应用：堆排</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+见排序章节-选择排序-堆排<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge9daee2" class="outline-2">
+<h2 id="orge9daee2"><span class="section-number-2">3</span> 完全二叉树应用：多路归并排序-败者树</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+见排序章节-K路归并排序-败者树<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgad0ebec" class="outline-2">
+<h2 id="orgad0ebec"><span class="section-number-2">4</span> 判断二叉树是否是完全二叉树</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#37319;&#29992;&#23618;&#24207;&#36941;&#21382;&#31639;&#27861;&#65292;&#23558;&#25152;&#26377;&#32467;&#28857;&#21152;&#20837;&#38431;&#21015;&#65288;&#21253;&#21547;&#31354;&#32467;&#28857;&#65289;&#12290;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24403;&#36935;&#21040;&#31354;&#32467;&#28857;&#26102;&#65292;&#26597;&#30475;&#38431;&#21015;&#20013;&#26159;&#21542;&#26377;&#38750;&#31354;&#32467;&#28857;&#12290;&#33509;&#26377;&#65292;&#21017;&#20108;&#21449;&#26641;&#19981;&#26159;&#23436;&#20840;&#20108;&#21449;&#26641;</span>
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">IsCompleteBT</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
+{
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23436;&#20840;&#20108;&#21449;&#26641;&#21487;&#20197;&#26159;&#31354;&#26641;</span>
+    <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>T)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+    <span style="color: #af8700;">queue</span> <span style="color: #0087ff;">Q</span>;
+    init_queue(Q);
+    enqueue(Q, T);
+    <span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">t</span>;
+    <span style="color: #5f8700;">while</span>(<span style="color: #d70000;">!</span>is_empty(Q))
+    {
+        dequeue(Q, t);
+        <span style="color: #5f8700;">if</span>(t)
+        {
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24038;&#21491;&#23401;&#23376;&#20837;&#38431;&#21015;</span>
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#19982;&#23618;&#24207;&#36941;&#21382;&#20989;&#25968; LevelOrder &#26377;&#32454;&#24494;&#19981;&#21516;</span>
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27492;&#22788;&#65292;&#24038;&#21491;&#23401;&#23376;&#32467;&#28857;&#20026; NULL &#26102;&#20381;&#28982;&#36827;&#38431;&#21015;</span>
+            enqueue(Q, t-&gt;lchild);
+            enqueue(Q, t-&gt;rchild);
+        }
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36935;&#21040;&#38750;&#31354;&#32467;&#28857;&#65292;&#22312;&#38431;&#21015;&#20013;&#26597;&#25214;&#26159;&#21542;&#23384;&#22312;&#38750;&#31354;&#32467;&#28857;</span>
+        <span style="color: #5f8700;">else</span>
+        {
+            <span style="color: #5f8700;">while</span>(<span style="color: #d70000;">!</span>is_empty(Q))
+            {
+                dequeue(Q, t);
+                <span style="color: #5f8700;">if</span>(t)
+                    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+            }
+        }
+    }
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

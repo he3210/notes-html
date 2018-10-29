@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>矩阵连乘</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">矩阵连乘</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgff5f7fa">1. 问题</a></li>
+<li><a href="#org893b546">2. 分析</a></li>
+<li><a href="#orga357dd1">3. 状态转移方程</a></li>
+<li><a href="#org96a3c9f">4. 填表过程</a></li>
+<li><a href="#org489e200">5. 动态规划</a></li>
+<li><a href="#org98e15a0">6. 备忘录</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgff5f7fa" class="outline-2">
+<h2 id="orgff5f7fa"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+设有矩阵 A<sub>1</sub>(30*35)、A<sub>2</sub>(35*15)、A<sub>3</sub>(15*5)、A<sub>4</sub>(5*10)，M = A<sub>1</sub>*A<sub>2</sub>*A<sub>3</sub>*A<sub>4</sub>，计算所需乘法次数的最小值<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org893b546" class="outline-2">
+<h2 id="org893b546"><span class="section-number-2">2</span> 分析</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+A<sub>1</sub>*A<sub>2</sub> 的乘法次数为 30*35*15<br>
+A<sub>2</sub>*A<sub>3</sub> 的乘法次数为 35*15*5<br>
+&#x2026;<br>
+需要对矩阵进行组合，选取一组乘法次数最小的组合<br>
+设 i 为第 i 个矩阵下标，j 为第 j 个矩阵下标<br>
+m[i][j] 表示A<sub>i</sub>*A<sub>i+1</sub>*&#x2026;*A<sub>j</sub> 所需乘法次数最小值，所以 i &gt; j 时无意义（即 m 构成的矩阵为三角矩阵）<br>
+</p>
+
+<p>
+当 i &lt; j，对于矩阵 A<sub>1</sub>(p<sub>0</sub>*p<sub>1</sub>)、A<sub>2</sub>(p<sub>1</sub>*p<sub>2</sub>)、A<sub>3</sub>(p<sub>2</sub>*p<sub>3</sub>)、A<sub>4</sub>(p<sub>3</sub>*p<sub>4</sub>)、A<sub>5</sub>(p<sub>4</sub>*p<sub>5</sub>)，M = A<sub>1</sub>*A<sub>2</sub>*A<sub>3</sub>*A<sub>4</sub>*A<sub>5</sub>。<br>
+计算到最后，还剩2个矩阵时，所需乘法次数必定为p<sub>0</sub>*p<sub>k</sub>*p<sub>5</sub>，k 的取值范围为1、2、3、4<br>
+这样，就把问题 m[1][5] 转化为子问题 m[1][k] + m[k+1][5] + p<sub>0</sub>*p<sub>k</sub>*p<sub>5</sub><br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga357dd1" class="outline-2">
+<h2 id="orga357dd1"><span class="section-number-2">3</span> 状态转移方程</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+\[
+m[i][j]=\left\{
+\begin{array}{lcl}
+0                                                                              &      & {i = j}\\
+\displaystyle \min_{i \leq k < j} \{m[i][k] + m[k+1][j] + p_{i-1}p_{k}p_{j}\}  &      & {i < j}
+\end{array} \right.
+\]<br>
+</p>
+
+<p>
+其中，i 为第 i 个矩阵下标，j 为第 j 个矩阵下标<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org96a3c9f" class="outline-2">
+<h2 id="org96a3c9f"><span class="section-number-2">4</span> 填表过程</h2>
+<div class="outline-text-2" id="text-4">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">行/列</th>
+<th scope="col" class="org-left">1</th>
+<th scope="col" class="org-left">2</th>
+<th scope="col" class="org-left">3</th>
+<th scope="col" class="org-left">4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">-</td>
+<td class="org-left">-</td>
+<td class="org-left">-</td>
+<td class="org-left">0</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">-</td>
+<td class="org-left">-</td>
+<td class="org-left">0</td>
+<td class="org-left">\(A_{3}*A_{4}\)</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">-</td>
+<td class="org-left">0</td>
+<td class="org-left">\(A_{2}*A_{3}\)</td>
+<td class="org-left">\(min\{(A_2*A_3)*A_4, A_2*(A_3*A_4)\}\)</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">0</td>
+<td class="org-left">\(A_1*A_2\)</td>
+<td class="org-left">\(min\{(A_1*A_2)*A_3, A_1*(A_2*A_3)\}\)</td>
+<td class="org-left">&#x2026;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org489e200" class="outline-2">
+<h2 id="org489e200"><span class="section-number-2">5</span> 动态规划</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[1024][1024];    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#20248;&#35299;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">s</span>[1024][1024];    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26029;&#24320;&#28857;&#30340;&#32034;&#24341;</span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21015;&#20986;&#30697;&#38453;&#30340;&#32467;&#21512;&#27493;&#39588;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">traceback</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span>)
+{
+    <span style="color: #5f8700;">if</span>(i == j)
+        <span style="color: #5f8700;">return</span>;
+    traceback(i, s[i][j]);
+    traceback(s[i][j] + 1, j);
+    printf(<span style="color: #00afaf;">"A[%d][%d] and A[%d][%d]]\n"</span>, i, s[i][j], s[i][j] + 1, j);
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 1; i &lt;= n; ++i)
+        m[i][i] = 0;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27599;&#24490;&#29615;&#19968;&#27425;&#35745;&#31639;&#19968;&#26465;&#26012;&#23545;&#35282;&#32447;</span>
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">t</span> = 2; t &lt;= n; ++t)
+    {
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#27425;&#24490;&#29615;&#35745;&#31639;&#26012;&#23545;&#35282;&#32447;(1, 2), (2, 3), (3, 4)...</span>
+        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 1, <span style="color: #0087ff;">j</span> = t; j &lt;=n; ++i, ++j)
+        {
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31561;&#21516;&#20110; int min = m[i][i] + m[i+1][j] + p[i-1] * p[i] * p[j];</span>
+            <span style="color: #af8700;">int</span> <span style="color: #0087ff;">min</span> = m[i+1][j] + p[i-1] * p[i] * p[j];
+            s[i][j] = i;            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35760;&#24405;&#26029;&#24320;&#28857;&#30340;&#32034;&#24341;&#65288;&#21363;&#21462;&#24471;&#26368;&#23567;&#35299;&#30340; k &#20540;&#65289;</span>
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">k&#22312;[i, j)&#33539;&#22260;&#20869;</span>
+            <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span> = i+1; k &lt; j; ++k)
+            {
+                <span style="color: #af8700;">int</span> <span style="color: #0087ff;">value</span> = m[i][k] + m[k+1][j] + p[i-1] * p[k] * p[j];
+                <span style="color: #5f8700;">if</span>(min &gt; value)
+                {
+                    min = value;
+                    s[i][j] = k;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35760;&#24405;&#33719;&#24471;&#26368;&#23567;&#35299;&#30340; k &#20540;</span>
+                }
+            }
+            m[i][j] = min;
+        }
+    }
+    <span style="color: #5f8700;">return</span> m[1][n];
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">argc</span>, <span style="color: #af8700;">char</span> **<span style="color: #0087ff;">argv</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span>[] = {30, 35, 15, 5, 10};
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len</span> = <span style="color: #5f8700;">sizeof</span>(p)/4-1;
+    printf(<span style="color: #00afaf;">"%d\n"</span>, fun(p, len));
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = len; i &gt;= 1; --i)
+    {
+        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = 1; j &lt;= len; ++j)
+            printf(<span style="color: #00afaf;">"%d  "</span>, s[i][j]);
+        putchar(10);
+    }
+    traceback(1, len);
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org98e15a0" class="outline-2">
+<h2 id="org98e15a0"><span class="section-number-2">6</span> 备忘录</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">fun2</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span>)
+{
+    <span style="color: #5f8700;">if</span>(m[i][j] &gt; 0)
+        <span style="color: #5f8700;">return</span> m[i][j];
+    <span style="color: #5f8700;">if</span>(i == j)
+        <span style="color: #5f8700;">return</span> 0;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">min</span> = fun2(p, i, i) + fun2(p, i+1, j) + p[i-1] * p[i] * p[j];
+    s[i][j] = i;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span> = i + 1; k &lt; j; ++k)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">value</span> = fun2(p, i, k) + fun2(p, k+1, j) + p[i-1] * p[k] * p[j];
+        <span style="color: #5f8700;">if</span>(min &gt; value)
+        {
+            min = value;
+            s[i][j] = k;
+        }
+    }
+    m[i][j] = min;
+    <span style="color: #5f8700;">return</span> m[i][j];
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

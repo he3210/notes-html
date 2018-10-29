@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>二叉排序树</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">二叉排序树</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0eadb73">1. 删除操作</a></li>
+<li><a href="#orga93974a">2. 基本操作</a></li>
+</ul>
+</div>
+</div>
+<p>
+二叉排序树（BST），也称为二叉查找树。它可以是一棵空树，或者是有如下性质的非空二叉树<br>
+</p>
+
+<ul class="org-ul">
+<li>若左子树非空，则左子树上的所有结点 key 均小于根结点 key<br></li>
+<li>若右子树非空，则右子树上的所有结点 key 均大于根结点 key<br></li>
+<li>左右子树本身也是一棵二叉排序树<br></li>
+</ul>
+
+<p>
+另外，需要注意的是：对二叉树进行中序遍历可以得到一个升序序列<br>
+</p>
+
+<div id="outline-container-org0eadb73" class="outline-2">
+<h2 id="org0eadb73"><span class="section-number-2">1</span> 删除操作</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+删除操作分为4种情况<br>
+</p>
+
+<p>
+注：图中 pfa 和 p 结点间的竖线表示 p 可能是 pfa 的左孩子，也可能是右孩子<br>
+<img src="../images/二叉排序树删除操作的4种情况.png" alt="二叉排序树删除操作的4种情况.png"><br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga93974a" class="outline-2">
+<h2 id="orga93974a"><span class="section-number-2">2</span> 基本操作</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">elem_type</span> <span style="color: #af8700;">int</span>
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">data</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">lchild</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">rchild</span>;
+}<span style="color: #af8700;">node</span>, *<span style="color: #af8700;">BiTree</span>;
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26597;&#25214;&#20851;&#38190;&#23383;&#20026; key &#30340;&#32467;&#28857;</span>
+<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">search</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>, <span style="color: #af8700;">elem_type</span> <span style="color: #0087ff;">key</span>, <span style="color: #af8700;">node</span> *&amp;p)
+{
+    p = <span style="color: #00afaf;">NULL</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">p &#25351;&#21521;&#34987;&#26597;&#25214;&#32467;&#28857;&#30340;&#29238;&#32467;&#28857;&#65292;&#29992;&#20110;&#25554;&#20837;&#21644;&#21024;&#38500;&#25805;&#20316;&#20013;</span>
+    <span style="color: #5f8700;">while</span>(T &amp;&amp; T-&gt;data != key)
+    {
+        p = T;
+        <span style="color: #5f8700;">if</span>(key &lt; T-&gt;data)
+            T = T-&gt;lchild;
+        <span style="color: #5f8700;">else</span>
+            T = T-&gt;rchild;
+    }
+    <span style="color: #5f8700;">return</span> T;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25554;&#20837;&#20851;&#38190;&#23383;&#20026; key &#30340;&#32467;&#28857;</span>
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">insert</span>(BiTree &amp;T, <span style="color: #af8700;">elem_type</span> <span style="color: #0087ff;">key</span>)
+{
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">pfa</span> = <span style="color: #00afaf;">NULL</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35201;&#25554;&#20837;&#32467;&#28857;&#30340;&#29238;&#32467;&#28857;</span>
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> != search(T, key, pfa))  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20108;&#21449;&#25490;&#24207;&#26641;&#24050;&#23384;&#22312;&#35813;&#20803;&#32032;&#65292;&#23601;&#36820;&#22238;false</span>
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">q</span> = (<span style="color: #af8700;">BiTree</span>)malloc(<span style="color: #5f8700;">sizeof</span>(node));
+    q-&gt;data = key;
+    q-&gt;lchild = q-&gt;rchild = <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>T)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22788;&#29702;&#20108;&#21449;&#25490;&#24207;&#26641;&#20026;&#31354;&#30340;&#24773;&#20917;</span>
+        T = q;
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(key &gt; pfa-&gt;data)
+        pfa-&gt;rchild = q;
+    <span style="color: #5f8700;">else</span>
+        pfa-&gt;lchild = q;
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20108;&#21449;&#25490;&#24207;&#26641;&#20013;&#21024;&#38500;&#20851;&#38190;&#23383;&#20026; key &#30340;&#32467;&#28857;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">del</span>(BiTree &amp;T, <span style="color: #af8700;">elem_type</span> <span style="color: #0087ff;">key</span>)
+{
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">pfa</span> = <span style="color: #00afaf;">NULL</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35201;&#25554;&#20837;&#32467;&#28857;&#30340;&#29238;&#32467;&#28857;</span>
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p</span> = search(T, key, pfa);
+    <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>p)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#19981;&#23384;&#22312;&#35201;&#21024;&#38500;&#30340;&#32467;&#28857;</span>
+        <span style="color: #5f8700;">return</span>;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24453;&#21024;&#32467;&#28857;&#24038;&#23376;&#26641;&#20026;&#31354;</span>
+    <span style="color: #5f8700;">if</span>(p-&gt;lchild == <span style="color: #00afaf;">NULL</span>)
+    {
+        <span style="color: #5f8700;">if</span>(key &gt; pfa-&gt;data)
+            pfa-&gt;rchild = p-&gt;rchild;
+        <span style="color: #5f8700;">else</span>
+            pfa-&gt;lchild = p-&gt;rchild;
+        free(p);
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24453;&#21024;&#32467;&#28857;&#21491;&#23376;&#26641;&#20026;&#31354;</span>
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(p-&gt;rchild == <span style="color: #00afaf;">NULL</span>)
+    {
+        <span style="color: #5f8700;">if</span>(key &gt; pfa-&gt;data)
+            pfa-&gt;rchild = p-&gt;lchild;
+        <span style="color: #5f8700;">else</span>
+            pfa-&gt;lchild = p-&gt;lchild;
+        free(p);
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24453;&#21024;&#32467;&#28857;&#24038;&#21491;&#23376;&#26641;&#22343;&#38750;&#31354;&#65292;&#19988;&#20854;&#23376;&#26641;&#30340;&#24038;&#23376;&#26641;&#20026;&#31354;</span>
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(p-&gt;rchild-&gt;lchild == <span style="color: #00afaf;">NULL</span>)
+    {
+        <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">q</span> = p-&gt;rchild;
+        q-&gt;lchild = p-&gt;lchild;
+        <span style="color: #5f8700;">if</span>(key &gt; pfa-&gt;data)
+            pfa-&gt;rchild = q;
+        <span style="color: #5f8700;">else</span>
+            pfa-&gt;lchild = q;
+        free(p);
+    }
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24453;&#21024;&#32467;&#28857;&#24038;&#21491;&#23376;&#26641;&#22343;&#38750;&#31354;&#65292;&#19988;&#20854;&#23376;&#26641;&#30340;&#24038;&#23376;&#26641;&#38750;&#31354;&#12290;&#22312;&#21491;&#23376;&#26641;&#20013;&#25214;&#20013;&#24207;&#36941;&#21382;&#30340;&#31532;&#19968;&#20010;&#20803;&#32032;&#26367;&#25442;</span>
+    <span style="color: #5f8700;">else</span>
+    {
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">q &#25351;&#21521;&#24453;&#21024;&#32467;&#28857;&#30340;&#21491;&#23376;&#26641;&#19978;&#20013;&#24207;&#36941;&#21382;&#30340;&#31532;&#19968;&#20010;&#20803;&#32032;</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">preq &#25351;&#21521; q &#30340;&#29238;&#32467;&#28857;</span>
+        <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">q</span> = p-&gt;rchild;
+        <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">preq</span> = p-&gt;rchild;
+        <span style="color: #5f8700;">while</span>(q-&gt;lchild)
+        {
+            preq = q;
+            q = q-&gt;lchild;
+        }
+        preq-&gt;lchild = q-&gt;rchild;
+        q-&gt;lchild = p-&gt;lchild;
+        q-&gt;rchild = p-&gt;rchild;
+        <span style="color: #5f8700;">if</span>(key &gt; pfa-&gt;data)
+            pfa-&gt;rchild = q;
+        <span style="color: #5f8700;">else</span>
+            pfa-&gt;lchild = q;
+        free(p);
+    }
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26500;&#36896;&#20108;&#21449;&#25490;&#24207;&#26641;</span>
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">init</span>(BiTree &amp;T, <span style="color: #af8700;">elem_type</span> <span style="color: #0087ff;">keys</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #5f8700;">if</span>(T)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; n; ++i)
+        insert(T, keys[i]);
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

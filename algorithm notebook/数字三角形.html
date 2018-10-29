@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数字三角形</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">数字三角形</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org28497c2">1. 问题</a></li>
+<li><a href="#orgea2a0a4">2. 状态转移方程</a></li>
+<li><a href="#org967f795">3. 动态规划</a></li>
+<li><a href="#org5306551">4. 备忘录</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org28497c2" class="outline-2">
+<h2 id="org28497c2"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+有一个非负整数组成的三角形，第一行只有一个数，除了最下行之外每个数的左下方和右下方各有一个数<br>
+</p>
+
+<p>
+从第一行的数开始，每次可以往左下或右下走一格，知道走到最下行，把沿途经过的数全部加起来。如何走才能使这个和最大？<br>
+</p>
+
+<pre class="example">
+       1                                1,1
+     3    2                        2,1       2,2
+   4   10   1                  3,1      3,2       3,3
+4    3    2   20           4,1     4,2       4,3      4,4
+    数字三角形                        格子编号
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgea2a0a4" class="outline-2">
+<h2 id="orgea2a0a4"><span class="section-number-2">2</span> 状态转移方程</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+\[
+d(i, j)=\left\{
+\begin{array}{lcl}
+a(n, j)                                  &      & {i = n}\\
+a(i, j) + max\{d(i+1, j), d(i+1, j+1)\}  &      & {1 \leq i < n}
+\end{array} \right.
+\]<br>
+</p>
+
+<p>
+把当前位置(i, j)看成一个状态， 定义状态的指标函数 d(i, j) 为从格子出发时能得到的最大和（包括位置(i, j)的值），在这个状态下原问题的解是 d(1, 1)<br>
+a(i, j) 为位置 (i, j) 的值 n 为数字三角形的层数<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org967f795" class="outline-2">
+<h2 id="org967f795"><span class="section-number-2">3</span> 动态规划</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 4
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span>[N+1][N+1] = {
+    0, 0, 0, 0, 0,
+    0, 1, 0, 0, 0,
+    0, 3, 2, 0, 0,
+    0, 4, 10,1, 0,
+    0, 4, 3, 2, 20
+};
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">d</span>[N+1][N+1];
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">n &#26159;&#25968;&#23383;&#19977;&#35282;&#24418;&#30340;&#23618;&#25968;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = 1; j &lt;= n; ++j)
+        d[n][j] = a[n][j];
+
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = n-1; i &gt;= 1; --i)
+        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = 1; j &lt;= i; ++j)
+        {
+            <span style="color: #af8700;">int</span> <span style="color: #0087ff;">max</span> = d[i+1][j] &gt; d[i+1][j+1] ? d[i+1][j] : d[i+1][j+1];
+            d[i][j] = a[i][j] + max;
+        }
+
+    <span style="color: #5f8700;">return</span> d[1][1];
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5306551" class="outline-2">
+<h2 id="org5306551"><span class="section-number-2">4</span> 备忘录</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 4
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span>[N+1][N+1] = {
+    0, 0, 0, 0, 0,
+    0, 1, 0, 0, 0,
+    0, 3, 2, 0, 0,
+    0, 4, 10,1, 0,
+    0, 4, 3, 2, 20
+};
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">d</span>[N+1][N+1];
+
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">INF</span> -1
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">fun2</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span>)
+{
+    <span style="color: #5f8700;">if</span>(d[i][j] != INF)
+        <span style="color: #5f8700;">return</span> d[i][j];
+    <span style="color: #5f8700;">if</span>(i == N)
+        d[i][j] = a[i][j];
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(i &lt; N)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">value1</span> = fun2(i+1, j);
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">value2</span> = fun2(i+1, j+1);
+        d[i][j] = a[i][j] + (value1 &gt; value2 ? value1 : value2);
+    }
+    <span style="color: #5f8700;">return</span> d[i][j];
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">argc</span>, <span style="color: #af8700;">char</span> **<span style="color: #0087ff;">argv</span>)
+{
+    memset(d, INF, <span style="color: #5f8700;">sizeof</span>(d));
+    printf(<span style="color: #00afaf;">"%d\n"</span>, fun2(1, 1));
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

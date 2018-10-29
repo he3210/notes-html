@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 19:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>循环队列</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">循环队列</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga0598fe">1. 区分队空队满的三种方法</a>
+<ul>
+<li><a href="#org85573b7">1.1. 方法一</a></li>
+<li><a href="#org85118f1">1.2. 方法二</a></li>
+<li><a href="#orgdb48e55">1.3. 方法三</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+循环队列是把顺序队列首尾相连，把存储队列元素的表从逻辑上看成一个环，成为循环队列<br>
+定义 front 指向队首元素，rear 指向队尾元素的下一个位置<br>
+初始状态：q.front = q.rear = 0<br>
+入队（队尾指针进1）：q.rear = (q.rear+1) % N<br>
+出队（队首指针进1）：q.front = (q.front+1) % N<br>
+队列长度：(N + q.rear - q.front) % N<br>
+</p>
+
+<div id="outline-container-orga0598fe" class="outline-2">
+<h2 id="orga0598fe"><span class="section-number-2">1</span> 区分队空队满的三种方法</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org85573b7" class="outline-3">
+<h3 id="org85573b7"><span class="section-number-3">1.1</span> 方法一</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+队满条件：（q.rear+1) % N = q.front<br>
+队空条件：q.front = q.rear<br>
+这种区分队空队满的方法牺牲了一个存储单元。它约定了"q.front 指针在 q.rear 指针的下一个位置作为队满的标志"<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">elem_type</span> <span style="color: #af8700;">int</span>
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">queue</span>
+{
+    <span style="color: #af8700;">elem_type</span> <span style="color: #0087ff;">data</span>[N];
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">front</span>, <span style="color: #0087ff;">rear</span>;
+}<span style="color: #af8700;">queue</span>;
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">init_queue</span>(queue &amp;q)
+{
+    q.rear = q.front = 0;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">is_empty</span>(queue &amp;q)
+{
+    <span style="color: #5f8700;">if</span>(q.rear == q.front)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">enqueue</span>(queue &amp;q, elem_type &amp;x)
+{
+    <span style="color: #5f8700;">if</span>((q.rear+1) % N == q.front)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    q.data[q.rear] = x;
+    q.rear = (q.rear+1) % N;
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">dequeue</span>(queue &amp;q, elem_type &amp;x)
+{
+    <span style="color: #5f8700;">if</span>(q.rear == q.front)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    x = q.data[q.front];
+    q.front = (q.front+1) % N;
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">queue_length</span>(queue &amp;q)
+{
+    <span style="color: #5f8700;">return</span> (N+q.rear-q.front)%N;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org85118f1" class="outline-3">
+<h3 id="org85118f1"><span class="section-number-3">1.2</span> 方法二</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+数据结构中增设表示元素个数的数据成员 q.length。<br>
+队空条件：q.length = 0<br>
+队满条件：q.length = N<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdb48e55" class="outline-3">
+<h3 id="orgdb48e55"><span class="section-number-3">1.3</span> 方法三</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+数据结构中增设 q.tag 数据成员，以区分是队空还是队满<br>
+若出队导致 q.front = q.rear，则一定会队空，设置 q.tag = 0<br>
+若入队导致 q.front = q.rear，则一定会队满，设置 q.tag = 1<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #af8700;">bool</span> <span style="color: #0087ff;">enqueue</span>(queue &amp;q, elem_type &amp;x)
+{
+    <span style="color: #5f8700;">if</span>(q.front == q.rear &amp;&amp; q.tag == 1)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    q.data[q.rear] = x;
+    q.rear = (q.rear+1) % N;
+    q.tag = 1;
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">dequeue</span>(queue &amp;q, elem_type &amp;x)
+{
+    <span style="color: #5f8700;">if</span>(q.front == q.rear &amp;&amp; q.tag == 0)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    x = q.data[q.front];
+    q.front = (q.front+1) % N;
+    q.tag = 0;
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
