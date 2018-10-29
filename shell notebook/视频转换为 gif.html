@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-10-21 Sun 12:58 -->
+<!-- 2018-10-29 Mon 11:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ffmpeg 处理视频 &amp; gif 生成</title>
+<title>视频转换为 gif</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
 <link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
@@ -29,31 +29,20 @@
 </div>
 </div>
 <div id="content">
-<h1 class="title">ffmpeg 处理视频 &amp; gif 生成</h1>
+<h1 class="title">视频转换为 gif</h1>
 <div id="table-of-contents">
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1ac0e0e">1. 生成 gif</a>
-<ul>
-<li><a href="#orgd178925">1.1. 获取 mov 视频</a></li>
-<li><a href="#orgc127f85">1.2. 生成 gif</a></li>
-</ul>
-</li>
-<li><a href="#org5810d2c">2. 获取不带音频的视频</a></li>
-<li><a href="#org1e52f2b">3. 提取音频</a></li>
-<li><a href="#org69f7dee">4. 视频时长裁剪</a></li>
+<li><a href="#org9e8a98a">1. 获取 mov 视频</a></li>
+<li><a href="#org07d997e">2. 生成 gif</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1ac0e0e" class="outline-2">
-<h2 id="org1ac0e0e"><span class="section-number-2">1</span> 生成 gif</h2>
+<div id="outline-container-org9e8a98a" class="outline-2">
+<h2 id="org9e8a98a"><span class="section-number-2">1</span> 获取 mov 视频</h2>
 <div class="outline-text-2" id="text-1">
-</div>
-<div id="outline-container-orgd178925" class="outline-3">
-<h3 id="orgd178925"><span class="section-number-3">1.1</span> 获取 mov 视频</h3>
-<div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
 <li>在 mac 上使用 <code>QuickTime Player</code> 录屏<br></li>
 <li>iphone 上拍摄视频<br></li>
@@ -61,9 +50,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgc127f85" class="outline-3">
-<h3 id="orgc127f85"><span class="section-number-3">1.2</span> 生成 gif</h3>
-<div class="outline-text-3" id="text-1-2">
+<div id="outline-container-org07d997e" class="outline-2">
+<h2 id="org07d997e"><span class="section-number-2">2</span> 生成 gif</h2>
+<div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ ffmpeg -ss 00:00:00.000 -t 00:00:09.000 -i <span style="color: #00afaf;">"emacs &#21015;&#32534;&#36753;.mov"</span> -pix_fmt rgb8 -r 7 <span style="color: #00afaf;">"emacs &#21015;&#32534;&#36753;.gif</span>
 </pre>
@@ -89,47 +78,6 @@
 <dt><code>pix_fmt rgb8</code> </dt><dd>RGB 颜色限制<br></dd>
 <dt><code>-s 1276x480</code> </dt><dd>输出分辨率。默认 gif 的分辨率为 mov 视频的分辨率，可以省略这个参数<br></dd>
 <dt><code>-r 7</code> </dt><dd>输出帧率为每秒 15 帧。根据需要最好范围在 [5, 15] 之间<br></dd>
-</dl>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org5810d2c" class="outline-2">
-<h2 id="org5810d2c"><span class="section-number-2">2</span> 获取不带音频的视频</h2>
-<div class="outline-text-2" id="text-2">
-<div class="org-src-container">
-<pre class="src src-shell">$ ffmpeg -i bird.mov -vcodec copy -an bird.mp4
-</pre>
-</div>
-
-<dl class="org-dl">
-<dt><code>-an</code> </dt><dd>禁止输出音频<br></dd>
-<dt><code>-vcodec copy</code></dt><dd>复制视频编码<br></dd>
-</dl>
-</div>
-</div>
-
-<div id="outline-container-org1e52f2b" class="outline-2">
-<h2 id="org1e52f2b"><span class="section-number-2">3</span> 提取音频</h2>
-<div class="outline-text-2" id="text-3">
-<div class="org-src-container">
-<pre class="src src-shell">$ ffmpeg -i input.mov -write_xing 0 output.mp3
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org69f7dee" class="outline-2">
-<h2 id="org69f7dee"><span class="section-number-2">4</span> 视频时长裁剪</h2>
-<div class="outline-text-2" id="text-4">
-<div class="org-src-container">
-<pre class="src src-shell">$ ffmpeg -ss 00:00:01.000 -t 00:00:10.000 -i <span style="color: #00afaf;">"input.mov"</span> <span style="color: #00afaf;">"output.mov"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#31532;&#19968;&#31186;&#24320;&#22987;&#65292;&#33719;&#21462;10&#31186;&#30340;&#35270;&#39057;</span>
-$ ffmpeg -sseof -00:00:01.000 -i <span style="color: #00afaf;">"bird.mov"</span> <span style="color: #00afaf;">"bird.mp4"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#33719;&#21462;&#26368;&#21518;&#19968;&#31186;&#30340;&#35270;&#39057;&#65292;&#24182;&#36716;&#20026; mp4</span>
-</pre>
-</div>
-
-<dl class="org-dl">
-<dt><code>-sseof</code> </dt><dd>相对于文件末尾的开始时间<br></dd>
 </dl>
 </div>
 </div>

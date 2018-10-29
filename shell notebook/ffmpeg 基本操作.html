@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-29 Mon 11:27 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ffmpeg 基本操作</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">ffmpeg 基本操作</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgbe22822">1. 获取不带音频的视频</a></li>
+<li><a href="#org5298d1d">2. 提取音频</a></li>
+<li><a href="#orgc694035">3. 视频时长裁剪</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbe22822" class="outline-2">
+<h2 id="orgbe22822"><span class="section-number-2">1</span> 获取不带音频的视频</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ ffmpeg -i bird.mov -vcodec copy -an bird.mp4
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><code>-an</code> </dt><dd>禁止输出音频<br></dd>
+<dt><code>-vcodec copy</code></dt><dd>复制视频编码<br></dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-org5298d1d" class="outline-2">
+<h2 id="org5298d1d"><span class="section-number-2">2</span> 提取音频</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ ffmpeg -i input.mov -write_xing 0 output.mp3
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc694035" class="outline-2">
+<h2 id="orgc694035"><span class="section-number-2">3</span> 视频时长裁剪</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ ffmpeg -ss 00:00:01.000 -t 00:00:10.000 -i <span style="color: #00afaf;">"input.mov"</span> <span style="color: #00afaf;">"output.mov"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#31532;&#19968;&#31186;&#24320;&#22987;&#65292;&#33719;&#21462;10&#31186;&#30340;&#35270;&#39057;</span>
+$ ffmpeg -sseof -00:00:01.000 -i <span style="color: #00afaf;">"bird.mov"</span> <span style="color: #00afaf;">"bird.mp4"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#33719;&#21462;&#26368;&#21518;&#19968;&#31186;&#30340;&#35270;&#39057;&#65292;&#24182;&#36716;&#20026; mp4</span>
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><code>-sseof</code> </dt><dd>相对于文件末尾的开始时间<br></dd>
+</dl>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

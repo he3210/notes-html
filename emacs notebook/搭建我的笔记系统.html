@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-10-21 Sun 12:58 -->
+<!-- 2018-10-29 Mon 11:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>搭建我的笔记系统</title>
@@ -37,15 +37,43 @@
 <li><a href="#org7d8c8db">1. 为什么选用 org-mode 构建？</a></li>
 <li><a href="#org8df2a04">2. 笔记系统最终目录结构</a></li>
 <li><a href="#orgd58f182">3. org-mode 导出成网站的基本配置</a></li>
-<li><a href="#org4fb6dc4">4. 后续优化1&#x2013;代码块右侧显示代码类型</a></li>
-<li><a href="#org34b3559">5. 后续优化2&#x2013;生产环境测试环境分离</a></li>
-<li><a href="#org1fbc2fc">6. 后续优化3&#x2013;目录聚焦当前大纲</a></li>
+<li><a href="#org4d2ac60">4. 后续优化1 —— 代码块右侧显示代码类型</a></li>
+<li><a href="#orgea5b109">5. 后续优化2 —— 生产环境测试环境分离</a></li>
+<li><a href="#org455b9f5">6. 后续优化3 —— 目录聚焦当前大纲</a></li>
+<li><a href="#orgfbf71f1">7. 后续优化4 —— 添加 google 搜索</a></li>
 </ul>
 </div>
 </div>
 <p>
 本站点就是这样构建的<br>
 </p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">搭建完成后的快捷键</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>C-c en</code></td>
+<td class="org-left">把 org 格式的笔记导出为 html 格式的笔记，从 <code>~/notes/org/</code> 导出到 <code>~/notes/html/</code> 。该命令导出的笔记在本地测试环境使用</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-c eN</code></td>
+<td class="org-left">该命令导出的笔记在生产环境使用。（en 为 export notes 的首字母）</td>
+</tr>
+</tbody>
+</table>
 
 <div id="outline-container-org7d8c8db" class="outline-2">
 <h2 id="org7d8c8db"><span class="section-number-2">1</span> 为什么选用 org-mode 构建？</h2>
@@ -62,16 +90,16 @@
 </p>
 
 <ul class="org-ul">
-<li>表格功能强大<br></li>
+<li>表格功能、超链接功能强大<br></li>
 <li>支持 latex<br></li>
 <li>基于大纲，清晰明了<br></li>
-<li>支持导出各种格式。例如：配置后可以导出成一个网站，能在各种终端上用浏览器直接访问。<br></li>
+<li>支持导出各种格式。例如：配置后可以导出成一个博客网站，能在各种终端上用浏览器直接访问。<br></li>
 <li>可以根据自己的想法编写 CSS 和 HTML 定制笔记系统的外观，想要什么样的就要什么样的<br></li>
 <li>导出成网页后，只需一个链接就可以共享给别人<br></li>
 </ul>
 
 <p>
-搭建笔记系统的几个目标：<br>
+搭建笔记系统的几个基本要求或目标：<br>
 </p>
 <ul class="org-ul">
 <li>要有一个导航栏<br></li>
@@ -79,8 +107,7 @@
 <li>对笔记进行分类。比如：shell 笔记、算法笔记<br></li>
 <li>采用 google 搜索<br></li>
 <li>目录浮于右上角，点击隐藏，再点击显示;目录聚焦当前大纲。<br></li>
-<li>简单美观<br></li>
-<li>代码高亮<br></li>
+<li>简单美观。支持代码高亮<br></li>
 </ul>
 </div>
 </div>
@@ -90,27 +117,29 @@
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ tree -N -I <span style="color: #00afaf;">"algorithm|libevent|test"</span> notes
-notes                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25645;&#24314;&#30340;&#31508;&#35760;&#31995;&#32479;&#30446;&#24405;</span>
-&#9500;&#9472;&#9472; html                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23548;&#20986;&#25104; h5 &#30340;&#31508;&#35760;&#26412;</span>
-&#9492;&#9472;&#9472; org                     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">org &#30446;&#24405;</span>
-    &#9500;&#9472;&#9472; css                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23384;&#25918; css &#26679;&#24335;</span>
+notes                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25645;&#24314;&#30340;&#31508;&#35760;&#31995;&#32479;&#30446;&#24405;</span>
+&#9500;&#9472;&#9472; html                         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23548;&#20986;&#25104; h5 &#30340;&#31508;&#35760;&#26412;</span>
+&#9492;&#9472;&#9472; org                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">org &#30446;&#24405;</span>
+    &#9500;&#9472;&#9472; css                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23384;&#25918; css &#26679;&#24335;&#65292;js &#25991;&#20214;</span>
+    &#9474;   &#9500;&#9472;&#9472; main.js              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#33258;&#23450;&#20041;&#30340; js &#25991;&#20214;</span>
+    &#9474;   &#9500;&#9472;&#9472; jquery-2.1.3.min.js  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">jquery</span>
     &#9474;&#160;&#160; &#9492;&#9472;&#9472; style.css
-    &#9500;&#9472;&#9472; gallery.org         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30011;&#24266;</span>
-    &#9500;&#9472;&#9472; images              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25152;&#26377;&#30340;&#22270;&#29255;&#37117;&#20445;&#23384;&#22312;&#36825;&#37324;</span>
-    &#9500;&#9472;&#9472; index.org           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20027;&#39029;&#65292;&#21487;&#20197;&#20445;&#23384;&#19968;&#20123;&#32463;&#24120;&#38656;&#35201;&#21442;&#32771;&#30340;&#31508;&#35760;&#30340;&#38142;&#25509;&#65292;&#20174;&#32780;&#33021;&#24555;&#36895;&#35775;&#38382;</span>
-    &#9500;&#9472;&#9472; links.org           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20248;&#31168;&#30340;&#21338;&#23458;&#38142;&#25509;</span>
-    &#9500;&#9472;&#9472; notebooks.org       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21019;&#24314;&#30340;&#25152;&#26377;&#31508;&#35760;&#26412;&#37117;&#22312;&#36825;&#37324;</span>
-    &#9500;&#9472;&#9472; emacs notebook      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23384;&#25918; emacs &#31508;&#35760;&#30340;&#31508;&#35760;&#26412;</span>
-    &#9474;&#160;&#160; &#9492;&#9472;&#9472; emacs.org       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31508;&#35760;&#30446;&#24405;</span>
-    &#9500;&#9472;&#9472; libevent notebook   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31508;&#35760;&#26412;</span>
-    &#9474;&#160;&#160; &#9492;&#9472;&#9472; libevent.org    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31508;&#35760;&#30446;&#24405;</span>
+    &#9500;&#9472;&#9472; gallery.org              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30011;&#24266;</span>
+    &#9500;&#9472;&#9472; images                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25152;&#26377;&#30340;&#22270;&#29255;&#37117;&#20445;&#23384;&#22312;&#36825;&#37324;</span>
+    &#9500;&#9472;&#9472; index.org                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20027;&#39029;&#65292;&#21487;&#20197;&#20445;&#23384;&#19968;&#20123;&#32463;&#24120;&#38656;&#35201;&#21442;&#32771;&#30340;&#31508;&#35760;&#30340;&#38142;&#25509;&#65292;&#20174;&#32780;&#33021;&#24555;&#36895;&#35775;&#38382;</span>
+    &#9500;&#9472;&#9472; links.org                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20248;&#31168;&#30340;&#21338;&#23458;&#38142;&#25509;</span>
+    &#9500;&#9472;&#9472; notebooks.org            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21019;&#24314;&#30340;&#25152;&#26377;&#31508;&#35760;&#26412;&#37117;&#22312;&#36825;&#37324;</span>
+    &#9500;&#9472;&#9472; emacs notebook           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23384;&#25918; emacs &#31508;&#35760;&#30340;&#31508;&#35760;&#26412;</span>
+    &#9474;&#160;&#160; &#9492;&#9472;&#9472; emacs.org            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31508;&#35760;&#30446;&#24405;</span>
+    &#9500;&#9472;&#9472; libevent notebook        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31508;&#35760;&#26412;</span>
+    &#9474;&#160;&#160; &#9492;&#9472;&#9472; libevent.org         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31508;&#35760;&#30446;&#24405;</span>
     &#9500;&#9472;&#9472; shell notebook
     &#9474;&#160;&#160; &#9492;&#9472;&#9472; shell.org
-    &#9474;&#9472;&#9472; templates           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">html &#27169;&#29256;&#30446;&#24405;&#12290;&#23548;&#20986; html &#26102;&#20250;&#26681;&#25454;&#30456;&#20851;&#37197;&#32622;&#25226;&#36825;&#20123;&#27169;&#29256;&#25918;&#21040; html &#30340;&#21512;&#36866;&#20301;&#32622;&#12290;&#29983;&#20135;&#29615;&#22659;&#20351;&#29992;&#35813;&#30446;&#24405;n</span>
-    &#9474;   &#9500;&#9472;&#9472; html-head.html  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">html head</span>
-    &#9474;   &#9500;&#9472;&#9472; postamble.html  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25918;&#21040; html &#30340;&#23614;&#37096;</span>
-    &#9474;   &#9492;&#9472;&#9472; preamble.html   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25918;&#21040; html &#30340;&#24320;&#22987;&#37096;&#20998;</span>
-    &#9492;&#9472;&#9472; templates-test      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#27979;&#35797;&#29615;&#22659;&#20351;&#29992;&#36825;&#20010;&#30446;&#24405;&#32780;&#19981;&#29992; templates</span>
+    &#9474;&#9472;&#9472; templates                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">html &#27169;&#29256;&#30446;&#24405;&#12290;&#23548;&#20986; html &#26102;&#20250;&#26681;&#25454;&#30456;&#20851;&#37197;&#32622;&#25226;&#36825;&#20123;&#27169;&#29256;&#25918;&#21040; html &#30340;&#21512;&#36866;&#20301;&#32622;&#12290;&#29983;&#20135;&#29615;&#22659;&#20351;&#29992;&#35813;&#30446;&#24405;n</span>
+    &#9474;   &#9500;&#9472;&#9472; html-head.html       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">html head</span>
+    &#9474;   &#9500;&#9472;&#9472; postamble.html       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25918;&#21040; html &#30340;&#23614;&#37096;</span>
+    &#9474;   &#9492;&#9472;&#9472; preamble.html        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25918;&#21040; html &#30340;&#24320;&#22987;&#37096;&#20998;</span>
+    &#9492;&#9472;&#9472; templates-test           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#27979;&#35797;&#29615;&#22659;&#20351;&#29992;&#36825;&#20010;&#30446;&#24405;&#32780;&#19981;&#29992; templates</span>
         &#9500;&#9472;&#9472; html-head.html
         &#9500;&#9472;&#9472; postamble.html
         &#9492;&#9472;&#9472; preamble.html
@@ -198,7 +227,7 @@ notes                       <span style="color: #8a8a8a;"># </span><span style="
 <pre class="src src-emacs-lisp"><span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#35813;&#20989;&#25968;&#20250;&#24378;&#21046;&#23548;&#20986;&#25152;&#26377;&#25991;&#20214;&#65292;&#21363;&#20351;&#35813;&#25991;&#20214;&#27809;&#26377;&#20462;&#25913;&#36807;&#12290;&#21542;&#21017;&#65292;&#21487;&#33021;&#20986;&#29616;&#26377;&#20123;&#25991;&#20214;&#20462;&#25913;&#20102;&#65292;&#20294;&#26159;&#23548;&#20986;&#30340;&#36824;&#26159;&#26087;&#25991;&#20214;</span>
 (<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">export-my-notes</span>()
   (<span style="color: #5f8700;">interactive</span>)
-  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#37197;&#33394;&#38382;&#39064;&#12290;&#38656;&#35201;&#35774;&#32622;&#20026; 256 &#33394;&#12290;&#21542;&#21017;&#65292;&#22312;&#32456;&#31471;&#19979;&#30340; emacs &#20013;&#25191;&#34892;&#35813;&#20989;&#25968;&#65292;&#23548;&#20986;&#30340;&#20195;&#30721;&#22359;&#39068;&#33394;&#28151;&#20081;</span>
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">solarized &#37197;&#33394;&#38382;&#39064;&#12290;&#38656;&#35201;&#35774;&#32622;&#20026; 256 &#33394;&#12290;&#21542;&#21017;&#65292;&#22312;&#32456;&#31471;&#19979;&#30340; emacs &#20013;&#25191;&#34892;&#35813;&#20989;&#25968;&#65292;&#23548;&#20986;&#30340;&#20195;&#30721;&#22359;&#39068;&#33394;&#28151;&#20081;</span>
   (<span style="color: #5f8700;">setq</span> solarized-termcolors 256)
   (load-theme 'solarized t)
 
@@ -228,11 +257,11 @@ notes                       <span style="color: #8a8a8a;"># </span><span style="
 </p>
 </div>
 </div>
-<div id="outline-container-org4fb6dc4" class="outline-2">
-<h2 id="org4fb6dc4"><span class="section-number-2">4</span> 后续优化1&#x2013;代码块右侧显示代码类型</h2>
+<div id="outline-container-org4d2ac60" class="outline-2">
+<h2 id="org4d2ac60"><span class="section-number-2">4</span> 后续优化1 —— 代码块右侧显示代码类型</h2>
 <div class="outline-text-2" id="text-4">
 <p>
-如果代码块是 shell 脚本，代码块右上角显示 shell；如果是 python 代码，右上角显示 python&#x2026;<br>
+如果代码块是 shell 脚本，代码块右上角显示 shell；如果是 python 代码，右上角显示 python；&#x2026;<br>
 </p>
 
 <p>
@@ -282,15 +311,15 @@ notes                       <span style="color: #8a8a8a;"># </span><span style="
 </div>
 </div>
 </div>
-<div id="outline-container-org34b3559" class="outline-2">
-<h2 id="org34b3559"><span class="section-number-2">5</span> 后续优化2&#x2013;生产环境测试环境分离</h2>
+<div id="outline-container-orgea5b109" class="outline-2">
+<h2 id="orgea5b109"><span class="section-number-2">5</span> 后续优化2 —— 生产环境测试环境分离</h2>
 <div class="outline-text-2" id="text-5">
 <p>
-init-func.el 中的笔记导出函数改为<br>
+<code>init-func.el</code> 中的笔记导出函数改为<br>
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">export-my-notes-internal</span>()
-  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#37197;&#33394;&#38382;&#39064;&#12290;&#38656;&#35201;&#35774;&#32622;&#20026; 256 &#33394;&#12290;&#21542;&#21017;&#65292;&#22312;&#32456;&#31471;&#19979;&#30340; emacs &#20013;&#25191;&#34892;&#35813;&#20989;&#25968;&#65292;&#23548;&#20986;&#30340;&#20195;&#30721;&#22359;&#39068;&#33394;&#28151;&#20081;</span>
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">solarized &#37197;&#33394;&#38382;&#39064;&#12290;&#23548;&#20986; html &#26102;&#35774;&#32622;&#20026; 256 &#33394;&#12290;&#21542;&#21017;&#65292;&#23548;&#20986;&#30340; html &#20013;&#30340;&#20195;&#30721;&#22359;&#39068;&#33394;&#28151;&#20081;&#38590;&#30475;</span>
   (<span style="color: #5f8700;">setq</span> solarized-termcolors 256)
   (load-theme 'solarized t)
 
@@ -298,7 +327,7 @@ init-func.el 中的笔记导出函数改为<br>
   (load-file <span style="color: #00afaf;">"~/.emacs.d/lisp/init-org.el"</span>)  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#38656;&#35201;&#37325;&#26032;&#21152;&#36733; init-org.el&#65292;&#21542;&#21017; css &#31561;&#25991;&#20214;&#20462;&#25913;&#21518;&#26080;&#27861;&#37325;&#26032;&#21457;&#24067;</span>
   (org-publish-project <span style="color: #00afaf;">"notes"</span> t)
 
-  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986;&#23436;&#27605;&#21518;&#65292;&#37197;&#33394;&#20877;&#25913;&#22238;&#26469;&#65292;&#38450;&#27490; solarized &#22312;&#32456;&#31471;&#20013;&#39068;&#33394;&#28151;&#20081;</span>
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986;&#23436;&#27605;&#21518;&#65292;&#37197;&#33394;&#20877;&#25913;&#22238;&#26469;&#65292;&#25913;&#20026; 16&#65292;&#38450;&#27490; solarized &#22312;&#32456;&#31471; emacs &#20013;&#39068;&#33394;&#28151;&#20081;&#38590;&#30475;</span>
   (<span style="color: #5f8700;">setq</span> solarized-termcolors 16)
   (load-theme 'solarized t)
   )
@@ -318,7 +347,7 @@ init-func.el 中的笔记导出函数改为<br>
 </div>
 
 <p>
-init-keybindings.el 中的快捷键改为<br>
+<code>init-keybindings.el</code> 中的快捷键改为<br>
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(global-set-key (kbd <span style="color: #00afaf;">"C-c e n"</span>) 'export-my-notes-test)    <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986; notes &#31508;&#35760;&#26412;&#21040; html&#65292;&#27979;&#35797;&#29615;&#22659;</span>
@@ -331,12 +360,13 @@ init-keybindings.el 中的快捷键改为<br>
 </p>
 </div>
 </div>
-<div id="outline-container-org1fbc2fc" class="outline-2">
-<h2 id="org1fbc2fc"><span class="section-number-2">6</span> 后续优化3&#x2013;目录聚焦当前大纲</h2>
+<div id="outline-container-org455b9f5" class="outline-2">
+<h2 id="org455b9f5"><span class="section-number-2">6</span> 后续优化3 —— 目录聚焦当前大纲</h2>
 <div class="outline-text-2" id="text-6">
-<p>
-使用 jquery 来实现<br>
-</p>
+<ul class="org-ul">
+<li>效果一：目录显示当前屏幕位置处的大纲，使用 jquery 来实现<br></li>
+<li>效果二：点击目录显示全部目录，再次点击隐藏<br></li>
+</ul>
 
 <p>
 postamble.html 中添加 2 行<br>
@@ -351,7 +381,7 @@ postamble.html 中添加 2 行<br>
 main.js 内容为：<br>
 </p>
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">table-of-contents &#23450;&#20301;&#24403;&#21069;&#25152;&#22312;&#30446;&#24405; */</span>
+<pre class="src src-js"><span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#30446;&#24405;&#26174;&#31034;&#24403;&#21069;&#23631;&#24149;&#20301;&#32622;&#22788;&#30340;&#22823;&#32434; */</span>
 window.ego_toc = $(<span style="color: #00afaf;">'#text-table-of-contents ul li'</span>);
 <span style="color: #5f8700;">if</span>(0 != window.ego_toc.length){
     window.ego_toc_h = $(<span style="color: #00afaf;">'#table-of-contents h2'</span>);
@@ -402,6 +432,25 @@ document.addEventListener(<span style="color: #00afaf;">'DOMContentLoaded'</span
         elem.style.display = elem.style.display == <span style="color: #00afaf;">"block"</span> ? <span style="color: #00afaf;">"none"</span> : <span style="color: #00afaf;">"block"</span>;
     }
 });
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfbf71f1" class="outline-2">
+<h2 id="orgfbf71f1"><span class="section-number-2">7</span> 后续优化4 —— 添加 google 搜索</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+实现思路：向 google 发送 http get 请求，搜索 <code>www.langdebuqing.com</code> 网站中的内容。<br>
+需要在 <code>~/notes/org/templates/preamble.html</code> 文件中的导航栏的 <code>&lt;ul&gt;</code> 标签中添加：<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-html">&lt;<span style="color: #0087ff;">li</span> <span style="color: #0087ff;">class</span>=<span style="color: #00afaf;">"search"</span>&gt;
+    &lt;<span style="color: #0087ff;">form</span> <span style="color: #0087ff;">action</span>=<span style="color: #00afaf;">"http://google.com/search"</span> <span style="color: #0087ff;">method</span>=<span style="color: #00afaf;">"get"</span> <span style="color: #0087ff;">accept-charset</span>=<span style="color: #00afaf;">"utf-8"</span>&gt;
+    &lt;<span style="color: #0087ff;">input</span> <span style="color: #0087ff;">type</span>=<span style="color: #00afaf;">"search"</span> <span style="color: #0087ff;">id</span>=<span style="color: #00afaf;">"search"</span> <span style="color: #0087ff;">name</span>=<span style="color: #00afaf;">"q"</span> <span style="color: #0087ff;">autocomplete</span>=<span style="color: #00afaf;">"off"</span> <span style="color: #0087ff;">maxlength</span>=<span style="color: #00afaf;">"30"</span> <span style="color: #0087ff;">placeholder</span>=<span style="color: #00afaf;">"Search.."</span>&gt;
+    &lt;<span style="color: #0087ff;">input</span> <span style="color: #0087ff;">type</span>=<span style="color: #00afaf;">"hidden"</span> <span style="color: #0087ff;">name</span>=<span style="color: #00afaf;">"q"</span> <span style="color: #0087ff;">value</span>=<span style="color: #00afaf;">"site:www.langdebuqing.com"</span>&gt;
+    &lt;/<span style="color: #0087ff;">form</span>&gt;
+&lt;/<span style="color: #0087ff;">li</span>&gt;
 </pre>
 </div>
 </div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-10-21 Sun 12:58 -->
+<!-- 2018-10-29 Mon 11:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ac 自动机</title>
@@ -9,6 +9,28 @@
 <meta name="author" content="时中贺">
 <link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
 <link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="preamble" class="status">
@@ -38,7 +60,13 @@
 <li><a href="#orgda01d4a">2. 问题</a></li>
 <li><a href="#orgd78eaba">3. 解题思路</a></li>
 <li><a href="#org6926d92">4. Aho–Corasick algorithm</a></li>
-<li><a href="#org3857b0a">5. 算法</a></li>
+<li><a href="#orgbf2a1c1">5. 解法一</a>
+<ul>
+<li><a href="#org5b40a23">5.1. trie + fail 指针的一般解法</a></li>
+<li><a href="#org1023645">5.2. 进一步优化</a></li>
+</ul>
+</li>
+<li><a href="#org63b3a78">6. 解法二：使用数组存储 trie 图</a></li>
 </ul>
 </div>
 </div>
@@ -58,6 +86,10 @@
 <div class="outline-text-2" id="text-2">
 <p>
 给一个很长的文本，长度为 n，然后再给 m 个模式串。求这 m 个模式串中有多少个是这个文本的子串。<br>
+</p>
+
+<p>
+<a href="https://hihocoder.com/problemset/problem/1036">问题链接</a><br>
 </p>
 </div>
 </div>
@@ -81,7 +113,7 @@ trie 树结点的数据结构如下<br>
 </pre>
 </div></li>
 <li><p>
-<code>Aho–Corasick algorithm</code>  ac 自动机算法简单来说就类似于 kmp + trie 的组合算法。它的 trie 树结点的数据结构如下<br>
+<code>Aho–Corasick algorithm</code>  ac 自动机算法简单来说就类似于 kmp + trie 的组合算法。它的 trie 树结点的数据结构类似如下<br>
 </p>
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
@@ -124,78 +156,83 @@ ac 自动机算法时间复杂度为 O(n+len(m)*m)<br>
 UNIX系统中的一个命令fgrep就是以AC自动机算法作为基础实现的。<br>
 </p>
 </blockquote>
-</div>
-</div>
-<div id="outline-container-org3857b0a" class="outline-2">
-<h2 id="org3857b0a"><span class="section-number-2">5</span> 算法</h2>
-<div class="outline-text-2" id="text-5">
+
 <p>
-hihocoder #1036<br>
-输入：第一行为模式串数量 m，然后输入 m 行模式串，然后输入一行文本<br>
-输出：模式串中有多少个文本的子串<br>
+AC 自动机是一个 <code>确定有限状态自动机</code> ，确定有限状态自动机在<a href="https://zh.wikipedia.org/wiki/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E6%9C%BA">维基百科</a>中的简介如下<br>
 </p>
+<blockquote>
+<p>
+在计算理论中，确定有限状态自动机或确定有限自动机（英语：deterministic finite automaton, DFA）是一个能实现状态转移的自动机。对于一个给定的属于该自动机的状态和一个属于该自动机字母表 {\displaystyle &Sigma; } &Sigma; 的字符，它都能根据事先给定的转移函数转移到下一个状态（这个状态可以是先前那个状态）。<br>
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-orgbf2a1c1" class="outline-2">
+<h2 id="orgbf2a1c1"><span class="section-number-2">5</span> 解法一</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org5b40a23" class="outline-3">
+<h3 id="org5b40a23"><span class="section-number-3">5.1</span> trie + fail 指针的一般解法</h3>
+<div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
-<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdio&gt;</span>
+<pre class="src src-c++"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdio&gt;</span>
 <span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstring&gt;</span>
 <span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;queue&gt;</span>
-<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1000010
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">M</span> 26         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23383;&#31526;&#38598;&#20013;&#23383;&#31526;&#25968;&#37327;&#12290;26 &#20010;&#23567;&#20889;&#23383;&#27597;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">LEN</span> 1000010  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#22823;&#25991;&#26412;&#38271;&#24230;</span>
 
 <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
 {
-    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">fail</span>;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22833;&#37197;&#25351;&#38024;&#12290;&#25351;&#21521;&#21305;&#37197;&#22833;&#36133;&#26102;&#30340;&#22238;&#36864;&#20301;&#32622;</span>
-    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">next</span>[26];
-    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20540;&#22495;&#12290;&#23427;&#21487;&#20197;&#26159;</span>
-    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">1.&#31867;&#22411;&#26159; bool&#65292;&#27169;&#24335;&#20018;&#32467;&#26463;&#26631;&#24535;&#65307;</span>
-    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">2.&#31867;&#22411;&#26159; int&#65292;&#27169;&#24335;&#20018;&#32534;&#21495;&#65307;</span>
-    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">3.&#31867;&#22411;&#26159; char*&#65292;&#24403;&#35813;&#32467;&#28857;&#26159;&#27169;&#24335;&#20018;&#30340;&#23614;&#32467;&#28857;&#26102;&#65292;&#23427;&#25351;&#21521;&#27169;&#24335;&#20018;&#12290;</span>
-    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312;&#36825;&#37324;&#23427;&#26159;&#31532;1&#31181;&#24773;&#20917;</span>
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">count</span>;
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">fail</span>;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22833;&#37197;&#25351;&#38024;&#12290;&#21305;&#37197;&#35813;&#32467;&#28857;&#30340;&#19979;&#19968;&#20010;&#32467;&#28857;&#26102;&#65292;&#22833;&#37197;&#26102;&#30340;&#22238;&#36864;&#20301;&#32622;</span>
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">next</span>[M];
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">tag</span>;       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26681;&#25454;&#39064;&#30446;&#32780;&#19981;&#21516;&#12290;&#22312;&#36825;&#37324;&#23427;&#34920;&#31034;&#27169;&#24335;&#20018;&#32467;&#26463;&#26631;&#24535;</span>
     <span style="color: #0087ff;">node</span>()
     {
         fail = <span style="color: #00afaf;">NULL</span>;
-        count = 0;
+        tag = 0;
         memset(next, 0, <span style="color: #5f8700;">sizeof</span>(next));
     }
 }*<span style="color: #0087ff;">root</span>;
 
 <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25554;&#20837;&#27169;&#24335;&#20018;&#65292;&#26500;&#24314; trie &#26641;</span>
-<span style="color: #af8700;">void</span> <span style="color: #0087ff;">insert</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">word</span>)
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">insert_pattern</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">s</span>)
 {
     <span style="color: #af8700;">int</span> <span style="color: #0087ff;">t</span>;
     <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p</span> = root;
-    <span style="color: #5f8700;">while</span>(*word)
+    <span style="color: #5f8700;">while</span>(*s)
     {
-        t = *word - <span style="color: #00afaf;">'a'</span>;
+        t = *s - <span style="color: #00afaf;">'a'</span>;
         <span style="color: #5f8700;">if</span>(p-&gt;next[t] == <span style="color: #00afaf;">NULL</span>)
-            p-&gt;next[t] = new node();
+            p-&gt;next[t] = <span style="color: #5f8700;">new</span> <span style="color: #af8700;">node</span>();
         p = p-&gt;next[t];
-        ++word;
+        ++s;
     }
-    ++p-&gt;count;
+    p-&gt;tag = 1;
 }
 
-<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312; trie &#26641;&#22522;&#30784;&#19978;&#26500;&#36896; fail &#25351;&#38024;&#65292;&#26500;&#24314; ac &#33258;&#21160;&#26426;</span>
-<span style="color: #af8700;">void</span> <span style="color: #0087ff;">build_ac</span>()
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26500;&#24314; ac &#33258;&#21160;&#26426;&#12290;&#29992; BFS &#36941;&#21382; trie &#26641;&#35774;&#32622; fail &#25351;&#38024;&#65292;&#20063;&#23601;&#26159;&#26500;&#36896; trie &#22270;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">construct_ac</span>()
 {
-    std::queue&lt;node*&gt; q;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20511;&#21161;&#38431;&#21015;&#36827;&#34892; BFS</span>
+    <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">queue</span>&lt;<span style="color: #af8700;">node</span>*&gt; <span style="color: #0087ff;">Q</span>;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20511;&#21161;&#38431;&#21015;&#36827;&#34892; BFS</span>
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#23618;&#32467;&#28857;&#30340; fail &#25351;&#38024;&#25351;&#21521;&#26681;&#32467;&#28857;</span>
-    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; 26; ++i)
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; M; ++i)
     {
         <span style="color: #5f8700;">if</span>(root-&gt;next[i])
         {
             root-&gt;next[i]-&gt;fail = root;
-            q.push(root-&gt;next[i]);
+            Q.push(root-&gt;next[i]);
         }
     }
 
     <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p</span>;
     <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">fail</span>;
-    <span style="color: #5f8700;">while</span>(<span style="color: #d70000;">!</span>q.empty())
+    <span style="color: #5f8700;">while</span>(<span style="color: #d70000;">!</span>Q.empty())
     {
-        p=q.front();
-        q.pop();
-        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382;&#24403;&#21069;&#20998;&#25903;&#21487;&#33021;&#23384;&#22312;&#30340; 26 &#20010;&#23401;&#23376;</span>
-        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; 26; ++i)
+        p=Q.front();
+        Q.pop();
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382;&#24403;&#21069;&#20998;&#25903;&#21487;&#33021;&#23384;&#22312;&#30340; M &#20010;&#23401;&#23376;</span>
+        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; M; ++i)
         {
             <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>p-&gt;next[i])
                 <span style="color: #5f8700;">continue</span>;
@@ -214,19 +251,20 @@ hihocoder #1036<br>
             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#27809;&#26377;&#25214;&#21040;&#20998;&#25903; b&#65292;&#35774;&#32622; p &#30340;&#23401;&#23376;&#30340; fail &#25351;&#38024;&#25351;&#21521; root</span>
             <span style="color: #5f8700;">if</span>(p-&gt;next[i]-&gt;fail==<span style="color: #00afaf;">NULL</span>)
                 p-&gt;next[i]-&gt;fail=root;
-            q.push(p-&gt;next[i]);
+            Q.push(p-&gt;next[i]);
         }
     }
 }
 
 <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21305;&#37197;&#25991;&#26412;&#65292;&#36820;&#22238;&#31526;&#21512;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;</span>
-<span style="color: #af8700;">int</span> <span style="color: #0087ff;">find</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">text</span>)
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">match</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">text</span>)
 {
     <span style="color: #af8700;">int</span> <span style="color: #0087ff;">count</span> = 0;
     <span style="color: #af8700;">int</span> <span style="color: #0087ff;">t</span>;
     <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p</span> = root;
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23545;&#20110;&#25991;&#26412; abcde&#65292;</span>
-    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">1.&#31532;&#19968;&#27425; while &#24490;&#29615;&#65306;&#22312; trie &#26641;&#19978;&#20174;&#26681;&#32467;&#28857;&#21521;&#21069;&#21305;&#37197; a&#12290;&#22914;&#26524;&#21305;&#37197;&#25104;&#21151;&#23601;&#21521;&#21069;&#36208;&#19968;&#27493;&#65307;&#22833;&#37197;&#23601;&#26681;&#25454; fail  &#25351;&#38024;&#22238;&#36864;&#21040;&#21644;&#24403;&#21069;&#20998;&#25903;&#26377;&#30456;&#21516;&#21518;&#32512;&#30340;&#20854;&#23427;&#20998;&#25903;&#65288;&#19988;&#35813;&#20998;&#25903;&#20855;&#26377;&#23401;&#23376;&#32467;&#28857; a&#65289;&#65292;&#28982;&#21518;&#21521;&#21069;&#36208;&#19968;&#27493;&#12290;&#21305;&#37197;&#20043;&#21518;&#65292;&#24403;&#21069;&#25152;&#22312;&#30340;&#20998;&#25903;&#20301;&#32622;&#26159; p&#12290;&#26368;&#21518;&#32479;&#35745;&#24403;&#21069;&#20998;&#25903; p &#21644;&#19982; p &#20855;&#26377;&#30456;&#21516;&#21518;&#32512;&#30340;&#25152;&#26377;&#20854;&#23427;&#20998;&#25903;&#19978;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;&#12290;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">1.&#31532;&#19968;&#27425; while &#24490;&#29615;&#65306;&#22312; trie &#26641;&#19978;&#20174;&#26681;&#32467;&#28857;&#21521;&#21069;&#21305;&#37197; a&#12290;&#22914;&#26524;&#21305;&#37197;&#25104;&#21151;&#23601;&#21521;&#21069;&#36208;&#19968;&#27493;&#65307;&#22833;&#37197;&#23601;&#26681;&#25454; fail &#25351;&#38024;&#22238;&#36864;&#21040;&#21644;&#24403;&#21069;&#20998;&#25903;&#26377;&#30456;&#21516;&#21518;&#32512;&#30340;&#20854;&#23427;&#20998;&#25903;&#65288;&#19988;&#35813;&#20998;&#25903;&#20855;&#26377;&#23401;&#23376;&#32467;&#28857; a&#65289;&#65292;</span>
+    <span style="color: #8a8a8a;">//   </span><span style="color: #8a8a8a;">&#28982;&#21518;&#21521;&#21069;&#36208;&#19968;&#27493;&#12290;&#21305;&#37197;&#20043;&#21518;&#65292;&#24403;&#21069;&#25152;&#22312;&#30340;&#20998;&#25903;&#20301;&#32622;&#26159; p&#12290;&#26368;&#21518;&#32479;&#35745;&#24403;&#21069;&#20998;&#25903; p &#21644;&#19982; p &#20855;&#26377;&#30456;&#21516;&#21518;&#32512;&#30340;&#25152;&#26377;&#20854;&#23427;&#20998;&#25903;&#19978;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;&#12290;</span>
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">2.&#31532;&#20108;&#27425; while &#24490;&#29615;&#65306;&#26681;&#25454;&#19978;&#19968;&#27493;&#30340; p &#30340;&#20301;&#32622;&#65292;&#32487;&#32493;&#21521;&#21069;&#21305;&#37197; b&#12290;... &#21516;&#27493;&#39588;1</span>
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">3.&#31532;&#19977;&#27425; while &#24490;&#29615;&#65306;&#26681;&#25454;&#19978;&#19968;&#27493;&#30340; p &#30340;&#20301;&#32622;&#65292;&#32487;&#32493;&#21521;&#21069;&#21305;&#37197; c&#12290;... &#21516;&#27493;&#39588;1</span>
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">...</span>
@@ -241,10 +279,13 @@ hihocoder #1036<br>
             p = root;
 
         <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">fail</span> = p;
-        <span style="color: #5f8700;">while</span>(fail != root &amp;&amp; fail-&gt;count != -1)
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">fail-&gt;tag != -1 &#20026;&#20160;&#20040;&#20316;&#20026; while &#24490;&#29615;&#20013;&#30340;&#19968;&#20010;&#26465;&#20214;&#65311;&#26377; 2 &#20010;&#21407;&#22240;&#65306;</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">1. &#24403; fail-&gt;tag == -1 &#26102;&#65292;&#35828;&#26126; fail &#32467;&#28857;&#32479;&#35745;&#36807;&#20102;</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">2. &#24403; fail-&gt;tag == -1 &#26102;&#65292;&#24517;&#23450; fail-&gt;fail-&gt;tag&#12289;fail-&gt;fail-&gt;fail-&gt;tag... &#37117;&#31561;&#20110; -1&#12290;&#25152;&#20197;&#27492;&#26102;&#30452;&#25509;&#36864;&#20986;&#24490;&#29615;</span>
+        <span style="color: #5f8700;">while</span>(fail != root &amp;&amp; fail-&gt;tag != -1)
         {
-            count += fail-&gt;count;
-            fail-&gt;count = -1;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622;&#20026; -1&#65292;&#36991;&#20813;&#37325;&#22797;&#32479;&#35745;&#21629;&#20013;&#30340;&#27169;&#24335;&#20018;</span>
+            count += fail-&gt;tag;
+            fail-&gt;tag = -1;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622;&#20026; -1&#65292;&#36991;&#20813;&#37325;&#22797;&#32479;&#35745;&#21629;&#20013;&#30340;&#27169;&#24335;&#20018;</span>
             fail = fail-&gt;fail;
         }
         ++text;
@@ -255,17 +296,17 @@ hihocoder #1036<br>
 <span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
 {
     <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>;
-    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">word</span>[N], <span style="color: #0087ff;">text</span>[N];
-    root = new node();
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">word</span>[LEN], <span style="color: #0087ff;">text</span>[LEN];
+    root = <span style="color: #5f8700;">new</span> <span style="color: #af8700;">node</span>();
     scanf(<span style="color: #00afaf;">"%d"</span>, &amp;n);
     <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; n; ++i)
     {
         scanf(<span style="color: #00afaf;">"%s"</span>, word);
-        insert(word);
+        insert_pattern(word);
     }
-    build_ac();
+    construct_ac();
     scanf(<span style="color: #00afaf;">"%s"</span>, text);
-    printf(<span style="color: #00afaf;">"Found %d pattern strings\n"</span>, find(text));
+    printf(<span style="color: #00afaf;">"Found %d pattern strings\n"</span>, match(text));
     <span style="color: #5f8700;">return</span> 0;
 }
 </pre>
@@ -286,6 +327,240 @@ bcd
 <span style="color: #5f8700;">cd</span>
 aaaaaaaaaaabaaadaaac
 Found 2 pattern strings
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1023645" class="outline-3">
+<h3 id="org1023645"><span class="section-number-3">5.2</span> 进一步优化</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+该解法并不符合 <code>确定有限状态自动机</code> 的定义。原因如下：<br>
+在 match 函数中，<br>
+</p>
+<ol class="org-ol">
+<li>当文本与模式串能够匹配的时候，我们读取一个字符 c，然后是可以跳转到 p-&gt;next[c-'a'] 的，实现了状态转移；<br></li>
+<li>但是当文本与模式串失配的时候，p-&gt;next[c-'a'] 为 NULL，并没有实现状态转移。只能借助 fail 指针向前回退才能解决问题。<br></li>
+</ol>
+
+<p>
+解决思路：<br>
+当 p-&gt;next[c-'a'] 为 NULL 时，令其指向 p-&gt;fail-&gt;next[c-'a']。这样就直接回退到合适的位置了，就将情况 2 转化为 情况 1 了。<br>
+</p>
+
+<p>
+需要替换 construct_ac() 和 match()，如下：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c++"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">construct_ac</span>()
+{
+    <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">queue</span>&lt;<span style="color: #af8700;">node</span>*&gt; <span style="color: #0087ff;">Q</span>;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20511;&#21161;&#38431;&#21015;&#36827;&#34892; BFS</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#23618;&#32467;&#28857;&#30340; fail &#25351;&#38024;&#25351;&#21521;&#26681;&#32467;&#28857;&#65288;&#26681;&#32467;&#28857;&#30340; fail &#25351;&#38024;&#20026;&#31354;&#65289;</span>
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; M; ++i)
+    {
+        <span style="color: #5f8700;">if</span>(root-&gt;next[i])
+        {
+            root-&gt;next[i]-&gt;fail = root;
+            Q.push(root-&gt;next[i]);
+        }
+        <span style="color: #5f8700;">else</span>
+            root-&gt;next[i] = root;
+    }
+
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p</span>;
+    <span style="color: #5f8700;">while</span>(<span style="color: #d70000;">!</span>Q.empty())
+    {
+        p=Q.front();
+        Q.pop();
+
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382;&#24403;&#21069;&#20998;&#25903;&#21487;&#33021;&#23384;&#22312;&#30340; M &#20010;&#23401;&#23376;</span>
+        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; M; ++i)
+        {
+            <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>p-&gt;next[i])
+                p-&gt;next[i] = p-&gt;fail-&gt;next[i];
+            <span style="color: #5f8700;">else</span>
+            {
+                p-&gt;next[i]-&gt;fail = p-&gt;fail-&gt;next[i];
+                Q.push(p-&gt;next[i]);
+            }
+        }
+    }
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">match</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">text</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">count</span> = 0;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">t</span>;
+    <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">p</span> = root;
+    <span style="color: #5f8700;">while</span>(*text)
+    {
+        t = *text - <span style="color: #00afaf;">'a'</span>;
+        p = p-&gt;next[t];
+
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#32479;&#35745;&#21305;&#37197;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;</span>
+        <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">fail</span> = p;
+        <span style="color: #5f8700;">while</span>(fail != root &amp;&amp; fail-&gt;tag != -1)
+        {
+            count += fail-&gt;tag;
+            fail-&gt;tag = -1;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622;&#20026; -1&#65292;&#36991;&#20813;&#37325;&#22797;&#32479;&#35745;&#21629;&#20013;&#30340;&#27169;&#24335;&#20018;</span>
+            fail = fail-&gt;fail;
+        }
+        ++text;
+    }
+    <span style="color: #5f8700;">return</span> count;
+}
+</pre>
+</div>
+<p>
+另外，解法二也是优化后的版本<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org63b3a78" class="outline-2">
+<h2 id="org63b3a78"><span class="section-number-2">6</span> 解法二：使用数组存储 trie 图</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-c++"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdio&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstring&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;queue&gt;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1000010    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#22823;&#32467;&#28857;&#25968;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">M</span> 26         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23383;&#31526;&#38598; &#931; &#30340;&#22823;&#23567;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">LEN</span> 1000010  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#22823;&#25991;&#26412;&#38271;&#24230;</span>
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">trie</span>[N][M];      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">trie &#26641;&#65292;&#20063;&#23601;&#26159; goto &#20989;&#25968;&#12290;trie[3][2] &#34920;&#31034;&#20174;&#31532; 3 &#20010;&#32467;&#28857;&#36890;&#36807;&#23383;&#31526; 'c' &#36335;&#24452;&#65292;&#21040;&#36798;&#30340;&#32467;&#28857;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">fail</span>[N];         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">fail &#25351;&#38024;&#12290;trie[3] &#34920;&#31034;&#31532; 3 &#20010;&#32467;&#28857;&#30340;&#19979;&#19968;&#20010;&#32467;&#28857;&#22833;&#37197;&#26102;&#24212;&#35813;&#22238;&#36864;&#30340;&#32467;&#28857;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">id</span>[<span style="color: #00afaf;">'z'</span>+1];       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23383;&#27597; x &#23545;&#24212;&#30340;&#32467;&#28857;&#32534;&#21495;&#20026; id[x]</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>;               <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">trie &#26641;&#24403;&#21069;&#32467;&#28857;&#24635;&#25968;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">tag</span>[N];          <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26681;&#25454;&#39064;&#30446;&#32780;&#19981;&#21516;&#12290;&#22312;&#36825;&#37324; tag[3]&#34920;&#31034;&#26159;&#21542;&#26377;&#27169;&#24335;&#20018;&#22312;&#31532; 3 &#20010;&#32467;&#28857;&#32467;&#26463;</span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#37325;&#32622;&#33258;&#21160;&#26426;&#12290;&#20351;&#20854;&#36824;&#21407;&#25104;&#21482;&#26377;&#19968;&#20010;&#26681;&#32467;&#28857;&#30340;&#29366;&#24577;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">reset_ac</span>()
+{
+    memset(trie[0], -1, <span style="color: #5f8700;">sizeof</span>(trie[0]));
+    tag[0] = 0;
+    n = 1;
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">init_ac</span>()
+{
+    <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; M; ++i)
+        id[<span style="color: #00afaf;">'a'</span>+i] = i;
+    reset_ac();
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25554;&#20837;&#27169;&#24335;&#20018;&#65292;&#26500;&#36896; trie &#26641;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">insert_pattern</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">s</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span> = 0;
+    <span style="color: #5f8700;">while</span> (*s)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = id[*s];
+        <span style="color: #5f8700;">if</span> ( -1 == trie[p][i] )
+        {
+            memset(trie[n], -1, <span style="color: #5f8700;">sizeof</span>(trie[n]));
+            tag[n] = 0;
+            trie[p][i] = n++;
+        }
+        p = trie[p][i];
+        ++s;
+    }
+    tag[p] = 1;         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#34920;&#31034;&#35813;&#32467;&#28857;&#26159;&#19968;&#20010;&#27169;&#24335;&#20018;&#30340;&#26368;&#21518;&#19968;&#20010;&#23383;&#31526;</span>
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">construct_ac</span>()
+{
+    <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">queue</span>&lt;<span style="color: #af8700;">int</span>&gt; <span style="color: #0087ff;">Q</span>;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20808;&#35774;&#32622; root &#30340;&#19979;&#19968;&#23618;&#32467;&#28857;&#30340; fail &#25351;&#38024;</span>
+    <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; M; ++i)
+    {
+        <span style="color: #5f8700;">if</span> (-1 != trie[0][i])     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#26681;&#32467;&#28857;&#21040;&#23383;&#31526; 'a'+i &#36335;&#24452;&#23384;&#22312;</span>
+        {
+            fail[trie[0][i]] = 0; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">root &#19979;&#30340;&#31532;&#19968;&#23618;&#32467;&#28857;&#30340; fail &#25351;&#38024;&#25351;&#21521; root</span>
+            Q.push(trie[0][i]);
+        }
+        <span style="color: #5f8700;">else</span>                      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#26681;&#32467;&#28857;&#21040;&#23383;&#31526; 'a'+i &#36335;&#24452;&#19981;&#23384;&#22312;&#65292;&#23601;&#25226;&#35813;&#36335;&#24452;&#25351;&#21521;&#26681;&#32467;&#28857;&#33258;&#24049;</span>
+        {
+            trie[0][i] = 0;
+        }
+    }
+
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span>;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992; BFS &#26469;&#35774;&#32622; fail &#25351;&#38024;</span>
+    <span style="color: #5f8700;">while</span> (<span style="color: #d70000;">!</span>Q.empty())
+    {
+        p = Q.front();
+        Q.pop();
+        <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; M; ++i)
+        {
+            <span style="color: #5f8700;">if</span> (-1 != trie[p][i])  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#32467;&#28857; p &#21040;&#23383;&#31526; 'a'+i &#36335;&#24452;&#23384;&#22312;</span>
+            {
+                fail[trie[p][i]] = trie[fail[p]][i];
+                Q.push(trie[p][i]);
+            }
+            <span style="color: #5f8700;">else</span>          <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#36335;&#24452;&#19981;&#23384;&#22312;</span>
+            {
+                trie[p][i] = trie[fail[p]][i];
+            }
+        }
+    }
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312;&#30446;&#26631;&#20018; t &#20013;&#21305;&#37197;&#27169;&#24335;&#20018;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">match</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">text</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span> = 0, <span style="color: #0087ff;">ret</span> = 0;
+    <span style="color: #5f8700;">while</span> (*text)
+    {
+        p = trie[p][id[*text]];
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">u</span> = p;
+        <span style="color: #5f8700;">while</span> ( u != 0 &amp;&amp; tag[u] != -1 )
+        {
+            ret += tag[u];
+            tag[u] = -1;
+            u = fail[u];
+        }
+        ++text;
+    }
+    <span style="color: #5f8700;">return</span> ret;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21028;&#26029;&#25991;&#26412;&#20013;&#26159;&#21542;&#23384;&#22312;&#27169;&#24335;&#20018;</span>
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">exist</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">text</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span> = 0;
+    <span style="color: #af8700;">bool</span> <span style="color: #0087ff;">ret</span> = <span style="color: #00afaf;">false</span>;
+    <span style="color: #5f8700;">while</span>(*text)
+    {
+        p = trie[p][id[*text]];
+        <span style="color: #5f8700;">if</span>(tag[p])
+        {
+            ret = <span style="color: #00afaf;">true</span>;
+            <span style="color: #5f8700;">break</span>;
+        }
+        ++text;
+    }
+    <span style="color: #5f8700;">return</span> ret;
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>;
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">word</span>[LEN], <span style="color: #0087ff;">text</span>[LEN];
+    init_ac();
+    scanf(<span style="color: #00afaf;">"%d"</span>, &amp;n);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; n; ++i)
+    {
+        scanf(<span style="color: #00afaf;">"%s"</span>, word);
+        insert_pattern(word);
+    }
+    construct_ac();
+    scanf(<span style="color: #00afaf;">"%s"</span>, text);
+    printf(<span style="color: #00afaf;">"Found %d pattern strings\n"</span>, match(text));
+    <span style="color: #5f8700;">return</span> 0;
+}
 </pre>
 </div>
 </div>
