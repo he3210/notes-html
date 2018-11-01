@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-01 Thu 09:43 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docker 实例 —— 使用 Jekyll 框架搭建博客</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">docker 实例 —— 使用 Jekyll 框架搭建博客</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5ec2327">1. 目录结构</a></li>
+<li><a href="#org10ac2ad">2. 文件 ./jekyll/Dockerfile</a></li>
+<li><a href="#orgf9a9302">3. 文件 ./apache/Dockerfile</a></li>
+<li><a href="#orgf963798">4. 下载 james_blog 网站</a></li>
+<li><a href="#orgf3e3889">5. 构建镜像</a></li>
+<li><a href="#org7d8966f">6. 启动 Jekyll 网站</a></li>
+<li><a href="#orgf12ee71">7. 最后 &amp; 总结</a></li>
+<li><a href="#org08adf00">8. 备份 Jekyll 卷</a></li>
+<li><a href="#org4c0b1b1">9. 拓展</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5ec2327" class="outline-2">
+<h2 id="org5ec2327"><span class="section-number-2">1</span> 目录结构</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ tree -N /Users/he/test/
+&#9500;&#9472;&#9472; apache
+&#9474;   &#9492;&#9472;&#9472; Dockerfile
+&#9500;&#9472;&#9472; james_blog
+&#9492;&#9472;&#9472; jekyll
+    &#9492;&#9472;&#9472; Dockerfile
+</pre>
+</div>
+
+<p>
+<a href="../images/jekyll_blog.tar">项目jekyll_blog.tar</a><br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org10ac2ad" class="outline-2">
+<h2 id="org10ac2ad"><span class="section-number-2">2</span> 文件 ./jekyll/Dockerfile</h2>
+<div class="outline-text-2" id="text-2">
+<pre class="example">
+FROM ubuntu:16.04
+MAINTAINER he3210 shi_zhonghe@163.com
+ENV REFRESHED_AT 2018-01-01
+
+RUN apt-get -qq update
+RUN apt-get -qq install ruby ruby-dev build-essential nodejs
+RUN gem install --no-rdoc --no-ri jekyll -v 2.5.3
+
+VOLUME /data
+VOLUME /var/www/html
+WORKDIR /data
+
+ENTRYPOINT [ "jekyll", "build", "--destination=/var/www/html" ]
+</pre>
+
+<p>
+镜像安装了 Ruby 和 用于支持 Jekyll 的包<br>
+目录 <code>/data/</code>            用来存放网站源码<br>
+目录 <code>/var/www/html/</code>    用来存放编译后的 Jekyll 网站源码<br>
+ENTRYPOINT 指令指定自动构建的命令，该命令会将工作目录 <code>/data/</code> 中的所有 jekyll 网站代码构建到 <code>/var/www/html/</code> 目录中<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf9a9302" class="outline-2">
+<h2 id="orgf9a9302"><span class="section-number-2">3</span> 文件 ./apache/Dockerfile</h2>
+<div class="outline-text-2" id="text-3">
+<pre class="example">
+FROM ubuntu:16.04
+MAINTAINER he3210 shi_zhonghe@163.com
+ENV REFRESHED_AT 2018-01-01
+
+RUN apt-get -qq update
+RUN apt-get -qq install apache2
+
+VOLUME [ "/var/www/html" ]
+WORKDIR /var/www/html
+
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV APACHE_RUN_DIR /var/run/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+
+RUN mkdir -p $APACHE_RUN_DIR $APACHE_LOCK_DIR $APACHE_LOG_DIR
+
+EXPOSE 80
+
+ENTRYPOINT [ "/usr/sbin/apache2" ]
+CMD ["-D", "FOREGROUND"]
+</pre>
+
+<p>
+安装了 Apache<br>
+创建一个匿名卷 <code>/var/www/html</code> ，用来存放编译后的 Jekyll 网站。（也可不写，因为 docker run 命令会指明必要的卷）<br>
+设置一些必要的环境变量、创建目录<br>
+ENTRYPOINT 和 CMD 指令在容器启动时默认运行 Apache<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf963798" class="outline-2">
+<h2 id="orgf963798"><span class="section-number-2">4</span> 下载 james_blog 网站</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-shell">$ git clone https://github.com/jamtur01/james_blog.git
+</pre>
+</div>
+
+<p>
+这是启用了 <a href="http://getbootstrap.com">Twitter Bootstrap</a> 的最基础的 Jekyll 博客，可以修改 _config.yml 文件进行使用<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf3e3889" class="outline-2">
+<h2 id="orgf3e3889"><span class="section-number-2">5</span> 构建镜像</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-shell">$ cd jekyll
+$ docker build -t he3210/jekyll .
+$ cd ../apache
+$ docker build -t he3210/apache .
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7d8966f" class="outline-2">
+<h2 id="org7d8966f"><span class="section-number-2">6</span> 启动 Jekyll 网站</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker run -v /Users/he/test/james_blog:/data/ --name he_blog he3210/jekyll
+</pre>
+</div>
+
+<p>
+把网站 james_blog 挂载到容器目录 <code>/data/</code> ，容器会把它编译成 Jekyll 网站，然后放到容器中的 <code>/var/www/html/</code> 目录<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ docker run -d -P --volumes-from he_blog --name server_blog he3210/apache
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><code>--volumes-from</code> 把指定容器的所有挂载的卷挂载到新容器中<br></li>
+</ul>
+<p>
+该命令把 容器 he_blog 中的 <code>/var/www/html</code> 卷挂载到新容器 server_blog<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf12ee71" class="outline-2">
+<h2 id="orgf12ee71"><span class="section-number-2">7</span> 最后 &amp; 总结</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+查看下 Apache 在宿主机上的端口，在本地浏览器访问博客<br>
+更新博客 <code>/Users/he/test/james_blog</code> 后，再次运行 <code>$ docker start he_blog</code> 即可更新 Jekyll 网站<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org08adf00" class="outline-2">
+<h2 id="org08adf00"><span class="section-number-2">8</span> 备份 Jekyll 卷</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+备份 he_blog 容器中的 <code>/var/www/html</code> 卷到宿主机的当前目录<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ docker run --rm --volumes-from he_blog -v $(<span style="color: #5f8700;">pwd</span>):/backup ubuntu tar cvf /backup/he_blog_backup.tar /var/www/html
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><code>--rm</code>    容器的进程运行完毕后，会自动删除容器<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4c0b1b1" class="outline-2">
+<h2 id="org4c0b1b1"><span class="section-number-2">9</span> 拓展</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+web 集群：                运行多个 Apache 容器，在这些容器前加一个负载均衡器。<br>
+一个可迁移的通用方案：       构建一个新镜像，这个镜像通过 git clone 把源数据 clone 到卷 <code>/data</code> 里<br>
+自动构建和自动部署 web 前端：在上一个拓展的基础上构建一个 web 前端，用于从指定的数据源自动构建和部署网站<br>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

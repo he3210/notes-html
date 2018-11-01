@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-01 Thu 09:43 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docker 笔记</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">docker 笔记</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org07089be">1. docker mac 上安装</a></li>
+<li><a href="#orgcbd355c">2. docker volume</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org07089be" class="outline-2">
+<h2 id="org07089be"><span class="section-number-2">1</span> docker mac 上安装</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ brew install docker    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">mac &#23433;&#35013; docker</span>
+$ docker info            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475; docker &#20449;&#24687;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcbd355c" class="outline-2">
+<h2 id="orgcbd355c"><span class="section-number-2">2</span> docker volume</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker volume ls                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377; volume</span>
+$ docker volume rm f5f4ff5a9      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#25351;&#23450; volume</span>
+$ docker volume prune             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#25152;&#26377;&#27809;&#29992;&#30340; volume</span>
+$ docker volume inspect f5f4ff5a9 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034; volume &#35814;&#24773;</span>
+$ docker volume create my-vol     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21019;&#24314;&#25968;&#25454;&#21367; my-vol&#65288;&#19968;&#33324;&#20250;&#23558; /var/lib/docker/volumes/my_vol/_data &#20316;&#20026;&#25968;&#25454;&#21367;&#65289;</span>
+$ docker run -d -p 80 --name website -v my_vol:/var/www/html/website:ro he3210/nginx:v1 nginx
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>数据卷可以在容器之间共享和重用<br></li>
+<li>对数据卷的修改会立马生效<br></li>
+<li>对数据卷的更新，不会影响镜像<br></li>
+<li>数据卷默认会一直存在，即使容器被删除<br></li>
+</ul>
+
+<p>
+<a href="./dockerfile 语法笔记.html#org71420bc">Dockerfile 中使用关键字 VOLUME 创建匿名卷</a><br>
+<a href="./docker 笔记 —— 容器.html#orga2e0213">使用命令 <code>docker run -v</code> 创建数据卷</a><br>
+数据卷的进阶使用的话可以用命令 <code>docker run --mount</code><br>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-10-30 Tue 18:11 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docker 笔记1</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">docker 笔记1</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5ddf4ea">1. docker mac 上安装</a></li>
+<li><a href="#org69b121f">2. 根据镜像创建容器并在容器中执行命令</a>
+<ul>
+<li><a href="#org7eee72d">2.1. 基本命令</a></li>
+<li><a href="#org4ce2570">2.2. 其它常用命令示例</a></li>
+</ul>
+</li>
+<li><a href="#orgdeb1dc8">3. 列出 docker 容器</a></li>
+<li><a href="#org2e4460f">4. 停止容器运行</a></li>
+<li><a href="#orgdcb379d">5. 启动已经停止的容器</a></li>
+<li><a href="#org81a4b7b">6. 列出容器日志</a></li>
+<li><a href="#org238fb69">7. 列出容器内进程</a></li>
+<li><a href="#org835c3b9">8. 动态展示指定的一个或多个容器的统计信息</a></li>
+<li><a href="#org490d372">9. 在容器内部运行进程</a></li>
+<li><a href="#orgd36b0be">10. 获取指定容器/镜像的元数据</a></li>
+<li><a href="#org0feae60">11. 删除容器</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5ddf4ea" class="outline-2">
+<h2 id="org5ddf4ea"><span class="section-number-2">1</span> docker mac 上安装</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ brew install docker    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">mac &#23433;&#35013; docker</span>
+$ docker info            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475; docker &#20449;&#24687;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org69b121f" class="outline-2">
+<h2 id="org69b121f"><span class="section-number-2">2</span> 根据镜像创建容器并在容器中执行命令</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org7eee72d" class="outline-3">
+<h3 id="org7eee72d"><span class="section-number-3">2.1</span> 基本命令</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker run -i -t ubuntu /bin/bash
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><code>-i</code> 保证新创建的容器中 STDIN 是开启的<br></li>
+<li><code>-t</code> 告诉docker为新创建的容器分配一个伪 tty 终端<br></li>
+<li><code>ubuntu</code> 镜像<br></li>
+<li><code>/bin/bash</code> 在新创建的容器中运行的命令<br></li>
+</ul>
+
+<p>
+执行过程：<br>
+</p>
+<ol class="org-ol">
+<li>docker 先检查本地是否存在 ubuntu 镜像。若无，docker 会连接官方维护的 Docker Hub Registry，找到并下载该镜像。<br></li>
+<li>docker 在文件系统内部用该镜像创建一个新容器。该容器拥有自己的网络、IP 地址，以及一个用来和宿主机进行通信的桥接网络接口。<br></li>
+<li>最后告诉 docker 在新容器中要运行的命令<br></li>
+<li>创建完成后，容器的 ID 就是容器的主机名，可在容器内通过命令 <code>$ hostname</code> 查看；另外，docker 会在容器 hosts 文件中添加一条主机配置项：容器 IP 对应容器 ID<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org4ce2570" class="outline-3">
+<h3 id="org4ce2570"><span class="section-number-3">2.2</span> 其它常用命令示例</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker run --name bob_the_container -i -t ubuntu /bin/bash
+$ sudo docker run --name bob_the_container -i -t ubuntu:12.04 /bin/bash
+$ sudo docker run --name daemon_dave -d ubuntu /bin/bash <span style="color: #00afaf;">"while true; do echo hello world; sleep 1; done"</span>
+$ sudo docker run --log-driver=<span style="color: #00afaf;">"json-file"</span> --name daemon_dave -d ubuntu /bin/bash <span style="color: #00afaf;">"while true; do echo hello world; sleep 1; done"</span>
+$ sudo docker run --restart=always --log-driver=<span style="color: #00afaf;">"json-file"</span> --name daemon_dave -d ubuntu /bin/bash <span style="color: #00afaf;">"while true; do echo hello world; sleep 1; done"</span>
+$ sudo docker run -d -p 80 --name static_web he3210/static_web:v1 nginx -g <span style="color: #00afaf;">"daemon off;"</span>
+$ sudo docker run -ti -w /var/log ubuntu pwd
+$ sudo docker run -d -p 80 --name website -v $<span style="color: #0087ff;">PWD</span>/website:/var/www/html/website he3210/nginx:v1 nginx    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31532;&#19968;&#26412;Docker&#20070; page102</span>
+$ sudo docker run -d -p 80 --name website -v $<span style="color: #0087ff;">PWD</span>/website:/var/www/html/website:ro he3210/nginx:v1 nginx
+$ sudo docker run -d --net=app --name db he3210/redis    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31532;&#19968;&#26412;Docker&#20070; page121</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><code>--name</code> 为容器指定一个容器名，容器名和容器 ID 均可唯一标识容器<br></li>
+<li><code>ubuntu:12.04</code> ubuntu 标识仓库名，12.04 标识标签（省略时默认使用标签 latest），合在一起唯一标识一个镜像<br></li>
+<li><code>-d</code> 告诉 Docker 在运行时以分离（detached）的方式在后台运行<br></li>
+<li><code>--log-driver</code> 日志驱动类型<br></li>
+<li><code>--restart=always</code> 容器停止运行时重启该容器<br></li>
+<li><code>--restart=on-failure:5</code> 如果容器停止运行，退出码非 0，docker会尝试重启该容器，最多尝试 5 次<br></li>
+<li><code>-p 80</code> 告诉 Docker ，容器的 80 端口需要映射到宿主机，Docker会在宿主机随机选择一个位于 32768～61000 的端口映射到容器<br></li>
+<li><code>-p 8080:80</code> 将容器的 80 端口映射到宿主机到 8080 端口<br></li>
+<li><code>-p 127.0.0.1:8080:80</code> 映射到宿主机这个 IP 127.0.0.1 的 8080 端口。这样就可以使用宿主机的 IP 地址连接到容器中的进程了<br></li>
+<li><code>-w /var/log</code> 将容器内的工作目录设置为 /var/log ，会覆盖掉 Dockerfile 中 WORKDIR 指令设置的工作目录<br></li>
+<li><code>-v $PWD/website:/var/www/html/website</code> 将宿主机下的目录 $PWD/website 作为卷挂载到容器中的 website 目录<br></li>
+<li><code>-v $PWD/website:/var/www/html/website:ro</code>   ro 和 rw 分别指定容器内目录只读和读写<br></li>
+<li><code>--net=app</code> 指定容器在哪个网络中运行<br></li>
+<li><code>--rm</code> 创建容器时，如果容器已存在，先删除该容器，在创建新容器。<br></li>
+<li><code>-h hostname</code> 设置容器主机名，该主机名可被本地 DNS 服务正确解析<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdeb1dc8" class="outline-2">
+<h2 id="orgdeb1dc8"><span class="section-number-2">3</span> 列出 docker 容器</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker ps       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#27491;&#22312;&#36816;&#34892;&#30340; docker &#23481;&#22120;</span>
+$ docker ps -a    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377;&#23481;&#22120;&#65292;&#21253;&#25324;&#27491;&#22312;&#36816;&#34892;&#30340;&#21644;&#24050;&#32463;&#20572;&#27490;&#30340;</span>
+$ docker ps -l    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#26368;&#21518;&#19968;&#20010;&#36816;&#34892;&#30340;&#23481;&#22120;&#65292;&#26080;&#35770;&#20854;&#27491;&#22312;&#36816;&#34892;&#19982;&#21542;</span>
+$ docker ps -n 3  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#26368;&#21518; 3 &#20010;&#23481;&#22120;&#65292;&#19981;&#35770;&#20854;&#27491;&#22312;&#36816;&#34892;&#19982;&#21542;</span>
+$ docker ps -q    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#27491;&#22312;&#36816;&#34892;&#30340; docker &#23481;&#22120;&#30340; ID&#65292;-q &#26631;&#24535;&#34920;&#31034;&#21482;&#38656;&#35201;&#36820;&#22238;&#23481;&#22120; ID &#32780;&#26080;&#38656;&#36820;&#22238;&#23481;&#22120;&#30340;&#20854;&#23427;&#20449;&#24687;</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org2e4460f" class="outline-2">
+<h2 id="org2e4460f"><span class="section-number-2">4</span> 停止容器运行</h2>
+<div class="outline-text-2" id="text-4">
+<ol class="org-ol">
+<li><p>
+交互式容器<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">exit</span>
+</pre>
+</div></li>
+
+<li><p>
+守护式容器<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker stop daemon_dave    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">docker stop &#21629;&#20196;&#21521;&#25351;&#23450;&#23481;&#22120;&#36827;&#31243;&#21457;&#36865; SIGTERM &#20449;&#21495;</span>
+</pre>
+</div></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgdcb379d" class="outline-2">
+<h2 id="orgdcb379d"><span class="section-number-2">5</span> 启动已经停止的容器</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker start bob_the_container    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21551;&#21160;</span>
+$ sudo docker restart bob_the_container  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#21551;</span>
+$ sudo docker attach bob_the_container   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30452;&#25509;&#36827;&#20837;&#23481;&#22120;&#20013;&#21551;&#21160;&#21629;&#20196;&#30340;&#32456;&#31471;</span>
+</pre>
+</div>
+
+<p>
+启动容器后，我们并没有进入该容器的会话，需要运行 <code>$ sudo docker attach</code> 命令<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org81a4b7b" class="outline-2">
+<h2 id="org81a4b7b"><span class="section-number-2">6</span> 列出容器日志</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker logs daemon_dave
+$ sudo docker logs -f daemon_dave           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#23481;&#22120;&#26085;&#24535;&#65292;&#24182;&#21160;&#24577;&#36319;&#36394;&#65288;&#31867;&#20284;tail -f&#65292;&#25353; Ctrl+C &#36864;&#20986;&#26085;&#24535;&#36319;&#36394;&#65289;</span>
+$ sudo docker logs --tail 0 -f daemon_dave  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36319;&#36394;&#25351;&#23450;&#23481;&#22120;&#30340;&#26368;&#26032;&#26085;&#24535;&#32780;&#19981;&#24517;&#21015;&#20986;&#25972;&#20010;&#26085;&#24535;&#25991;&#20214;&#65288;--tail 0&#34920;&#31034;&#21015;&#20986;&#23481;&#22120;&#30340;&#26368;&#21518;0&#26465;&#26085;&#24535;&#65289;</span>
+$ sudo docker logs --tail 0 -ft daemon_dave <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">-t &#26631;&#24535;&#20026;&#27599;&#26465;&#26085;&#24535;&#21152;&#19978;&#26085;&#26399;&#26102;&#38388;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org238fb69" class="outline-2">
+<h2 id="org238fb69"><span class="section-number-2">7</span> 列出容器内进程</h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker top daemon_dwayne
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org835c3b9" class="outline-2">
+<h2 id="org835c3b9"><span class="section-number-2">8</span> 动态展示指定的一个或多个容器的统计信息</h2>
+<div class="outline-text-2" id="text-8">
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker stats daemon_dave daemon_dwayne
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org490d372" class="outline-2">
+<h2 id="org490d372"><span class="section-number-2">9</span> 在容器内部运行进程</h2>
+<div class="outline-text-2" id="text-9">
+<ol class="org-ol">
+<li><p>
+后台进程<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker exec -d daemon_dave touch /etc/new_config_file  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#23481;&#22120; daemon_dave &#20869;&#37096;&#21019;&#24314;&#19968;&#20010;&#21518;&#21488;&#36827;&#31243;&#25191;&#34892; touch &#21629;&#20196;</span>
+</pre>
+</div></li>
+
+<li><p>
+交互式进程<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker exec -it  daemon_dave /bin/bash     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20026;&#23481;&#22120; daemon_dave &#20013;&#25191;&#34892; /bin/bash &#30340;&#36827;&#31243;&#21019;&#24314; TTY &#24182;&#25429;&#25417; STDIN</span>
+</pre>
+</div></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgd36b0be" class="outline-2">
+<h2 id="orgd36b0be"><span class="section-number-2">10</span> 获取指定容器/镜像的元数据</h2>
+<div class="outline-text-2" id="text-10">
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker inspect daemon_dave
+$ sudo docker inspect he3210/apache2:webserver
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0feae60" class="outline-2">
+<h2 id="org0feae60"><span class="section-number-2">11</span> 删除容器</h2>
+<div class="outline-text-2" id="text-11">
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo docker rm 9b8edf8426f1
+$ sudo docker rm -f 9b8edf8426f1    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">!!! &#21487;&#21024;&#38500;&#36816;&#34892;&#20013;&#30340;&#23481;&#22120;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

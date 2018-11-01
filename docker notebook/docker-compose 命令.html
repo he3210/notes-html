@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-01 Thu 09:43 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docker-compose 命令</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">docker-compose 命令</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org2901b9c">1. 参考</a></li>
+<li><a href="#org07a9381">2. 运行 Compose 项目</a></li>
+<li><a href="#orgaec2c27">3. 查看 Compose 日志</a></li>
+<li><a href="#orge1b0315">4. 停止 Compose</a></li>
+<li><a href="#org543d50b">5. 启动 Compose</a></li>
+<li><a href="#orgdce00ae">6. 向 Compose 发送信号</a></li>
+<li><a href="#org4319d2d">7. 删除停止状态的容器或未用到的数据卷</a></li>
+<li><a href="#org005589c">8. 查看项目中的所有容器</a></li>
+<li><a href="#org1d81c49">9. 列出 Compose 项目中的所有镜像</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2901b9c" class="outline-2">
+<h2 id="org2901b9c"><span class="section-number-2">1</span> 参考</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><a href="https://yeasy.gitbooks.io/docker_practice/content/compose/commands.html">参考</a><br></li>
+</ul>
+
+<p>
+Docker Compose 简介：<br>
+一个项目下可能有多个服务，每个服务运行在各自的容器里，而 Docker Compose 管理着这些容器。（简单来说，服务对应着容器，Docker Compose 对应着项目）<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org07a9381" class="outline-2">
+<h2 id="org07a9381"><span class="section-number-2">2</span> 运行 Compose 项目</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+该命令会尝试构建镜像、创建服务容器、启动服务容器、并关联服务相关容器<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ docker-compose up       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36816;&#34892;&#26381;&#21153;</span>
+$ docker-compose up -d    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20197;&#23432;&#25252;&#36827;&#31243;&#26041;&#24335;&#36816;&#34892; Compose</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaec2c27" class="outline-2">
+<h2 id="orgaec2c27"><span class="section-number-2">3</span> 查看 Compose 日志</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker-compose logs     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#26085;&#24535;</span>
+$ docker-compose logs -f  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36319;&#36394;&#26381;&#21153;&#26085;&#24535;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge1b0315" class="outline-2">
+<h2 id="orge1b0315"><span class="section-number-2">4</span> 停止 Compose</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker-compose stop     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20572;&#27490;&#27491;&#22312;&#36816;&#34892;&#29366;&#24577;&#30340;&#23481;&#22120;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org543d50b" class="outline-2">
+<h2 id="org543d50b"><span class="section-number-2">5</span> 启动 Compose</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker-compose start    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21551;&#21160;&#24050;&#23384;&#22312;&#30340;&#26381;&#21153;&#23481;&#22120;</span>
+$ docker-compose restart  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#21551;&#26381;&#21153;&#23481;&#22120;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdce00ae" class="outline-2">
+<h2 id="orgdce00ae"><span class="section-number-2">6</span> 向 Compose 发送信号</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker-compose kill              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#40664;&#35748;&#21457;&#36865; SIGKILL &#20449;&#21495;</span>
+$ docker-compose kill -s SIGINT    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21521; Compose &#26381;&#21153;&#20013;&#30340;&#25152;&#26377;&#23481;&#22120;&#21457;&#36865; SIGINT &#20449;&#21495;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4319d2d" class="outline-2">
+<h2 id="org4319d2d"><span class="section-number-2">7</span> 删除停止状态的容器或未用到的数据卷</h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker-compose rm       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#25152;&#26377; Compose &#26381;&#21153;&#19979;&#27809;&#26377;&#36816;&#34892;&#30340;&#23481;&#22120;</span>
+$ docker-compose rm -v    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#23481;&#22120;&#25152;&#25346;&#36733;&#30340;&#25968;&#25454;&#21367;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org005589c" class="outline-2">
+<h2 id="org005589c"><span class="section-number-2">8</span> 查看项目中的所有容器</h2>
+<div class="outline-text-2" id="text-8">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker-compose ps       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23637;&#31034;&#26381;&#21153;&#21517;&#12289;&#23481;&#22120;&#20013;&#26381;&#21153;&#30340;&#21551;&#21160;&#21629;&#20196;&#12289;&#23481;&#22120;&#29366;&#24577;&#12289;&#26381;&#21153;&#31471;&#21475;</span>
+$ docker-compose ps -q    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21482;&#23637;&#31034;&#23481;&#22120;ID</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1d81c49" class="outline-2">
+<h2 id="org1d81c49"><span class="section-number-2">9</span> 列出 Compose 项目中的所有镜像</h2>
+<div class="outline-text-2" id="text-9">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker-compose images
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

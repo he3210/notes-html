@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-01 Thu 09:43 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docker 网络笔记</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">docker 网络笔记</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd162d0b">1. 通过端口映射的方式。</a></li>
+<li><a href="#org546a8ad">2. 自定义 docker 网络</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd162d0b" class="outline-2">
+<h2 id="orgd162d0b"><span class="section-number-2">1</span> 通过端口映射的方式。</h2>
+<div class="outline-text-2" id="text-1">
+<ol class="org-ol">
+<li>创建 Dockerfile 时，通过 EXPOSE 指令告诉 docker 该容器内的应用程序将会使用的端口，创建镜像。<br></li>
+<li>使用 docker run 命令和镜像创建容器时用 -p 或 -P 指定该端口映射的宿主机地址。<br></li>
+</ol>
+<p>
+例如：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ docker run -d -p 127.0.0.1:5000:2000/udp -p 3000:80 training/webapp python app.py
+</pre>
+</div>
+<p>
+把容器内的 2000 端口映射到宿主机的 127.0.0.1:5000:2000 地址，使用 udp。<br>
+把 80 端口绑定到宿主机的 3000 端口，使用 tcp<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org546a8ad" class="outline-2">
+<h2 id="org546a8ad"><span class="section-number-2">2</span> 自定义 docker 网络</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ docker network create app          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21019;&#24314; Docker &#32593;&#32476;</span>
+$ docker network inspect app         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475; Docker &#32593;&#32476;&#35814;&#24773;</span>
+$ docker network ls                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#24403;&#21069;&#31995;&#32479;&#20013;&#25152;&#26377; Docker &#32593;&#32476;</span>
+$ docker network rm app              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#19968;&#20010; Docker &#32593;&#32476;</span>
+$ docker network connect app db2     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226;&#23481;&#22120; db2 &#28155;&#21152;&#21040;&#32593;&#32476; app</span>
+$ docker network disconnect app db2  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#25351;&#23450;&#32593;&#32476;&#26029;&#24320;&#19968;&#20010;&#23481;&#22120;</span>
+$ docker run -it --rm --name db --net=my-net he3210/redis sh  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#38236;&#20687;&#21019;&#24314;&#19968;&#20010;&#23481;&#22120;&#24182;&#25226;&#35813;&#23481;&#22120;&#36830;&#25509;&#21040;&#25351;&#23450;&#32593;&#32476;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

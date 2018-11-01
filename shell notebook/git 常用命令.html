@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-01 Thu 09:43 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>git 常用命令</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">git 常用命令</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9db3b25">1. 参考</a></li>
+<li><a href="#org0f10966">2. 新建代码库</a></li>
+<li><a href="#org4dce842">3. 配置</a></li>
+<li><a href="#orgfcf108b">4. 增加/删除文件</a></li>
+<li><a href="#org1bf65ec">5. 代码提交</a></li>
+<li><a href="#org34fd450">6. 分支</a></li>
+<li><a href="#orgd1e5dd7">7. 标签</a></li>
+<li><a href="#orgb2480f8">8. 查看信息</a></li>
+<li><a href="#orgeb59e26">9. 远程同步</a></li>
+<li><a href="#orgfedb848">10. 撤销</a></li>
+<li><a href="#orga052c85">11. 其他</a></li>
+</ul>
+</div>
+</div>
+
+<div class="figure">
+<p><img src="../images/git.png" alt="git.png" width="70%"><br>
+</p>
+</div>
+
+<ul class="org-ul">
+<li>Workspace：工作区<br></li>
+<li>Index / Stage：暂存区<br></li>
+<li>Repository：仓库区（或本地仓库）<br></li>
+<li>Remote：远程仓库<br></li>
+</ul>
+
+<div id="outline-container-org9db3b25" class="outline-2">
+<h2 id="org9db3b25"><span class="section-number-2">1</span> 参考</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">廖雪峰 Git 教程</a><br></li>
+<li><a href="http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html">常用 Git 命令清单</a><br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0f10966" class="outline-2">
+<h2 id="org0f10966"><span class="section-number-2">2</span> 新建代码库</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ git init                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#24403;&#21069;&#30446;&#24405;&#26032;&#24314;&#19968;&#20010;Git&#20195;&#30721;&#24211;</span>
+$ git init [project-name]        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;&#30446;&#24405;&#65292;&#23558;&#20854;&#21021;&#22987;&#21270;&#20026;Git&#20195;&#30721;&#24211;</span>
+$ git clone [url]                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#19979;&#36733;&#19968;&#20010;&#39033;&#30446;&#21644;&#23427;&#30340;&#25972;&#20010;&#20195;&#30721;&#21382;&#21490;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4dce842" class="outline-2">
+<h2 id="org4dce842"><span class="section-number-2">3</span> 配置</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）。<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ git config --list                                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#24403;&#21069;&#30340;Git&#37197;&#32622;</span>
+$ git config -e [--global]                           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#32534;&#36753;Git&#37197;&#32622;&#25991;&#20214;</span>
+$ git config [--global] user.name <span style="color: #00afaf;">"[name]"</span>           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#35774;&#32622;&#25552;&#20132;&#20195;&#30721;&#26102;&#30340;&#29992;&#25143;&#20449;&#24687;&#12290;&#29992;&#25143;&#21517;</span>
+$ git config [--global] user.email <span style="color: #00afaf;">"[email address]"</span> <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#35774;&#32622;&#25552;&#20132;&#20195;&#30721;&#26102;&#30340;&#29992;&#25143;&#20449;&#24687;&#12290;&#37038;&#31665;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfcf108b" class="outline-2">
+<h2 id="orgfcf108b"><span class="section-number-2">4</span> 增加/删除文件</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-shell">$ git add [file1] [file2] ...            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28155;&#21152;&#25351;&#23450;&#25991;&#20214;&#21040;&#26242;&#23384;&#21306;</span>
+$ git add [dir]                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28155;&#21152;&#25351;&#23450;&#30446;&#24405;&#21040;&#26242;&#23384;&#21306;&#65292;&#21253;&#25324;&#23376;&#30446;&#24405;</span>
+$ git add .                              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28155;&#21152;&#24403;&#21069;&#30446;&#24405;&#30340;&#25152;&#26377;&#25991;&#20214;&#21040;&#26242;&#23384;&#21306;</span>
+$ git add -p                             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28155;&#21152;&#27599;&#20010;&#21464;&#21270;&#21069;&#65292;&#37117;&#20250;&#35201;&#27714;&#30830;&#35748;&#12290;&#23545;&#20110;&#21516;&#19968;&#20010;&#25991;&#20214;&#30340;&#22810;&#22788;&#21464;&#21270;&#65292;&#21487;&#20197;&#23454;&#29616;&#20998;&#27425;&#25552;&#20132;</span>
+$ git rm [file1] [file2] ...             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#24037;&#20316;&#21306;&#25991;&#20214;&#65292;&#24182;&#19988;&#23558;&#36825;&#27425;&#21024;&#38500;&#25918;&#20837;&#26242;&#23384;&#21306;</span>
+$ git rm --cached [file]                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20572;&#27490;&#36861;&#36394;&#25351;&#23450;&#25991;&#20214;&#65292;&#20294;&#35813;&#25991;&#20214;&#20250;&#20445;&#30041;&#22312;&#24037;&#20316;&#21306;</span>
+$ git mv [file-original] [file-renamed]  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25913;&#21517;&#25991;&#20214;&#65292;&#24182;&#19988;&#23558;&#36825;&#20010;&#25913;&#21517;&#25918;&#20837;&#26242;&#23384;&#21306;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1bf65ec" class="outline-2">
+<h2 id="org1bf65ec"><span class="section-number-2">5</span> 代码提交</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-shell">$ git commit -m [message]                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#26242;&#23384;&#21306;&#21040;&#20179;&#24211;&#21306;</span>
+$ git commit [file1] [file2] ... -m [message]  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#26242;&#23384;&#21306;&#30340;&#25351;&#23450;&#25991;&#20214;&#21040;&#20179;&#24211;&#21306;</span>
+$ git commit -a                                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#24037;&#20316;&#21306;&#33258;&#19978;&#27425;commit&#20043;&#21518;&#30340;&#21464;&#21270;&#65292;&#30452;&#25509;&#21040;&#20179;&#24211;&#21306;</span>
+$ git commit -v                                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#26102;&#26174;&#31034;&#25152;&#26377;diff&#20449;&#24687;</span>
+$ git commit --amend -m [message]              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992;&#19968;&#27425;&#26032;&#30340;commit&#65292;&#26367;&#20195;&#19978;&#19968;&#27425;&#25552;&#20132;&#12290;&#22914;&#26524;&#20195;&#30721;&#27809;&#26377;&#20219;&#20309;&#26032;&#21464;&#21270;&#65292;&#21017;&#29992;&#26469;&#25913;&#20889;&#19978;&#19968;&#27425;commit&#30340;&#25552;&#20132;&#20449;&#24687;</span>
+$ git commit --amend [file1] [file2] ...       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#20570;&#19978;&#19968;&#27425;commit&#65292;&#24182;&#21253;&#25324;&#25351;&#23450;&#25991;&#20214;&#30340;&#26032;&#21464;&#21270;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org34fd450" class="outline-2">
+<h2 id="org34fd450"><span class="section-number-2">6</span> 分支</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-shell">$ git branch                                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377;&#26412;&#22320;&#20998;&#25903;</span>
+$ git branch -r                                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377;&#36828;&#31243;&#20998;&#25903;</span>
+$ git branch -a                                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377;&#26412;&#22320;&#20998;&#25903;&#21644;&#36828;&#31243;&#20998;&#25903;</span>
+$ git branch [branch-name]                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;&#20998;&#25903;&#65292;&#20294;&#20381;&#28982;&#20572;&#30041;&#22312;&#24403;&#21069;&#20998;&#25903;</span>
+$ git checkout -b [branch]                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;&#20998;&#25903;&#65292;&#24182;&#20999;&#25442;&#21040;&#35813;&#20998;&#25903;</span>
+$ git branch [branch] [commit]                        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;&#20998;&#25903;&#65292;&#25351;&#21521;&#25351;&#23450;commit</span>
+$ git branch --track [branch] [remote-branch]         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;&#20998;&#25903;&#65292;&#19982;&#25351;&#23450;&#30340;&#36828;&#31243;&#20998;&#25903;&#24314;&#31435;&#36861;&#36394;&#20851;&#31995;</span>
+$ git checkout [branch-name]                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20999;&#25442;&#21040;&#25351;&#23450;&#20998;&#25903;&#65292;&#24182;&#26356;&#26032;&#24037;&#20316;&#21306;</span>
+$ git checkout -                                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20999;&#25442;&#21040;&#19978;&#19968;&#20010;&#20998;&#25903;</span>
+$ git branch --set-upstream [branch] [remote-branch]  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24314;&#31435;&#36861;&#36394;&#20851;&#31995;&#65292;&#22312;&#29616;&#26377;&#20998;&#25903;&#19982;&#25351;&#23450;&#30340;&#36828;&#31243;&#20998;&#25903;&#20043;&#38388;</span>
+$ git merge [branch]                                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21512;&#24182;&#25351;&#23450;&#20998;&#25903;&#21040;&#24403;&#21069;&#20998;&#25903;</span>
+$ git cherry-pick [commit]                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36873;&#25321;&#19968;&#20010;commit&#65292;&#21512;&#24182;&#36827;&#24403;&#21069;&#20998;&#25903;</span>
+$ git branch -d [branch-name]                         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#20998;&#25903;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#36828;&#31243;&#20998;&#25903;</span>
+$ git push origin --delete [branch-name]
+$ git branch -dr [remote/branch]
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd1e5dd7" class="outline-2">
+<h2 id="orgd1e5dd7"><span class="section-number-2">7</span> 标签</h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+<pre class="src src-shell">$ git tag                               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377;tag</span>
+$ git tag [tag]                         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;tag&#22312;&#24403;&#21069;commit</span>
+$ git tag [tag] [commit]                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;tag&#22312;&#25351;&#23450;commit</span>
+$ git tag -d [tag]                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#26412;&#22320;tag</span>
+$ git push origin :refs/tags/[tagName]  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#36828;&#31243;tag</span>
+$ git show [tag]                        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;tag&#20449;&#24687;</span>
+$ git push [remote] [tag]               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#25351;&#23450;tag</span>
+$ git push [remote] --tags              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#25152;&#26377;tag</span>
+$ git checkout -b [branch] [tag]        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;&#20998;&#25903;&#65292;&#25351;&#21521;&#26576;&#20010;tag</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb2480f8" class="outline-2">
+<h2 id="orgb2480f8"><span class="section-number-2">8</span> 查看信息</h2>
+<div class="outline-text-2" id="text-8">
+<div class="org-src-container">
+<pre class="src src-shell">$ git status                                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26377;&#21464;&#26356;&#30340;&#25991;&#20214;</span>
+$ git log                                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#24403;&#21069;&#20998;&#25903;&#30340;&#29256;&#26412;&#21382;&#21490;</span>
+$ git log --stat                             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;commit&#21382;&#21490;&#65292;&#20197;&#21450;&#27599;&#27425;commit&#21457;&#29983;&#21464;&#26356;&#30340;&#25991;&#20214;</span>
+$ git log -S [keyword]                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25628;&#32034;&#25552;&#20132;&#21382;&#21490;&#65292;&#26681;&#25454;&#20851;&#38190;&#35789;</span>
+$ git log [tag] HEAD --pretty=format:%s      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#20010;commit&#20043;&#21518;&#30340;&#25152;&#26377;&#21464;&#21160;&#65292;&#27599;&#20010;commit&#21344;&#25454;&#19968;&#34892;</span>
+$ git log [tag] HEAD --grep feature          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#20010;commit&#20043;&#21518;&#30340;&#25152;&#26377;&#21464;&#21160;&#65292;&#20854;"&#25552;&#20132;&#35828;&#26126;"&#24517;&#39035;&#31526;&#21512;&#25628;&#32034;&#26465;&#20214;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#20010;&#25991;&#20214;&#30340;&#29256;&#26412;&#21382;&#21490;&#65292;&#21253;&#25324;&#25991;&#20214;&#25913;&#21517;</span>
+$ git log --follow [file]
+$ git whatchanged [file]
+$ git log -p [file]                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#25351;&#23450;&#25991;&#20214;&#30456;&#20851;&#30340;&#27599;&#19968;&#27425;diff</span>
+$ git log -5 --pretty --oneline              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#36807;&#21435;5&#27425;&#25552;&#20132;</span>
+$ git shortlog -sn                           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#25152;&#26377;&#25552;&#20132;&#36807;&#30340;&#29992;&#25143;&#65292;&#25353;&#25552;&#20132;&#27425;&#25968;&#25490;&#24207;</span>
+$ git blame [file]                           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#25351;&#23450;&#25991;&#20214;&#26159;&#20160;&#20040;&#20154;&#22312;&#20160;&#20040;&#26102;&#38388;&#20462;&#25913;&#36807;</span>
+$ git diff                                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26242;&#23384;&#21306;&#21644;&#24037;&#20316;&#21306;&#30340;&#24046;&#24322;</span>
+$ git diff --cached [file]                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26242;&#23384;&#21306;&#21644;&#19978;&#19968;&#20010;commit&#30340;&#24046;&#24322;</span>
+$ git diff HEAD                              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#24037;&#20316;&#21306;&#19982;&#24403;&#21069;&#20998;&#25903;&#26368;&#26032;commit&#20043;&#38388;&#30340;&#24046;&#24322;</span>
+$ git diff [first-branch]...[second-branch]  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#20004;&#27425;&#25552;&#20132;&#20043;&#38388;&#30340;&#24046;&#24322;</span>
+$ git diff --shortstat <span style="color: #00afaf;">"@{0 day ago}"</span>        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#20170;&#22825;&#20320;&#20889;&#20102;&#22810;&#23569;&#34892;&#20195;&#30721;</span>
+$ git show [commit]                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#27425;&#25552;&#20132;&#30340;&#20803;&#25968;&#25454;&#21644;&#20869;&#23481;&#21464;&#21270;</span>
+$ git show --name-only [commit]              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#27425;&#25552;&#20132;&#21457;&#29983;&#21464;&#21270;&#30340;&#25991;&#20214;</span>
+$ git show [commit]:[filename]               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#27425;&#25552;&#20132;&#26102;&#65292;&#26576;&#20010;&#25991;&#20214;&#30340;&#20869;&#23481;</span>
+$ git reflog                                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#24403;&#21069;&#20998;&#25903;&#30340;&#26368;&#36817;&#20960;&#27425;&#25552;&#20132;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeb59e26" class="outline-2">
+<h2 id="orgeb59e26"><span class="section-number-2">9</span> 远程同步</h2>
+<div class="outline-text-2" id="text-9">
+<div class="org-src-container">
+<pre class="src src-shell">$ git fetch [remote]                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#19979;&#36733;&#36828;&#31243;&#20179;&#24211;&#30340;&#25152;&#26377;&#21464;&#21160;</span>
+$ git remote -v                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#25152;&#26377;&#36828;&#31243;&#20179;&#24211;</span>
+$ git remote show [remote]            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#20010;&#36828;&#31243;&#20179;&#24211;&#30340;&#20449;&#24687;</span>
+$ git remote add [shortname] [url]    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22686;&#21152;&#19968;&#20010;&#26032;&#30340;&#36828;&#31243;&#20179;&#24211;&#65292;&#24182;&#21629;&#21517;</span>
+$ git pull [remote] [branch]          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21462;&#22238;&#36828;&#31243;&#20179;&#24211;&#30340;&#21464;&#21270;&#65292;&#24182;&#19982;&#26412;&#22320;&#20998;&#25903;&#21512;&#24182;</span>
+$ git push [remote] [branch]          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#19978;&#20256;&#26412;&#22320;&#25351;&#23450;&#20998;&#25903;&#21040;&#36828;&#31243;&#20179;&#24211;</span>
+$ git push [remote] --force           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24378;&#34892;&#25512;&#36865;&#24403;&#21069;&#20998;&#25903;&#21040;&#36828;&#31243;&#20179;&#24211;&#65292;&#21363;&#20351;&#26377;&#20914;&#31361;</span>
+$ git push [remote] --all             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25512;&#36865;&#25152;&#26377;&#20998;&#25903;&#21040;&#36828;&#31243;&#20179;&#24211;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfedb848" class="outline-2">
+<h2 id="orgfedb848"><span class="section-number-2">10</span> 撤销</h2>
+<div class="outline-text-2" id="text-10">
+<div class="org-src-container">
+<pre class="src src-shell">$ git checkout [file]             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24674;&#22797;&#26242;&#23384;&#21306;&#30340;&#25351;&#23450;&#25991;&#20214;&#21040;&#24037;&#20316;&#21306;</span>
+$ git checkout [commit] [file]    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24674;&#22797;&#26576;&#20010;commit&#30340;&#25351;&#23450;&#25991;&#20214;&#21040;&#26242;&#23384;&#21306;&#21644;&#24037;&#20316;&#21306;</span>
+$ git checkout .                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24674;&#22797;&#26242;&#23384;&#21306;&#30340;&#25152;&#26377;&#25991;&#20214;&#21040;&#24037;&#20316;&#21306;</span>
+$ git reset [file]                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#32622;&#26242;&#23384;&#21306;&#30340;&#25351;&#23450;&#25991;&#20214;&#65292;&#19982;&#19978;&#19968;&#27425;commit&#20445;&#25345;&#19968;&#33268;&#65292;&#20294;&#24037;&#20316;&#21306;&#19981;&#21464;</span>
+$ git reset --hard                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#32622;&#26242;&#23384;&#21306;&#19982;&#24037;&#20316;&#21306;&#65292;&#19982;&#19978;&#19968;&#27425;commit&#20445;&#25345;&#19968;&#33268;</span>
+$ git reset [commit]              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#32622;&#24403;&#21069;&#20998;&#25903;&#30340;&#25351;&#38024;&#20026;&#25351;&#23450;commit&#65292;&#21516;&#26102;&#37325;&#32622;&#26242;&#23384;&#21306;&#65292;&#20294;&#24037;&#20316;&#21306;&#19981;&#21464;</span>
+$ git reset --hard [commit]       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#32622;&#24403;&#21069;&#20998;&#25903;&#30340;HEAD&#20026;&#25351;&#23450;commit&#65292;&#21516;&#26102;&#37325;&#32622;&#26242;&#23384;&#21306;&#21644;&#24037;&#20316;&#21306;&#65292;&#19982;&#25351;&#23450;commit&#19968;&#33268;</span>
+$ git reset --keep [commit]       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#32622;&#24403;&#21069;HEAD&#20026;&#25351;&#23450;commit&#65292;&#20294;&#20445;&#25345;&#26242;&#23384;&#21306;&#21644;&#24037;&#20316;&#21306;&#19981;&#21464;</span>
+$ git revert [commit]             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;commit&#65292;&#29992;&#26469;&#25764;&#38144;&#25351;&#23450;commit&#12290;&#21518;&#32773;&#30340;&#25152;&#26377;&#21464;&#21270;&#37117;&#23558;&#34987;&#21069;&#32773;&#25269;&#28040;&#65292;&#24182;&#19988;&#24212;&#29992;&#21040;&#24403;&#21069;&#20998;&#25903;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26242;&#26102;&#23558;&#26410;&#25552;&#20132;&#30340;&#21464;&#21270;&#31227;&#38500;&#65292;&#31245;&#21518;&#20877;&#31227;&#20837;</span>
+$ git stash
+$ git stash pop
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga052c85" class="outline-2">
+<h2 id="orga052c85"><span class="section-number-2">11</span> 其他</h2>
+<div class="outline-text-2" id="text-11">
+<div class="org-src-container">
+<pre class="src src-shell">$ git archive  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#29983;&#25104;&#19968;&#20010;&#21487;&#20379;&#21457;&#24067;&#30340;&#21387;&#32553;&#21253;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
