@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>后缀树与后缀数组</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">后缀树与后缀数组</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6a4b881">1. 后缀树</a></li>
+<li><a href="#org699246f">2. 后缀数组</a>
+<ul>
+<li><a href="#orge38b772">2.1. 分析</a></li>
+<li><a href="#org763b4ed">2.2. 算法</a></li>
+<li><a href="#org3994cb4">2.3. 总结</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6a4b881" class="outline-2">
+<h2 id="org6a4b881"><span class="section-number-2">1</span> 后缀树</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+后缀树就是把文本和该文本的所有后缀子串构建一个 trie 树。相关问题例如：<br>
+</p>
+<blockquote>
+<p>
+给你一个长字符串 s 与很多短字符串集合 \({T_1, T_2, ...}\) ，设计一个方法在 s 中查询 T<sub>1</sub>, T<sub>2</sub>, &#x2026;，要求找出 T<sub>i</sub> 在 s 中出现的位置<br>
+</p>
+</blockquote>
+
+<p>
+解法参考 <a href="./trie.html">trie</a><br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org699246f" class="outline-2">
+<h2 id="org699246f"><span class="section-number-2">2</span> 后缀数组</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+最长重复子串问题<br>
+</p>
+<blockquote>
+<p>
+有串 abcdabcda，最长重复子串是 abcda。其中，母串中的的 a 在 2 个最长重复子串 abcda 中是重叠的，这是被允许的。给定一个母串，求其最长重复子串<br>
+</p>
+</blockquote>
+</div>
+
+<div id="outline-container-orge38b772" class="outline-3">
+<h3 id="orge38b772"><span class="section-number-3">2.1</span> 分析</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+对于母串 banana，使用数组 a 中的指针指向母串的后缀：<br>
+a[0] 指向 banana<br>
+a[1]: anana<br>
+a[2]: nana<br>
+a[3]: ana<br>
+a[4]: na<br>
+a[5]: a<br>
+数组 a 就是后缀数组。然后对后缀数组进行快排，将后缀相近的后缀子串邻接在一起，排序后如下：<br>
+a[0]: a<br>
+a[1]: ana<br>
+a[2]: anana<br>
+a[3]: banana<br>
+a[4]: na<br>
+a[5]: nana<br>
+最后使用 comlen 函数对后缀数组进行遍历比较邻接元素，找出文本的最长重复子串<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org763b4ed" class="outline-3">
+<h3 id="org763b4ed"><span class="section-number-3">2.2</span> 算法</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
+
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">MAXCHAR</span> 5000  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#38271;&#22788;&#29702; 5000 &#23383;&#31526;</span>
+<span style="color: #af8700;">char</span> <span style="color: #0087ff;">c</span>[MAXCHAR];      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25991;&#26412;</span>
+<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">a</span>[MAXCHAR];     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25991;&#26412;&#30340;&#21518;&#32512;&#25968;&#32452;</span>
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">comlen</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">p</span>, <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">q</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0;
+    <span style="color: #5f8700;">while</span>(*p &amp;&amp; (*p++ == *q++))
+        ++i;
+    <span style="color: #5f8700;">return</span> i;
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">pstrcmp</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">p1</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">p2</span>)
+{
+    <span style="color: #5f8700;">return</span> strcmp(*(<span style="color: #af8700;">char</span>**)p1, *(<span style="color: #af8700;">char</span>**)p2);
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">ch</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span> = 0, <span style="color: #0087ff;">i</span>, <span style="color: #0087ff;">temp</span>, <span style="color: #0087ff;">maxlen</span> = 0, <span style="color: #0087ff;">maxi</span> = 0;
+    printf(<span style="color: #00afaf;">"Please input your string:\n"</span>);
+    n = 0;
+    <span style="color: #5f8700;">while</span>((ch = getchar()) != <span style="color: #00afaf;">'\n'</span>)
+    {
+        a[n] = &amp;c[n];  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26500;&#36896;&#21518;&#32512;&#25968;&#32452;</span>
+        c[n++] = ch;
+    }
+    c[n] = <span style="color: #00afaf;">'\0'</span>;
+
+    qsort(a, n, <span style="color: #5f8700;">sizeof</span>(<span style="color: #af8700;">char</span>*), pstrcmp);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23545;&#21518;&#32512;&#25968;&#32452;&#36827;&#34892;&#24555;&#25490;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992; comlen &#20989;&#25968;&#23545;&#21518;&#32512;&#25968;&#32452;&#36827;&#34892;&#36941;&#21382;&#27604;&#36739;&#37051;&#25509;&#20803;&#32032;&#65292;&#25214;&#20986;&#25991;&#26412;&#30340;&#26368;&#38271;&#37325;&#22797;&#23376;&#20018;</span>
+    <span style="color: #5f8700;">for</span>(i = 0; i &lt; n-1; ++i)
+    {
+        temp = comlen(a[i], a[i+1]);
+        <span style="color: #5f8700;">if</span>(temp &gt; maxlen)
+        {
+            maxlen = temp;
+            maxi = i;
+        }
+    }
+
+    printf(<span style="color: #00afaf;">"%d, %s\n"</span>,  maxlen, a[maxi] );
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3994cb4" class="outline-3">
+<h3 id="org3994cb4"><span class="section-number-3">2.3</span> 总结</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+生成后缀数组时间复杂度为 O(n)，排序时间复杂度为 O(nlogn * n)，最后，依次检测相邻 2 个后缀子串的时间复杂度为 O(n<sup>2</sup>)<br>
+另外，该题也可使用常规的 trie 树解法，参考 <a href="./trie.html">trie</a>。需要记录每个结点的深度，以及经过该结点的模式串数量。<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

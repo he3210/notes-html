@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>flexible array(柔性数组)</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">flexible array(柔性数组)</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1b4c713">1. main.c</a></li>
+<li><a href="#org99397f4">2. 结果</a></li>
+<li><a href="#org097e942">3. 附</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1b4c713" class="outline-2">
+<h2 id="org1b4c713"><span class="section-number-2">1</span> main.c</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">stru</span>         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21547;&#26580;&#24615;&#25968;&#32452;&#30340;&#32467;&#26500;&#20307;&#30340;&#23454;&#20363;&#22823;&#23567;&#21487;&#33021;&#19981;&#21516;</span>
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">Level</span>    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">flexible array(&#26580;&#24615;&#25968;&#32452;)&#25104;&#21592;&#24212;&#35813;&#23450;&#20041;&#22312;&#32467;&#26500;&#20307;&#30340;&#26368;&#21518;</span>
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">b</span>;
+    }<span style="color: #0087ff;">level</span>[];
+};
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">sizeof&#24471;&#21040;&#30340;&#32467;&#26524;&#24182;&#19981;&#21253;&#25324;&#26580;&#24615;&#25968;&#32452;&#30340;&#22823;&#23567;</span>
+    printf(<span style="color: #00afaf;">"sizeof(struct stru) = %d\n"</span>, <span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">stru</span>));
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20026;flexible array&#20998;&#37197;&#20102;8*sizeof(struct level)&#30340;&#31354;&#38388;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">stru</span> *<span style="color: #0087ff;">struA</span> = (<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">stru</span>*)malloc(<span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">stru</span>)+8*<span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">Level</span>));
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; 8; ++i)
+        struA-&gt;level[i].b = i;
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#19979;&#38754;&#30340;&#20195;&#30721;&#21487;&#20197;&#30475;&#20986;&#65306;&#26580;&#24615;&#25968;&#32452;&#20998;&#37197;&#30340;&#31354;&#38388;&#22312;&#32467;&#26500;&#20307;&#21518;&#38754;</span>
+    printf(<span style="color: #00afaf;">"struA+1 = %0xd\n"</span>, struA+1);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; 8; ++i)
+    {
+        printf(<span style="color: #00afaf;">"level[%d].b = %d,  %0xd\n"</span>, i, struA-&gt;level[i].b, &amp;struA-&gt;level[i].b);
+    }
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org99397f4" class="outline-2">
+<h2 id="org99397f4"><span class="section-number-2">2</span> 结果</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-bash">$ gcc main.c -o main -std=99
+$ ./main
+<span style="color: #0087ff;">sizeof</span>(struct stru) = 4
+struA+<span style="color: #0087ff;">1</span> = 2204014d
+level[0].b = 0,  2204014d
+level[1].b = 1,  2204018d
+level[2].b = 2,  220401cd
+level[3].b = 3,  2204020d
+level[4].b = 4,  2204024d
+level[5].b = 5,  2204028d
+level[6].b = 6,  220402cd
+level[7].b = 7,  2204030d
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org097e942" class="outline-2">
+<h2 id="org097e942"><span class="section-number-2">3</span> 附</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+如果结构体声明如下<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">stru</span>
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">Level</span>
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">b</span>;
+    }<span style="color: #0087ff;">level</span>[];
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span>;
+};
+</pre>
+</div>
+
+<p>
+就会编译出错<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ gcc main.c -o main -std=c99
+main.c:16:3: error: flexible array member not at end of struct
+  }level[];
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

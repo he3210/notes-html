@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>二叉树结点的最大距离</title>
@@ -34,15 +34,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org253114c">1. 问题</a></li>
-<li><a href="#org9762b83">2. 分析</a></li>
-<li><a href="#orgb0e34aa">3. 递归实现（后序遍历）</a></li>
+<li><a href="#org9675199">1. 问题</a></li>
+<li><a href="#org73fd27f">2. 分析</a></li>
+<li><a href="#org1cb91a2">3. 递归实现（后序遍历）</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org253114c" class="outline-2">
-<h2 id="org253114c"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org9675199" class="outline-2">
+<h2 id="org9675199"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 如果我们把二叉树视为一个图，父子结点之间的连线视为双向的，我们定义"距离"为两结点之间边的个数。<br>
@@ -51,8 +51,8 @@
 </div>
 </div>
 
-<div id="outline-container-org9762b83" class="outline-2">
-<h2 id="org9762b83"><span class="section-number-2">2</span> 分析</h2>
+<div id="outline-container-org73fd27f" class="outline-2">
+<h2 id="org73fd27f"><span class="section-number-2">2</span> 分析</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 二叉树的最大距离存在两种情况，取其中距离最大的一种：<br>
@@ -64,8 +64,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgb0e34aa" class="outline-2">
-<h2 id="orgb0e34aa"><span class="section-number-2">3</span> 递归实现（后序遍历）</h2>
+<div id="outline-container-org1cb91a2" class="outline-2">
+<h2 id="org1cb91a2"><span class="section-number-2">3</span> 递归实现（后序遍历）</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27714;&#20108;&#21449;&#26641;&#20013;&#32467;&#28857;&#30340;&#26368;&#22823;&#36317;&#31163;</span>

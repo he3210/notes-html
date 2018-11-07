@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker 笔记</title>
@@ -34,14 +34,14 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org07089be">1. docker mac 上安装</a></li>
-<li><a href="#orgcbd355c">2. docker volume</a></li>
+<li><a href="#org9382893">1. docker mac 上安装</a></li>
+<li><a href="#org3f0a9bc">2. docker volume</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org07089be" class="outline-2">
-<h2 id="org07089be"><span class="section-number-2">1</span> docker mac 上安装</h2>
+<div id="outline-container-org9382893" class="outline-2">
+<h2 id="org9382893"><span class="section-number-2">1</span> docker mac 上安装</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ brew install docker    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">mac &#23433;&#35013; docker</span>
@@ -51,8 +51,8 @@ $ docker info            <span style="color: #8a8a8a;"># </span><span style="col
 </div>
 </div>
 
-<div id="outline-container-orgcbd355c" class="outline-2">
-<h2 id="orgcbd355c"><span class="section-number-2">2</span> docker volume</h2>
+<div id="outline-container-org3f0a9bc" class="outline-2">
+<h2 id="org3f0a9bc"><span class="section-number-2">2</span> docker volume</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker volume ls                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377; volume</span>
@@ -72,8 +72,8 @@ $ docker run -d -p 80 --name website -v my_vol:/var/www/html/website:ro he3210/n
 </ul>
 
 <p>
-<a href="./dockerfile 语法笔记.html#org71420bc">Dockerfile 中使用关键字 VOLUME 创建匿名卷</a><br>
-<a href="./docker 笔记 —— 容器.html#orga2e0213">使用命令 <code>docker run -v</code> 创建数据卷</a><br>
+<a href="./dockerfile 语法笔记.html#orgffed2c3">Dockerfile 中使用关键字 VOLUME 创建匿名卷</a><br>
+<a href="./docker 笔记 —— 容器.html#org7e401b8">使用命令 <code>docker run -v</code> 创建数据卷</a><br>
 数据卷的进阶使用的话可以用命令 <code>docker run --mount</code><br>
 </p>
 </div>

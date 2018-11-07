@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>emacs lisp</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">emacs lisp</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1c4ddf9">1. 检测 emacs 是在终端下启动还是 GUI 下启动</a>
+<ul>
+<li><a href="#org7aba377">1.1. 例：mac emacs 和系统共享剪切板</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1c4ddf9" class="outline-2">
+<h2 id="org1c4ddf9"><span class="section-number-2">1</span> 检测 emacs 是在终端下启动还是 GUI 下启动</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+我一般在终端下使用 emacs，有些配置需要区分 emacs 运行在终端下还是在 GUI 模式下，以便加载不通的配置<br>
+可以借助变量 window-system 来实现，其值如下：<br>
+</p>
+<ul class="org-ul">
+<li><code>nil</code> for a termcap frame (a character-only terminal),<br></li>
+<li><code>‘x’</code> for an Emacs frame that is really an X window,<br></li>
+<li><code>‘w32’</code> for an Emacs frame that is a window on MS-Windows display,<br></li>
+<li><code>‘ns’</code> for an Emacs frame on a GNUstep or Macintosh Cocoa display,<br></li>
+<li><code>‘pc’</code> for a direct-write MS-DOS frame.<br></li>
+</ul>
+</div>
+
+<div id="outline-container-org7aba377" class="outline-3">
+<h3 id="org7aba377"><span class="section-number-3">1.1</span> 例：mac emacs 和系统共享剪切板</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+问题：mac GUI 模式下已支持该功能。但是终端模式下并不能和系统共享剪切板<br>
+思路：借助 shell 命令 <code>pbpaste</code> 和 <code>pbcopy</code> 来实现<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp"><span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">emacs &#21644;&#31995;&#32479;&#20849;&#20139;&#21098;&#20999;&#26495;</span>
+(<span style="color: #5f8700;">setq</span> select-enable-clipboard t)     <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#35813;&#34892;&#26159; emacs &#40664;&#35748;&#37197;&#32622;&#65292;&#23427;&#20165;&#25903;&#25345; emacs GUI &#27169;&#24335;&#65307;emacs -nw &#19979;&#24182;&#19981;&#31649;&#29992;&#65292;&#25152;&#20197;&#38656;&#35201;&#19979;&#38754;&#30340;&#19968;&#20123;&#37197;&#32622;</span>
+(<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">copy-from-osx</span> ()
+  (shell-command-to-string <span style="color: #00afaf;">"pbpaste"</span>))
+(<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">paste-to-osx</span> (text <span style="color: #af8700;">&amp;optional</span> push)
+  (<span style="color: #5f8700;">let</span> ((process-connection-type nil))
+    (<span style="color: #5f8700;">let</span> ((proc (start-process <span style="color: #00afaf;">"pbcopy"</span> <span style="color: #00afaf;">"*Messages*"</span> <span style="color: #00afaf;">"pbcopy"</span>)))
+      (process-send-string proc text)
+      (process-send-eof proc))))
+(<span style="color: #5f8700;">cond</span> ((not window-system)        <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#32456;&#31471; emacs &#19979;&#38656;&#35201;&#20351;&#29992; pbpaste &#21644; pbcopy &#26469;&#21644;&#31995;&#32479;&#20849;&#20139;&#21098;&#20999;&#26495;</span>
+       (<span style="color: #5f8700;">setq</span> interprogram-cut-function 'paste-to-osx
+             interprogram-paste-function 'copy-from-osx))
+      ((equal window-system 'ns)  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">GUI emacs &#19979;&#20351;&#29992;&#22914;&#19979; 2 &#20010;&#40664;&#35748;&#20540;&#65292;&#26080;&#38656;&#25913;&#21464;&#21363;&#21487;&#20849;&#20139;&#21098;&#20999;&#26495;</span>
+       (<span style="color: #5f8700;">setq</span> interprogram-cut-function 'gui-select-text
+             interprogram-paste-function 'gui-selection-value)))
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

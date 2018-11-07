@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 19:48 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>consistent hashing</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">consistent hashing</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf889801">1. consistent_hash_map.h</a></li>
+<li><a href="#org1ff7aca">2. test.cpp</a></li>
+<li><a href="#orgb4fd374">3. test结果</a></li>
+<li><a href="#org7eaa109">4. testVnode.cpp</a></li>
+</ul>
+</div>
+</div>
+<p>
+<a href="http://www.oschina.net/translate/utopian-redis-cluster">理想化的 Redis 集群</a><br>
+<a href="http://blog.jobbole.com/47023/">一致性hash和solr千万级数据分布式搜索引擎中的应用</a><br>
+</p>
+
+<p>
+一致性哈希的功能被封装在模板类consistent_hash_map中<br>
+</p>
+<div id="outline-container-orgf889801" class="outline-2">
+<h2 id="orgf889801"><span class="section-number-2">1</span> consistent_hash_map.h</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;map&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;list&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;functional&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;algorithm&gt;</span>
+
+
+
+<span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> __CONSISTENT_HASH_H__
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">__CONSISTENT_HASH_H__</span>
+
+
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">consistent hash&#30340;&#33410;&#28857;&#31867;&#22411;&#12290;</span>
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#19968;&#20803;&#20989;&#25968;&#23545;&#35937;&#12290;&#25509;&#25910;T&#31867;&#22411;&#23545;&#35937;&#20316;&#20026;&#21442;&#25968;&#65292;&#36820;&#22238;&#19968;&#20010;&#25972;&#24418;&#20316;&#20026;&#20854;hash&#20540;&#65292;&#35813;hash&#20540;&#23558;&#34987;&#29992;&#20110;&#20869;&#37096;&#30340;&#25490;&#24207;&#12290;Hash&#38656;&#22312;&#20854;&#20869;&#37096;&#23450;&#20041;result_type &#25351;&#26126;&#36820;&#22238;&#25972;&#24418;&#30340;&#31867;&#22411;&#12290;</span>
+<span style="color: #5f8700;">template</span> &lt;<span style="color: #5f8700;">typename</span> <span style="color: #af8700;">T</span>,
+         <span style="color: #5f8700;">typename</span> <span style="color: #af8700;">Hash</span>,
+         <span style="color: #5f8700;">typename</span> <span style="color: #af8700;">Alloc</span> = <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">allocator</span>&lt;<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">pair</span>&lt;<span style="color: #5f8700;">const</span> <span style="color: #5f8700;">typename</span> <span style="color: #00afaf;">Hash</span>::<span style="color: #af8700;">result_type</span>,<span style="color: #af8700;">T</span> &gt; &gt; &gt;
+<span style="color: #5f8700;">class</span> <span style="color: #af8700;">consistent_hash_map</span>
+{
+    <span style="color: #5f8700;">public</span>:
+
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">hash&#20989;&#25968;&#36820;&#22238;&#20540;&#30340;&#31867;&#22411;</span>
+        <span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">typename</span> <span style="color: #00afaf;">Hash</span>::<span style="color: #af8700;">result_type</span> <span style="color: #af8700;">size_type</span>;
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#20351;&#29992;std::map&#26469;&#31649;&#29702;&#33410;&#28857;</span>
+        <span style="color: #5f8700;">typedef</span> <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">map</span>&lt;<span style="color: #af8700;">size_type</span>,<span style="color: #af8700;">T</span>,<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">less</span>&lt;<span style="color: #af8700;">size_type</span>&gt;,<span style="color: #af8700;">Alloc</span>&gt; <span style="color: #af8700;">map_type</span>;
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">std::pair&lt;const size_type, T&gt;&#65292;first&#20026;&#33410;&#28857;&#30340;&#21704;&#24076;&#20540;&#65292;second&#20026;&#33410;&#28857;&#12290;</span>
+        <span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">typename</span> <span style="color: #00afaf;">map_type</span>::<span style="color: #af8700;">value_type</span> <span style="color: #af8700;">value_type</span>;
+        <span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">value_type</span>&amp; <span style="color: #af8700;">reference</span>;
+        <span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">const</span> <span style="color: #af8700;">value_type</span>&amp; <span style="color: #af8700;">const_reference</span>;
+        <span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">typename</span> <span style="color: #00afaf;">map_type</span>::<span style="color: #af8700;">iterator</span> <span style="color: #af8700;">iterator</span>;
+        <span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">typename</span> <span style="color: #00afaf;">map_type</span>::<span style="color: #af8700;">reverse_iterator</span> <span style="color: #af8700;">reverse_iterator</span>;
+        <span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">Alloc</span> <span style="color: #af8700;">allocator_type</span>;
+
+    <span style="color: #5f8700;">public</span>:
+
+        <span style="color: #0087ff;">consistent_hash_map</span>() {}
+
+        ~<span style="color: #0087ff;">consistent_hash_map</span>() {}
+
+    <span style="color: #5f8700;">public</span>:
+
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#36820;&#22238;consistent_hash_map&#20869;&#30340;&#33410;&#28857;&#25968;&#37327;</span>
+        <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">size</span>() <span style="color: #5f8700;">const</span> 
+        {
+            <span style="color: #5f8700;">return</span> nodes_.size();
+        }
+
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#21028;&#26029;consistent_hash_map&#26159;&#21542;&#20026;&#31354;</span>
+        <span style="color: #af8700;">bool</span> <span style="color: #0087ff;">empty</span>() <span style="color: #5f8700;">const</span>
+        {
+            <span style="color: #5f8700;">return</span> nodes_.empty();
+        }
+
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#25554;&#20837;&#19968;&#20010;&#33410;&#28857;&#65292;&#22914;&#26524;&#36820;&#22238;&#20540;&#20013;bool&#21464;&#37327;&#20026;&#30495;&#65292;iterator&#21017;&#20026;&#25351;&#21521;&#25554;&#20837;&#33410;&#28857;&#30340;&#36845;&#20195;&#22120;&#12290;</span>
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#22914;&#26524;bool&#20026;&#20551;&#65292;&#34920;&#31034;&#25554;&#20837;&#22833;&#36133;&#65292;iterator&#25351;&#21521;&#24050;&#32463;&#23384;&#22312;&#30340;&#33410;&#28857;&#12290;</span>
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#25554;&#20837;&#22833;&#36133;&#22240;&#20026;&#33410;&#28857;&#24050;&#32463;&#23384;&#22312;&#25110;&#32773;&#26159;&#33410;&#28857;&#30340;hash&#20540;&#19982;&#20854;&#20182;&#33410;&#28857;&#21457;&#29983;&#20914;&#31361;</span>
+        <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">pair</span>&lt;<span style="color: #af8700;">iterator</span>,<span style="color: #af8700;">bool</span>&gt; <span style="color: #0087ff;">insert</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">T</span>&amp; <span style="color: #0087ff;">node</span>)
+        {
+            <span style="color: #af8700;">size_type</span> <span style="color: #0087ff;">hash</span> = hasher_(node);
+            <span style="color: #5f8700;">return</span> nodes_.insert(value_type(<span style="color: #af8700;">hash</span>,node));
+        }
+
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#36890;&#36807;&#36845;&#20195;&#22120;&#21024;&#38500;&#25351;&#23450;&#33410;&#28857;</span>
+        <span style="color: #af8700;">void</span> <span style="color: #0087ff;">erase</span>(<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span>) 
+        {
+            nodes_.erase(it);
+        }
+
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#36890;&#36807;&#33410;&#28857;&#20540;&#21024;&#38500;&#25351;&#23450;&#33410;&#28857;</span>
+        <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">erase</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">T</span>&amp; <span style="color: #0087ff;">node</span>) 
+        {
+            <span style="color: #af8700;">size_type</span> <span style="color: #0087ff;">hash</span> = hasher_(node);
+            <span style="color: #5f8700;">return</span> nodes_.erase(<span style="color: #af8700;">hash</span>);
+        }
+
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">hash&#20026;&#25968;&#25454;&#20851;&#38190;&#23383;&#30340;hash&#20540;&#65292; find&#26041;&#27861;&#33021;&#25214;&#21040;&#35813;&#25968;&#25454;&#26144;&#23556;&#30340;&#33410;&#28857;</span>
+        <span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">find</span>(<span style="color: #af8700;">size_type</span> <span style="color: #0087ff;">hash</span>)
+        {<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#25353;&#29031;&#19968;&#20010;&#22278;&#29615;&#26041;&#21521;&#65288;&#39034;&#26102;&#38024;&#25110;&#36870;&#26102;&#38024;&#65289;&#65292;&#23547;&#25214;hash&#20540;&gt;=&#32473;&#23450;hash&#30340;&#33410;&#28857;</span>
+            <span style="color: #5f8700;">if</span>(nodes_.empty()) 
+            {
+                <span style="color: #5f8700;">return</span> nodes_.end();
+            }
+
+            <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#25214;&#21040;map&#20013;key&#20540;&gt;=hash&#30340;&#31532;&#19968;&#20010;&#36845;&#20195;&#22120;</span>
+            <span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span> = nodes_.lower_bound(<span style="color: #af8700;">hash</span>);
+
+            <span style="color: #5f8700;">if</span> (it == nodes_.end())
+            {
+                it = nodes_.begin();
+            }
+
+            <span style="color: #5f8700;">return</span> it;
+        }
+
+        <span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">begin</span>() { <span style="color: #5f8700;">return</span> nodes_.begin(); }
+        <span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">end</span>() { <span style="color: #5f8700;">return</span> nodes_.end(); }
+        <span style="color: #af8700;">reverse_iterator</span> <span style="color: #0087ff;">rbegin</span>() { <span style="color: #5f8700;">return</span> nodes_.rbegin(); }
+        <span style="color: #af8700;">reverse_iterator</span> <span style="color: #0087ff;">rend</span>() { <span style="color: #5f8700;">return</span> nodes_.rend(); }
+
+
+    <span style="color: #5f8700;">private</span>:
+
+        <span style="color: #af8700;">Hash</span> <span style="color: #0087ff;">hasher_</span>;
+        <span style="color: #af8700;">map_type</span> <span style="color: #0087ff;">nodes_</span>;
+};
+
+
+<span style="color: #d75f00;">#endif</span>
+</pre>
+</div>
+
+<p>
+test.cpp只是简单实现consistent hashing, 并没实现虚拟节点，关于虚拟节点的例子在下面testVnode.cpp中<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1ff7aca" class="outline-2">
+<h2 id="org1ff7aca"><span class="section-number-2">2</span> test.cpp</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;iostream&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;boost/functional/hash.hpp&gt;</span>
+
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdint.h&gt;</span>     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">for uint32_t</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;boost/format.hpp&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;boost/crc.hpp&gt;</span>    <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">for crc_optimal</span>
+
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"consistent_hash_map.hpp"</span>
+
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">crc32_hasher</span> 
+{
+    <span style="color: #af8700;">uint32_t</span> <span style="color: #5f8700;">operator</span><span style="color: #0087ff;">()</span>(<span style="color: #5f8700;">const</span> <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">string</span>&amp; <span style="color: #0087ff;">node</span>) 
+    {
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#23450;&#20041;crc_optimal&#23545;&#35937;</span>
+        <span style="color: #00afaf;">boost</span>::<span style="color: #af8700;">crc_32_type</span> <span style="color: #0087ff;">ret</span>;
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#22788;&#29702;&#23383;&#31526;&#20018;&#65292;&#29983;&#25104;CRC&#24207;&#21015;</span>
+        ret.process_bytes(node.c_str(),node.size());
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">checksum()&#36820;&#22238;CRC&#24207;&#21015;</span>
+        <span style="color: #5f8700;">return</span> ret.checksum();
+    }
+
+    <span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">uint32_t</span> <span style="color: #af8700;">result_type</span>;
+};
+
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">argc</span>, <span style="color: #af8700;">char</span> <span style="color: #5f8700;">const</span> *<span style="color: #0087ff;">argv</span>[])
+{
+    <span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">consistent_hash_map</span>&lt;<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">string</span>,<span style="color: #af8700;">crc32_hasher</span>&gt; <span style="color: #af8700;">consistent_hash_t</span>;
+    <span style="color: #af8700;">consistent_hash_t</span> <span style="color: #0087ff;">consistent_hash_</span>;
+    <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#23450;&#20041;&#26684;&#24335;&#21270;&#23383;&#31526;&#20018;&#30340;&#31867;</span>
+    <span style="color: #00afaf;">boost</span>::<span style="color: #af8700;">format</span> <span style="color: #0087ff;">node_fmt</span>(<span style="color: #00afaf;">"192.168.1.%1%"</span>);
+
+    <span style="color: #5f8700;">for</span>(<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">i</span>=0;i&lt;3;++i) 
+    {
+        <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">string</span> <span style="color: #0087ff;">node</span> = <span style="color: #00afaf;">boost</span>::str(node_fmt % i);
+        consistent_hash_.insert(node);
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"add node: %1%"</span>) % node &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+    }
+
+
+    {
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"========================================================="</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+        <span style="color: #5f8700;">for</span>(<span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span> = consistent_hash_.begin();it != consistent_hash_.end(); ++it) 
+        {
+            <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node: %1%,%2%"</span>) % it-&gt;second % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+        }
+    }
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36755;&#20986;&#30456;&#20851;&#25968;&#25454;&#20851;&#38190;&#23383;hash&#20540;&#26144;&#23556;&#30340;&#33410;&#28857;</span>
+    {
+        <span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span>;
+        it = consistent_hash_.find(290235110);  <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">290235110&#20195;&#34920;&#25968;&#25454;&#20851;&#38190;&#23383;&#30340;hash&#20540;</span>
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1%,%2%"</span>) % it-&gt;second % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+    }
+
+    {
+        <span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span>;
+        it = consistent_hash_.find(2286285664);
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1%,%2%"</span>) % it-&gt;second % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+    }
+
+    {
+        <span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span>;
+        it = consistent_hash_.find(4282565578);
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1%,%2%"</span>) % it-&gt;second % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+    }  
+
+
+    <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"========================================================="</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+    {<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21024;&#38500;192.168.1.1</span>
+        <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">string</span> <span style="color: #0087ff;">node</span> = <span style="color: #00afaf;">boost</span>::str(node_fmt % 1);
+        consistent_hash_.erase(node);
+        <span style="color: #5f8700;">for</span>(<span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span> = consistent_hash_.begin();it != consistent_hash_.end(); ++it) 
+        {
+            <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1%,%2%"</span>) % it-&gt;second % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+        }
+    }
+
+    <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"========================================================="</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+    {
+        <span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span>;
+        it = consistent_hash_.find(4282565578);
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1%,%2%"</span>) % it-&gt;second % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"-------------------------------------------"</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+        consistent_hash_.erase(it);
+        <span style="color: #5f8700;">for</span>(<span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span> = consistent_hash_.begin();it != consistent_hash_.end(); ++it) 
+        {
+            <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1%,%2%"</span>) % it-&gt;second % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+        }
+    }  
+
+    <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"========================================================="</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+    {
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"-------------------------------------------"</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+        <span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span>;
+        it = consistent_hash_.find(4282565578);
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1%,%2%"</span>) % it-&gt;second % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"-------------------------------------------"</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+
+        it = consistent_hash_.find(4282565576);
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1%,%2%"</span>) % it-&gt;second % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"-------------------------------------------"</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+
+        consistent_hash_.erase(it);
+
+        <span style="color: #5f8700;">for</span>(<span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span> = consistent_hash_.begin();it != consistent_hash_.end(); ++it) 
+        {
+            <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1%,%2%"</span>) % it-&gt;second % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+        }
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"-------------------------------------------"</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+    }
+
+
+    <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"========================================================="</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+    {
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"-------------------------------------------"</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+        <span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span>;
+        it = consistent_hash_.find(4282565578);
+        <span style="color: #5f8700;">if</span>(it == consistent_hash_.end()) 
+        {
+            <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"not found, consistent_hash is empty"</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+        }
+    }
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+
+<p>
+编译：g++ test.cpp -o test<br>
+运行：./test<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb4fd374" class="outline-2">
+<h2 id="orgb4fd374"><span class="section-number-2">3</span> test结果</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+<b><b>结果如下：</b></b><br>
+![这里写图片描述](<a href="http://img.blog.csdn.net/20150426152944235">http://img.blog.csdn.net/20150426152944235</a>)<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7eaa109" class="outline-2">
+<h2 id="org7eaa109"><span class="section-number-2">4</span> testVnode.cpp</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdint.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;iostream&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;boost/functional/hash.hpp&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;boost/format.hpp&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;boost/crc.hpp&gt;</span>
+
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"consistent_hash_map.hpp"</span>
+
+
+
+<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span>* <span style="color: #0087ff;">nodes</span>[] =   {
+    <span style="color: #00afaf;">"192.168.1.100"</span>,
+    <span style="color: #00afaf;">"192.168.1.101"</span>,
+    <span style="color: #00afaf;">"192.168.1.102"</span>,
+    <span style="color: #00afaf;">"192.168.1.103"</span>,
+    <span style="color: #00afaf;">"192.168.1.104"</span>     };
+
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">vnode_t</span> 
+{
+    <span style="color: #0087ff;">vnode_t</span>() {}
+    <span style="color: #0087ff;">vnode_t</span>(<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">n</span>,<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">v</span>):node_id(n),vnode_id(v) {}
+
+    <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">string</span> <span style="color: #0087ff;">to_str</span>() <span style="color: #5f8700;">const</span> 
+    {
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">boost</span>::str(<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"%1%-%2%"</span>) % nodes[node_id] % vnode_id);
+    }
+
+    <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">node_id</span>;
+    <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">vnode_id</span>;
+
+};
+
+
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">crc32_hasher</span> 
+{
+    <span style="color: #af8700;">uint32_t</span> <span style="color: #5f8700;">operator</span><span style="color: #0087ff;">()</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">vnode_t</span>&amp; <span style="color: #0087ff;">node</span>) 
+    {
+        <span style="color: #00afaf;">boost</span>::<span style="color: #af8700;">crc_32_type</span> <span style="color: #0087ff;">ret</span>;
+        <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">string</span> <span style="color: #0087ff;">vnode</span> = node.to_str();
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"vnode:"</span>&lt;&lt;vnode&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+        ret.process_bytes(vnode.c_str(),vnode.size());
+        <span style="color: #5f8700;">return</span> ret.checksum();
+    }
+    <span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">uint32_t</span> <span style="color: #af8700;">result_type</span>;
+};
+
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">argc</span>, <span style="color: #af8700;">char</span> <span style="color: #5f8700;">const</span> *<span style="color: #0087ff;">argv</span>[])
+{
+    <span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">consistent_hash_map</span>&lt;<span style="color: #af8700;">vnode_t</span>,<span style="color: #af8700;">crc32_hasher</span>&gt; <span style="color: #af8700;">consistent_hash_t</span>;
+    <span style="color: #af8700;">consistent_hash_t</span> <span style="color: #0087ff;">consistent_hash_</span>;
+
+    <span style="color: #5f8700;">for</span>(<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">i</span>=0;i&lt;5;++i) 
+    {<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#27599;&#20010;&#33410;&#28857;&#25554;&#20837;100&#20010;&#34394;&#25311;&#33410;&#28857;</span>
+        <span style="color: #5f8700;">for</span>(<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">j</span>=0;j&lt;100;j++) 
+        {
+            consistent_hash_.insert(vnode_t(i,j));
+        }
+    }
+
+
+    <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#36941;&#21382;consistent_hash&#20013;&#30340;&#25152;&#26377;&#30340;vnode,&#32479;&#35745;&#27599;&#20010;&#34394;&#25311;&#33410;&#28857;&#30340;key&#30340;&#25968;&#37327;&#21644;&#27599;&#20010;&#20027;&#26426;&#21253;&#21547;key&#30340;&#25968;&#37327;</span>
+    {
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"========================================================="</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">sums&#32479;&#35745;&#27599;&#20010;&#20027;&#26426;&#21487;&#20197;&#21253;&#21547;&#30340;key&#25968;&#37327;</span>
+        <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">sums</span>[] = {0,0,0,0,0};
+
+        <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#22788;&#29702;&#22278;&#29615;&#30340;&#38142;&#25509;&#28857;&#22788;&#31532;&#19968;&#20010;vnode</span>
+        <span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">i</span> = consistent_hash_.begin();
+        <span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">reverse_iterator</span> <span style="color: #0087ff;">j</span> = consistent_hash_.rbegin();
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35745;&#31639;&#31532;&#19968;&#20010;&#33410;&#28857;&#21253;&#21547;&#30340;key&#25968;&#37327;</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">static_cast&lt;uint32_t&gt;(-1)&#28304;&#30721;&#20026;UINT32_MAX, &#20294;&#26080;&#27861;&#36890;&#36807;&#32534;&#35793;&#65292;&#26367;&#20195;&#20043;</span>
+        <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">n</span> = i-&gt;first + <span style="color: #5f8700;">static_cast</span>&lt;<span style="color: #af8700;">uint32_t</span>&gt;(-1) - j-&gt;first;
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"vnode:%1%,hash:%2%,contains:%3%"</span>) 
+            % i-&gt;second.to_str() % i-&gt;first % n &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+        sums[i-&gt;second.node_id] += n;
+
+        <span style="color: #af8700;">uint32_t</span> <span style="color: #0087ff;">priv</span> = i-&gt;first;
+        <span style="color: #af8700;">uint32_t</span> <span style="color: #0087ff;">cur</span>;
+        <span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">end</span> = consistent_hash_.end();
+
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22788;&#29702;&#22278;&#29615;&#20013;&#38388;&#30340;vnode</span>
+        <span style="color: #5f8700;">while</span>(++i != end)
+        {
+            cur = i-&gt;first;
+            n = cur - priv;
+            <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"vnode:%1%,hash:%2%,contains:%3%"</span>) 
+                % i-&gt;second.to_str() % cur % n &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+            sums[i-&gt;second.node_id] += n;
+            priv = cur;
+        }
+
+        <span style="color: #5f8700;">for</span>(<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">i</span>=0;i&lt;5;++i) 
+        {
+            <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1% contains:%2%"</span>) % nodes[i] % sums[i] &lt;&lt;<span style="color: #00afaf;">std</span>::endl; 
+        }
+
+    }
+
+
+    <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#26597;&#25214;&#26576;&#20010;hash&#20540;&#23545;&#24212;&#30340;vnode &#21644; &#20027;&#26426;</span>
+    {
+        <span style="color: #00afaf;">consistent_hash_t</span>::<span style="color: #af8700;">iterator</span> <span style="color: #0087ff;">it</span>;
+        it = consistent_hash_.find(290235110);
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">boost</span>::format(<span style="color: #00afaf;">"node:%1%,vnode:%2%,hash:%3%"</span>) 
+            % nodes[it-&gt;second.node_id] % it-&gt;second.vnode_id % it-&gt;first &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+    }
+
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

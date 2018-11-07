@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mac 安装 gdb 踩坑</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">mac 安装 gdb 踩坑</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1928ccb">1. 参考</a></li>
+<li><a href="#org23c8e67">2. 安装 gdb 并为其签名</a></li>
+<li><a href="#orgd97f934">3. 解决错误</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1928ccb" class="outline-2">
+<h2 id="org1928ccb"><span class="section-number-2">1</span> 参考</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><a href="https://sourceware.org/gdb/wiki/BuildingOnDarwin">https://sourceware.org/gdb/wiki/BuildingOnDarwin</a><br></li>
+<li><a href="https://stackoverflow.com/questions/49222683/how-do-i-install-gdb-on-macos-10-13-3-high-sierra">https://stackoverflow.com/questions/49222683/how-do-i-install-gdb-on-macos-10-13-3-high-sierra</a><br></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org23c8e67" class="outline-2">
+<h2 id="org23c8e67"><span class="section-number-2">2</span> 安装 gdb 并为其签名</h2>
+<div class="outline-text-2" id="text-2">
+<ol class="org-ol">
+<li><p>
+安装gdb<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ brew install gdb
+$ gdb --version
+GNU gdb (GDB) 8.1
+</pre>
+</div></li>
+
+<li><p>
+然后创建证书<br>
+执行菜单 钥匙串访问-&gt;证书助理-&gt;创建证书<br>
+填写信息<br>
+</p>
+<ul class="org-ul">
+<li>证书名称：gdb-cert<br></li>
+<li>身份类型：自签名根证书<br></li>
+<li>证书类型：代码签名<br></li>
+<li>勾选：让我覆盖这些默认值<br></li>
+</ul>
+<p>
+然后一直点击继续，直到指定证书位置的步骤，选择钥匙串保存的位置是系统<br>
+点击创建，输入系统密码，创建完成。（极有可能创建失败，这时可以选择钥匙串保存位置为登录，然后导出证书，再然后把证书导入到系统）<br>
+打开证书简介界面，点击信任-&gt;代码签名，将其改为始终信任<br>
+</p></li>
+<li>重启系统刷新系统证书和代码签名数据<br></li>
+<li><p>
+给 gdb 签名<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ codesign -fs gdb-cert /usr/local/bin/gdb    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">-f &#34920;&#31034;&#31614;&#21517;&#33509;&#24050;&#23384;&#22312;&#23601;&#35206;&#30422;</span>
+</pre>
+</div></li>
+<li><p>
+添加 ~/.gdbinit 文件<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ echo <span style="color: #00afaf;">"set startup-with-shell off"</span> &gt;&gt; ~/.gdbinit
+</pre>
+</div></li>
+<li><p>
+最后会出现如下错误<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo gdb main
+(gdb) <span style="color: #5f8700;">r</span>
+Starting program: /Users/he/test/algorithm/main
+[New Thread 0x1103 of process 843]
+[New Thread 0xe03 of process 843]
+
+During startup program terminated with signal SIGTRAP, Trace/breakpoint trap.
+</pre>
+</div></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgd97f934" class="outline-2">
+<h2 id="orgd97f934"><span class="section-number-2">3</span> 解决错误</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+需要更换 gdb v8.1 到 gdb v8.0.1，用如下代码替换上述步骤1<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ brew uninstall gdb
+$ brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/c3128a5c335bd2fa75ffba9d721e9910134e4644/Formula/gdb.rb
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker 笔记 —— 镜像</title>
@@ -34,20 +34,20 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2f55008">1. 镜像常用命令</a></li>
-<li><a href="#org1229f12">2. Docker Hub 操作</a></li>
-<li><a href="#org0059533">3. 构建镜像</a>
+<li><a href="#orgeabe028">1. 镜像常用命令</a></li>
+<li><a href="#org82ea7de">2. Docker Hub 操作</a></li>
+<li><a href="#orga7e67f7">3. 构建镜像</a>
 <ul>
-<li><a href="#orgba5d310">3.1. 使用 Dockerfile 构建镜像</a></li>
-<li><a href="#org0132d5f">3.2. 使用 commit 提交定制容器进行构建镜像</a></li>
+<li><a href="#orge0bef2a">3.1. 使用 Dockerfile 构建镜像</a></li>
+<li><a href="#org27f8166">3.2. 使用 commit 提交定制容器进行构建镜像</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2f55008" class="outline-2">
-<h2 id="org2f55008"><span class="section-number-2">1</span> 镜像常用命令</h2>
+<div id="outline-container-orgeabe028" class="outline-2">
+<h2 id="orgeabe028"><span class="section-number-2">1</span> 镜像常用命令</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker images                        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#26412;&#22320; docker &#38236;&#20687;</span>
@@ -58,8 +58,8 @@ $ docker history e78b7f1e4671          <span style="color: #8a8a8a;"># </span><s
 </div>
 </div>
 
-<div id="outline-container-org1229f12" class="outline-2">
-<h2 id="org1229f12"><span class="section-number-2">2</span> Docker Hub 操作</h2>
+<div id="outline-container-org82ea7de" class="outline-2">
+<h2 id="org82ea7de"><span class="section-number-2">2</span> Docker Hub 操作</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker login                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30331;&#24405;</span>
@@ -71,21 +71,21 @@ $ docker search puppet        <span style="color: #8a8a8a;"># </span><span style
 </div>
 </div>
 
-<div id="outline-container-org0059533" class="outline-2">
-<h2 id="org0059533"><span class="section-number-2">3</span> 构建镜像</h2>
+<div id="outline-container-orga7e67f7" class="outline-2">
+<h2 id="orga7e67f7"><span class="section-number-2">3</span> 构建镜像</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgba5d310" class="outline-3">
-<h3 id="orgba5d310"><span class="section-number-3">3.1</span> 使用 Dockerfile 构建镜像</h3>
+<div id="outline-container-orge0bef2a" class="outline-3">
+<h3 id="orge0bef2a"><span class="section-number-3">3.1</span> 使用 Dockerfile 构建镜像</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
-这部分内容在另一篇笔记中：<a href="./dockerfile 语法笔记.html#org5897337">dockerfile 语法笔记</a><br>
+这部分内容在另一篇笔记中：<a href="./dockerfile 语法笔记.html#org162abea">dockerfile 语法笔记</a><br>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org0132d5f" class="outline-3">
-<h3 id="org0132d5f"><span class="section-number-3">3.2</span> 使用 commit 提交定制容器进行构建镜像</h3>
+<div id="outline-container-org27f8166" class="outline-3">
+<h3 id="org27f8166"><span class="section-number-3">3.2</span> 使用 commit 提交定制容器进行构建镜像</h3>
 <div class="outline-text-3" id="text-3-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker commit bdd311e829ad he3210/apache2

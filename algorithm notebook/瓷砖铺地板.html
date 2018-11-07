@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>瓷砖铺地板</title>
@@ -56,17 +56,17 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6d3680f">1. 问题</a></li>
-<li><a href="#org2eee856">2. 状态转移方程</a></li>
-<li><a href="#org93e8a06">3. 递归求解</a></li>
-<li><a href="#org97e8f08">4. 动态规划（自顶向下）</a></li>
-<li><a href="#org3538d8a">5. 动态规划（自底向上）</a></li>
+<li><a href="#org43a37e7">1. 问题</a></li>
+<li><a href="#org07ae5a7">2. 状态转移方程</a></li>
+<li><a href="#org3ebf783">3. 递归求解</a></li>
+<li><a href="#org520ea50">4. 动态规划（自顶向下）</a></li>
+<li><a href="#org318772e">5. 动态规划（自底向上）</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6d3680f" class="outline-2">
-<h2 id="org6d3680f"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org43a37e7" class="outline-2">
+<h2 id="org43a37e7"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 求用 1*2 的瓷砖覆盖 2*n 的地板有几种方式<br>
@@ -74,8 +74,8 @@
 </div>
 </div>
 
-<div id="outline-container-org2eee856" class="outline-2">
-<h2 id="org2eee856"><span class="section-number-2">2</span> 状态转移方程</h2>
+<div id="outline-container-org07ae5a7" class="outline-2">
+<h2 id="org07ae5a7"><span class="section-number-2">2</span> 状态转移方程</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 \[
@@ -91,8 +91,8 @@ F(n - 1) + F(n - 2) & & {n > 2}
 </div>
 </div>
 
-<div id="outline-container-org93e8a06" class="outline-2">
-<h2 id="org93e8a06"><span class="section-number-2">3</span> 递归求解</h2>
+<div id="outline-container-org3ebf783" class="outline-2">
+<h2 id="org3ebf783"><span class="section-number-2">3</span> 递归求解</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">Fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
@@ -109,8 +109,8 @@ F(n - 1) + F(n - 2) & & {n > 2}
 </div>
 </div>
 
-<div id="outline-container-org97e8f08" class="outline-2">
-<h2 id="org97e8f08"><span class="section-number-2">4</span> 动态规划（自顶向下）</h2>
+<div id="outline-container-org520ea50" class="outline-2">
+<h2 id="org520ea50"><span class="section-number-2">4</span> 动态规划（自顶向下）</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[1000]={0};
@@ -133,8 +133,8 @@ F(n - 1) + F(n - 2) & & {n > 2}
 </div>
 </div>
 
-<div id="outline-container-org3538d8a" class="outline-2">
-<h2 id="org3538d8a"><span class="section-number-2">5</span> 动态规划（自底向上）</h2>
+<div id="outline-container-org318772e" class="outline-2">
+<h2 id="org318772e"><span class="section-number-2">5</span> 动态规划（自底向上）</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[1000]={0};

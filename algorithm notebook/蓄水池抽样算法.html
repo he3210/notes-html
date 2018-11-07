@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>蓄水池抽样算法</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">蓄水池抽样算法</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9bb4a79">1. 蓄水池抽样问题</a></li>
+<li><a href="#orgc88f965">2. n 个样本随机抽取 1 个（n 未知）</a></li>
+<li><a href="#org4602fdc">3. n 个样本随机抽取 m 个不同样本（n 未知）</a></li>
+<li><a href="#orgb7dd587">4. n 个样本随机抽取 m 个不同样本（n 已知）</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9bb4a79" class="outline-2">
+<h2 id="org9bb4a79"><span class="section-number-2">1</span> 蓄水池抽样问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+如果我们知道 n 的值，那么问题就可以简单的用一个大随机数 rand()%n 得到一个确切的随机位置，那么该位置的对象就是所求的对象，选中的概率是 1/n。<br>
+但现在我们并不知道 n 的值，这个问题便抽象为蓄水池抽样问题，即从一个包含 n 个对象的列表 S 中随机选取 k 个对象，n 为一个非常大或者不知道的值。通常情况下，n 是一个非常大的值，大到无法一次性把所有列表 S 中的对象都放到内存中。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc88f965" class="outline-2">
+<h2 id="orgc88f965"><span class="section-number-2">2</span> n 个样本随机抽取 1 个（n 未知）</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+我们这个问题是蓄水池抽样问题的一个特例，即 k=1。<br>
+解法：我们总是选择第一个对象，以 1/2 的概率选择第二个，以 1/3 的概率选择第三个，以此类推，以 1/m 的概率选择第 m 个对象。当该过程结束时，每一个对象具有相同的选中概率，即 1/n，证明如下。<br>
+证明：第 m 个对象最终被选中的概率 P = 选择 m 的概率 * 其后面所有对象不被选择的概率，即<br>
+<img src="../images/蓄水池抽样1.png" alt="蓄水池抽样1.png"><br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;iostream&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdlib&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;ctime&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;vector&gt;</span>
+
+<span style="color: #5f8700;">using</span> <span style="color: #5f8700;">namespace</span> <span style="color: #00afaf;">std</span>;
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">vector</span>&lt;<span style="color: #af8700;">int</span>&gt; <span style="color: #af8700;">IntVec</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">typename</span> <span style="color: #00afaf;">IntVec</span>::<span style="color: #af8700;">iterator</span> <span style="color: #af8700;">Iter</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">typename</span> <span style="color: #00afaf;">IntVec</span>::<span style="color: #af8700;">const_iterator</span> <span style="color: #af8700;">Const_Iter</span>;
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29983;&#25104;&#19968;&#20010;&#38543;&#26426;&#25968;&#65292;&#33539;&#22260;&#20026; [i, k]</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">randint</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
+{
+    <span style="color: #5f8700;">if</span> (i &gt; k)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">t</span> = i; i = k; k = t; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">swap</span>
+    }
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">ret</span> = i + rand() % (k - i + 1);
+    <span style="color: #5f8700;">return</span> ret;
+}
+
+<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">@input&#65306;&#26410;&#30693;&#22823;&#23567;&#30340;&#26679;&#26412;</span>
+<span style="color: #8a8a8a;"> * @result&#65306;&#23481;&#37327;&#20026; 1 &#30340;&#33988;&#27700;&#27744;&#65292;&#21363;&#25277;&#21462; 1 &#20010;&#26679;&#26412;</span>
+<span style="color: #8a8a8a;"> */</span>
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">reservoir_sampling</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">IntVec</span> &amp;<span style="color: #0087ff;">input</span>, <span style="color: #af8700;">int</span> &amp;<span style="color: #0087ff;">result</span>)
+{
+    srand(time(<span style="color: #00afaf;">NULL</span>));
+    <span style="color: #5f8700;">if</span> (input.size() &lt;= 0)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+
+    <span style="color: #af8700;">Const_Iter</span> <span style="color: #0087ff;">iter</span> = input.begin();
+    result = *iter++;
+    <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 1; iter != input.end(); ++iter, ++i)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = randint(0, i);
+        <span style="color: #5f8700;">if</span> (j &lt; 1)
+            result = *iter;
+    }
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span> = 10;
+    <span style="color: #af8700;">IntVec</span> <span style="color: #0087ff;">input</span>(n);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">result</span> = 0;
+
+    <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i != n; ++i)
+        input[i] = i;
+    <span style="color: #5f8700;">if</span> (reservoir_sampling(input, result))
+        cout &lt;&lt; result &lt;&lt; endl;
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org4602fdc" class="outline-2">
+<h2 id="org4602fdc"><span class="section-number-2">3</span> n 个样本随机抽取 m 个不同样本（n 未知）</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+对应蓄水池抽样问题，可以类似的思路解决。先把读到的前k个对象放入“水库”，对于第 k+1 个对象开始，以 k/(k+1) 的概率选择该对象，以 k/(k+2) 的概率选择第 k+2 个对象，以此类推，以 k/m 的概率选择第 m 个对象（m&gt;k）。如果 m 被选中，则随机替换水库中的一个对象。最终每个对象被选中的概率均为 k/n，证明如下。<br>
+证明：第 m 个对象被选中的概率 = 选择 m 的概率*（其后元素不被选择的概率+其后元素被选择的概率*不替换第m个对象的概率），即<br>
+<img src="../images/蓄水池抽样2.png" alt="蓄水池抽样2.png"><br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#33988;&#27700;&#27744;&#25277;&#26679;</span>
+<span style="color: #8a8a8a;"> * &#20174;&#26410;&#30693;&#22823;&#23567;&#30340; n &#26679;&#26412;&#20013;&#36873;&#25321; m &#20010;&#26679;&#26412;</span>
+<span style="color: #8a8a8a;"> */</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;iostream&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdlib&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;ctime&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;vector&gt;</span>
+
+<span style="color: #5f8700;">using</span> <span style="color: #5f8700;">namespace</span> <span style="color: #00afaf;">std</span>;
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">vector</span>&lt;<span style="color: #af8700;">int</span>&gt; <span style="color: #af8700;">IntVec</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">typename</span> <span style="color: #00afaf;">IntVec</span>::<span style="color: #af8700;">iterator</span> <span style="color: #af8700;">Iter</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">typename</span> <span style="color: #00afaf;">IntVec</span>::<span style="color: #af8700;">const_iterator</span> <span style="color: #af8700;">Const_Iter</span>;
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29983;&#25104;&#19968;&#20010;&#38543;&#26426;&#25968;&#65292;&#33539;&#22260;&#20026; [i, k]</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">randint</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
+{
+    <span style="color: #5f8700;">if</span> (i &gt; k)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">t</span> = i; i = k; k = t; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">swap</span>
+    }
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">ret</span> = i + rand() % (k - i + 1);
+    <span style="color: #5f8700;">return</span> ret;
+}
+
+<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">@input: &#26410;&#30693;&#22823;&#23567;&#30340;&#26679;&#26412;</span>
+<span style="color: #8a8a8a;"> * @result&#65306;&#33988;&#27700;&#27744;</span>
+<span style="color: #8a8a8a;"> * @m&#65306;&#33988;&#27700;&#27744;&#22823;&#23567;</span>
+<span style="color: #8a8a8a;"> */</span>
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">reservoir_sampling</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">IntVec</span> &amp;<span style="color: #0087ff;">input</span>, <span style="color: #af8700;">IntVec</span> &amp;<span style="color: #0087ff;">result</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>)
+{
+    srand(time(<span style="color: #00afaf;">NULL</span>));
+    <span style="color: #5f8700;">if</span> (input.size() &lt; m)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+
+    result.resize(m);
+    <span style="color: #af8700;">Const_Iter</span> <span style="color: #0087ff;">iter</span> = input.begin();
+    <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i != m; ++i) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33988;&#27700;&#27744;&#20013;&#26368;&#21021;&#21253;&#21547;&#21069; m &#20010;&#26679;&#26412;</span>
+        result[i] = *iter++;
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#19981;&#26029;&#26356;&#26032;&#33988;&#27700;&#27744; result &#20013;&#30340;&#26679;&#26412;</span>
+    <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = m; iter != input.end(); ++i, ++iter)
+    {<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26576;&#19968;&#27425;&#25191;&#34892;&#36923;&#36753;&#65306;&#22312;&#19979;&#26631;&#20026; 0-i&#65288;i&gt;=m)&#30340;&#26679;&#26412;&#20013;&#24471;&#21040;&#19968;&#20010;&#38543;&#26426;&#19979;&#26631; j&#65292;</span>
+     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#33988;&#27700;&#27744; result &#20013;&#26377;&#19979;&#26631; j &#23601;&#25226;&#24403;&#21069;&#26679;&#26412; *iter &#21152;&#20837;&#21040; result[j] &#20013;</span>
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = randint(0, i);
+        <span style="color: #5f8700;">if</span> (j &lt; m) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#31532; i &#20010;&#26679;&#26412;&#34987;&#38543;&#26426;&#21040;&#65292;&#21363;&#65306;m/i</span>
+            result[j] = *iter;
+    }
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span> = 100;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26679;&#26412;&#20010;&#25968;</span>
+    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span> = 10;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33988;&#27700;&#27744;&#22823;&#23567;</span>
+    <span style="color: #af8700;">IntVec</span> <span style="color: #0087ff;">input</span>(n), <span style="color: #0087ff;">result</span>(m);
+
+    <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i != n; ++i)
+        input[i] = i;
+    <span style="color: #5f8700;">if</span> (reservoir_sampling(input, result, m))
+        <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i != m; ++i)
+            cout &lt;&lt; result[i] &lt;&lt; <span style="color: #00afaf;">" "</span>;
+    cout &lt;&lt; endl;
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgb7dd587" class="outline-2">
+<h2 id="orgb7dd587"><span class="section-number-2">4</span> n 个样本随机抽取 m 个不同样本（n 已知）</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;time.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
+
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 100
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">M</span> 5
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span> = M; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">m&#20026;&#33988;&#27700;&#27744;</span>
+    srand((<span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">int</span>)time(<span style="color: #00afaf;">NULL</span>));
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; N; ++i)
+    {
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">rand()%(N-i) &#21462;&#20540;&#33539;&#22260;&#20026; [0, N-i)&#65292;&#20849; n = N-i &#20010;&#20803;&#32032;</span>
+        <span style="color: #5f8700;">if</span>(rand()%(N-i) &lt; m)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#27010;&#29575;&#31526;&#21512; P = m/n&#65292;&#23601;&#36873;&#25321;&#36825;&#20010;&#26679;&#26412;</span>
+        {
+            printf(<span style="color: #00afaf;">"%d\n"</span>, i);
+            --m;
+        }
+    }
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

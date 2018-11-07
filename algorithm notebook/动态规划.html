@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>动态规划</title>
@@ -34,24 +34,24 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1f010af">1. 动态规划基本要素</a>
+<li><a href="#orgaf6ad4b">1. 动态规划基本要素</a>
 <ul>
-<li><a href="#org5a0ffbd">1.1. 最优子结构</a></li>
-<li><a href="#org219baef">1.2. 重叠子问题</a></li>
+<li><a href="#orgd7d1582">1.1. 最优子结构</a></li>
+<li><a href="#orga26a587">1.2. 重叠子问题</a></li>
 </ul>
 </li>
-<li><a href="#orgaa24e99">2. 备忘录方法</a></li>
-<li><a href="#org0ec0bb6">3. 动态规划、备忘录、递归区别</a></li>
+<li><a href="#org782ffbb">2. 备忘录方法</a></li>
+<li><a href="#org1c725ad">3. 动态规划、备忘录、递归区别</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1f010af" class="outline-2">
-<h2 id="org1f010af"><span class="section-number-2">1</span> 动态规划基本要素</h2>
+<div id="outline-container-orgaf6ad4b" class="outline-2">
+<h2 id="orgaf6ad4b"><span class="section-number-2">1</span> 动态规划基本要素</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org5a0ffbd" class="outline-3">
-<h3 id="org5a0ffbd"><span class="section-number-3">1.1</span> 最优子结构</h3>
+<div id="outline-container-orgd7d1582" class="outline-3">
+<h3 id="orgd7d1582"><span class="section-number-3">1.1</span> 最优子结构</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 当问题的最优解包含了其子问题的最优解时，称该问题具有最优子结构性质<br>
@@ -59,8 +59,8 @@
 </div>
 </div>
 
-<div id="outline-container-org219baef" class="outline-3">
-<h3 id="org219baef"><span class="section-number-3">1.2</span> 重叠子问题</h3>
+<div id="outline-container-orga26a587" class="outline-3">
+<h3 id="orga26a587"><span class="section-number-3">1.2</span> 重叠子问题</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 动态规划算法对每个问题只解一次，将其解保存在一个表格中，当再次需要解此问题时，用常数时间查看一下结果。因此，用动态规划算法通常只需要多项式时间<br>
@@ -69,8 +69,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgaa24e99" class="outline-2">
-<h2 id="orgaa24e99"><span class="section-number-2">2</span> 备忘录方法</h2>
+<div id="outline-container-org782ffbb" class="outline-2">
+<h2 id="org782ffbb"><span class="section-number-2">2</span> 备忘录方法</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 用一个表格来保存已解决的子问题的答案，用的时候查表即可。<br>
@@ -81,8 +81,8 @@
 </div>
 </div>
 
-<div id="outline-container-org0ec0bb6" class="outline-2">
-<h2 id="org0ec0bb6"><span class="section-number-2">3</span> 动态规划、备忘录、递归区别</h2>
+<div id="outline-container-org1c725ad" class="outline-2">
+<h2 id="org1c725ad"><span class="section-number-2">3</span> 动态规划、备忘录、递归区别</h2>
 <div class="outline-text-2" id="text-3">
 <ol class="org-ol">
 <li>动态规划是自底向上；备忘录是自顶向下；递归是自顶向下<br></li>

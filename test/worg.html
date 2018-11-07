@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Publishing Org-mode files to HTML</title>
@@ -34,52 +34,52 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc2cb330">1. Introduction</a></li>
-<li><a href="#org4e7af26">2. Basics</a></li>
-<li><a href="#orge8044aa">3. Publishing the <i>org</i> project</a>
+<li><a href="#orgf396336">1. Introduction</a></li>
+<li><a href="#orgf4275bc">2. Basics</a></li>
+<li><a href="#org62475cb">3. Publishing the <i>org</i> project</a>
 <ul>
-<li><a href="#org2df284b">3.1. The <i>notes</i> component</a></li>
-<li><a href="#orgf3e0cae">3.2. The <i>static</i> component</a></li>
-<li><a href="#org7e5aa64">3.3. The <i>publish</i> component</a></li>
-<li><a href="#org0858357">3.4. Pooh - can we publish now?</a></li>
+<li><a href="#org2012103">3.1. The <i>notes</i> component</a></li>
+<li><a href="#org4abf458">3.2. The <i>static</i> component</a></li>
+<li><a href="#orgd5a6bbf">3.3. The <i>publish</i> component</a></li>
+<li><a href="#orgb505296">3.4. Pooh - can we publish now?</a></li>
 </ul>
 </li>
-<li><a href="#org5273435">4. Adding directories</a></li>
-<li><a href="#org8f38ec8">5. Overwrite the defaults</a>
+<li><a href="#orgbe36865">4. Adding directories</a></li>
+<li><a href="#org3edbcd7">5. Overwrite the defaults</a>
 <ul>
-<li><a href="#org9ebbce6">5.1. The export options template</a></li>
-<li><a href="#org15061d2">5.2. Special comment section</a></li>
+<li><a href="#org4f0a1e7">5.1. The export options template</a></li>
+<li><a href="#org82b4a1f">5.2. Special comment section</a></li>
 </ul>
 </li>
-<li><a href="#org514f007">6. Tired of export templates?</a>
+<li><a href="#org3729cda">6. Tired of export templates?</a>
 <ul>
-<li><a href="#orgc7c700e">6.1. More level files</a></li>
+<li><a href="#org8524c92">6.1. More level files</a></li>
 </ul>
 </li>
-<li><a href="#org850e858">7. More Projects</a>
+<li><a href="#orgd8f661f">7. More Projects</a>
 <ul>
-<li><a href="#org3f26aa3">7.1. The <i>inherit</i> component</a>
+<li><a href="#org06ebb45">7.1. The <i>inherit</i> component</a>
 <ul>
-<li><a href="#orgd9370fd">7.1.1. One more Example</a></li>
+<li><a href="#org045df10">7.1.1. One more Example</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org7f35ffc">8. Overview</a>
+<li><a href="#org3bcb920">8. Overview</a>
 <ul>
-<li><a href="#orgb152ccd">8.1. The sitemap</a></li>
-<li><a href="#org5c72323">8.2. org-info.js</a></li>
+<li><a href="#org36123a1">8.1. The sitemap</a></li>
+<li><a href="#org1ac7f6b">8.2. org-info.js</a></li>
 </ul>
 </li>
-<li><a href="#orgae58008">9. Special symbols</a></li>
-<li><a href="#orgcfaf2f9">10. Further reading</a></li>
+<li><a href="#orgf5845d0">9. Special symbols</a></li>
+<li><a href="#org206a993">10. Further reading</a></li>
 </ul>
 </div>
 </div>
 
 
-<div id="outline-container-orgc2cb330" class="outline-2">
-<h2 id="orgc2cb330"><span class="section-number-2">1</span> Introduction</h2>
+<div id="outline-container-orgf396336" class="outline-2">
+<h2 id="orgf396336"><span class="section-number-2">1</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 This Tutorial describes one of many ways to publishing Org-mode files to<br>
@@ -108,8 +108,8 @@ everywhere.<br>
 </div>
 </div>
 
-<div id="outline-container-org4e7af26" class="outline-2">
-<h2 id="org4e7af26"><span class="section-number-2">2</span> Basics</h2>
+<div id="outline-container-orgf4275bc" class="outline-2">
+<h2 id="orgf4275bc"><span class="section-number-2">2</span> Basics</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Throughout this tutorial, let's assume that all our Org-mode files live beneath<br>
@@ -181,14 +181,14 @@ try to turn on <code>iimage-mode</code> <sup><a id="fnr.2" class="footref" href=
 </p>
 
 <p>
-Optionally, set up the stylesheet as shown in section <a href="#org982d422">Special comment<br>
+Optionally, set up the stylesheet as shown in section <a href="#org86bf64f">Special comment<br>
 section</a>. The recommended way is to use a real stylesheet though.<br>
 </p>
 </div>
 </div>
 
-<div id="outline-container-orge8044aa" class="outline-2">
-<h2 id="orge8044aa"><span class="section-number-2">3</span> Publishing the <i>org</i> project</h2>
+<div id="outline-container-org62475cb" class="outline-2">
+<h2 id="org62475cb"><span class="section-number-2">3</span> Publishing the <i>org</i> project</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 To publish the <code>~/org/</code> project to HTML, we'll have to setup the variable<br>
@@ -229,8 +229,8 @@ is now.<br>
 </p>
 </div>
 
-<div id="outline-container-org2df284b" class="outline-3">
-<h3 id="org2df284b"><span class="section-number-3">3.1</span> The <i>notes</i> component</h3>
+<div id="outline-container-org2012103" class="outline-3">
+<h3 id="org2012103"><span class="section-number-3">3.1</span> The <i>notes</i> component</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 The <i>notes</i> component publishes all the Org-mode files to HTML. Hence the<br>
@@ -298,8 +298,8 @@ The most important settings here are:<br>
 </div>
 </div>
 
-<div id="outline-container-orgf3e0cae" class="outline-3">
-<h3 id="orgf3e0cae"><span class="section-number-3">3.2</span> The <i>static</i> component</h3>
+<div id="outline-container-org4abf458" class="outline-3">
+<h3 id="org4abf458"><span class="section-number-3">3.2</span> The <i>static</i> component</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 The <i>static</i> component just copies files (and their folders) from<br>
@@ -324,8 +324,8 @@ let's tell Org-mode to use the function <code>org-publish-attachment</code>:<br>
 </div>
 </div>
 
-<div id="outline-container-org7e5aa64" class="outline-3">
-<h3 id="org7e5aa64"><span class="section-number-3">3.3</span> The <i>publish</i> component</h3>
+<div id="outline-container-orgd5a6bbf" class="outline-3">
+<h3 id="orgd5a6bbf"><span class="section-number-3">3.3</span> The <i>publish</i> component</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 To publish all with one command, we add the <i>publish</i> component. For this<br>
@@ -346,8 +346,8 @@ don't yet exist.<br>
 </div>
 </div>
 
-<div id="outline-container-org0858357" class="outline-3">
-<h3 id="org0858357"><span class="section-number-3">3.4</span> Pooh - can we publish now?</h3>
+<div id="outline-container-orgb505296" class="outline-3">
+<h3 id="orgb505296"><span class="section-number-3">3.4</span> Pooh - can we publish now?</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 The good message is <b>yes, we can</b>. Just one little hump. Since we've put the<br>
@@ -385,8 +385,8 @@ not, simply navigate to <a href="file:///home/user/public_html">file:///home/use
 </div>
 </div>
 
-<div id="outline-container-org5273435" class="outline-2">
-<h2 id="org5273435"><span class="section-number-2">4</span> Adding directories</h2>
+<div id="outline-container-orgbe36865" class="outline-2">
+<h2 id="orgbe36865"><span class="section-number-2">4</span> Adding directories</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 As we add more and more files to <code>~/org/</code>, we will soon end up with filenames<br>
@@ -423,8 +423,8 @@ the latest to export the subdirectories too.<br>
 </div>
 </div>
 
-<div id="outline-container-org8f38ec8" class="outline-2">
-<h2 id="org8f38ec8"><span class="section-number-2">5</span> Overwrite the defaults</h2>
+<div id="outline-container-org3edbcd7" class="outline-2">
+<h2 id="org3edbcd7"><span class="section-number-2">5</span> Overwrite the defaults</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 The defaults set by <code>org-publish-project-alist</code> may be overwritten. You might<br>
@@ -434,8 +434,8 @@ the settings for a single file.<br>
 </p>
 </div>
 
-<div id="outline-container-org9ebbce6" class="outline-3">
-<h3 id="org9ebbce6"><span class="section-number-3">5.1</span> The export options template</h3>
+<div id="outline-container-org4f0a1e7" class="outline-3">
+<h3 id="org4f0a1e7"><span class="section-number-3">5.1</span> The export options template</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 The first choice is the <i>export options template</i> on top of the file. When in<br>
@@ -505,8 +505,8 @@ twice.<br>
 </div>
 </div>
 
-<div id="outline-container-org15061d2" class="outline-3">
-<h3 id="org15061d2"><span class="section-number-3">5.2</span> <a id="org982d422">Special comment section</a></h3>
+<div id="outline-container-org82b4a1f" class="outline-3">
+<h3 id="org82b4a1f"><span class="section-number-3">5.2</span> <a id="org86bf64f">Special comment section</a></h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 Also, CSS style variables may be using a special section may be<br>
@@ -531,8 +531,8 @@ Also, CSS style variables may be using a special section may be<br>
 </div>
 </div>
 
-<div id="outline-container-org514f007" class="outline-2">
-<h2 id="org514f007"><span class="section-number-2">6</span> Tired of export templates?</h2>
+<div id="outline-container-org3729cda" class="outline-2">
+<h2 id="org3729cda"><span class="section-number-2">6</span> Tired of export templates?</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 If you're like me, you will soon get tired of adding the same export options<br>
@@ -544,7 +544,7 @@ following files there:<br>
 
 <ul class="org-ul">
 <li><code>level-0.org</code> <br>
-This file contains all export options lines. The <a href="#org982d422">special comment section</a><br>
+This file contains all export options lines. The <a href="#org86bf64f">special comment section</a><br>
 will not work for files in subdirectories. Hence we always use the export<br>
 options line<br>
 :#+STYLE: &lt;link rel="stylesheet" type="text/css" href="stylesheet.css" /&gt;<br>
@@ -563,7 +563,7 @@ for the stylesheet looks like this:<br>
 </ul>
 
 <p>
-Now remove the <a href="#org982d422">special comment section</a> from the end of your Org-mode files in<br>
+Now remove the <a href="#org86bf64f">special comment section</a> from the end of your Org-mode files in<br>
 the project folders and change the export options template to<br>
 </p>
 
@@ -581,8 +581,8 @@ changes. Subsequent lines still overwrite the settings for just this one file.<b
 </div>
 
 
-<div id="outline-container-orgc7c700e" class="outline-3">
-<h3 id="orgc7c700e"><span class="section-number-3">6.1</span> More level files</h3>
+<div id="outline-container-org8524c92" class="outline-3">
+<h3 id="org8524c92"><span class="section-number-3">6.1</span> More level files</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Also, these <i>level-N</i> files give us the chance to easily switch between different<br>
@@ -606,8 +606,8 @@ in our project.<br>
 </div>
 </div>
 
-<div id="outline-container-org850e858" class="outline-2">
-<h2 id="org850e858"><span class="section-number-2">7</span> More Projects</h2>
+<div id="outline-container-orgd8f661f" class="outline-2">
+<h2 id="orgd8f661f"><span class="section-number-2">7</span> More Projects</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 As we get used to note taking in org, we might add an <code>org</code> directory to most<br>
@@ -618,8 +618,8 @@ stylesheets and current JavaScripts &#x2014; and to a new <i>component</i>.<br>
 </p>
 </div>
 
-<div id="outline-container-org3f26aa3" class="outline-3">
-<h3 id="org3f26aa3"><span class="section-number-3">7.1</span> The <i>inherit</i> component</h3>
+<div id="outline-container-org06ebb45" class="outline-3">
+<h3 id="org06ebb45"><span class="section-number-3">7.1</span> The <i>inherit</i> component</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 Once we get tired of copying the static files from one project to another, the<br>
@@ -676,8 +676,8 @@ the sequence listed: first get the new stylesheet into <code>B</code>, then exec
 </p>
 </div>
 
-<div id="outline-container-orgd9370fd" class="outline-4">
-<h4 id="orgd9370fd"><span class="section-number-4">7.1.1</span> One more Example</h4>
+<div id="outline-container-org045df10" class="outline-4">
+<h4 id="org045df10"><span class="section-number-4">7.1.1</span> One more Example</h4>
 <div class="outline-text-4" id="text-7-1-1">
 <p>
 As I use org-info.js and track Worg git, I use "<code>inherit-org-info-js</code>" in all<br>
@@ -710,8 +710,8 @@ version of <code>org-info.js</code>.<br>
 </div>
 </div>
 
-<div id="outline-container-org7f35ffc" class="outline-2">
-<h2 id="org7f35ffc"><span class="section-number-2">8</span> Overview</h2>
+<div id="outline-container-org3bcb920" class="outline-2">
+<h2 id="org3bcb920"><span class="section-number-2">8</span> Overview</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 Once there are lots of files and subdirectories, we're in the need of ways to<br>
@@ -720,8 +720,8 @@ overview of all our note files.<br>
 </p>
 </div>
 
-<div id="outline-container-orgb152ccd" class="outline-3">
-<h3 id="orgb152ccd"><span class="section-number-3">8.1</span> The sitemap</h3>
+<div id="outline-container-org36123a1" class="outline-3">
+<h3 id="org36123a1"><span class="section-number-3">8.1</span> The sitemap</h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
 Org-modes great publishing also generates a recursive sitemap. Its name<br>
@@ -761,8 +761,8 @@ first.<br>
 </div>
 </div>
 
-<div id="outline-container-org5c72323" class="outline-3">
-<h3 id="org5c72323"><span class="section-number-3">8.2</span> org-info.js</h3>
+<div id="outline-container-org1ac7f6b" class="outline-3">
+<h3 id="org1ac7f6b"><span class="section-number-3">8.2</span> org-info.js</h3>
 <div class="outline-text-3" id="text-8-2">
 <p>
 Another way to get additional links to navigate the structure is<br>
@@ -821,8 +821,8 @@ No matter where we are, we may always press <code>h</code> to move up the tree.<
 </div>
 </div>
 
-<div id="outline-container-orgae58008" class="outline-2">
-<h2 id="orgae58008"><span class="section-number-2">9</span> Special symbols</h2>
+<div id="outline-container-orgf5845d0" class="outline-2">
+<h2 id="orgf5845d0"><span class="section-number-2">9</span> Special symbols</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 This is a list of LaTeX symbols understood by Org-mode. You may use most of<br>
@@ -930,8 +930,8 @@ the bottom of that page).<br>
 </div>
 
 
-<div id="outline-container-orgcfaf2f9" class="outline-2">
-<h2 id="orgcfaf2f9"><span class="section-number-2">10</span> Further reading</h2>
+<div id="outline-container-org206a993" class="outline-2">
+<h2 id="org206a993"><span class="section-number-2">10</span> Further reading</h2>
 <div class="outline-text-2" id="text-10">
 <p>
 For more information you might want to read the great Org-mode manual. One of<br>

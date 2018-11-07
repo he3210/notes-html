@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>顺序栈</title>
@@ -34,20 +34,20 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org028ea5e">1. 存储结构</a></li>
-<li><a href="#org127d603">2. 栈的操作</a></li>
-<li><a href="#org2ff5e8a">3. 判断链表字符串是否中心对称</a>
+<li><a href="#org68ff647">1. 存储结构</a></li>
+<li><a href="#orgf4f5128">2. 栈的操作</a></li>
+<li><a href="#orgba48678">3. 判断链表字符串是否中心对称</a>
 <ul>
-<li><a href="#orgaf3d215">3.1. 问题</a></li>
-<li><a href="#org5bbc5c9">3.2. 代码</a></li>
+<li><a href="#orgba4f330">3.1. 问题</a></li>
+<li><a href="#org646f005">3.2. 代码</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org028ea5e" class="outline-2">
-<h2 id="org028ea5e"><span class="section-number-2">1</span> 存储结构</h2>
+<div id="outline-container-org68ff647" class="outline-2">
+<h2 id="org68ff647"><span class="section-number-2">1</span> 存储结构</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
@@ -68,8 +68,8 @@
 </div>
 </div>
 
-<div id="outline-container-org127d603" class="outline-2">
-<h2 id="org127d603"><span class="section-number-2">2</span> 栈的操作</h2>
+<div id="outline-container-orgf4f5128" class="outline-2">
+<h2 id="orgf4f5128"><span class="section-number-2">2</span> 栈的操作</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">elem_type</span> <span style="color: #af8700;">int</span>
@@ -119,12 +119,12 @@
 </div>
 </div>
 
-<div id="outline-container-org2ff5e8a" class="outline-2">
-<h2 id="org2ff5e8a"><span class="section-number-2">3</span> 判断链表字符串是否中心对称</h2>
+<div id="outline-container-orgba48678" class="outline-2">
+<h2 id="orgba48678"><span class="section-number-2">3</span> 判断链表字符串是否中心对称</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgaf3d215" class="outline-3">
-<h3 id="orgaf3d215"><span class="section-number-3">3.1</span> 问题</h3>
+<div id="outline-container-orgba4f330" class="outline-3">
+<h3 id="orgba4f330"><span class="section-number-3">3.1</span> 问题</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 设单链表无表头，第一个结点指针为 h，结点结构由 data 和 next 两个域构成。<br>
@@ -135,8 +135,8 @@
 </div>
 </div>
 
-<div id="outline-container-org5bbc5c9" class="outline-3">
-<h3 id="org5bbc5c9"><span class="section-number-3">3.2</span> 代码</h3>
+<div id="outline-container-org646f005" class="outline-3">
+<h3 id="org646f005"><span class="section-number-3">3.2</span> 代码</h3>
 <div class="outline-text-3" id="text-3-2">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">bool</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">h</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)

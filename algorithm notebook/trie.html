@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>trie</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">trie</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4ae41fb">1. 根据前缀查询匹配的模式串数量</a></li>
+<li><a href="#org41fb119">2. Shortest Proper Prefix</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4ae41fb" class="outline-2">
+<h2 id="org4ae41fb"><span class="section-number-2">1</span> 根据前缀查询匹配的模式串数量</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<a href="https://hihocoder.com/problemset/problem/1014">hihocoder 1014</a><br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdio&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstring&gt;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1000010    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#22823;&#32467;&#28857;&#25968;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">M</span> 26         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23383;&#31526;&#38598; &#931; &#30340;&#22823;&#23567;&#12290;&#22312;&#36825;&#37324;&#34920;&#31034; 26 &#20010;&#23567;&#20889;&#23383;&#27597;</span>
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">trie</span>[N][M];      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">trie &#26641;&#65292;&#20063;&#23601;&#26159; goto &#20989;&#25968;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">id</span>[256];         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24314;&#31435;&#23383;&#27597;&#21644;&#32467;&#28857;&#32534;&#21495;&#30340;&#26144;&#23556;&#20851;&#31995;&#12290;&#23383;&#27597; x &#23545;&#24212;&#30340;&#32467;&#28857;&#32534;&#21495;&#20026; id[x]</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>;               <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">trie &#26641;&#24403;&#21069;&#32467;&#28857;&#24635;&#25968;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">tag</span>[N];          <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312;&#35813;&#32467;&#28857;&#32467;&#26463;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">cnt</span>[N];          <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">cnt[3] &#34920;&#31034;&#32463;&#36807;&#31532;&#19977;&#20010;&#32467;&#28857;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;</span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#37325;&#32622; trie&#12290;&#20351;&#20854;&#36824;&#21407;&#25104;&#21482;&#26377;&#19968;&#20010;&#26681;&#32467;&#28857;&#30340;&#29366;&#24577;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">reset_trie</span>()
+{
+    memset(trie[0], -1, <span style="color: #5f8700;">sizeof</span>(trie[0]));
+    n = 1;
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">init_trie</span>()
+{
+    <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; M; ++i)
+        id[<span style="color: #00afaf;">'a'</span>+i] = i;
+    reset_trie();
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25554;&#20837;&#27169;&#24335;&#20018;&#65292;&#26500;&#36896; trie &#26641;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">insert_pattern</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">s</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span> = 0;
+    <span style="color: #5f8700;">while</span> (*s)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = id[*s];
+        <span style="color: #5f8700;">if</span> ( -1 == trie[p][i] )
+        {
+            memset(trie[n], -1, <span style="color: #5f8700;">sizeof</span>(trie[n]));
+            tag[n] = 0;
+            cnt[n] = 0;
+            trie[p][i] = n++;
+        }
+        p = trie[p][i];
+        ++cnt[p];
+        ++s;
+    }
+    ++tag[p];
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">get_ans</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">s</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span> = 0;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#32467;&#28857; p &#21021;&#22987;&#21270;&#20026;&#26681;&#32467;&#28857; 0</span>
+    <span style="color: #5f8700;">while</span>(*s)
+    {
+        p = trie[p][id[*s]];
+        <span style="color: #5f8700;">if</span>(-1 == p)
+            <span style="color: #5f8700;">return</span> 0;
+        ++s;
+    }
+    <span style="color: #5f8700;">return</span> cnt[p];
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">total</span>;
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">text</span>[100010][11];
+    init_trie();
+    scanf(<span style="color: #00afaf;">"%d"</span>, &amp;total);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; total; ++i)
+        scanf(<span style="color: #00afaf;">"%s"</span>, text[i]);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; total; ++i)
+        insert_pattern(text[i]);
+
+    scanf(<span style="color: #00afaf;">"%d"</span>, &amp;total);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; total; ++i)
+        scanf(<span style="color: #00afaf;">"%s"</span>, text[i]);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; total; ++i)
+        printf(<span style="color: #00afaf;">"%d\n"</span>,  get_ans(text[i]) );
+    <span style="color: #5f8700;">return</span> 0;
+}
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org41fb119" class="outline-2">
+<h2 id="org41fb119"><span class="section-number-2">2</span> Shortest Proper Prefix</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<a href="https://hihocoder.com/problemset/problem/1107">hihocoder 1107</a><br>
+</p>
+
+<blockquote>
+<p>
+We say a string s is a proper prefix if there are no more than 5 collected queries have s as a prefix. A string s is a shortest proper prefix if s is a proper prefix and all the prefixes of s(except for s itself) are not proper prefixes.<br>
+</p>
+</blockquote>
+
+<p>
+多用于浏览器候选词推荐、自动补全程序等。<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdio&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstring&gt;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1000010    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#22823;&#32467;&#28857;&#25968;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">M</span> 26         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23383;&#31526;&#38598; &#931; &#30340;&#22823;&#23567;&#12290;&#22312;&#36825;&#37324;&#34920;&#31034; 26 &#20010;&#23567;&#20889;&#23383;&#27597;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">LEN</span> 1000010  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#22823;&#25991;&#26412;&#38271;&#24230;</span>
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">trie</span>[N][M];      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">trie &#26641;&#65292;&#20063;&#23601;&#26159; goto &#20989;&#25968;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">id</span>[256];         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24314;&#31435;&#23383;&#27597;&#21644;&#32467;&#28857;&#32534;&#21495;&#30340;&#26144;&#23556;&#20851;&#31995;&#12290;&#23383;&#27597; x &#23545;&#24212;&#30340;&#32467;&#28857;&#32534;&#21495;&#20026; id[x]</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>;               <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">trie &#26641;&#24403;&#21069;&#32467;&#28857;&#24635;&#25968;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">tag</span>[N];          <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312;&#35813;&#32467;&#28857;&#32467;&#26463;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">cnt</span>[N];          <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">cnt[3] &#34920;&#31034;&#32463;&#36807;&#31532;&#19977;&#20010;&#32467;&#28857;&#30340;&#27169;&#24335;&#20018;&#25968;&#37327;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">result</span>;
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#37325;&#32622; trie&#12290;&#20351;&#20854;&#36824;&#21407;&#25104;&#21482;&#26377;&#19968;&#20010;&#26681;&#32467;&#28857;&#30340;&#29366;&#24577;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">reset_trie</span>()
+{
+    memset(trie[0], -1, <span style="color: #5f8700;">sizeof</span>(trie[0]));
+    n = 1;
+    result = 0;
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">init_trie</span>()
+{
+    <span style="color: #5f8700;">for</span> (<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; M; ++i)
+        id[<span style="color: #00afaf;">'a'</span>+i] = i;
+    reset_trie();
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25554;&#20837;&#27169;&#24335;&#20018;&#65292;&#26500;&#36896; trie &#26641;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">insert_pattern</span>(<span style="color: #af8700;">char</span> *<span style="color: #0087ff;">s</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span> = 0;
+    <span style="color: #5f8700;">while</span> (*s)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = id[*s];
+        <span style="color: #5f8700;">if</span> ( -1 == trie[p][i] )
+        {
+            memset(trie[n], -1, <span style="color: #5f8700;">sizeof</span>(trie[n]));
+            tag[n] = 0;
+            cnt[n] = 0;
+            trie[p][i] = n++;
+        }
+        p = trie[p][i];
+        ++cnt[p];
+        ++s;
+    }
+    ++tag[p];
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36882;&#24402;&#36941;&#21382;&#35745;&#31639; trie &#26641;&#27169;&#24335;&#20018;&#20013; Shortest Proper Prefix &#30340;&#25968;&#37327;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">cal</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span>)
+{
+    <span style="color: #5f8700;">if</span>(p &gt; 0 &amp;&amp; cnt[p] &lt;= 5)
+        ++result;
+    <span style="color: #5f8700;">else</span>
+    {
+        <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; M; ++i)
+        {
+            <span style="color: #5f8700;">if</span>(trie[p][i] != -1)
+                cal(trie[p][i]);
+        }
+    }
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">total</span>;
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">word</span>[LEN];
+    init_trie();
+    scanf(<span style="color: #00afaf;">"%d"</span>, &amp;total);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; total; ++i)
+    {
+        scanf(<span style="color: #00afaf;">"%s"</span>, word);
+        insert_pattern(word);
+    }
+    cal(0);
+    printf(<span style="color: #00afaf;">"%d\n"</span>, result);
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

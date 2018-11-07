@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>libevent 核心流程</title>
@@ -34,24 +34,24 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4aeefdc">1. 简单示例</a></li>
-<li><a href="#org67b9c4c">2. event_base_new</a></li>
-<li><a href="#org6d6f6d6">3. event_new</a></li>
-<li><a href="#org1c014e4">4. 向 event_base 注册事件</a>
+<li><a href="#org4c891e2">1. 简单示例</a></li>
+<li><a href="#org0c79c7a">2. event_base_new</a></li>
+<li><a href="#org97ee3af">3. event_new</a></li>
+<li><a href="#org078271c">4. 向 event_base 注册事件</a>
 <ul>
-<li><a href="#orgdc4f91c">4.1. event_add</a></li>
-<li><a href="#org2755668">4.2. evmap_io_add</a></li>
-<li><a href="#orgf2e8b04">4.3. evmap_signal_add</a></li>
-<li><a href="#org07d8efa">4.4. event_queue_insert</a></li>
+<li><a href="#org0905327">4.1. event_add</a></li>
+<li><a href="#orgc17628a">4.2. evmap_io_add</a></li>
+<li><a href="#org48fe507">4.3. evmap_signal_add</a></li>
+<li><a href="#org53644fa">4.4. event_queue_insert</a></li>
 </ul>
 </li>
-<li><a href="#orgcb3da2b">5. 事件主循环 event_base_dispatch</a></li>
+<li><a href="#org356d190">5. 事件主循环 event_base_dispatch</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4aeefdc" class="outline-2">
-<h2 id="org4aeefdc"><span class="section-number-2">1</span> 简单示例</h2>
+<div id="outline-container-org4c891e2" class="outline-2">
+<h2 id="org4c891e2"><span class="section-number-2">1</span> 简单示例</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 四个核心函数<br>
@@ -102,8 +102,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-org67b9c4c" class="outline-2">
-<h2 id="org67b9c4c"><span class="section-number-2">2</span> event_base_new</h2>
+<div id="outline-container-org0c79c7a" class="outline-2">
+<h2 id="org0c79c7a"><span class="section-number-2">2</span> event_base_new</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35813;&#20989;&#25968;&#20250;&#29983;&#20135;&#19968;&#20010;&#20869;&#23481;&#20026;&#31354;&#30340;&#37197;&#32622;&#20449;&#24687; cfg&#65292;&#20351;&#29992;&#35813;&#37197;&#32622;&#29983;&#25104;&#19968;&#20010; event_base &#23545;&#35937;</span>
@@ -232,8 +232,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-org6d6f6d6" class="outline-2">
-<h2 id="org6d6f6d6"><span class="section-number-2">3</span> event_new</h2>
+<div id="outline-container-org97ee3af" class="outline-2">
+<h2 id="org97ee3af"><span class="section-number-2">3</span> event_new</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35813;&#20989;&#25968;&#21482;&#26159;&#30003;&#35831;&#20102;&#19968;&#20010; struct event &#30340;&#20869;&#23384;&#31354;&#38388;&#65292;&#28982;&#21518;&#23558;&#21442;&#25968;&#21407;&#23553;&#19981;&#21160;&#30340;&#20256;&#32473; event_assign</span>
@@ -310,12 +310,12 @@ hello
 </div>
 </div>
 
-<div id="outline-container-org1c014e4" class="outline-2">
-<h2 id="org1c014e4"><span class="section-number-2">4</span> 向 event_base 注册事件</h2>
+<div id="outline-container-org078271c" class="outline-2">
+<h2 id="org078271c"><span class="section-number-2">4</span> 向 event_base 注册事件</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgdc4f91c" class="outline-3">
-<h3 id="orgdc4f91c"><span class="section-number-3">4.1</span> event_add</h3>
+<div id="outline-container-org0905327" class="outline-3">
+<h3 id="org0905327"><span class="section-number-3">4.1</span> event_add</h3>
 <div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">event_add &#21482;&#26159;&#20026; event_base &#21152;&#20102;&#38145;&#65292;&#28982;&#21518;&#35843;&#29992; event_add_internal</span>
@@ -486,8 +486,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-org2755668" class="outline-3">
-<h3 id="org2755668"><span class="section-number-3">4.2</span> evmap_io_add</h3>
+<div id="outline-container-orgc17628a" class="outline-3">
+<h3 id="orgc17628a"><span class="section-number-3">4.2</span> evmap_io_add</h3>
 <div class="outline-text-3" id="text-4-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#28155;&#21152; I/O &#20107;&#20214; ev &#21040; event_base.event_io_map&#12290;&#24182;&#21521; I/O &#22810;&#36335;&#22797;&#29992;&#20989;&#25968;&#27880;&#20876;&#20107;&#20214;</span>
@@ -579,8 +579,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-orgf2e8b04" class="outline-3">
-<h3 id="orgf2e8b04"><span class="section-number-3">4.3</span> evmap_signal_add</h3>
+<div id="outline-container-org48fe507" class="outline-3">
+<h3 id="org48fe507"><span class="section-number-3">4.3</span> evmap_signal_add</h3>
 <div class="outline-text-3" id="text-4-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27880;&#20876;&#20449;&#21495;&#20107;&#20214;</span>
@@ -618,8 +618,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-org07d8efa" class="outline-3">
-<h3 id="org07d8efa"><span class="section-number-3">4.4</span> event_queue_insert</h3>
+<div id="outline-container-org53644fa" class="outline-3">
+<h3 id="org53644fa"><span class="section-number-3">4.4</span> event_queue_insert</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 该函数第三个参数取值为 EVLIST_INSERTED 时，代表插入事件到注册事件队列<br>
@@ -681,8 +681,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-orgcb3da2b" class="outline-2">
-<h2 id="orgcb3da2b"><span class="section-number-2">5</span> 事件主循环 event_base_dispatch</h2>
+<div id="outline-container-org356d190" class="outline-2">
+<h2 id="org356d190"><span class="section-number-2">5</span> 事件主循环 event_base_dispatch</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #af8700;">int</span>

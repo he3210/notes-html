@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>dockerfile 语法笔记</title>
@@ -34,25 +34,25 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org427f035">1. 参考：</a></li>
-<li><a href="#org4241d88">2. 什么是构建环境？</a></li>
-<li><a href="#org8d712c3">3. Dockerfile执行流程</a></li>
-<li><a href="#org4df8b6f">4. Dockerfile语法</a>
+<li><a href="#orgb2a93b6">1. 参考：</a></li>
+<li><a href="#org9040654">2. 什么是构建环境？</a></li>
+<li><a href="#org24ff669">3. Dockerfile执行流程</a></li>
+<li><a href="#org9090b16">4. Dockerfile语法</a>
 <ul>
-<li><a href="#org71420bc">4.1. 关键字</a></li>
-<li><a href="#orgc178b9d">4.2. 注意点：</a></li>
+<li><a href="#orgffed2c3">4.1. 关键字</a></li>
+<li><a href="#org1e1b014">4.2. 注意点：</a></li>
 </ul>
 </li>
-<li><a href="#org73789d9">5. .dockerignore</a></li>
-<li><a href="#org5897337">6. 构建镜像</a></li>
-<li><a href="#org9fe952c">7. 构建缓存</a></li>
-<li><a href="#orgada7a2c">8. Dockerfile ENTRYPOINT 指令示例</a></li>
+<li><a href="#org1f543d1">5. .dockerignore</a></li>
+<li><a href="#org162abea">6. 构建镜像</a></li>
+<li><a href="#org7b76e0c">7. 构建缓存</a></li>
+<li><a href="#org6274656">8. Dockerfile ENTRYPOINT 指令示例</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org427f035" class="outline-2">
-<h2 id="org427f035"><span class="section-number-2">1</span> 参考：</h2>
+<div id="outline-container-orgb2a93b6" class="outline-2">
+<h2 id="orgb2a93b6"><span class="section-number-2">1</span> 参考：</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><a href="https://github.com/qianlei90/Blog/issues/35">深入Dockerfile</a><br></li>
@@ -60,8 +60,8 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-org4241d88" class="outline-2">
-<h2 id="org4241d88"><span class="section-number-2">2</span> 什么是构建环境？</h2>
+<div id="outline-container-org9040654" class="outline-2">
+<h2 id="org9040654"><span class="section-number-2">2</span> 什么是构建环境？</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Dockerfile 所在目录就是构建环境（build environment），Docker 称其为上下文（context）或者构建上下文（build context）。Docker 会在构建镜像时将构建上下文和把该上下文中的文件与目录上传到 Docker 守护进程。这样 Docker 守护进程就能直接访问这些文件<br>
@@ -69,8 +69,8 @@ Dockerfile 所在目录就是构建环境（build environment），Docker 称其
 </div>
 </div>
 
-<div id="outline-container-org8d712c3" class="outline-2">
-<h2 id="org8d712c3"><span class="section-number-2">3</span> Dockerfile执行流程</h2>
+<div id="outline-container-org24ff669" class="outline-2">
+<h2 id="org24ff669"><span class="section-number-2">3</span> Dockerfile执行流程</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 从基础镜像运行一个容器；在容器中执行完一条指令，提交一个新的镜像层；基于新镜像运行一个新容器，执行下一条指令，直到所有指令执行完毕。<br>
@@ -78,12 +78,12 @@ Dockerfile 所在目录就是构建环境（build environment），Docker 称其
 </div>
 </div>
 
-<div id="outline-container-org4df8b6f" class="outline-2">
-<h2 id="org4df8b6f"><span class="section-number-2">4</span> Dockerfile语法</h2>
+<div id="outline-container-org9090b16" class="outline-2">
+<h2 id="org9090b16"><span class="section-number-2">4</span> Dockerfile语法</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org71420bc" class="outline-3">
-<h3 id="org71420bc"><span class="section-number-3">4.1</span> 关键字</h3>
+<div id="outline-container-orgffed2c3" class="outline-3">
+<h3 id="orgffed2c3"><span class="section-number-3">4.1</span> 关键字</h3>
 <div class="outline-text-3" id="text-4-1">
 <ol class="org-ol">
 <li>单行注释使用#<br></li>
@@ -122,8 +122,8 @@ LABEL location="New York" type="Data Center" role="Web Server"
 </div>
 </div>
 
-<div id="outline-container-orgc178b9d" class="outline-3">
-<h3 id="orgc178b9d"><span class="section-number-3">4.2</span> 注意点：</h3>
+<div id="outline-container-org1e1b014" class="outline-3">
+<h3 id="org1e1b014"><span class="section-number-3">4.2</span> 注意点：</h3>
 <div class="outline-text-3" id="text-4-2">
 <ol class="org-ol">
 <li><p>
@@ -203,8 +203,8 @@ HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost/ || exit 1
 </div>
 </div>
 
-<div id="outline-container-org73789d9" class="outline-2">
-<h2 id="org73789d9"><span class="section-number-2">5</span> .dockerignore</h2>
+<div id="outline-container-org1f543d1" class="outline-2">
+<h2 id="org1f543d1"><span class="section-number-2">5</span> .dockerignore</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 位于构建上下文的根目录下，类似于 .gitignore。可以防止指定文件被上传到 Docker 守护进程中去<br>
@@ -212,8 +212,8 @@ HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost/ || exit 1
 </div>
 </div>
 
-<div id="outline-container-org5897337" class="outline-2">
-<h2 id="org5897337"><span class="section-number-2">6</span> 构建镜像</h2>
+<div id="outline-container-org162abea" class="outline-2">
+<h2 id="org162abea"><span class="section-number-2">6</span> 构建镜像</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker build -t=<span style="color: #00afaf;">"he3210/static_web:v1"</span> .
@@ -232,8 +232,8 @@ $ docker build -t=<span style="color: #00afaf;">"he3210/static_web:v1"</span> gi
 </div>
 </div>
 
-<div id="outline-container-org9fe952c" class="outline-2">
-<h2 id="org9fe952c"><span class="section-number-2">7</span> 构建缓存</h2>
+<div id="outline-container-org7b76e0c" class="outline-2">
+<h2 id="org7b76e0c"><span class="section-number-2">7</span> 构建缓存</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 再次构建时，寻找缓存逻辑：<br>
@@ -253,8 +253,8 @@ $ docker build -t=<span style="color: #00afaf;">"he3210/static_web:v1"</span> gi
 </div>
 </div>
 
-<div id="outline-container-orgada7a2c" class="outline-2">
-<h2 id="orgada7a2c"><span class="section-number-2">8</span> Dockerfile ENTRYPOINT 指令示例</h2>
+<div id="outline-container-org6274656" class="outline-2">
+<h2 id="org6274656"><span class="section-number-2">8</span> Dockerfile ENTRYPOINT 指令示例</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 当使用该 Dockerfile 构建的镜像启动一个容器时，会在该容器中运行的命令。 <code>docker run</code> 命令行中的命令会被当作参数传递给 ENTRYPOINT 指令指定的命令。<br>

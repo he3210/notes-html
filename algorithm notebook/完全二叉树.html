@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>完全二叉树（Complete Binary Tree）</title>
@@ -56,14 +56,14 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3b5276b">1. 顺序存储表示完全二叉树</a></li>
-<li><a href="#orgbfeb6fa">2. 二叉堆</a>
+<li><a href="#org11f9970">1. 顺序存储表示完全二叉树</a></li>
+<li><a href="#org72ec325">2. 二叉堆</a>
 <ul>
-<li><a href="#orgcff9e3b">2.1. 二叉堆应用：堆排</a></li>
+<li><a href="#org49a2898">2.1. 二叉堆应用：堆排</a></li>
 </ul>
 </li>
-<li><a href="#orge9daee2">3. 完全二叉树应用：多路归并排序-败者树</a></li>
-<li><a href="#orgad0ebec">4. 判断二叉树是否是完全二叉树</a></li>
+<li><a href="#orgde9e740">3. 完全二叉树应用：多路归并排序-败者树</a></li>
+<li><a href="#org24efe19">4. 判断二叉树是否是完全二叉树</a></li>
 </ul>
 </div>
 </div>
@@ -72,8 +72,8 @@
 的满二叉树中编号为 1～n 的结点一一对应时，称为完全二叉树<br>
 </p>
 
-<div id="outline-container-org3b5276b" class="outline-2">
-<h2 id="org3b5276b"><span class="section-number-2">1</span> 顺序存储表示完全二叉树</h2>
+<div id="outline-container-org11f9970" class="outline-2">
+<h2 id="org11f9970"><span class="section-number-2">1</span> 顺序存储表示完全二叉树</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 设数组 A[n] 从下标 0 开始存储一棵完全二叉树<br>
@@ -82,8 +82,8 @@ A[i]（\(0 \leq i < n\)）的子结点偏移量为 2*i+1，2*i+2。父结点偏�
 </div>
 </div>
 
-<div id="outline-container-orgbfeb6fa" class="outline-2">
-<h2 id="orgbfeb6fa"><span class="section-number-2">2</span> 二叉堆</h2>
+<div id="outline-container-org72ec325" class="outline-2">
+<h2 id="org72ec325"><span class="section-number-2">2</span> 二叉堆</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 二叉堆就是一棵完全二叉树。<br>
@@ -93,8 +93,8 @@ A[i]（\(0 \leq i < n\)）的子结点偏移量为 2*i+1，2*i+2。父结点偏�
 </p>
 </div>
 
-<div id="outline-container-orgcff9e3b" class="outline-3">
-<h3 id="orgcff9e3b"><span class="section-number-3">2.1</span> 二叉堆应用：堆排</h3>
+<div id="outline-container-org49a2898" class="outline-3">
+<h3 id="org49a2898"><span class="section-number-3">2.1</span> 二叉堆应用：堆排</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 见排序章节-选择排序-堆排<br>
@@ -103,8 +103,8 @@ A[i]（\(0 \leq i < n\)）的子结点偏移量为 2*i+1，2*i+2。父结点偏�
 </div>
 </div>
 
-<div id="outline-container-orge9daee2" class="outline-2">
-<h2 id="orge9daee2"><span class="section-number-2">3</span> 完全二叉树应用：多路归并排序-败者树</h2>
+<div id="outline-container-orgde9e740" class="outline-2">
+<h2 id="orgde9e740"><span class="section-number-2">3</span> 完全二叉树应用：多路归并排序-败者树</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 见排序章节-K路归并排序-败者树<br>
@@ -112,8 +112,8 @@ A[i]（\(0 \leq i < n\)）的子结点偏移量为 2*i+1，2*i+2。父结点偏�
 </div>
 </div>
 
-<div id="outline-container-orgad0ebec" class="outline-2">
-<h2 id="orgad0ebec"><span class="section-number-2">4</span> 判断二叉树是否是完全二叉树</h2>
+<div id="outline-container-org24efe19" class="outline-2">
+<h2 id="org24efe19"><span class="section-number-2">4</span> 判断二叉树是否是完全二叉树</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#37319;&#29992;&#23618;&#24207;&#36941;&#21382;&#31639;&#27861;&#65292;&#23558;&#25152;&#26377;&#32467;&#28857;&#21152;&#20837;&#38431;&#21015;&#65288;&#21253;&#21547;&#31354;&#32467;&#28857;&#65289;&#12290;</span>

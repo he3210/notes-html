@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ssh key 登陆远程</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">ssh key 登陆远程</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgee8fdf9">1. 生成 public_key 和 private_key</a></li>
+<li><a href="#org56e0e93">2. 公钥拷贝到远程</a></li>
+<li><a href="#org7922e3a">3. 修改本机的配置文件</a></li>
+<li><a href="#orgf167763">4. 登陆</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgee8fdf9" class="outline-2">
+<h2 id="orgee8fdf9"><span class="section-number-2">1</span> 生成 public_key 和 private_key</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ ssh-keygen -t rsa -C <span style="color: #00afaf;">"shi_zhonghe@163.com&#8221;</span>
+</pre>
+</div>
+
+<p>
+会生成 2 个文件<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ tree ~/.ssh
+~/.ssh
+&#9500;&#9472;&#9472; id_rsa
+&#9492;&#9472;&#9472; id_rsa.pub
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org56e0e93" class="outline-2">
+<h2 id="org56e0e93"><span class="section-number-2">2</span> 公钥拷贝到远程</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+拷贝 id_ras.pub 到远程服务器，并重命名为 authorized_keys，然后拷贝到用户根目录下的 .ssh/ 目录<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ scp -P2207 id_rsa.pub root@www.langdebuqing:/root/.ssh/authorized_keys
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7922e3a" class="outline-2">
+<h2 id="org7922e3a"><span class="section-number-2">3</span> 修改本机的配置文件</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+修改本地主机 ~/.ssh/config 文件，添加如下类似内容：<br>
+</p>
+<pre class="example">
+# server 2
+Host he
+    HostName www.langdebuqing.com
+    Port 2207
+    User root
+    IdentityFile ~/.ssh/id_rsa
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgf167763" class="outline-2">
+<h2 id="orgf167763"><span class="section-number-2">4</span> 登陆</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+使用下面的命令即可登录（只有首次登陆时需要输入密码，以后则不需要）<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ ssh he
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

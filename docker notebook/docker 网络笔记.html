@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker 网络笔记</title>
@@ -34,14 +34,14 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd162d0b">1. 通过端口映射的方式。</a></li>
-<li><a href="#org546a8ad">2. 自定义 docker 网络</a></li>
+<li><a href="#org0ce4a65">1. 通过端口映射的方式。</a></li>
+<li><a href="#orga72b6c5">2. 自定义 docker 网络</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd162d0b" class="outline-2">
-<h2 id="orgd162d0b"><span class="section-number-2">1</span> 通过端口映射的方式。</h2>
+<div id="outline-container-org0ce4a65" class="outline-2">
+<h2 id="org0ce4a65"><span class="section-number-2">1</span> 通过端口映射的方式。</h2>
 <div class="outline-text-2" id="text-1">
 <ol class="org-ol">
 <li>创建 Dockerfile 时，通过 EXPOSE 指令告诉 docker 该容器内的应用程序将会使用的端口，创建镜像。<br></li>
@@ -61,8 +61,8 @@
 </div>
 </div>
 
-<div id="outline-container-org546a8ad" class="outline-2">
-<h2 id="org546a8ad"><span class="section-number-2">2</span> 自定义 docker 网络</h2>
+<div id="outline-container-orga72b6c5" class="outline-2">
+<h2 id="orga72b6c5"><span class="section-number-2">2</span> 自定义 docker 网络</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker network create app          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21019;&#24314; Docker &#32593;&#32476;</span>

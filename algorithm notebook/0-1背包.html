@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>0-1背包</title>
@@ -56,17 +56,17 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgba7be0b">1. 问题</a></li>
-<li><a href="#org8652f68">2. 分析</a></li>
-<li><a href="#org4d756e2">3. 状态转移方程</a></li>
-<li><a href="#orgc9a7426">4. 动态规划</a></li>
-<li><a href="#orgf9a9cb2">5. 备忘录</a></li>
+<li><a href="#org232b08e">1. 问题</a></li>
+<li><a href="#orge32da6c">2. 分析</a></li>
+<li><a href="#orgdc3eb2e">3. 状态转移方程</a></li>
+<li><a href="#orgcae1ab0">4. 动态规划</a></li>
+<li><a href="#orga5f9bf3">5. 备忘录</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgba7be0b" class="outline-2">
-<h2 id="orgba7be0b"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org232b08e" class="outline-2">
+<h2 id="org232b08e"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 总共有3件物品，背包可容纳5磅的东西。物品1重1磅，物品2重2磅，价值100元，物品3重3磅，价值120元，怎么才能最大化背包所装物品的价值<br>
@@ -74,8 +74,8 @@
 </div>
 </div>
 
-<div id="outline-container-org8652f68" class="outline-2">
-<h2 id="org8652f68"><span class="section-number-2">2</span> 分析</h2>
+<div id="outline-container-orge32da6c" class="outline-2">
+<h2 id="orge32da6c"><span class="section-number-2">2</span> 分析</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 设 i 为第 i 件物品，j 为背包容量<br>
@@ -90,8 +90,8 @@ j &lt; c[i] 表示物品重量大于背包容量，此时显然不放第 i 件�
 </div>
 </div>
 
-<div id="outline-container-org4d756e2" class="outline-2">
-<h2 id="org4d756e2"><span class="section-number-2">3</span> 状态转移方程</h2>
+<div id="outline-container-orgdc3eb2e" class="outline-2">
+<h2 id="orgdc3eb2e"><span class="section-number-2">3</span> 状态转移方程</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 \[
@@ -112,8 +112,8 @@ f[i][j] 为问题的解<br>
 </div>
 </div>
 
-<div id="outline-container-orgc9a7426" class="outline-2">
-<h2 id="orgc9a7426"><span class="section-number-2">4</span> 动态规划</h2>
+<div id="outline-container-orgcae1ab0" class="outline-2">
+<h2 id="orgcae1ab0"><span class="section-number-2">4</span> 动态规划</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[128][128];
@@ -145,8 +145,8 @@ f[i][j] 为问题的解<br>
 </div>
 </div>
 
-<div id="outline-container-orgf9a9cb2" class="outline-2">
-<h2 id="orgf9a9cb2"><span class="section-number-2">5</span> 备忘录</h2>
+<div id="outline-container-orga5f9bf3" class="outline-2">
+<h2 id="orga5f9bf3"><span class="section-number-2">5</span> 备忘录</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">INF</span> -1

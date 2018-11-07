@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>org-mode 基础</title>
@@ -56,25 +56,29 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2040ecc">1. 参考</a></li>
-<li><a href="#orgb1c0201">2. 标题</a></li>
-<li><a href="#orgb4bbff3">3. 列表</a></li>
-<li><a href="#orgd276fcc">4. 脚注</a></li>
-<li><a href="#orgeb1311c">5. 超链接</a>
+<li><a href="#org9d56e4f">1. 参考</a></li>
+<li><a href="#orgce0e272">2. 标题</a></li>
+<li><a href="#org510a736">3. 输入控制字符</a></li>
+<li><a href="#org6645f67">4. 列表</a></li>
+<li><a href="#orgcb90995">5. 脚注</a></li>
+<li><a href="#org5a8ee27">6. 超链接</a>
 <ul>
-<li><a href="#org2bb62c7">5.1. 快捷键</a></li>
-<li><a href="#org8fa03a3">5.2. 内部链接</a></li>
-<li><a href="#orge78799f">5.3. 例子</a></li>
+<li><a href="#org1926613">6.1. 快捷键</a></li>
+<li><a href="#org828aa77">6.2. 内部链接</a></li>
+<li><a href="#org4d3af80">6.3. 跳转到 CUSTOM_ID</a></li>
+<li><a href="#org8ccca7e">6.4. 例子</a></li>
 </ul>
 </li>
-<li><a href="#orgd53839f">6. <span class="todo TODO">TODO</span> 标签</a></li>
-<li><a href="#org1a17b2c">7. 插入 latex 公式</a></li>
+<li><a href="#orgd9a643d">7. <span class="todo TODO">TODO</span> 标签</a></li>
+<li><a href="#org9b2e1bf">8. 插入 latex 公式</a></li>
+<li><a href="#org52e5d68">9. 快捷键 <code>&lt; + 快捷码 + TAB</code></a></li>
+<li><a href="#org9569856">10. 添加 org 注释</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2040ecc" class="outline-2">
-<h2 id="org2040ecc"><span class="section-number-2">1</span> 参考</h2>
+<div id="outline-container-org9d56e4f" class="outline-2">
+<h2 id="org9d56e4f"><span class="section-number-2">1</span> 参考</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><a href="https://orgmode.org/worg/org-tutorials/">官方手册</a><br></li>
@@ -83,12 +87,12 @@
 </div>
 </div>
 
-<div id="outline-container-orgb1c0201" class="outline-2">
-<h2 id="orgb1c0201"><span class="section-number-2">2</span> 标题</h2>
+<div id="outline-container-orgce0e272" class="outline-2">
+<h2 id="orgce0e272"><span class="section-number-2">2</span> 标题</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 标题最多 10 级<br>
-<a id="orgd284ce1"></a><br>
+<a id="org931eae2"></a><br>
 </p>
 <table>
 
@@ -167,9 +171,18 @@
 </div>
 </div>
 
-<div id="outline-container-orgb4bbff3" class="outline-2">
-<h2 id="orgb4bbff3"><span class="section-number-2">3</span> 列表</h2>
+<div id="outline-container-org510a736" class="outline-2">
+<h2 id="org510a736"><span class="section-number-2">3</span> 输入控制字符</h2>
 <div class="outline-text-2" id="text-3">
+<p>
+使用快捷键 <code>C-q</code> ，例如输入 TAB，需要先按 <code>C-q</code> 再按 TAB 键<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6645f67" class="outline-2">
+<h2 id="org6645f67"><span class="section-number-2">4</span> 列表</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 如果在本级列表内换行，就需要在新行前面加个空格<br>
 </p>
@@ -214,9 +227,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgd276fcc" class="outline-2">
-<h2 id="orgd276fcc"><span class="section-number-2">4</span> 脚注</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-orgcb90995" class="outline-2">
+<h2 id="orgcb90995"><span class="section-number-2">5</span> 脚注</h2>
+<div class="outline-text-2" id="text-5">
 <table>
 
 
@@ -241,13 +254,13 @@
 </div>
 </div>
 
-<div id="outline-container-orgeb1311c" class="outline-2">
-<h2 id="orgeb1311c"><span class="section-number-2">5</span> 超链接</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-org5a8ee27" class="outline-2">
+<h2 id="org5a8ee27"><span class="section-number-2">6</span> 超链接</h2>
+<div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-org2bb62c7" class="outline-3">
-<h3 id="org2bb62c7"><span class="section-number-3">5.1</span> 快捷键</h3>
-<div class="outline-text-3" id="text-5-1">
+<div id="outline-container-org1926613" class="outline-3">
+<h3 id="org1926613"><span class="section-number-3">6.1</span> 快捷键</h3>
+<div class="outline-text-3" id="text-6-1">
 <table>
 
 
@@ -299,9 +312,9 @@
 </div>
 </div>
 
-<div id="outline-container-org8fa03a3" class="outline-3">
-<h3 id="org8fa03a3"><span class="section-number-3">5.2</span> 内部链接</h3>
-<div class="outline-text-3" id="text-5-2">
+<div id="outline-container-org828aa77" class="outline-3">
+<h3 id="org828aa77"><span class="section-number-3">6.2</span> 内部链接</h3>
+<div class="outline-text-3" id="text-6-2">
 <ol class="org-ol">
 <li><p>
 跳转到被 <code>&lt;&lt;&gt;&gt;</code> 定义的地方。用法如下例：<br>
@@ -316,9 +329,33 @@
 </div>
 </div>
 
-<div id="outline-container-orge78799f" class="outline-3">
-<h3 id="orge78799f"><span class="section-number-3">5.3</span> 例子</h3>
-<div class="outline-text-3" id="text-5-3">
+<div id="outline-container-org4d3af80" class="outline-3">
+<h3 id="org4d3af80"><span class="section-number-3">6.3</span> 跳转到 CUSTOM_ID</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+CUSTOM_ID 定义方法<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-org"><span style="color: #0087ff;">* &#36825;&#26159;&#31456;&#33410;&#21517;</span>
+<span style="color: #8a8a8a;"> :PROPERTIES:</span>
+ <span style="color: #8a8a8a;">:CUSTOM_ID:</span> &#36825;&#26159;&#31456;&#33410;&#21517;
+<span style="color: #8a8a8a;"> :END:</span>
+</pre>
+</div>
+
+<p>
+跳转到指定 CUSTOM_ID 如下。当导出到 html 时，CUSTOM_ID 会转换成锚点，会替换原先自动生成的章节锚点<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-org"><span style="color: #5f5faf;"><a href="file:org-file-path::#&#36825;&#26159;&#31456;&#33410;&#21517;">&#36339;&#36716;&#21040;&#19968;&#20010; CUSTOM_ID</a></span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8ccca7e" class="outline-3">
+<h3 id="org8ccca7e"><span class="section-number-3">6.4</span> 例子</h3>
+<div class="outline-text-3" id="text-6-4">
 <pre class="example">
 [[file:org-mode 表格.org::*自动计算][跳转到文档 org-mode 表格.org 的一个标题上：自动计算]]
 [[*列表][跳转到本文的标题：列表]]
@@ -327,18 +364,18 @@
 </pre>
 
 <p>
-<a href="org-mode 表格.html#org6144cd6">跳转到文档 org-mode 表格.org 的一个标题上：自动计算</a><br>
-<a href="#orgb4bbff3">跳转到本文的标题：列表</a><br>
-<a href="org-mode 基础.html#orgd284ce1">跳转到本文的 &lt;&lt;test&gt;&gt;，它位于标题快捷键表格上面</a><br>
-<a href="#orgd284ce1">同上，跳转到 &lt;&lt;test&gt;&gt;</a><br>
+<a href="org-mode 表格.html#org963cfe2">跳转到文档 org-mode 表格.org 的一个标题上：自动计算</a><br>
+<a href="#org6645f67">跳转到本文的标题：列表</a><br>
+<a href="org-mode 基础.html#org931eae2">跳转到本文的 &lt;&lt;test&gt;&gt;，它位于标题快捷键表格上面</a><br>
+<a href="#org931eae2">同上，跳转到 &lt;&lt;test&gt;&gt;</a><br>
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgd53839f" class="outline-2">
-<h2 id="orgd53839f"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> 标签</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-orgd9a643d" class="outline-2">
+<h2 id="orgd9a643d"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> 标签</h2>
+<div class="outline-text-2" id="text-7">
 <p>
 区别于 CSDN博客 和 evernote 的标签，org-mode 的标签支持为每个标题都设置标签。<br>
 标签主要是用于分类和搜索的。但是标签是用户自己设置的，可能该打的标签没打，导致搜索不到。我更倾向于使用搜索命令或 google 搜索笔记。不做笔记<br>
@@ -346,13 +383,150 @@
 </div>
 </div>
 
-<div id="outline-container-org1a17b2c" class="outline-2">
-<h2 id="org1a17b2c"><span class="section-number-2">7</span> 插入 latex 公式</h2>
-<div class="outline-text-2" id="text-7">
+<div id="outline-container-org9b2e1bf" class="outline-2">
+<h2 id="org9b2e1bf"><span class="section-number-2">8</span> 插入 latex 公式</h2>
+<div class="outline-text-2" id="text-8">
 <ul class="org-ul">
 <li>使用 <code>$ $</code> 在行内插入。例如 <code>$\displaystyle \min_{x_1,\dots x_T}$</code> \(\displaystyle \min_{x_1,\dots x_T}\)<br></li>
 <li>使用 <code>$$ $$</code> 在行间插入。例如 <code>$$\displaystyle \min_{x_1,\dots x_T}$$</code> ：\[\displaystyle \min_{x_1,\dots x_T}\]<br></li>
 </ul>
+</div>
+</div>
+
+<div id="outline-container-org52e5d68" class="outline-2">
+<h2 id="org52e5d68"><span class="section-number-2">9</span> 快捷键 <code>&lt; + 快捷码 + TAB</code></h2>
+<div class="outline-text-2" id="text-9">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">快捷码</th>
+<th scope="col" class="org-left">补全内容</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">#+BEGIN_SRC\n\n#+END_SRC</td>
+<td class="org-left">插入代码块</td>
+</tr>
+
+<tr>
+<td class="org-left">e</td>
+<td class="org-left">#+BEGIN_EXAMPLE\n\n#+END_EXAMPLE</td>
+<td class="org-left">插入例子</td>
+</tr>
+
+<tr>
+<td class="org-left">q</td>
+<td class="org-left">#+BEGIN_QUOTE\n\n#+END_QUOTE</td>
+<td class="org-left">插入引用</td>
+</tr>
+
+<tr>
+<td class="org-left">v</td>
+<td class="org-left">#+BEGIN_VERSE\n\n#+END_VERSE</td>
+<td class="org-left">默认内容不换行，需要留出空行才能换行</td>
+</tr>
+
+<tr>
+<td class="org-left">c</td>
+<td class="org-left">#+BEGIN_CENTER\n\n#+END_CENTER</td>
+<td class="org-left">内容居中</td>
+</tr>
+
+<tr>
+<td class="org-left">l</td>
+<td class="org-left">#+BEGIN_EXPORT latex\n\n#+END_EXPORT</td>
+<td class="org-left">直接导出 latex</td>
+</tr>
+
+<tr>
+<td class="org-left">L</td>
+<td class="org-left">#+LaTeX:</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">h</td>
+<td class="org-left">#+BEGIN_EXPORT html\n\n#+END_EXPORT</td>
+<td class="org-left">直接导出 html</td>
+</tr>
+
+<tr>
+<td class="org-left">H</td>
+<td class="org-left">#+HTML:</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">a</td>
+<td class="org-left">#+BEGIN_EXPORT ascii\n\n#+END_EXPORT</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">A</td>
+<td class="org-left">#+ASCII:</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">i</td>
+<td class="org-left">#+INDEX:</td>
+<td class="org-left">包含文件到 org 中</td>
+</tr>
+
+<tr>
+<td class="org-left">I</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">状态栏下面弹出一个 buffer，选择包含的文件</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+当导出文档时，你可以包含其他文件中的内容。比如，想包含你的“.emacs”文件，你可以用：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-org"><span style="color: #8a8a8a;">#+INCLUDE: "~/.emacs.d/test.el" src emacs-lisp</span>
+</pre>
+</div>
+
+<p>
+可选的第二个第三个参数是组织方式（例如，“quote”，“example”，或者“src”），如果是 “src”，语言用来格式化内容。<br>
+组织方式是可选的，如果不给出，文本会被当作 Org 模式的正常处理。用快捷键 <code>&lt;C-c ,&gt;</code> 可以访问包含的文件。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9569856" class="outline-2">
+<h2 id="org9569856"><span class="section-number-2">10</span> 添加 org 注释</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+两种注释方式<br>
+</p>
+<ol class="org-ol">
+<li><p>
+注释一段内容：注释中的内容不会被导出<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-org"><span style="color: #8a8a8a;">#+BEGIN_COMMENT</span>
+
+<span style="color: #8a8a8a;">#+END_COMMENT</span>
+</pre>
+</div></li>
+<li>注释整章内容：在一个章节上使用快捷键 <code>C-c ;</code> ，可在一个章节名上触发添加 COMMENT 关键字，该章节就会被注释不会被导出<br></li>
+</ol>
 </div>
 </div>
 <div id="footnotes">

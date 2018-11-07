@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bloom filter</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">bloom filter</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org22c798b">1. bloom filter</a></li>
+<li><a href="#org6adf623">2. bloom filter 特点</a></li>
+<li><a href="#org8641e93">3. 参数调优</a></li>
+<li><a href="#orgec000fc">4. 一个简易的布隆过滤器</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org22c798b" class="outline-2">
+<h2 id="org22c798b"><span class="section-number-2">1</span> bloom filter</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+布隆过滤器算法用不太严谨的话来说就是 hash + bit-map 的组合算法。<br>
+</p>
+<dl class="org-dl">
+<dt>插入一条数据</dt><dd>首先通过 n 个 hash 函数计算出该数据的 n 个哈希值，然后在 bit-map 上将这些哈希值对应的 n 个位置置为 1。<br></dd>
+<dt>判断布隆过滤器上是否存在该条数据</dt><dd>如果 bit-map 上该数据 n 个哈希值对应的位置全部为 1，则认为该条数据 <b><b>很可能</b></b> 存在；否则，认为不存在<br></dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-org6adf623" class="outline-2">
+<h2 id="org6adf623"><span class="section-number-2">2</span> bloom filter 特点</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>不存在漏报。如果某个元素在某个集合中，肯定能检测出<br></li>
+<li>存在误报。如果某个元素不在某个集合中，可能也被认为在该集合中<br></li>
+<li>只能插入数据，不能删除数据（可以使用多个 bit 使用计数的方式存储一个哈希值，每次插入，计数加一，每次删除计数减一。如果使用 1 字节来存储一个值，最多只能冲突 255 次。再者，并不能完全确定该条数据一定在 bloom filter 中，如果删除的话可能会删错）<br></li>
+<li>区别于 bit-map，布隆过滤器并不直接存储数据，它存储的是哈希值。很适合用在对数据安全要求高的环境中<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8641e93" class="outline-2">
+<h2 id="org8641e93"><span class="section-number-2">3</span> 参数调优</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+参考 <a href="https://en.wikipedia.org/wiki/Bloom_filter">Wikipedia</a><br>
+m 为 bit-map 共有 m bit<br>
+n 为插入 bloom filter 中的元素数量<br>
+k 为哈希函数的数量<br>
+p 为误判率<br>
+</p>
+
+<ol class="org-ol">
+<li>如果给定 m 和 n，当 k 取以下值时，误判率 p 的值最小<br>
+\[k=\ln 2 \times \frac{m}{n} \approx 0.693 \times \frac{m}{n}\]<br>
+此时误判率 p 等于<br>
+\[p_{min} \approx (1-e^{\frac{kn}{m}})^k = (1 - \frac{1}{2})^k \approx 0.6185^{\frac{m}{n}}\]<br></li>
+<li>更常见的需求是，已知 n，并设定好误判率p，需要计算出该给 bit-map 分配多大内存合适，也就是要确认 m 的大小，可使用如下公式解决问题<br>
+\[m = - \frac{n \ln p}{(\ln 2)^2}\]<br></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-orgec000fc" class="outline-2">
+<h2 id="orgec000fc"><span class="section-number-2">4</span> 一个简易的布隆过滤器</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;iostream&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;bitset&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string&gt;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">MAX</span> (2&lt;&lt;24)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20301;&#22270;&#30340;&#22823;&#23567;&#20026; 4M</span>
+
+<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">bitset</span>&lt;MAX&gt; <span style="color: #0087ff;">bloomSet</span>;                   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20301;&#22270;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">seeds</span>[7] = {3, 7, 11, 13, 31, 37, 61};   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992; 7 &#20010; hash &#20989;&#25968; </span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992;&#31532; n &#20010;&#20989;&#25968;&#35745;&#31639; str &#30340;&#21704;&#24076;&#20540;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">getHashValue</span>(<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">string</span> <span style="color: #0087ff;">str</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">result</span> = 0;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; str.size(); i++)
+    {
+        result = seeds[n]*result+(<span style="color: #af8700;">int</span>)str[i];
+        <span style="color: #5f8700;">if</span>(result &gt; MAX)
+            result %= MAX;
+    }
+    <span style="color: #5f8700;">return</span> result;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21028;&#26029; str &#26159;&#21542;&#22312;&#24067;&#38534;&#36807;&#28388;&#22120;&#20013;</span>
+<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">isInBloomSet</span>(<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">string</span> <span style="color: #0087ff;">str</span>)
+{
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>=0; i&lt;7; i++)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">hash</span> = getHashValue(str, i);
+        <span style="color: #5f8700;">if</span>(bloomSet[hash] == 0)
+            <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
+    }
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#28155;&#21152; str &#21040;&#24067;&#38534;&#36807;&#28388;&#22120;&#20013;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">addToBloomSet</span>(<span style="color: #00afaf;">std</span>::<span style="color: #af8700;">string</span> <span style="color: #0087ff;">str</span>)
+{
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>=0; i &lt; <span style="color: #5f8700;">sizeof</span>(seeds)/<span style="color: #5f8700;">sizeof</span>(<span style="color: #af8700;">int</span>); i++)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">hash</span> = getHashValue(str, i);
+        bloomSet.set(hash, 1);
+    }
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">initBloomSet</span>()
+{
+    addToBloomSet(<span style="color: #00afaf;">"http://www.baidu.com"</span>);
+    addToBloomSet(<span style="color: #00afaf;">"http://www.cnblogs.com"</span>);
+    addToBloomSet(<span style="color: #00afaf;">"http://www.google.com"</span>);
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    <span style="color: #00afaf;">std</span>::<span style="color: #af8700;">string</span> <span style="color: #0087ff;">str</span>;
+    initBloomSet();
+    <span style="color: #00afaf;">std</span>::cin&gt;&gt;str;
+    <span style="color: #5f8700;">if</span>(isInBloomSet(str))
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"yes"</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #00afaf;">std</span>::cout&lt;&lt;<span style="color: #00afaf;">"no"</span>&lt;&lt;<span style="color: #00afaf;">std</span>::endl;
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

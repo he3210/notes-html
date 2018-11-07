@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cut</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">cut</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge64f7d4">1. 域的提取</a></li>
+<li><a href="#org7ac5ccd">2. 根据字节提取文本</a></li>
+<li><a href="#org7ce23e1">3. 根据字符（多字节）提取文本</a></li>
+</ul>
+</div>
+</div>
+<p>
+注意：提取的域号不要逆序，因为cut会自动排序。例如：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ echo <span style="color: #00afaf;">"11:22:33:44:55:66\n111:222:333:444:555:666"</span> | cut -b 7,3-5
+</pre>
+</div>
+
+<p>
+等同于<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ echo <span style="color: #00afaf;">"11:22:33:44:55:66\n111:222:333:444:555:666"</span> | cut -b 3-5,7
+</pre>
+</div>
+
+<p>
+aaa.log bbb.log 内容分别是：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ cat aaa.log
+&#26143;&#26399;&#19968;
+1234
+abcd
+&#26143;&#26399;&#20108;
+$ cat bbb.log
+11:22:33:44:55:66
+111:222:333:444:555:666
+</pre>
+</div>
+
+<div id="outline-container-orge64f7d4" class="outline-2">
+<h2 id="orge64f7d4"><span class="section-number-2">1</span> 域的提取</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><code>-d</code>    自定义分隔符，默认为制表符。分隔符为一字节（所以 cut 只适合处理以一字节大小间隔符间隔的文本）<br></li>
+<li><code>-f</code>    与 <code>-d</code> 一起使用，指定显示哪个域<br></li>
+</ul>
+<p>
+显示结果的各个域会使用分隔符隔开<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ cut -d : -f 1,3-5 bbb.log
+11:33:44:55
+111:333:444:555
+$ cut -d : -f 1,3- bbb.log
+11:33:44:55:66
+111:333:444:555:666
+$ cut -d : -f 1,3-4,6 bbb.log
+11:33:44:66
+111:333:444:666
+$ cut -d : -f -3,3- bbb.log
+11:22:33:44:55:66
+111:222:333:444:555:666
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7ac5ccd" class="outline-2">
+<h2 id="org7ac5ccd"><span class="section-number-2">2</span> 根据字节提取文本</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><code>-b</code>    以字节为单位进行提取<br></li>
+<li><code>-n</code>    仅与 <code>-b</code> 标志一起使用，如果某个字符的最后一个字节落在由 <code>-b</code> 标志指示的数字范围之内，该字符将被写出；否则，该字符将被排除。<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ cut -b 3 bbb.log
+:
+1
+$ cut -b 3-5 bbb.log
+:22
+1:2
+$ cut -b 3-5,7 bbb.log
+:223
+1:22
+$ cut -b 3 aaa.log
+&#65533;
+3
+c
+&#65533;
+$ cut -nb 2 aaa.log
+&#26143;
+2
+b
+&#26143;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7ce23e1" class="outline-2">
+<h2 id="org7ce23e1"><span class="section-number-2">3</span> 根据字符（多字节）提取文本</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><code>-c</code>    以字符为单位进行提取<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ cut -c 2-4 aaa.log
+&#26399;&#19968;
+234
+bcd
+&#26399;&#20108;
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

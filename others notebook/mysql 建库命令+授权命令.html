@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mysql 建库命令+授权命令</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">mysql 建库命令+授权命令</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4e87a22">1. 参考</a></li>
+<li><a href="#org54e0095">2. 显示数据库 使用数据库</a></li>
+<li><a href="#org2d3165b">3. 建库 删库</a></li>
+<li><a href="#org86f2434">4. 创建用户</a></li>
+<li><a href="#org76779f9">5. 把权限授权给 movier 账户  数据的增删改查</a></li>
+<li><a href="#org8d1b05e">6. 把权限授权给movier账户  表的增删改</a></li>
+<li><a href="#orgf6d9fc2">7. 授权操作外键权限</a></li>
+<li><a href="#orga537856">8. 授权操作临时表权限</a></li>
+<li><a href="#orgbd23a84">9. 授权操作索引权限</a></li>
+<li><a href="#orgac0b800">10. 授权操作视图、查看视图源码权限</a></li>
+<li><a href="#org82c372d">11. 授权操作存储过程、函数权限</a></li>
+<li><a href="#org61d7bd1">12. 授权普通DBA管理数据库</a></li>
+<li><a href="#orgf2e0751">13. 授权高级DBA管理所有数据库</a></li>
+<li><a href="#org2c14bd2">14. 取消授权</a></li>
+<li><a href="#org01d105e">15. 查看用户权限</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4e87a22" class="outline-2">
+<h2 id="org4e87a22"><span class="section-number-2">1</span> 参考</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><a href="http://www.cnblogs.com/rmbteam/archive/2011/10/20/2219368.html">http://www.cnblogs.com/rmbteam/archive/2011/10/20/2219368.html</a><br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org54e0095" class="outline-2">
+<h2 id="org54e0095"><span class="section-number-2">2</span> 显示数据库 使用数据库</h2>
+<div class="outline-text-2" id="text-2">
+<pre class="example">
+mysql&gt; show databases;
+mysql&gt; use MovierDC;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org2d3165b" class="outline-2">
+<h2 id="org2d3165b"><span class="section-number-2">3</span> 建库 删库</h2>
+<div class="outline-text-2" id="text-3">
+<pre class="example">
+mysql&gt; create database MovierDC; # 使用 root 用户登录数据库
+mysql&gt; drop database MovierDC;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org86f2434" class="outline-2">
+<h2 id="org86f2434"><span class="section-number-2">4</span> 创建用户</h2>
+<div class="outline-text-2" id="text-4">
+<pre class="example">
+mysql&gt; CREATE USER 'WangLi'@'%' IDENTIFIED BY 'WL123'; # 创建密码为 WL123 的用户 WangLi，该用户可以在任意地址登陆数据库
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org76779f9" class="outline-2">
+<h2 id="org76779f9"><span class="section-number-2">5</span> 把权限授权给 movier 账户  数据的增删改查</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+授权语法<br>
+grant 权限 on 数据库对象 to 用户<br>
+</p>
+
+<pre class="example">
+mysql&gt; grant select on MovierDC.* to movier@'10.0.0.137'; # @后面表示 IP 地址，% 表示所有 IP，该句表示授予数据库 MovierDC 的查权限给从 IP 地址 10.0.0.137 登陆的 movier 账户
+mysql&gt; grant insert on MovierDC.* to movier@'%'; # 该句表示授予数据库 MovierDC 的插权限给从任意 IP 地址登陆的 movier 账户
+mysql&gt; grant update on MovierDC.* to movier@'%';
+mysql&gt; grant delete on MovierDC.* to movier@'%';
+</pre>
+<p>
+或<br>
+</p>
+<pre class="example">
+mysql&gt; grant select, insert, update, delete on MovierDC.* to movier@'%';
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org8d1b05e" class="outline-2">
+<h2 id="org8d1b05e"><span class="section-number-2">6</span> 把权限授权给movier账户  表的增删改</h2>
+<div class="outline-text-2" id="text-6">
+<pre class="example">
+mysql&gt; grant create on MovierDC.* to movier@'192.168.0.%'; # 授建表权给从 "192.168.0.%" 登陆数据库的 movier 账户，% 代表任意
+mysql&gt; grant alter on MovierDC.* to movier@'%'; # 授修改表权给从 "192.168.0.%" 登陆数据库的 movier 账户
+mysql&gt; grant drop  on MovierDC.* to movier@'%';
+</pre>
+<p>
+或<br>
+</p>
+<pre class="example">
+mysql&gt; grant create, alter, drop  on MovierDC.* to movier@'%';
+</pre>
+</div>
+</div>
+<div id="outline-container-orgf6d9fc2" class="outline-2">
+<h2 id="orgf6d9fc2"><span class="section-number-2">7</span> 授权操作外键权限</h2>
+<div class="outline-text-2" id="text-7">
+<pre class="example">
+mysql&gt; grant references on MovierDC.* to movier@'%';
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga537856" class="outline-2">
+<h2 id="orga537856"><span class="section-number-2">8</span> 授权操作临时表权限</h2>
+<div class="outline-text-2" id="text-8">
+<pre class="example">
+mysql&gt; grant create temporary tables on MovierDC.* to movier@'192.168.0.%';
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgbd23a84" class="outline-2">
+<h2 id="orgbd23a84"><span class="section-number-2">9</span> 授权操作索引权限</h2>
+<div class="outline-text-2" id="text-9">
+<pre class="example">
+mysql&gt; grant index on MovierDC.* to movier@'%';
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgac0b800" class="outline-2">
+<h2 id="orgac0b800"><span class="section-number-2">10</span> 授权操作视图、查看视图源码权限</h2>
+<div class="outline-text-2" id="text-10">
+<pre class="example">
+mysql&gt; grant create view on MovierDC.* to movier@'%'; 
+mysql&gt; grant show  view on MovierDC.* to movier@'%';
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org82c372d" class="outline-2">
+<h2 id="org82c372d"><span class="section-number-2">11</span> 授权操作存储过程、函数权限</h2>
+<div class="outline-text-2" id="text-11">
+<pre class="example">
+mysql&gt; grant create routine on MovierDC.* to movier@'%'; -- now, can show procedure status;
+mysql&gt; grant alter routine on MovierDC.* to movier@'%'; -- now, you can drop a procedure;
+mysql&gt; grant execute on MovierDC.* to movier@'%';
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org61d7bd1" class="outline-2">
+<h2 id="org61d7bd1"><span class="section-number-2">12</span> 授权普通DBA管理数据库</h2>
+<div class="outline-text-2" id="text-12">
+<pre class="example">
+mysql&gt; grant all privileges on MovierDC.* to movier@'localhost';
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgf2e0751" class="outline-2">
+<h2 id="orgf2e0751"><span class="section-number-2">13</span> 授权高级DBA管理所有数据库</h2>
+<div class="outline-text-2" id="text-13">
+<pre class="example">
+mysql&gt; grant all on *.* to movier@'localhost';
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org2c14bd2" class="outline-2">
+<h2 id="org2c14bd2"><span class="section-number-2">14</span> 取消授权</h2>
+<div class="outline-text-2" id="text-14">
+<pre class="example">
+mysql&gt; revoke all privileges on MovierDC.* from movier@'%';
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org01d105e" class="outline-2">
+<h2 id="org01d105e"><span class="section-number-2">15</span> 查看用户权限</h2>
+<div class="outline-text-2" id="text-15">
+<pre class="example">
+mysql&gt; show grants; # 查看当前用户权限
+mysql&gt; show grants for movier@'%'; # 查看 movier 用户权限
+</pre>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

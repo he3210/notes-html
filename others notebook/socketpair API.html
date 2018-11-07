@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>socketpair API</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">socketpair API</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1088415">1. socketpair</a></li>
+<li><a href="#org5681109">2. 简单用法</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1088415" class="outline-2">
+<h2 id="org1088415"><span class="section-number-2">1</span> socketpair</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+socketpair 函数的原型如下：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #0087ff;">socketpair</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">domain</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">type</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">protocol</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">socket_vector</span>[2]);
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><code>domain</code> 表示协议族，必须为 AF_UNIX;<br></li>
+<li><code>type</code> 表示类型，既可以是 SOCK_STREAM,又可以是 SOCK_DGRAM，当参数指定为 SOCK_STREAM 时，得到的结果称为流管道，它与一般管道的区别是流管道是全双工的，即两个描述符即可读有可写;<br></li>
+<li><code>protocol</code> 只能为0；<br></li>
+<li><code>socket_vector[2]</code> 用于保存创建的套接字对；<br></li>
+</ul>
+
+<p>
+socketpair 函数建立一对匿名的已连接的套接字，建立的两个套接字描述符会放在 socket_vector[0] 和 socket_vector[1] 中。既可以从 socket_vector[0] 写入 socket_vector[1] 读出，又可以从 socket_vector[1] 读入 socket_vector[0] 写出，如果没有写入就读出则会生阻塞。用途：用来创建全双工通道，不过只局限于父子进程之间。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5681109" class="outline-2">
+<h2 id="org5681109"><span class="section-number-2">2</span> 简单用法</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;errno.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;unistd.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;sys/types.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;sys/socket.h&gt;</span>
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">sv</span>[2] = {0, 0};
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">sock</span> = socketpair(AF_UNIX, SOCK_STREAM, 0, sv);
+
+    <span style="color: #5f8700;">if</span>(sock &lt; 0)
+    {
+        perror(<span style="color: #00afaf;">"socketpair"</span>);
+        exit(0);
+    }
+
+    <span style="color: #af8700;">pid_t</span> <span style="color: #0087ff;">id</span> = fork();
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">buf</span>[1024];
+    <span style="color: #5f8700;">if</span>(id &lt; 0)
+    {
+        perror(<span style="color: #00afaf;">"fork"</span>);
+        exit(0);
+    }
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(id == 0)
+    {
+        close(sv[0]);  <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#23376;&#36827;&#31243;&#20851;&#38381;&#35835;&#31471;</span>
+        <span style="color: #5f8700;">while</span>(1)
+        {
+            memset(buf, <span style="color: #00afaf;">'\0'</span>, <span style="color: #5f8700;">sizeof</span>(buf));
+            strcpy(buf, <span style="color: #00afaf;">"i am your child"</span>);
+            write(sv[1], buf, strlen(buf));<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#23376;&#36827;&#31243;&#20889;&#20837;</span>
+            memset(buf, <span style="color: #00afaf;">'\0'</span>, <span style="color: #5f8700;">sizeof</span>(buf));
+            <span style="color: #af8700;">ssize_t</span> <span style="color: #0087ff;">_s</span> = read(sv[1], buf, <span style="color: #5f8700;">sizeof</span>(buf)-1);<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#23376;&#36827;&#31243;&#35835;&#21462;&#29238;&#36827;&#31243;&#30340;&#20869;&#23481;</span>
+            buf[_s] = <span style="color: #00afaf;">'\0'</span>;
+            printf(<span style="color: #00afaf;">"father--&gt;child:%s\n"</span>, buf);
+            sleep(1);
+        }
+        close(sv[1]);<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#23376;&#36827;&#31243;&#20851;&#38381;&#35835;&#31471;</span>
+    }
+    <span style="color: #5f8700;">else</span>
+    {<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#29238;&#36827;&#31243;</span>
+        close(sv[1]);
+        <span style="color: #5f8700;">while</span>(1)
+        {
+            memset(buf, <span style="color: #00afaf;">'\0'</span>, <span style="color: #5f8700;">sizeof</span>(buf));
+            <span style="color: #af8700;">ssize_t</span> <span style="color: #0087ff;">_s</span> = read(sv[0], buf, <span style="color: #5f8700;">sizeof</span>(buf)-1);
+            buf[_s] = <span style="color: #00afaf;">'\0'</span>;
+            printf(<span style="color: #00afaf;">"child--&gt;father:%s\n"</span>, buf);
+            memset(buf, <span style="color: #00afaf;">'\0'</span>, <span style="color: #5f8700;">sizeof</span>(buf));
+            strcpy(buf, <span style="color: #00afaf;">"i am your father"</span>);
+            write(sv[0], buf, strlen(buf));
+            sleep(1);
+        }
+        close(sv[0]);
+    }
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

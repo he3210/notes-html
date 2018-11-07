@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>libevent 源码之 common-timeout</title>
@@ -34,19 +34,19 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3be0aa9">1. 为什么要用 common-timeout 呢？</a></li>
-<li><a href="#org77d3870">2. common-timeout 原理</a></li>
-<li><a href="#orgd89b06d">3. 基本数据结构</a></li>
+<li><a href="#orgff00b34">1. 为什么要用 common-timeout 呢？</a></li>
+<li><a href="#org61cf0c9">2. common-timeout 原理</a></li>
+<li><a href="#org9864fae">3. 基本数据结构</a></li>
 <li><a href="#common-timeout 标志">4. common-timeout 标志</a></li>
-<li><a href="#org0073cdb">5. 初始化一个 common-timeout 超时时长</a></li>
-<li><a href="#orgfeb63f0">6. common-timeout 超时事件回调函数</a></li>
-<li><a href="#orgc5e122b">7. 注册事件到 common-timeout 队列</a></li>
+<li><a href="#org19b0a7d">5. 初始化一个 common-timeout 超时时长</a></li>
+<li><a href="#org84ea360">6. common-timeout 超时事件回调函数</a></li>
+<li><a href="#org92ccf6f">7. 注册事件到 common-timeout 队列</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3be0aa9" class="outline-2">
-<h2 id="org3be0aa9"><span class="section-number-2">1</span> 为什么要用 common-timeout 呢？</h2>
+<div id="outline-container-orgff00b34" class="outline-2">
+<h2 id="orgff00b34"><span class="section-number-2">1</span> 为什么要用 common-timeout 呢？</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 小根堆插入和删除操作事件复杂度都是 <code>O(logN)</code> ，但如果把大量具有相同超时时长的 event 放到小根堆上，效率会下降很多。<br>
@@ -64,8 +64,8 @@
 </div>
 </div>
 
-<div id="outline-container-org77d3870" class="outline-2">
-<h2 id="org77d3870"><span class="section-number-2">2</span> common-timeout 原理</h2>
+<div id="outline-container-org61cf0c9" class="outline-2">
+<h2 id="org61cf0c9"><span class="section-number-2">2</span> common-timeout 原理</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 对于具有相同的超时时长的超时事件，可以把它们按照超时时间升序地放到一个 <b>common-timeout 队列</b> 中。<br>
@@ -88,8 +88,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgd89b06d" class="outline-2">
-<h2 id="orgd89b06d"><span class="section-number-2">3</span> 基本数据结构</h2>
+<div id="outline-container-org9864fae" class="outline-2">
+<h2 id="org9864fae"><span class="section-number-2">3</span> 基本数据结构</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span> {
@@ -135,8 +135,8 @@
 </div>
 </div>
 
-<div id="outline-container-org17dc0f5" class="outline-2">
-<h2 id="common-timeout 标志"><a id="org17dc0f5"></a><span class="section-number-2">4</span> common-timeout 标志</h2>
+<div id="outline-container-orgce4b04a" class="outline-2">
+<h2 id="common-timeout 标志"><a id="orgce4b04a"></a><span class="section-number-2">4</span> common-timeout 标志</h2>
 <div class="outline-text-2" id="text-common-timeout 标志">
 <p>
 在 libevent 中使用 struct timeval 结构体来存储超时时间（或者超时时长），结构体如下：<br>
@@ -196,8 +196,8 @@ timeval.tv_usec 的单位是微秒，最大值为 999999，再大就进位到秒
 </div>
 </div>
 
-<div id="outline-container-org0073cdb" class="outline-2">
-<h2 id="org0073cdb"><span class="section-number-2">5</span> 初始化一个 common-timeout 超时时长</h2>
+<div id="outline-container-org19b0a7d" class="outline-2">
+<h2 id="org19b0a7d"><span class="section-number-2">5</span> 初始化一个 common-timeout 超时时长</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>如果该超时时长有对应的 common-timeout 队列，为其加上 common-timeout 标志直接返回；否则，为其分配应有的空间并初始化<br></li>
@@ -295,8 +295,8 @@ timeval.tv_usec 的单位是微秒，最大值为 999999，再大就进位到秒
 </div>
 </div>
 
-<div id="outline-container-orgfeb63f0" class="outline-2">
-<h2 id="orgfeb63f0"><span class="section-number-2">6</span> common-timeout 超时事件回调函数</h2>
+<div id="outline-container-org84ea360" class="outline-2">
+<h2 id="org84ea360"><span class="section-number-2">6</span> common-timeout 超时事件回调函数</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>如果队首元素超时，取出队首元素，直接放入激活队列。然后继续检查队首元素是否超时；<br></li>
@@ -343,8 +343,8 @@ timeval.tv_usec 的单位是微秒，最大值为 999999，再大就进位到秒
 </div>
 </div>
 </div>
-<div id="outline-container-orgc5e122b" class="outline-2">
-<h2 id="orgc5e122b"><span class="section-number-2">7</span> 注册事件到 common-timeout 队列</h2>
+<div id="outline-container-org92ccf6f" class="outline-2">
+<h2 id="org92ccf6f"><span class="section-number-2">7</span> 注册事件到 common-timeout 队列</h2>
 <div class="outline-text-2" id="text-7">
 <ul class="org-ul">
 <li>参数 tv 带有 common-timeout 标志，会把超时事件插入到相应的 common-timeout 队列<br></li>

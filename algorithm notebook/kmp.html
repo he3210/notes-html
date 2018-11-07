@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KMP</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">KMP</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgcec2f1c">1. 问题描述</a></li>
+<li><a href="#org60daaa1">2. BF 解法</a></li>
+<li><a href="#orgdd25f10">3. KMP 解法</a></li>
+<li><a href="#orgec7da70">4. 优化</a></li>
+<li><a href="#org1b7b2dd">5. previous 数组</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcec2f1c" class="outline-2">
+<h2 id="orgcec2f1c"><span class="section-number-2">1</span> 问题描述</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+给定字符串 A 和其子串 B， 在 A 中查找 B，返回其下标<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org60daaa1" class="outline-2">
+<h2 id="org60daaa1"><span class="section-number-2">2</span> BF 解法</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;assert.h&gt;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">BF</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">str</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">substr</span>)
+{
+    assert(str &amp;&amp; substr);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenStr</span> = strlen(str);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenSubstr</span> = strlen(substr);
+    <span style="color: #5f8700;">if</span>(lenStr &lt; lenSubstr)
+        <span style="color: #5f8700;">return</span> -1;
+
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i != lenStr-lenSubstr+1; ++i)
+    {
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span>;
+        <span style="color: #5f8700;">for</span>(j = 0; j != lenSubstr; ++j)
+            <span style="color: #5f8700;">if</span>(str[i+j] != substr[j])
+                <span style="color: #5f8700;">break</span>;
+        <span style="color: #5f8700;">if</span>(j == lenSubstr)
+            <span style="color: #5f8700;">return</span> i;
+    }
+    <span style="color: #5f8700;">return</span> -1;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdd25f10" class="outline-2">
+<h2 id="orgdd25f10"><span class="section-number-2">3</span> KMP 解法</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;string.h&gt;</span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33719;&#21462;&#25351;&#38024;&#25968;&#32452; previous</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">getPrevious</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenPattern</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">previous</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">curPos</span> = 0;
+    previous[curPos] = -1;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">flagPos</span> = -1;
+    <span style="color: #5f8700;">while</span>(curPos &lt; lenPattern-1)
+    {
+        <span style="color: #5f8700;">if</span>(-1 == flagPos || pattern[curPos] == pattern[flagPos])
+        {
+            ++curPos;
+            ++flagPos;
+            previous[curPos] = flagPos;
+        }
+        <span style="color: #5f8700;">else</span>
+            flagPos = previous[flagPos];
+    }
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">KMP</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">str</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenStr</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenPattern</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">previous</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">pos</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">strPos</span> = pos;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">patternPos</span> = 0;
+    <span style="color: #5f8700;">while</span>(strPos != lenStr &amp;&amp; patternPos != lenPattern)
+    {
+        <span style="color: #5f8700;">if</span>(-1 == patternPos || str[strPos] == pattern[patternPos])
+        {
+            ++strPos;
+            ++patternPos;
+        }
+        <span style="color: #5f8700;">else</span>
+            patternPos = previous[patternPos];
+    }
+    <span style="color: #5f8700;">if</span>(patternPos == lenPattern)
+        <span style="color: #5f8700;">return</span> strPos-lenPattern;
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> -1;
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">str</span> = <span style="color: #00afaf;">"How are you"</span>;
+    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">substr</span> = <span style="color: #00afaf;">"are"</span>;
+    printf(<span style="color: #00afaf;">"%d\n"</span>, BF(str, substr));
+
+    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">str2</span> = <span style="color: #00afaf;">"001012012301234"</span>;
+    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">substr2</span> = <span style="color: #00afaf;">"0120123"</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">previous</span>[1024];
+    getPrevious(substr2, strlen(substr2), previous);
+    printf(<span style="color: #00afaf;">"%d\n"</span>, KMP(str2, strlen(str2), substr2, strlen(substr2), previous, 0));
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgec7da70" class="outline-2">
+<h2 id="orgec7da70"><span class="section-number-2">4</span> 优化</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">getPrevious</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenPattern</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">previous</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">curPos</span> = 0;
+    previous[curPos] = -1;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">flagPos</span> = -1;
+    <span style="color: #5f8700;">while</span>(curPos &lt; lenPattern-1)
+    {
+        <span style="color: #5f8700;">if</span>(-1 == flagPos || pattern[curPos] == pattern[flagPos])
+        {
+            ++curPos;
+            ++flagPos;
+            <span style="color: #5f8700;">if</span>(pattern[curPos] != pattern[flagPos])
+                previous[curPos] = flagPos;
+            <span style="color: #5f8700;">else</span>
+                <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#27492;&#26102; pattern[curPos-1] &#21644; pattern[flagPos-1] &#30456;&#31561;&#12289;</span>
+<span style="color: #8a8a8a;">                   pattern[curPos] &#21644; pattern[flagPos] &#30456;&#31561;&#12290;</span>
+<span style="color: #8a8a8a;">                   &#36825;&#26679;&#30340;&#23383;&#31526;&#20018;&#24418;&#24335;&#20026;&#65306;"...xy...xy...",</span>
+<span style="color: #8a8a8a;">                   &#32780; previous &#25968;&#32452;&#23384;&#22312;&#30340;&#24847;&#20041;&#26159;&#28304;&#20018;&#21644;&#27169;&#24335;&#20018;&#19981;&#21305;&#37197;&#26102;&#27169;&#24335;&#20018;&#24212;&#35813;&#22238;&#28335;&#30340;&#19979;&#26631;</span>
+<span style="color: #8a8a8a;">                   &#31532;&#19968;&#20010; "xy" &#21644;&#31532;&#20108;&#20010; "xy" &#30456;&#21516;&#65292;&#30001;&#20110;&#28304;&#20018;&#21644;&#31532;&#20108;&#20010; "xy" &#19981;&#21305;&#37197;&#65292;&#25152;&#20197;&#32943;&#23450;&#21644;&#31532;&#19968;&#20010; "xy" &#20063;&#19981;&#21305;&#37197;</span>
+<span style="color: #8a8a8a;">                   &#25925;&#21521;&#21069;&#22238;&#28335;&#26102;&#65292;&#24212;&#36339;&#36807;&#31532;&#19968;&#20010; "xy"&#65292;&#20351;&#29992; previous[curPos] = previous[flagPos] &#35821;&#21477;</span>
+<span style="color: #8a8a8a;">                   &#36825;&#26679;&#29983;&#25104;&#30340; previous &#25968;&#32452;&#21487;&#20197;&#20351; KMP &#20989;&#25968;&#20013;&#23569;&#19968;&#20123;&#19981;&#24517;&#35201;&#30340;&#27604;&#36739;</span>
+<span style="color: #8a8a8a;">                 </span><span style="color: #8a8a8a;">*/</span>
+                previous[curPos] = previous[flagPos];
+        }
+        <span style="color: #5f8700;">else</span>
+            flagPos = previous[flagPos];
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1b7b2dd" class="outline-2">
+<h2 id="org1b7b2dd"><span class="section-number-2">5</span> previous 数组</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+对于模式串"xyxyyxxyx"，previous数组为<br>
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">下标</th>
+<th scope="col" class="org-right">0</th>
+<th scope="col" class="org-right">1</th>
+<th scope="col" class="org-right">2</th>
+<th scope="col" class="org-right">3</th>
+<th scope="col" class="org-right">4</th>
+<th scope="col" class="org-right">5</th>
+<th scope="col" class="org-right">6</th>
+<th scope="col" class="org-right">7</th>
+<th scope="col" class="org-right">8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">value</td>
+<td class="org-right">-1</td>
+<td class="org-right">0</td>
+<td class="org-right">0</td>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">0</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+改进的previous数组为：<br>
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">下标</th>
+<th scope="col" class="org-right">0</th>
+<th scope="col" class="org-right">1</th>
+<th scope="col" class="org-right">2</th>
+<th scope="col" class="org-right">3</th>
+<th scope="col" class="org-right">4</th>
+<th scope="col" class="org-right">5</th>
+<th scope="col" class="org-right">6</th>
+<th scope="col" class="org-right">7</th>
+<th scope="col" class="org-right">8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">value</td>
+<td class="org-right">-1</td>
+<td class="org-right">0</td>
+<td class="org-right">-1</td>
+<td class="org-right">0</td>
+<td class="org-right">2</td>
+<td class="org-right">-1</td>
+<td class="org-right">1</td>
+<td class="org-right">0</td>
+<td class="org-right">-1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

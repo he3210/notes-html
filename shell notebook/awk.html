@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>awk</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">awk</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org76b8812">1. 替换域</a></li>
+<li><a href="#org3867f7c">2. awk 脚本写进文件</a></li>
+<li><a href="#orga5f15c0">3. 添加开始内容和结束内容</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org76b8812" class="outline-2">
+<h2 id="org76b8812"><span class="section-number-2">1</span> 替换域</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ echo <span style="color: #00afaf;">"My name is Rich"</span> | awk <span style="color: #00afaf;">'{$4="Christine"; print $0}'</span>    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26367;&#25442;&#31532;&#22235;&#22495;&#24182;&#25171;&#21360;</span>
+My name is Christine
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org3867f7c" class="outline-2">
+<h2 id="org3867f7c"><span class="section-number-2">2</span> awk 脚本写进文件</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ cat /etc/passwd
+nobody:*:-2:-2:Unprivileged User:/var/empty:/usr/bin/false
+root:*:0:0:System Administrator:/var/root:/bin/sh
+$ cat test.awk
+{
+    <span style="color: #0087ff;">text</span> = <span style="color: #00afaf;">"'s home directory is "</span>
+    <span style="color: #5f8700;">print</span> $<span style="color: #0087ff;">1</span> text $<span style="color: #0087ff;">6</span>    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21508;&#20010;&#22495;&#29992;&#31354;&#26684;&#38548;&#24320;&#65292;&#36755;&#20986;&#26102;&#22495;&#20043;&#38388;&#23601;&#19981;&#20250;&#26377;&#20998;&#21106;&#31526;&#65307; &#24341;&#29992;&#21464;&#37327;&#21644; shell &#33050;&#26412;&#19981;&#21516;&#65306;&#19981;&#21152; $</span>
+}
+$ awk -F: -f test.awk /etc/passwd        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">-F: &#25351;&#23450;&#23383;&#27573;&#20998;&#21106;&#31526;&#12290;-f &#25351;&#23450; awk &#33050;&#26412;&#20301;&#32622;</span>
+nobody<span style="color: #00afaf;">'s home directory is /var/empty</span>
+<span style="color: #00afaf;">root'</span>s home directory is /var/root
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga5f15c0" class="outline-2">
+<h2 id="orga5f15c0"><span class="section-number-2">3</span> 添加开始内容和结束内容</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ cat /etc/passwd
+nobody:*:-2:-2:Unprivileged User:/var/empty:/usr/bin/false
+root:*:0:0:System Administrator:/var/root:/bin/sh
+$ cat test.awk
+BEGIN {                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#33457;&#25324;&#21495;&#19981;&#33021;&#21478;&#36215;&#19968;&#34892;&#20889;</span>
+    <span style="color: #5f8700;">print</span> <span style="color: #00afaf;">"User \t Shell"</span>
+    <span style="color: #0087ff;">FS</span>=<span style="color: #00afaf;">":"</span>                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25351;&#23450;&#23383;&#27573;&#20998;&#21106;&#31526;&#30340;&#21478;&#22806;&#19968;&#31181;&#26041;&#27861;</span>
+}
+
+{
+    <span style="color: #5f8700;">print</span> $<span style="color: #0087ff;">1</span> <span style="color: #00afaf;">"\t"</span> $<span style="color: #0087ff;">6</span>    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21508;&#20010;&#22495;&#29992;&#31354;&#26684;&#38548;&#24320;&#65307; &#24341;&#29992;&#21464;&#37327;&#21644; shell &#33050;&#26412;&#19981;&#21516;&#65306;&#19981;&#21152; $</span>
+}
+
+END {
+    <span style="color: #5f8700;">print</span> <span style="color: #00afaf;">"This is all users"</span>
+}
+$ awk -f test.awk /etc/passwd
+User    Shell
+nobody  /var/empty
+root    /var/root
+This is all users
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">partitionV1</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">arr</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">low</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">high</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">pivot</span> = arr[low]; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36873;&#23450;&#31532;&#19968;&#20010;&#20803;&#32032;&#20316;&#20026;&#26530;&#32445;&#20540;&#23545;&#25968;&#32452;&#36827;&#34892;&#21010;&#20998;</span>
+    <span style="color: #5f8700;">while</span>(low &lt; high)
+    {
+        <span style="color: #5f8700;">while</span>(low &lt; high &amp;&amp; arr[high] &gt;= pivot)
+            --high;
+        arr[low] = arr[high];
+        <span style="color: #5f8700;">while</span>(low &lt; high &amp;&amp; arr[low] &lt;= pivot)
+            ++low;
+        arr[high] = arr[low];
+    }
+    arr[low] = pivot; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27492;&#26102;low==high</span>
+    <span style="color: #5f8700;">return</span> low;
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">func</span>()
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span>;
+}
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

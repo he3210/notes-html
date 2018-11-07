@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gdb</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">gdb</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgab9ccc4">1. 常用命令</a></li>
+<li><a href="#orgcedac96">2. 信号</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgab9ccc4" class="outline-2">
+<h2 id="orgab9ccc4"><span class="section-number-2">1</span> 常用命令</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+调用 gdb 编译需要在 cc 后面加 -g 参数再加-o；<br>
+在 gdb 中如果命令前缀可以唯一确定这条命令，不必写出全部命令，只需写出部分命令即可<br>
+如 l 是 list 的前缀，并且在 gdb 中以 l 为开头的命令只有 list，所以可用 l 代替 list，其它命令亦然<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ gdb &#35843;&#35797;&#25991;&#20214;
+(gdb) l                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#65288;&#23383;&#27597; l&#65289;&#20174;&#31532;&#19968;&#34892;&#24320;&#22987;&#21015;&#20986; 10 &#34892;&#28304;&#30721;</span>
+(gdb) <span style="color: #5f8700;">break</span> n                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#31532; n &#34892;&#22788;&#35774;&#32622;&#26029;&#28857;</span>
+(gdb) <span style="color: #5f8700;">break</span> func                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#20989;&#25968; func() &#30340;&#20837;&#21475;&#22788;&#35774;&#32622;&#26029;&#28857;</span>
+(gdb) <span style="color: #5f8700;">break</span> test.c:12              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#25991;&#20214; test.c &#30340;&#31532; 12 &#34892;&#35774;&#32622;&#26029;&#28857;</span>
+(gdb) <span style="color: #5f8700;">break</span> test.c:func if <span style="color: #0087ff;">i</span>==100  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#25991;&#20214; test.c &#30340; func &#20989;&#25968;&#22788;&#35774;&#32622;&#26029;&#28857;&#65292;&#24403; i==100 &#26102;&#22312;&#26029;&#28857;&#20986;&#26242;&#20572;</span>
+(gdb) condition 3 <span style="color: #0087ff;">i</span>==100           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#26029;&#28857; 3 &#22788;&#28155;&#21152;&#26465;&#20214; i==100&#65292;&#34920;&#31034;&#24403;&#26029;&#28857; 3 &#22788; i==100 &#26102;&#26242;&#20572;</span>
+(gdb) condition 3                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21462;&#28040;&#26029;&#28857; 3 &#22788;&#30340;&#26465;&#20214;</span>
+(gdb) info break                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#26029;&#28857;&#20449;&#24687;</span>
+(gdb) <span style="color: #5f8700;">r</span>                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36816;&#34892;&#31243;&#24207;</span>
+(gdb) n                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21333;&#27493;&#25191;&#34892;</span>
+(gdb) c                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#32487;&#32493;&#36816;&#34892;</span>
+(gdb) p &#21464;&#37327;                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25171;&#21360;&#21464;&#37327;&#30340;&#20540;</span>
+(gdb) p *arr@10                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25171;&#21360;&#25968;&#32452; arr &#30340; 10 &#20010;&#20803;&#32032;</span>
+(gdb) p func(10)                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">func &#26159;&#20989;&#25968;&#65292;10 &#26159;&#23454;&#21442;&#65292;&#36825;&#34920;&#31034;&#25171;&#21360;&#20989;&#25968;&#35843;&#29992; func(10) &#30340;&#36820;&#22238;&#20540;</span>
+(gdb) call func(10)                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#34920;&#31034;&#35843;&#29992;&#20989;&#25968; func(10)</span>
+(gdb) ignore 2 5                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#34920;&#31034;&#24573;&#30053;&#31532; 2 &#20010;&#26029;&#28857; 5 &#27425;&#65292;&#24403;&#31532; 6 &#27425;&#31243;&#24207;&#36816;&#34892;&#21040;&#26029;&#28857;&#20986;&#25165;&#26242;&#20572;</span>
+(gdb) bt                           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#20989;&#25968;&#22534;&#26632;</span>
+(gdb) where                        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#20989;&#25968;&#22534;&#26632;</span>
+(gdb) frame 1                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#34920;&#31034;&#20999;&#25442;&#21040; 3 &#21495;&#22534;&#26632;</span>
+(gdb) info threads                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#34920;&#31034;&#26174;&#31034;&#25152;&#26377;&#32447;&#31243;</span>
+(gdb) thread 3                     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20999;&#25442;&#21040; 3 &#21495;&#32447;&#31243;&#65292;&#36825;&#26102;&#21487;&#20197;&#29992; bt/where &#26174;&#31034; 3 &#21495;&#32447;&#31243;&#22534;&#26632;</span>
+(gdb) finish                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36864;&#20986;&#20989;&#25968;</span>
+(gdb) shell &#21629;&#20196;&#34892;                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25191;&#34892; shell &#21629;&#20196;&#34892;</span>
+(gdb) <span style="color: #5f8700;">set</span> var <span style="color: #0087ff;">width</span>=5              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25351;&#23450;&#36816;&#34892;&#26102;&#30340;&#31243;&#24207;&#30340;&#21464;&#37327;&#20540;&#65292;var &#34920;&#31034; width &#26159;&#19968;&#20010;&#31243;&#24207;&#21464;&#37327;&#65292;&#21487;&#20197;&#38450;&#27490; GDB &#25226; width &#35823;&#35748;&#20026;&#26159; GDB &#20445;&#30041;&#21442;&#25968;</span>
+(gdb) signal SIGUSR1               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30452;&#25509;&#21521;&#34987;&#35843;&#35797;&#31243;&#24207;&#21457;&#36865;&#19968;&#20010; SIGUSR1 &#20449;&#21495;&#65292;&#19981;&#20250;&#34987; GDB &#25130;&#33719;</span>
+(gdb) shell kill -USR1 6631        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">6631 &#26159;&#34987;&#35843;&#35797;&#31243;&#24207;&#30340;&#36827;&#31243; id&#65292;&#34920;&#31034;&#21521;&#36827;&#31243; 6631 &#21457;&#36865;&#19968;&#20010; SIGUSR1 &#20449;&#21495;&#65292;&#35813;&#20449;&#21495;&#20250;&#34987; GDB &#25130;&#33719;</span>
+(gdb) show args                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#35774;&#32622;&#22909;&#30340;&#21442;&#25968; </span>
+(gdb) show paths                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#31243;&#24207;&#36816;&#34892;&#36335;&#24452; </span>
+<span style="color: #5f8700;">set</span> environment varname [=value]   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#35774;&#32622;&#29615;&#22659;&#21464;&#37327;&#12290;&#22914;&#65306;set env USER=hchen</span>
+show environment [varname]         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#29615;&#22659;&#21464;&#37327;</span>
+(gdb) <span style="color: #5f8700;">cd</span>                           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30456;&#24403;&#20110; shell &#30340; cd</span>
+(gdb) <span style="color: #5f8700;">pwd</span>                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#24403;&#21069;&#25152;&#22312;&#30446;&#24405;</span>
+(gdb) info program                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26469;&#26597;&#30475;&#31243;&#24207;&#30340;&#26159;&#21542;&#22312;&#36816;&#34892;&#65292;&#36827;&#31243;&#21495;&#65292;&#34987;&#26242;&#20572;&#30340;&#21407;&#22240;</span>
+(gdb) clear &#34892;&#21495;n&#25110;&#20989;&#25968;&#21517;          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28165;&#38500;&#31532; n &#34892;&#30340;&#26029;&#28857;</span>
+(gdb) delete &#26029;&#28857;&#21495;n               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#31532; n &#20010;&#26029;&#28857;</span>
+(gdb) display i                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21160;&#24577;&#26174;&#31034; i &#30340;&#20540;&#65292;&#24403;&#31243;&#24207;&#26242;&#20572;&#26102;&#25110;&#21333;&#27493;&#36319;&#36394;&#26102;&#26174;&#31034; i &#30340;&#20540;</span>
+(gdb) undisplay 1                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#32534;&#21495;&#20026; 1 &#30340;&#21160;&#24577;&#26174;&#31034;</span>
+(gdb) <span style="color: #5f8700;">disable</span> &#26029;&#28857;&#21495;n              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26242;&#20572;&#31532; n &#20010;&#26029;&#28857;</span>
+(gdb) <span style="color: #5f8700;">enable</span> &#26029;&#28857;&#21495;n               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24320;&#21551;&#31532; n &#20010;&#26029;&#28857;</span>
+(gdb) step                         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21333;&#27493;&#35843;&#35797;&#22914;&#26524;&#26377;&#20989;&#25968;&#35843;&#29992;&#65292;&#21017;&#36827;&#20837;&#20989;&#25968;&#65307;&#19982;&#21629;&#20196; n &#19981;&#21516;&#65292;n &#26159;&#19981;&#36827;&#20837;&#35843;&#29992;&#30340;&#20989;&#25968;&#30340;</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><code>list</code> 简记为 l ，其作用就是列出程序的源代码，默认每次显示 10 行。再次使用该命令，会接着上一次 list 命令继续输出下 10 行的内容<br></li>
+<li><code>list 行号</code> 将显示当前文件以“行号”为中心的前后 10 行代码，如：list 12<br></li>
+<li><code>list 函数名</code> 将显示“函数名”所在函数的源代码，如：list main<br></li>
+
+<li><code>run</code> 简记为 r ，其作用是运行程序，当遇到断点后，程序会在断点处停止运行，等待用户输入下一步的命令<br></li>
+<li><code>回车</code> 重复上一条命令<br></li>
+<li><code>set args</code> 设置运行程序时的命令行参数，如：set args 33 55<br></li>
+<li><code>show args</code> 显示命令行参数<br></li>
+<li><code>continue</code> 简讯为 c ，其作用是继续运行被断点中断的程序<br></li>
+
+<li><code>break</code> 为程序设置断点<br></li>
+<li><code>break 行号</code> 在当前文件的“行号”处设置断点，如：break  33<br></li>
+<li><code>break 函数名</code> 在用户定义的函数“函数名”处设置断点，如：break cb_button<br></li>
+<li><code>info breakpoints</code> 显示当前程序的断点设置情况<br></li>
+<li><code>disable breakpoints Num</code> 关闭断点“Num”，使其无效，其中“Num”为 info breakpoints 中显示的对应值<br></li>
+<li><code>enable breakpoints Num</code> 打开断点“Num”，使其重新生效<br></li>
+
+<li><code>step</code> 简记为 s ，单步跟踪程序，当遇到函数调用时，则进入此函数体（一般只进入用户自定义函数）<br></li>
+<li><code>next</code> 简记为 n，单步跟踪程序，当遇到函数调用时，也不进入此函数体；此命令同 step 的主要区别是，step 遇到用户自定义的函数，将步进到函数中去运行，而 next 则直接调用函数，不会进入到函数体内<br></li>
+<li><code>until</code> 当你厌倦了在一个循环体内单步跟踪时，这个命令可以运行程序直到退出循环体<br></li>
+<li><code>finish</code> 运行程序，直到当前函数完成返回，并打印函数返回时的堆栈地址和返回值及参数值等信息<br></li>
+<li><code>stepi</code> 或 <code>nexti</code> 单步跟踪一些机器指令<br></li>
+
+<li><code>print 表达式</code> 简记为 p ，其中“表达式”可以是任何当前正在被测试程序的有效表达式，比如当前正在调试 C 语言的程序，那么“表达式”可以是任何 C 语言的有效表达式，包括数字，变量甚至是函数调用<br></li>
+<li><code>print a</code> 将显示整数 a 的值<br></li>
+<li><code>print ++a</code> 将把 a 中的值加 1,并显示出来<br></li>
+<li><code>print name</code> 将显示字符串 name 的值<br></li>
+<li><code>print gdb_test(22)</code> 将以整数 22 作为参数调用 gdb_test() 函数<br></li>
+<li><code>print gdb_test(a)</code> 将以变量 a 作为参数调用 gdb_test() 函数<br></li>
+
+<li><code>bt</code> 显示当前程序的函数调用堆栈<br></li>
+<li><code>display 表达式</code> 在单步运行时将非常有用，使用 display 命令设置一个表达式后，它将在每次单步进行指令后，紧接着输出被设置的表达式及值。如：display a<br></li>
+<li><code>watch 表达式</code> 设置一个监视点，一旦被监视的“表达式”的值改变，gdb 将强行终止正在被调试的程序。另外需要注意的是 watch 命令必须在程序运行的时候（run 命令）才能设置监视点。如： watch a<br></li>
+<li><code>kill</code> 将强行终止当前正在调试的程序<br></li>
+<li><code>help 命令</code> help 命令将显示“命令”的常用帮助信息<br></li>
+<li><code>call 函数(参数)</code> 调用“函数”，并传递“参数”，如：call  gdb_test(55)<br></li>
+
+<li><code>layout</code> 用于分割窗口，可以一边查看代码，一边测试<br></li>
+<li><code>layout src</code> 显示源代码窗口<br></li>
+<li><code>layout asm</code> 显示反汇编窗口<br></li>
+<li><code>layout regs</code> 显示源代码/反汇编和 CPU 寄存器窗口<br></li>
+<li><code>layout split</code> 显示源代码和反汇编窗口<br></li>
+
+<li><code>Ctrl + L</code> 刷新窗口<br></li>
+<li><code>quit</code> 简记为 q ，退出 gdb<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcedac96" class="outline-2">
+<h2 id="orgcedac96"><span class="section-number-2">2</span> 信号</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><code>signal SIGXXX</code> 　　产生 XXX 信号，如 SIGINT。一种速查 Linux 查询信号的方法： <code>$ kill -l</code><br></li>
+
+<li><code>handle</code> 在 GDB 中定义一个信号处理。信号可以以 SIG 开头或不以 SIG 开头，可以用定义一个要处理信号的范围（如：SIGIO-SIGKILL，表示处理从 SIGIO 信号到 SIGKILL 的信号，其中包括 SIGIO，SIGIOT，SIGKILL 三个信号），也可以使用关键字 all 来标明要处理所有的信号。一旦被调试的程序接收到信号，运行程序马上会被 GDB 停住，以供调试。其可以是以下三种关键字的一个或多个<br>
+<ul class="org-ul">
+<li><code>nostop/stop</code> 当被调试的程序收到信号时，GDB 不会停住程序的运行，但会打出消息告诉你收到这种信号/GDB 会停住你的程序<br></li>
+<li><code>print/noprint</code> 当被调试的程序收到信号时，GDB 会显示出一条信息/GDB 不会告诉你收到信号的信息<br></li>
+<li><code>pass(noignore)/nopass(ignore)</code> pass 表示当被调试的程序收到信号时，GDB 不处理信号。这表示，GDB 会把这个信号交给被调试程序会处理。nopass 表示当被调试的程序收到信号时，GDB 不会让被调试程序来处理这个信号，不会出现上述提示<br></li>
+</ul></li>
+<li><code>info signals</code><br></li>
+<li><code>info handle</code><br></li>
+</ul>
+<p>
+可以查看哪些信号被 GDB 处理，并且可以看到缺省的处理方式<br>
+</p>
+
+<p>
+gdb signal 命令和 shell 的 kill 命令不同，kill 命令发信号给被调试程序时，是由 GDB 截获的，而 signal 命令所发出一信号则是直接发给被调试程序的<br>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

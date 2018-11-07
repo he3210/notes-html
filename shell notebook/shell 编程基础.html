@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>shell 编程基础</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">shell 编程基础</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org49772f2">1. 特殊变量</a></li>
+<li><a href="#orga9b2698">2. 数组</a></li>
+<li><a href="#orgf54da25">3. if 语句</a></li>
+<li><a href="#org7bf57f8">4. case</a></li>
+<li><a href="#orgf5f3952">5. for</a></li>
+<li><a href="#orgbc605e8">6. 冒泡排序</a>
+<ul>
+<li><a href="#orgbfdac07">6.1. $[] 讲解</a></li>
+<li><a href="#orgd642e34">6.2. (()) 讲解</a></li>
+<li><a href="#org8743b2f">6.3. 冒泡排序</a></li>
+</ul>
+</li>
+<li><a href="#org7cd5f1c">7. while</a></li>
+<li><a href="#orgfee2497">8. until</a></li>
+<li><a href="#org527abc8">9. 函数</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org49772f2" class="outline-2">
+<h2 id="org49772f2"><span class="section-number-2">1</span> 特殊变量</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ cat test.sh
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/bash</span>
+<span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">1</span>
+<span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">2</span>
+<span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">3</span>
+<span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">#</span>        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21629;&#20196;&#34892;&#21442;&#25968;&#30340;&#20010;&#25968;</span>
+<span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">@</span>        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20256;&#20837;&#33050;&#26412;&#30340;&#20840;&#37096;&#21442;&#25968;</span>
+<span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">*</span>        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#33050;&#26412;&#30340;&#20840;&#37096;&#21442;&#25968;</span>
+<span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">$</span>        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#33050;&#26412;&#36827;&#31243;&#21495;</span>
+<span style="color: #5f8700;">exit</span> 999
+$ chmod +x test.sh
+$ ./test.sh 11 22 33
+11
+22
+33
+3
+11 22 33
+11 22 33
+14174
+$ echo $<span style="color: #0087ff;">?</span>      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21069;&#19968;&#21629;&#20196;&#25191;&#34892;&#30340;&#36820;&#22238;&#20540;</span>
+999
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga9b2698" class="outline-2">
+<h2 id="orga9b2698"><span class="section-number-2">2</span> 数组</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+输出数组的所有元素<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+<span style="color: #0087ff;">a</span>=(22 33 44 55 66 77 88)
+<span style="color: #0087ff;">index</span>=0
+<span style="color: #5f8700;">while</span> [ ${<span style="color: #0087ff;">index</span>} -lt ${#<span style="color: #0087ff;">a</span>[*]} ] <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;"># &#21495;&#34920;&#31034;&#21462;&#22823;&#23567;&#65292;* &#34920;&#31034;&#25152;&#26377;&#19979;&#26631;</span>
+<span style="color: #5f8700;">do</span>
+    <span style="color: #5f8700;">echo</span> ${<span style="color: #0087ff;">a</span>[index]}
+    <span style="color: #0087ff;">index</span>=$[${<span style="color: #0087ff;">index</span>}+1] <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">$[] &#34920;&#31034;&#36827;&#34892;&#31639;&#26415;&#36816;&#31639;</span>
+<span style="color: #5f8700;">done</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf54da25" class="outline-2">
+<h2 id="orgf54da25"><span class="section-number-2">3</span> if 语句</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+<span style="color: #5f8700;">if</span> test -f $<span style="color: #0087ff;">1</span> -a -r $<span style="color: #0087ff;">1</span> -a -w $<span style="color: #0087ff;">1</span>    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524; $1 &#26159;&#21487;&#35835;&#21487;&#20889;&#30340;&#25991;&#20214;</span>
+<span style="color: #5f8700;">then</span>
+    <span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">1</span>
+<span style="color: #5f8700;">elif</span> [ -d $<span style="color: #0087ff;">1</span> ]                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524; $1 &#26159;&#25991;&#20214;&#22841;&#12290;&#20854;&#20013;&#65292;[ &#31561;&#20215;&#20110; test</span>
+<span style="color: #5f8700;">then</span>
+    <span style="color: #5f8700;">cd</span> $<span style="color: #0087ff;">1</span>
+    <span style="color: #5f8700;">if</span> <span style="color: #d70000;">!</span> test -e <span style="color: #00afaf;">"ls.sh"</span>             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#19981;&#23384;&#22312; ls.sh &#25991;&#20214;</span>
+    <span style="color: #5f8700;">then</span>
+        touch ls.sh
+        <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"#!/bin/bash"</span> &gt;&gt; ls.sh             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&gt;&gt; &#34920;&#31034;&#26412;&#33050;&#26412;&#36827;&#31243;&#36816;&#34892;&#26399;&#38388;&#21482;&#26377;&#31532;&#19968;&#27425;&#37325;&#23450;&#21521;&#21040;&#26576;&#20010;&#25991;&#20214;&#26102;&#20250;&#21457;&#29983;&#25130;&#26029;&#65292;&#20877;&#27425;&#37325;&#23450;&#21521;&#21040;&#35813;&#25991;&#20214;&#26102;&#20250;&#22312;&#25991;&#20214;&#26411;&#23614;&#28155;&#21152;</span>
+        <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"ls -li /etc &gt; etc.list"</span> &gt;&gt; ls.sh  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&gt; &#34920;&#31034;&#37325;&#23450;&#21521;&#21040;&#26576;&#20010;&#25991;&#20214;&#26102;&#20250;&#21457;&#29983;&#25130;&#26029;</span>
+    <span style="color: #5f8700;">fi</span>
+    chmod +x <span style="color: #00afaf;">"ls.sh"</span>
+    ./ls.sh
+<span style="color: #5f8700;">fi</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7bf57f8" class="outline-2">
+<h2 id="org7bf57f8"><span class="section-number-2">4</span> case</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+<span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"It's morning? Please answer yes or no"</span>
+<span style="color: #5f8700;">read</span> answer
+<span style="color: #5f8700;">case</span> ${<span style="color: #0087ff;">answer</span>} <span style="color: #5f8700;">in</span>
+    [yY]|[yY][eE][sS])
+        <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"Good morning"</span>;;
+    [nN]|[nN][oO])
+        <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"Good afternoon"</span>;;
+    *)
+        <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"Error input"</span>;;
+<span style="color: #5f8700;">esac</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf5f3952" class="outline-2">
+<h2 id="orgf5f3952"><span class="section-number-2">5</span> for</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+<span style="color: #5f8700;">for</span> file<span style="color: #5f8700;"> in</span> /etc/r*
+<span style="color: #5f8700;">do</span>
+    <span style="color: #5f8700;">if</span> [ -d ${<span style="color: #0087ff;">file</span>} ]
+    <span style="color: #5f8700;">then</span>
+        <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"${file}(dir)"</span>
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"${file}"</span>
+    <span style="color: #5f8700;">fi</span>
+<span style="color: #5f8700;">done</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbc605e8" class="outline-2">
+<h2 id="orgbc605e8"><span class="section-number-2">6</span> 冒泡排序</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgbfdac07" class="outline-3">
+<h3 id="orgbfdac07"><span class="section-number-3">6.1</span> $[] 讲解</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+$[&#x2026;] 表示中括号中的 &#x2026; 是一个算术表达式，可以用 $[] 把 &#x2026; 从字符串转换成数字<br>
+比如<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #0087ff;">arr</span>=(11 22 33)
+<span style="color: #5f8700;">if</span> [ ${<span style="color: #0087ff;">arr</span>[0]} -lt ${<span style="color: #0087ff;">arr</span>[1]} ] <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25191;&#34892;&#20250;&#20986;&#38169;&#65292;&#22240;&#20026; ${} &#26159;&#19968;&#20010;&#23383;&#31526;&#20018;&#21464;&#37327;</span>
+<span style="color: #5f8700;">then</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"arr[0]&lt;arr[1]"</span>
+<span style="color: #5f8700;">fi</span>
+</pre>
+</div>
+
+<p>
+第 2 行应替换为：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #5f8700;">if</span> [ $[arr[0] -lt $[arr[1]] ]
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd642e34" class="outline-3">
+<h3 id="orgd642e34"><span class="section-number-3">6.2</span> (()) 讲解</h3>
+<div class="outline-text-3" id="text-6-2">
+<ul class="org-ul">
+<li>在双括号结构中，所有表达式可以像 c 语言一样，如：a++, b&#x2013; 等。<br></li>
+<li>在双括号结构中，所有变量可以不加入："$" 符号前缀。<br></li>
+<li>双括号可以进行逻辑运算，四则运算<br></li>
+<li>双括号结构 扩展了 for, while, if 条件测试运算<br></li>
+<li>支持多个表达式运算，各个表达式之间用 "," 分开<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8743b2f" class="outline-3">
+<h3 id="org8743b2f"><span class="section-number-3">6.3</span> 冒泡排序</h3>
+<div class="outline-text-3" id="text-6-3">
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+<span style="color: #0087ff;">arr</span>=(3 10 6 5 9 2 8 1 4 7)
+<span style="color: #5f8700;">for</span>((<span style="color: #0087ff;">i</span>=0; i&lt;${#<span style="color: #0087ff;">arr</span>[*]-1}; ++i))
+<span style="color: #5f8700;">do</span>
+    <span style="color: #5f8700;">for</span>((<span style="color: #0087ff;">j</span>=${#<span style="color: #0087ff;">arr</span>[*]}-1; j&gt;i; --j))
+    <span style="color: #5f8700;">do</span>
+        <span style="color: #5f8700;">if</span> [ $[arr[j]] -lt $[arr[j-1]] ]
+        <span style="color: #5f8700;">then</span>
+            <span style="color: #0087ff;">arr</span>[j]=$[arr[j]+arr[j-1]-(arr[j-1]=arr[j])]
+<span style="color: #8a8a8a;">#           </span><span style="color: #8a8a8a;">temp=${arr[j]}</span>
+<span style="color: #8a8a8a;">#           </span><span style="color: #8a8a8a;">arr[j]=${arr[j-1]}</span>
+<span style="color: #8a8a8a;">#           </span><span style="color: #8a8a8a;">arr[j-1]=${temp}</span>
+        <span style="color: #5f8700;">fi</span>
+    <span style="color: #5f8700;">done</span>
+<span style="color: #5f8700;">done</span>
+<span style="color: #5f8700;">echo</span> ${<span style="color: #0087ff;">arr</span>[@]}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7cd5f1c" class="outline-2">
+<h2 id="org7cd5f1c"><span class="section-number-2">7</span> while</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+1+2+3+&#x2026;+100=?<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+<span style="color: #0087ff;">var</span>=0
+<span style="color: #0087ff;">sum</span>=0
+<span style="color: #5f8700;">while</span> [ ${<span style="color: #0087ff;">var</span>} -lt 100 ]
+<span style="color: #5f8700;">do</span>
+    <span style="color: #0087ff;">var</span>=$[var+1]
+    <span style="color: #0087ff;">sum</span>=$[var+sum]
+<span style="color: #5f8700;">done</span>
+<span style="color: #5f8700;">echo</span> ${<span style="color: #0087ff;">sum</span>}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfee2497" class="outline-2">
+<h2 id="orgfee2497"><span class="section-number-2">8</span> until</h2>
+<div class="outline-text-2" id="text-8">
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+<span style="color: #0087ff;">var</span>=0
+<span style="color: #5f8700;">until</span> [ ${<span style="color: #0087ff;">var</span>} -eq 10 ]
+<span style="color: #5f8700;">do</span>
+    <span style="color: #5f8700;">echo</span> ${<span style="color: #0087ff;">var</span>}
+    <span style="color: #0087ff;">var</span>=$((var+1))
+<span style="color: #5f8700;">done</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org527abc8" class="outline-2">
+<h2 id="org527abc8"><span class="section-number-2">9</span> 函数</h2>
+<div class="outline-text-2" id="text-9">
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+<span style="color: #5f8700;">function</span> <span style="color: #0087ff;">add</span>()
+{
+    <span style="color: #5f8700;">return</span> $(($<span style="color: #0087ff;">1</span>+$<span style="color: #0087ff;">2</span>))
+}
+<span style="color: #0087ff;">a</span>=11
+<span style="color: #0087ff;">b</span>=22
+add a b
+<span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">?</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

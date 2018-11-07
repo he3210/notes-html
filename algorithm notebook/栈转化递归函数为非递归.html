@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-01 Thu 09:43 -->
+<!-- 2018-11-07 Wed 23:31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>栈转化递归函数为非递归</title>
@@ -56,15 +56,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5f115c2">1. 问题</a></li>
-<li><a href="#orgab399d6">2. 递归</a></li>
-<li><a href="#org459732f">3. 非递归</a></li>
+<li><a href="#org6fb616e">1. 问题</a></li>
+<li><a href="#org947516b">2. 递归</a></li>
+<li><a href="#orgc07f207">3. 非递归</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5f115c2" class="outline-2">
-<h2 id="org5f115c2"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org6fb616e" class="outline-2">
+<h2 id="org6fb616e"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 利用一个栈实现一下递归函数的非递归计算<br>
@@ -83,8 +83,8 @@ P_n(x)=\left\{
 </div>
 </div>
 
-<div id="outline-container-orgab399d6" class="outline-2">
-<h2 id="orgab399d6"><span class="section-number-2">2</span> 递归</h2>
+<div id="outline-container-org947516b" class="outline-2">
+<h2 id="org947516b"><span class="section-number-2">2</span> 递归</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">double</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">double</span> <span style="color: #0087ff;">x</span>)
@@ -101,8 +101,8 @@ P_n(x)=\left\{
 </div>
 </div>
 
-<div id="outline-container-org459732f" class="outline-2">
-<h2 id="org459732f"><span class="section-number-2">3</span> 非递归</h2>
+<div id="outline-container-orgc07f207" class="outline-2">
+<h2 id="orgc07f207"><span class="section-number-2">3</span> 非递归</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一个守护进程</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">一个守护进程</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org21d37e2">1. daemon.c</a></li>
+<li><a href="#org5cadd07">2. 编译与结果</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org21d37e2" class="outline-2">
+<h2 id="org21d37e2"><span class="section-number-2">1</span> daemon.c</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;signal.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;unistd.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;sys/types.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;sys/stat.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;time.h&gt;</span>
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">init_daemon</span>()
+{
+    <span style="color: #af8700;">pid_t</span> <span style="color: #0087ff;">pid</span> = fork();
+    <span style="color: #5f8700;">if</span>(pid &gt; 0)    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#32467;&#26463;&#29238;&#36827;&#31243;</span>
+        exit(0);
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(pid &lt; 0)
+        exit(-1);
+    setsid();      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35753;&#36827;&#31243;&#25670;&#33073;&#21407;&#20250;&#35805;&#12289;&#21407;&#36827;&#31243;&#32452;&#12289;&#21407;&#25511;&#21046;&#32456;&#31471;&#30340;&#25511;&#21046;</span>
+    pid = fork();
+    <span style="color: #5f8700;">if</span>(pid &gt; 0)    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#23376;&#36827;&#31243;&#20026;&#26080;&#32456;&#31471;&#30340;&#20250;&#35805;&#32452;&#38271;&#65292;&#20351;&#31532;&#19968;&#23376;&#36827;&#31243;&#19981;&#20877;&#25104;&#20026;&#20250;&#35805;&#32452;&#38271;&#20174;&#32780;&#31105;&#27490;&#36827;&#31243;&#37325;&#26032;&#25171;&#24320;&#25511;&#21046;&#32456;&#31471; &#65292;&#25152;&#20197;&#32467;&#26463;&#31532;&#19968;&#23376;&#36827;&#31243;</span>
+        exit(0);
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(pid &lt; 0)
+        exit(-1);
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20445;&#30041;&#31532;&#20108;&#23376;&#36827;&#31243;&#12290;&#20851;&#38381;&#25991;&#20214;&#25551;&#36848;&#31526;&#65292;&#20999;&#25442;&#24037;&#20316;&#30446;&#24405;&#12289;&#37325;&#35774;&#25991;&#20214;&#35775;&#38382;&#26435;&#38480;&#25513;&#30721;</span>
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; 64; ++i)
+        close(i);
+    chdir(<span style="color: #00afaf;">"/"</span>);
+    umask(0);
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
+{
+    signal(SIGCHLD, SIG_IGN);<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#29238;&#36827;&#31243;&#24573;&#30053;SIGCHLD&#20449;&#21495;&#65292;&#23376;&#36827;&#31243;&#32467;&#26463;&#21518;&#20132;&#32473;init</span>
+    init_daemon();
+    <span style="color: #af8700;">FILE</span> *<span style="color: #0087ff;">fp</span>;
+    <span style="color: #af8700;">time_t</span> <span style="color: #0087ff;">tt</span>;
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; 5; ++i)
+    {
+        sleep(3);
+        <span style="color: #5f8700;">if</span>((fp = fopen(<span style="color: #00afaf;">"/home/he/Desktop/daemon.log"</span>, <span style="color: #00afaf;">"a"</span>)) != <span style="color: #00afaf;">NULL</span>)
+        {
+            time(&amp;tt);
+            <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">tm</span> *<span style="color: #0087ff;">ptm</span> = gmtime(&amp;tt);
+            fprintf(fp, <span style="color: #00afaf;">"%04d-%02d-%02d %02d:%02d:%02d\n"</span>, \
+                    ptm -&gt; tm_year + 1900, ptm -&gt; tm_mon + 1, ptm -&gt; tm_mday,\
+                    ptm -&gt; tm_hour + 8, ptm -&gt; tm_min, ptm -&gt; tm_sec);
+            fclose(fp);
+        }
+    }
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5cadd07" class="outline-2">
+<h2 id="org5cadd07"><span class="section-number-2">2</span> 编译与结果</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ gcc daemon.c -o daemon -std=c99
+$ ./daemon
+$ ps -ef | grep <span style="color: #00afaf;">'./daemon'</span> | grep -v grep                                                                                                                                        &#57522; &#61452; &#57522; 16:32:51
+  501 43381     1   0  4:32PM ??         0:00.01 ./daemon
+$ cat daemon.log
+2015-06-21 10:17:32
+2015-06-21 10:17:35
+2015-06-21 10:17:38
+2015-06-21 10:17:41
+2015-06-21 10:17:44
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

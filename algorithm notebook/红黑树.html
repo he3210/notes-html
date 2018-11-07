@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-07 Wed 23:31 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>红黑树</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">红黑树</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org03184c8">1. 参考</a></li>
+<li><a href="#org1e8b598">2. 红黑树的 5 个性质</a></li>
+<li><a href="#org29889b0">3. 算法</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org03184c8" class="outline-2">
+<h2 id="org03184c8"><span class="section-number-2">1</span> 参考</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><a href="http://daoluan.net/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E7%AE%97%E6%B3%95/2013/09/25/rbtree-is-not-difficult.html">红黑树并没有我们想象的那么难</a><br></li>
+<li><a href="https://github.com/julycoding/The-Art-Of-Programming-By-July/blob/master/ebook/zh/03.01.md">教你透彻了解红黑树</a><br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1e8b598" class="outline-2">
+<h2 id="org1e8b598"><span class="section-number-2">2</span> 红黑树的 5 个性质</h2>
+<div class="outline-text-2" id="text-2">
+<ol class="org-ol">
+<li>每个结点要么是红的，要么是黑的。<br></li>
+<li>根结点是黑的。<br></li>
+<li>每个叶结点（叶结点即指树尾端 NIL 指针或 NULL 结点）是黑的。<br></li>
+<li>如果一个结点是红的，那么它的俩个儿子都是黑的。<br></li>
+<li>对于任一结点而言，其到叶结点树尾端 NULL 指针的每一条路径都包含相同数目的黑结点。<br></li>
+</ol>
+
+<p>
+由此推断出红结点的父结点和子结点均为黑色<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org29889b0" class="outline-2">
+<h2 id="org29889b0"><span class="section-number-2">3</span> 算法</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;time.h&gt;</span>
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">int</span> <span style="color: #af8700;">key_t</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">int</span> <span style="color: #af8700;">data_t</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">enum</span> <span style="color: #af8700;">color_t</span>
+{
+    <span style="color: #0087ff;">RED</span> = 0,
+    <span style="color: #0087ff;">BLACK</span> = 1
+}<span style="color: #af8700;">color_t</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">rb_node_t</span>
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">left</span>, *<span style="color: #0087ff;">right</span>, *<span style="color: #0087ff;">parent</span>;
+    <span style="color: #af8700;">key_t</span> <span style="color: #0087ff;">key</span>;
+    <span style="color: #af8700;">data_t</span> <span style="color: #0087ff;">data</span>;
+    <span style="color: #af8700;">color_t</span> <span style="color: #0087ff;">color</span>;
+}<span style="color: #af8700;">rb_node_t</span>;
+
+<span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_insert</span>(<span style="color: #af8700;">key_t</span> <span style="color: #0087ff;">key</span>, <span style="color: #af8700;">data_t</span> <span style="color: #0087ff;">data</span>, <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">root</span>);
+<span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_search</span>(<span style="color: #af8700;">key_t</span> <span style="color: #0087ff;">key</span>, <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">root</span>);
+<span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_erase</span>(<span style="color: #af8700;">key_t</span> <span style="color: #0087ff;">key</span>, <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">root</span>);
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #0087ff;">count</span> = 900000;
+    <span style="color: #af8700;">key_t</span> <span style="color: #0087ff;">key</span>;
+    <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">root</span> = <span style="color: #00afaf;">NULL</span>, *<span style="color: #0087ff;">node</span> = <span style="color: #00afaf;">NULL</span>;
+    srand(time(<span style="color: #00afaf;">NULL</span>));
+    <span style="color: #5f8700;">for</span>(i = 1; i &lt; count; ++i)
+    {
+        key = rand()%count;
+        <span style="color: #5f8700;">if</span>((root = rb_insert(key, i, root)))
+        {
+            printf(<span style="color: #00afaf;">"[i = %8d] insertkey %10d success!\n"</span>, i, key);
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            printf(<span style="color: #00afaf;">"[i = %8d] insertkey %10d error!\n"</span>, i, key);
+            exit(-1);
+        }
+        <span style="color: #5f8700;">if</span>((node = rb_search(key,root)))
+        {
+            printf(<span style="color: #00afaf;">"[i = %8d] searchkey %10d success!\n"</span>, i, key);
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            printf(<span style="color: #00afaf;">"[i = %8d] searchkey %10d error!\n"</span>, i, key);
+            exit(-1);
+        }
+        <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>(i%10))
+        {
+            <span style="color: #5f8700;">if</span>((root = rb_erase(key, root)))
+            {
+                printf(<span style="color: #00afaf;">"[i = %8d] erasekey  %10d success!\n"</span>, i, key);
+            }
+            <span style="color: #5f8700;">else</span>
+            {
+                printf(<span style="color: #00afaf;">"[i = %8d] erasekey  %10d error\n"</span>, i, key);
+            }
+        }
+    }
+    <span style="color: #5f8700;">return</span> 0;
+}
+
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_new_node</span>(<span style="color: #af8700;">key_t</span> <span style="color: #0087ff;">key</span>, <span style="color: #af8700;">data_t</span> <span style="color: #0087ff;">data</span>)
+{
+    <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">node</span> = (<span style="color: #af8700;">rb_node_t</span>*)malloc(<span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">rb_node_t</span>));
+    <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>node)
+    {
+        printf(<span style="color: #00afaf;">"malloc error!\n"</span>);
+        exit(-1);
+    }
+    node-&gt;key = key, node-&gt;data = data;
+    <span style="color: #5f8700;">return</span> node;
+}
+
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#19968;&#12289;&#24038;&#26059;&#20195;&#30721;&#20998;&#26512;</span>
+<span style="color: #8a8a8a;">/*</span><span style="color: #8a8a8a;">-----------------------------------------------------------</span>
+<span style="color: #8a8a8a;">  |   node             right</span>
+<span style="color: #8a8a8a;">  |   /  \    ==&gt;      /  \</span>
+<span style="color: #8a8a8a;">  |   a  right       node  y</span>
+<span style="color: #8a8a8a;">  |      /  \         /  \</span>
+<span style="color: #8a8a8a;">  |      b   y       a    b    // &#24038;&#26059;</span>
+<span style="color: #8a8a8a;">  -----------------------------------------------------------</span>
+<span style="color: #8a8a8a;"> * @desc: &#23558; node &#32467;&#28857;&#24038;&#26059;</span>
+<span style="color: #8a8a8a;"> * @root: &#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @retu: &#22914;&#26524;&#25226;&#26681;&#32467;&#28857;&#24038;&#26059;&#20102;&#65292;&#23601;&#36820;&#22238;&#26032;&#30340;&#26681;&#32467;&#28857;&#65307;&#21542;&#21017;&#65292;&#36820;&#22238;&#26087;&#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_rotate_left</span>(<span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">node</span>, <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">root</span>)
+{
+    <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">right</span> = node-&gt;right;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">right &#25351;&#21521; node &#30340;&#21491;&#23376;&#26641;</span>
+
+    <span style="color: #5f8700;">if</span>((node-&gt;right = right-&gt;left))    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25226; b &#21464;&#25104; node &#30340;&#21491;&#23401;&#23376;</span>
+    {
+        right-&gt;left-&gt;parent = node;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25226; node &#21464;&#25104; b &#30340;&#29238;&#32467;&#28857;</span>
+    }
+    right-&gt;left = node;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">node &#25104;&#20026; right &#30340;&#24038;&#23401;&#23376;</span>
+
+    <span style="color: #5f8700;">if</span>((right-&gt;parent = node-&gt;parent)) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20462;&#25913; right &#30340;&#29238;&#32467;&#28857;</span>
+    {
+        <span style="color: #5f8700;">if</span>(node == node-&gt;parent-&gt;right)<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; node &#23376;&#26641;&#21407;&#26412;&#26159;&#19968;&#20010;&#32467;&#28857;&#30340;&#21491;&#23376;&#26641;</span>
+        {
+            node-&gt;parent-&gt;right = right; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">right &#25104;&#20026;&#21407;&#26412; node &#29238;&#32467;&#28857;&#30340;&#21491;&#23401;&#23376;</span>
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            node-&gt;parent-&gt;left = right; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">right &#25104;&#20026;&#21407;&#26412; node &#29238;&#32467;&#28857;&#30340;&#24038;&#23401;&#23376;</span>
+        }
+    }
+    <span style="color: #5f8700;">else</span>
+    {
+        root = right;
+    }
+    node-&gt;parent = right;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">right &#25104;&#20026; node &#30340;&#29238;&#27597;</span>
+
+    <span style="color: #5f8700;">return</span> root;
+}
+
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#20108;&#12289;&#21491;&#26059;</span>
+<span style="color: #8a8a8a;">/*</span><span style="color: #8a8a8a;">-----------------------------------------------------------</span>
+<span style="color: #8a8a8a;">  |       node             left</span>
+<span style="color: #8a8a8a;">  |       /  \             /  \</span>
+<span style="color: #8a8a8a;">  |     left  y   ==&gt;     a   node</span>
+<span style="color: #8a8a8a;">  |     /  \                  /  \</span>
+<span style="color: #8a8a8a;">  |    a    b                b    y  // &#21491;&#26059;&#19982;&#24038;&#26059;&#31867;&#20284;</span>
+<span style="color: #8a8a8a;">  -----------------------------------------------------------</span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_rotate_right</span>(<span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">node</span>, <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">root</span>)
+{
+    <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">left</span> = node-&gt;left;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">left &#25351;&#21521; node &#30340;&#24038;&#23376;&#26641;</span>
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">#1 &#21644; #2 &#34920;&#31034;&#25226; b &#21464;&#25104; node &#30340;&#24038;&#23401;&#23376;</span>
+    <span style="color: #5f8700;">if</span> ((node-&gt;left = left-&gt;right))  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">#1</span>
+    {
+        left-&gt;right-&gt;parent = node;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">#2</span>
+    }
+    left-&gt;right = node;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25226; left &#30340;&#21491;&#23401;&#23376;&#21464;&#25104; node</span>
+
+    <span style="color: #5f8700;">if</span> ((left-&gt;parent = node-&gt;parent))    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25226;&#21407; node &#23376;&#26641;&#30340;&#29238;&#32467;&#28857;&#21464;&#25104; left &#30340;&#29238;&#32467;&#28857;&#65292;&#24182;&#19988;&#22914;&#26524;&#35813;&#29238;&#32467;&#28857;&#23384;&#22312;</span>
+    {
+        <span style="color: #5f8700;">if</span> (node == node-&gt;parent-&gt;right)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21407; node &#23376;&#26641;&#26159;&#29238;&#32467;&#28857;&#30340;&#21491;&#23376;&#26641;</span>
+        {
+            node-&gt;parent-&gt;right = left;
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            node-&gt;parent-&gt;left = left;
+        }
+    }
+    <span style="color: #5f8700;">else</span>
+    {
+        root = left;
+    }
+    node-&gt;parent = left;
+
+    <span style="color: #5f8700;">return</span> root;
+}
+
+<span style="color: #8a8a8a;">/*</span>
+<span style="color: #8a8a8a;"> * @desc: &#38024;&#23545;&#32418;&#40657;&#26641;&#25554;&#20837;&#26032;&#32467;&#28857;&#21518;&#32418;&#40657;&#26641;&#32467;&#26500;&#34987;&#30772;&#22351;&#30340;3&#31181;&#24773;&#20917;&#65292;&#32780;&#36827;&#34892;&#30340;&#20462;&#22797;&#24037;&#20316;&#65292;&#20351;&#20854;&#37325;&#26032;&#21464;&#25104;&#32418;&#40657;&#26641;&#12290;</span>
+<span style="color: #8a8a8a;"> * &#24403;&#21069;&#32467;&#28857;&#21644;&#29238;&#32467;&#28857;&#37117;&#26159;&#32418;&#33394;&#65292;&#36825;&#23601;&#30772;&#22351;&#20102;&#32418;&#40657;&#26641;&#30340;&#32467;&#26500;&#12290;&#27492;&#26102;&#20462;&#22797;&#20998;&#20004;&#20010;&#37096;&#20998;&#65306;</span>
+<span style="color: #8a8a8a;"> * &#19968;&#12289;&#31062;&#29238;&#30340;&#24038;&#23401;&#23376; == &#29238;&#27597;&#32467;&#28857;&#26102;&#65307; &#20108;&#12289;&#31062;&#29238;&#30340;&#21491;&#23401;&#23376; == &#29238;&#27597;&#32467;&#28857;&#26102;</span>
+<span style="color: #8a8a8a;"> * &#36825;&#20004;&#37096;&#20998;&#21448;&#21508;&#20998; 3 &#31181;&#20462;&#22797;&#24773;&#20917;</span>
+<span style="color: #8a8a8a;"> * &#31532;&#19968;&#37096;&#20998;&#20462;&#22797;&#24773;&#20917; 1&#65306; &#21460;&#21460;&#32467;&#28857;&#26159;&#32418;&#33394;</span>
+<span style="color: #8a8a8a;"> * &#31532;&#19968;&#37096;&#20998;&#20462;&#22797;&#24773;&#20917; 2&#65306; &#21460;&#21460;&#32467;&#28857;&#26159;&#40657;&#33394;&#65292;&#24403;&#21069;&#32467;&#28857;&#26159;&#20854;&#29238;&#32467;&#28857;&#30340;&#21491;&#23376;</span>
+<span style="color: #8a8a8a;"> * &#31532;&#19968;&#37096;&#20998;&#20462;&#22797;&#24773;&#20917; 3&#65306; &#21460;&#21460;&#32467;&#28857;&#26159;&#40657;&#33394;&#65292;&#24403;&#21069;&#32467;&#28857;&#26159;&#20854;&#29238;&#32467;&#28857;&#30340;&#24038;&#23376;&#12290;&#24773;&#20917;3&#26159;&#30001;&#24773;&#20917;2&#21464;&#21270;&#32780;&#26469;&#30340;</span>
+<span style="color: #8a8a8a;"> *</span>
+<span style="color: #8a8a8a;"> * &#31532;&#20108;&#37096;&#20998;&#20462;&#22797;&#24773;&#20917; 1&#65306; &#21460;&#21460;&#32467;&#28857;&#26159;&#32418;&#33394;</span>
+<span style="color: #8a8a8a;"> * &#31532;&#20108;&#37096;&#20998;&#20462;&#22797;&#24773;&#20917; 1&#65306; &#21460;&#21460;&#32467;&#28857;&#26159;&#40657;&#33394;&#65292;&#24403;&#21069;&#32467;&#28857;&#26159;&#20854;&#29238;&#32467;&#28857;&#30340;&#24038;&#23376;</span>
+<span style="color: #8a8a8a;"> * &#31532;&#20108;&#37096;&#20998;&#20462;&#22797;&#24773;&#20917; 1&#65306; &#21460;&#21460;&#32467;&#28857;&#26159;&#40657;&#33394;&#65292;&#24403;&#21069;&#32467;&#28857;&#26159;&#20854;&#29238;&#32467;&#28857;&#30340;&#21491;&#23376;&#12290;&#24773;&#20917;3&#26159;&#30001;&#24773;&#20917;2&#21464;&#21270;&#32780;&#26469;&#30340;</span>
+<span style="color: #8a8a8a;"> *</span>
+<span style="color: #8a8a8a;"> * @node: &#26032;&#25554;&#20837;&#30340;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @root: &#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @retu: &#32418;&#40657;&#26641;&#20462;&#22797;&#21518;&#30340;&#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_insert_rebalance</span>(<span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">node</span>, <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">root</span>)
+{
+    <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">parent</span>, *<span style="color: #0087ff;">gparent</span>, *<span style="color: #0087ff;">uncle</span>, *<span style="color: #0087ff;">tmp</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29238;&#32467;&#28857;&#12289;&#31062;&#29238;&#32467;&#28857;&#12289;&#21460;&#21460;&#32467;&#28857;&#12289;&#20020;&#26102;&#32467;&#28857; *tmp</span>
+
+    <span style="color: #5f8700;">while</span> ((parent = node-&gt;parent) &amp;&amp; parent-&gt;color == RED) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">parent &#20026; node &#30340;&#29238;&#27597;&#65292;&#19988;&#24403;&#29238;&#27597;&#30340;&#39068;&#33394;&#20026;&#32418;&#26102;</span>
+    {
+        gparent = parent-&gt;parent;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">gparent &#20026;&#31062;&#29238;&#65292;&#19988;&#23427;&#19968;&#23450;&#23384;&#22312;&#65292;&#22240;&#20026; parent &#20026;&#32418;&#33394;</span>
+
+        <span style="color: #5f8700;">if</span> (parent == gparent-&gt;left) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24403;&#31062;&#29238;&#30340;&#24038;&#23401;&#23376;&#21363;&#20026;&#29238;&#27597;&#26102;&#12290;</span>
+        {
+            uncle = gparent-&gt;right;
+
+            <span style="color: #5f8700;">if</span> (uncle &amp;&amp; uncle-&gt;color == RED) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24773;&#20917; 1</span>
+            {
+                uncle-&gt;color = BLACK;
+                parent-&gt;color = BLACK;
+                gparent-&gt;color = RED;
+                node = gparent;     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#31062;&#29238;&#32467;&#28857;&#24403;&#20316;&#24403;&#21069;&#32467;&#28857;&#65292;&#32487;&#32493;&#36827;&#34892;&#20462;&#22797;</span>
+            }
+            <span style="color: #5f8700;">else</span> <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21460;&#21460;&#32467;&#28857;&#26159;&#40657;&#33394;&#12290;&#22240;&#20026;&#27492;&#26102; uncle &#21487;&#33021;&#20026; NULL &#25110;&#32773; uncle &#20026;&#40657;&#33394;&#65292;&#21448;&#22240;&#20026; NULL &#20063;&#34920;&#31034;&#40657;&#33394;&#65292;&#25152;&#20197;&#21460;&#21460;&#32467;&#28857;&#26159;&#40657;&#33394;</span>
+            {
+                <span style="color: #5f8700;">if</span> (parent-&gt;right == node)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24773;&#20917; 2&#12290;node &#20026;&#21491;&#23401;&#23376;</span>
+                {
+                    root = rb_rotate_left(parent, root); <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#29238;&#20146;&#32467;&#28857;&#24038;&#26059;</span>
+                    tmp = parent;
+                    parent = node;
+                    node = tmp;     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">parent &#19982; node &#20114;&#25442;&#35282;&#33394;&#65292;&#27492;&#26102;&#30001;&#24773;&#20917; 2 &#21464;&#25104;&#24773;&#20917; 3</span>
+                }
+
+                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24773;&#20917; 3</span>
+                parent-&gt;color = BLACK;
+                gparent-&gt;color = RED;
+                root = rb_rotate_right(gparent, root); <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#31062;&#29238;&#32467;&#28857;&#21491;&#26059;</span>
+            }
+        }
+        <span style="color: #5f8700;">else</span> <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24403;&#31062;&#29238;&#30340;&#21491;&#23401;&#23376;&#26159;&#29238;&#27597;&#32467;&#28857;&#26102;</span>
+        {
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">if (parent == gparent-&gt;right) &#24403;&#31062;&#29238;&#30340;&#21491;&#23401;&#23376;&#21363;&#20026;&#29238;&#27597;&#26102;</span>
+            uncle = gparent-&gt;left;
+            <span style="color: #5f8700;">if</span> (uncle &amp;&amp; uncle-&gt;color == RED)  <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#24773;&#20917; 1</span>
+            {
+                uncle-&gt;color = BLACK;
+                parent-&gt;color = BLACK;
+                gparent-&gt;color = RED;
+                node = gparent;
+            }
+            <span style="color: #5f8700;">else</span>
+            {
+                <span style="color: #5f8700;">if</span> (parent-&gt;left == node)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24773;&#20917; 2</span>
+                {
+                    root = rb_rotate_right(parent, root);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#29238;&#32467;&#28857;&#21491;&#26059;</span>
+                    tmp = parent;
+                    parent = node;
+                    node = tmp;     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">parent &#19982; node &#20114;&#25442;&#35282;&#33394;&#65292;&#27492;&#26102;&#30001;&#24773;&#20917; 2 &#21464;&#25104;&#24773;&#20917; 3</span>
+                }
+                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24773;&#20917; 3</span>
+                parent-&gt;color = BLACK;
+                gparent-&gt;color = RED;
+                root = rb_rotate_left(gparent, root);   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#31062;&#29238;&#32467;&#28857;&#24038;&#26059;</span>
+            }
+        }
+    }
+
+    root-&gt;color = BLACK; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26681;&#32467;&#28857;&#32622;&#20026;&#40657;&#33394;</span>
+    <span style="color: #5f8700;">return</span> root;
+}
+
+<span style="color: #8a8a8a;">/*</span>
+<span style="color: #8a8a8a;"> * @desc  : &#32418;&#40657;&#26641;&#21024;&#38500;&#19968;&#20010;&#40657;&#33394;&#32467;&#28857;&#21518;&#65292;&#37027;&#20040;&#36825;&#20010;&#36335;&#24452;&#19978;&#23601;&#20250;&#23569;&#19968;&#20010;&#40657;&#33394;&#32467;&#28857;&#65292;&#30772;&#22351;&#20102;&#24615;&#36136; 5&#65292;&#32780;&#35813;&#20989;&#25968;&#26159;&#29992;&#26469;&#20462;&#22797;&#32418;&#40657;&#26641;&#30340;</span>
+<span style="color: #8a8a8a;"> * @node  : node &#20026;&#24453;&#21024;&#32467;&#28857; X &#30340;&#23401;&#23376;&#32467;&#28857;,&#24453;&#21024;&#32467;&#28857;&#34987;&#21024;&#38500;&#21518;&#65292;&#27492;&#26102; node &#32467;&#28857;&#22635;&#34917;&#20102;&#24453;&#21024;&#32467;&#28857;&#30340;&#20301;&#32622;&#65292;node &#25104;&#20026;&#24403;&#21069;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @parent: parent &#21407;&#26412;&#26159;&#24453;&#21024;&#32467;&#28857; X &#30340;&#29238;&#32467;&#28857;&#65292;X &#34987;&#21024;&#38500;&#21518;&#65292;parent &#25104;&#20026; node &#30340;&#29238;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @root  : &#32418;&#40657;&#26641;&#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_erase_rebalance</span>(<span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">node</span>, <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">parent</span>, <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">root</span>)
+{
+    <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">other</span>, *<span style="color: #0087ff;">o_left</span>, *<span style="color: #0087ff;">o_right</span>;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">node&#30340;&#20804;&#24351; *other&#65292;&#20804;&#24351;&#24038;&#23401;&#23376; *o_left, *o_right</span>
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21024;&#38500;&#30340;&#26159;&#40657;&#32467;&#28857;&#65292;&#36825;&#26465;&#36335;&#24452;&#19978;&#23601;&#23569;&#20102;&#19968;&#20010;&#40657;&#33394;&#32467;&#28857;&#12290;&#22914;&#26524; node &#21448;&#20026;&#40657;&#65292;&#21017;&#38656;&#35201;&#36827;&#20837; while &#24490;&#29615;&#37325;&#26032;&#24179;&#34913;&#32418;&#40657;&#26641;&#65307;&#22914;&#26524; node &#20026;&#32418;&#65292;&#25226; node &#26579;&#40657;&#32418;&#40657;&#26641;&#23601;&#24179;&#34913;&#20102;</span>
+    <span style="color: #5f8700;">while</span> ((<span style="color: #d70000;">!</span>node || node-&gt;color == BLACK) &amp;&amp; node != root) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">node &#26159;&#40657;&#33394;&#30340;&#19988; node &#38750;&#26681;&#32467;&#28857;</span>
+    {
+        <span style="color: #5f8700;">if</span> (parent-&gt;left == node)
+        {
+            other = parent-&gt;right;
+
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24773;&#20917; 1&#65306;node &#30340;&#20804;&#24351; other &#26159;&#32418;&#33394;&#30340;</span>
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#30001;&#20110; parent &#24038;&#23376;&#26641;&#23569;&#20102;&#19968;&#20010;&#40657;&#32467;&#28857;&#65292;&#30772;&#22351;&#20102;&#24615;&#36136; 5&#65292;&#25152;&#20197;&#36890;&#36807;&#19979;&#21015; 3 &#27493;&#25805;&#20316;&#20351;&#20854;&#28385;&#36275;&#24615;&#36136; 5</span>
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35843;&#25972;&#32467;&#26463;&#21518;&#65292;&#30001;&#20110; other &#25913;&#21464;&#20102;&#65292;node &#23376;&#26641;&#21644; other &#23376;&#26641;&#21487;&#33021;&#19981;&#24179;&#34913;&#65292;&#32487;&#32493;&#35843;&#25972;&#65288;&#27492;&#26102; other &#20026;&#40657;&#33394;&#65292;&#36890;&#36807;&#21478;&#22806; 3 &#31181;&#24773;&#20917;&#36827;&#34892;&#35843;&#25972;&#65289;</span>
+            <span style="color: #5f8700;">if</span> (other-&gt;color == RED)
+            {
+                other-&gt;color = BLACK;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#27493;&#65306;&#20804;&#24351; other &#21464;&#40657;</span>
+                parent-&gt;color = RED;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#20108;&#27493;&#65306;&#29238;&#20146;&#21464;&#32418;</span>
+                root = rb_rotate_left(parent, root);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19977;&#27493;&#65306;&#24038;&#26059;</span>
+                other = parent-&gt;right; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#30001;&#20110;&#24038;&#26059;&#30340;&#32467;&#26500;&#35843;&#25972;&#65292;node &#30340;&#20804;&#24351;&#32467;&#28857;&#21464;&#20026;&#65306;&#24038;&#26059;&#21069;&#20804;&#24351; other &#30340;&#24038;&#23401;&#23376;</span>
+            }
+
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24773;&#20917; 2&#65306;node &#30340;&#20804;&#24351; other &#26159;&#40657;&#33394;&#65292;&#19988; other &#30340;&#20457;&#20010;&#23401;&#23376;&#20063;&#37117;&#26159;&#40657;&#33394;&#30340;</span>
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25226; other &#21464;&#32418;&#65292;&#36825;&#26679; node &#23376;&#26641;&#21644; other &#23376;&#26641;&#23601;&#24179;&#34913;&#20102;&#12290;</span>
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24773;&#20917; 2 &#35843;&#25972;&#23436;&#27605;&#21518;&#38754;&#20020; 2 &#31181;&#36873;&#25321;&#65306;node &#26159;&#32418;&#33394;&#65292;node &#26159;&#40657;&#33394;</span>
+            <span style="color: #5f8700;">if</span> ((<span style="color: #d70000;">!</span>other-&gt;left || other-&gt;left-&gt;color == BLACK) &amp;&amp;
+                    (<span style="color: #d70000;">!</span>other-&gt;right || other-&gt;right-&gt;color == BLACK))
+            {   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#30001;&#20110; parent &#24038;&#23376;&#26641;&#34987;&#21024;&#32467;&#28857;&#26159;&#40657;&#33394;&#30340;&#65292;&#25152;&#20197;&#30772;&#22351;&#20102;&#24615;&#36136; 5&#65292;&#36890;&#36807;&#19979;&#21015; 1 &#27493;&#25805;&#20316;&#20351;&#20854;&#28385;&#36275;&#24615;&#36136; 5</span>
+                other-&gt;color = RED;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#27493;&#65306;&#20804;&#24351; other &#21464;&#32418;</span>
+                node = parent;         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25226; parent &#21464;&#25104;&#24403;&#21069;&#32467;&#28857;&#65292;&#32487;&#32493;&#20462;&#22797;</span>
+                parent = node-&gt;parent;
+            }
+            <span style="color: #5f8700;">else</span>
+            {
+                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24773;&#20917; 3&#65306;&#20804;&#24351; other &#26159;&#40657;&#33394;&#65292;other &#30340;&#24038;&#23401;&#23376;&#26159;&#32418;&#33394;&#65292;&#21491;&#23401;&#23376;&#20026;&#40657;&#33394;&#12290;</span>
+                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36890;&#36807;&#19979;&#21015; 3 &#27493;&#25805;&#20316;&#25226;&#24773;&#20917; 3 &#36716;&#25442;&#25104;&#24773;&#20917; 4</span>
+                <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>other-&gt;right || other-&gt;right-&gt;color == BLACK)
+                {
+                    <span style="color: #5f8700;">if</span> ((o_left = other-&gt;left)) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#27493;&#65306;other &#24038;&#23401;&#23376;&#21464;&#40657;</span>
+                    {
+                        o_left-&gt;color = BLACK;
+                    }
+                    other-&gt;color = RED;         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#20108;&#27493;&#65306;other &#21464;&#32418;</span>
+                    root = rb_rotate_right(other, root);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19977;&#27493;&#65306;&#23545; other &#21491;&#26059;</span>
+                    other = parent-&gt;right;      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21491;&#26059;&#21518;&#65292;&#20804;&#24351; other &#21464;&#21270;&#20102;&#12290;&#25226; other &#32622;&#20026;&#21491;&#26059;&#21518;&#30340;&#20540;</span>
+                }
+
+                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24773;&#20917;4&#65306;other &#26159;&#40657;&#33394;&#30340;&#65292;other &#21491;&#23376;&#26159;&#32418;&#33394;&#30340;</span>
+                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36890;&#36807;&#19979;&#21015;3&#27493;&#25805;&#20316;&#20351;&#32418;&#40657;&#26641;&#37325;&#26032;&#33719;&#24471;&#24179;&#34913;</span>
+                other-&gt;color = parent-&gt;color;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#27493;&#65306;&#20132;&#25442; other &#21644; parent &#30340;&#39068;&#33394;</span>
+                parent-&gt;color = BLACK;
+                <span style="color: #5f8700;">if</span> (other-&gt;right)              <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#20108;&#27493;&#65306;other &#21491;&#23401;&#23376;&#26579;&#40657;</span>
+                {
+                    other-&gt;right-&gt;color = BLACK;
+                }
+                root = rb_rotate_left(parent, root);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19977;&#27493;&#65306;&#24038;&#26059;</span>
+                node = root;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24182;&#25226; node &#32622;&#20026;&#26681;&#12290;</span>
+                <span style="color: #5f8700;">break</span>;
+            }
+        }
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#19979;&#36848;&#24773;&#20917;&#19982;&#19978;&#36848;&#24773;&#20917;&#65292;&#21407;&#29702;&#19968;&#33268;&#12290;&#20998;&#26512;&#30053;&#12290;</span>
+        <span style="color: #5f8700;">else</span>
+        {
+            other = parent-&gt;left;
+            <span style="color: #5f8700;">if</span> (other-&gt;color == RED)
+            {
+                other-&gt;color = BLACK;
+                parent-&gt;color = RED;
+                root = rb_rotate_right(parent, root);
+                other = parent-&gt;left;
+            }
+            <span style="color: #5f8700;">if</span> ((<span style="color: #d70000;">!</span>other-&gt;left || other-&gt;left-&gt;color == BLACK) &amp;&amp;
+                    (<span style="color: #d70000;">!</span>other-&gt;right || other-&gt;right-&gt;color == BLACK))
+            {
+                other-&gt;color = RED;
+                node = parent;
+                parent = node-&gt;parent;
+            }
+            <span style="color: #5f8700;">else</span>
+            {
+                <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>other-&gt;left || other-&gt;left-&gt;color == BLACK)
+                {
+                    <span style="color: #5f8700;">if</span> ((o_right = other-&gt;right))
+                    {
+                        o_right-&gt;color = BLACK;
+                    }
+                    other-&gt;color = RED;
+                    root = rb_rotate_left(other, root);
+                    other = parent-&gt;left;
+                }
+                other-&gt;color = parent-&gt;color;
+                parent-&gt;color = BLACK;
+                <span style="color: #5f8700;">if</span> (other-&gt;left)
+                {
+                    other-&gt;left-&gt;color = BLACK;
+                }
+                root = rb_rotate_right(parent, root);
+                node = root;
+                <span style="color: #5f8700;">break</span>;
+            }
+        }
+    }
+
+    <span style="color: #5f8700;">if</span> (node) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26579;&#40657; node</span>
+    {
+        node-&gt;color = BLACK;
+    }
+    <span style="color: #5f8700;">return</span> root;  <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#36820;&#22238; root</span>
+}
+
+<span style="color: #8a8a8a;">/*</span>
+<span style="color: #8a8a8a;"> * @desc: &#22312;&#32418;&#40657;&#26641;&#20013;&#26597;&#25214;&#21547;&#26377;&#20851;&#38190;&#23383; key &#30340;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @key:  &#20851;&#38190;&#23383;</span>
+<span style="color: #8a8a8a;"> * @root: &#32418;&#40657;&#26641;&#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @save: &#22914;&#26524;&#27809;&#25214;&#21040;&#35813;&#32467;&#28857;&#65292;&#19988; save &#38750;&#31354;&#65292;&#21017;&#36890;&#36807; save &#36820;&#22238;&#35201;&#26597;&#25214;&#30340;&#32467;&#28857;&#30340;&#29238;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @retu: &#25214;&#21040;&#32467;&#28857;&#21017;&#36820;&#22238;&#35813;&#32467;&#28857;&#65292;&#21542;&#21017;&#36820;&#22238; NULL</span>
+<span style="color: #8a8a8a;"> </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_search_auxiliary</span>(<span style="color: #af8700;">key_t</span> <span style="color: #0087ff;">key</span>, <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">root</span>, <span style="color: #af8700;">rb_node_t</span>** <span style="color: #0087ff;">save</span>)
+{
+    <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">node</span> = root, *<span style="color: #0087ff;">parent</span> = <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">ret</span>;
+
+    <span style="color: #5f8700;">while</span> (node)
+    {
+        parent = node;
+        ret = node-&gt;key - key;
+        <span style="color: #5f8700;">if</span> (0 &lt; ret)
+        {
+            node = node-&gt;left;
+        }
+        <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span> (0 &gt; ret)
+        {
+            node = node-&gt;right;
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            <span style="color: #5f8700;">return</span> node;
+        }
+    }
+
+    <span style="color: #5f8700;">if</span> (save)
+    {
+        *save = parent;
+    }
+
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+}
+
+<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">@desc: &#32418;&#40657;&#26641;&#20013;&#25554;&#20837;&#19968;&#20010;&#26032;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @key : &#38190;</span>
+<span style="color: #8a8a8a;"> * @data: &#20540;</span>
+<span style="color: #8a8a8a;"> * @root: &#32418;&#40657;&#26641;&#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @retu: &#36820;&#22238;&#25554;&#20837;&#26032;&#32467;&#28857;&#21518;&#30340;&#32418;&#40657;&#26641;&#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> </span><span style="color: #8a8a8a;">*/</span>
+
+<span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_insert</span>(<span style="color: #af8700;">key_t</span> <span style="color: #0087ff;">key</span>, <span style="color: #af8700;">data_t</span> <span style="color: #0087ff;">data</span>, <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">root</span>)
+{
+    <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">parent</span> = <span style="color: #00afaf;">NULL</span>, *<span style="color: #0087ff;">node</span>;
+
+    parent = <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #5f8700;">if</span> ((node = rb_search_auxiliary(key, root, &amp;parent)))  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35843;&#29992; rb_search_auxiliary &#25214;&#21040;&#35201;&#25554;&#20837;&#32467;&#28857;&#30340;&#29238;&#32467;&#28857;</span>
+    {
+        <span style="color: #5f8700;">return</span> root;
+    }
+
+    node = rb_new_node(key, data);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20998;&#37197;&#32467;&#28857;</span>
+    node-&gt;parent = parent;
+    node-&gt;left = node-&gt;right = <span style="color: #00afaf;">NULL</span>;
+    node-&gt;color = RED;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26032;&#32467;&#28857;&#40664;&#35748;&#20026;&#32418;&#33394;</span>
+
+    <span style="color: #5f8700;">if</span> (parent)
+    {
+        <span style="color: #5f8700;">if</span> (parent-&gt;key &gt; key)
+        {
+            parent-&gt;left = node;
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            parent-&gt;right = node;
+        }
+    }
+    <span style="color: #5f8700;">else</span>
+    {
+        root = node;
+    }
+
+    <span style="color: #5f8700;">return</span> rb_insert_rebalance(node, root);   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25554;&#20837;&#32467;&#28857;&#21518;&#65292;&#35843;&#29992; rb_insert_rebalance &#20462;&#22797;&#32418;&#40657;&#26641;&#30340;&#24615;&#36136;</span>
+}
+
+<span style="color: #8a8a8a;">/*</span>
+<span style="color: #8a8a8a;"> * @desc: &#22312;&#32418;&#40657;&#26641;&#20013;&#26597;&#25214;&#20851;&#38190;&#23383; key &#30340;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @key : &#20851;&#38190;&#23383;</span>
+<span style="color: #8a8a8a;"> * @root: &#32418;&#40657;&#26641;&#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @retu: &#22914;&#26524;&#25214;&#21040;&#65292;&#36820;&#22238;&#35813;&#33410;&#28857;&#65307;&#21542;&#21017;&#36820;&#22238; NULL</span>
+<span style="color: #8a8a8a;"> </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_search</span>(<span style="color: #af8700;">key_t</span> <span style="color: #0087ff;">key</span>, <span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">root</span>)
+{
+    <span style="color: #5f8700;">return</span> rb_search_auxiliary(key, root, <span style="color: #00afaf;">NULL</span>);
+}
+
+<span style="color: #8a8a8a;">/*</span>
+<span style="color: #8a8a8a;"> * @desc: &#32418;&#40657;&#26641;&#21024;&#38500;&#32467;&#28857; X</span>
+<span style="color: #8a8a8a;"> * @key : &#24453;&#21024;&#38500;&#32467;&#28857;X&#30340;&#20851;&#38190;&#23383;</span>
+<span style="color: #8a8a8a;"> * @root: &#32418;&#40657;&#26641;&#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> * @retu: &#36820;&#22238;&#32418;&#40657;&#26641;&#26681;&#32467;&#28857;</span>
+<span style="color: #8a8a8a;"> </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #af8700;">rb_node_t</span>* <span style="color: #0087ff;">rb_erase</span>(<span style="color: #af8700;">key_t</span> <span style="color: #0087ff;">key</span>, <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">root</span>)
+{
+    <span style="color: #af8700;">rb_node_t</span> *<span style="color: #0087ff;">child</span>, *<span style="color: #0087ff;">parent</span>, *<span style="color: #0087ff;">old</span>, *<span style="color: #0087ff;">left</span>, *<span style="color: #0087ff;">node</span>;
+    <span style="color: #af8700;">color_t</span> <span style="color: #0087ff;">color</span>;
+
+    <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>(node = rb_search_auxiliary(key, root, <span style="color: #00afaf;">NULL</span>)))  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25214;&#21040;&#24453;&#21024; X</span>
+    {
+        printf(<span style="color: #00afaf;">"key %d is not exist!/n"</span>);
+        <span style="color: #5f8700;">return</span> root;
+    }
+
+    old = node;
+
+    <span style="color: #8a8a8a;">/*</span>
+<span style="color: #8a8a8a;">     * &#21024;&#38500;&#25805;&#20316;&#20998;&#20026; 2 &#31181;&#24773;&#20917;&#65306;</span>
+<span style="color: #8a8a8a;">     *     &#19968;&#12289;&#24453;&#21024;&#32467;&#28857; X &#26159;&#21494;&#32467;&#28857;&#25110; X &#26377;&#24038;&#23376;&#26641;&#25110; X &#26377;&#21491;&#23376;&#26641;</span>
+<span style="color: #8a8a8a;">     *     &#20108;&#12289;X &#30340;&#24038;&#21491;&#23376;&#26641;&#22343;&#23384;&#22312;</span>
+<span style="color: #8a8a8a;">     </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#21024;&#38500;&#25805;&#20316;&#30340;&#31532;&#20108;&#31181;&#24773;&#20917;&#65292;&#35299;&#39064;&#24605;&#36335;&#65306;</span>
+<span style="color: #8a8a8a;">     *     1.X &#30340;&#21491;&#23376;&#26641;&#20013;&#25214;&#21040;&#26368;&#23567;&#32467;&#28857; M&#65288;&#25110;&#32773;&#22312;&#23427;&#30340;&#24038;&#23376;&#26641;&#20013;&#30340;&#26368;&#22823;&#32467;&#28857; M&#65289;&#65292;&#21363;&#21491;&#23376;&#26641;&#19978;&#20013;&#24207;&#36941;&#21382;&#26102;&#25214;&#21040;&#30340;&#31532;&#19968;&#20010;&#32467;&#28857;&#12290;&#27492;&#26102;, M &#32467;&#28857;&#24517;&#28982;&#33267;&#22810;&#21482;&#26377;&#19968;&#20010;&#23401;&#23376;</span>
+<span style="color: #8a8a8a;">     *     2.&#25226;&#32467;&#28857; M &#31227;&#21040;&#32467;&#28857; X &#30340;&#20301;&#32622;&#65292;&#28982;&#21518;&#37322;&#25918; X&#12290;&#27492;&#26102;&#21407;&#32467;&#28857; M &#25152;&#22312;&#20301;&#32622;&#20986;&#29616;&#31354;&#32570;&#65288;&#25226;&#21024;&#38500; X &#32467;&#28857;&#36716;&#21270;&#25104;&#20026;&#21024;&#38500; M &#32467;&#28857;&#65292;&#32780; M &#32467;&#28857;&#21448;&#21482;&#26377;&#19968;&#20010;&#23401;&#23376;&#65292;&#36825;&#26679;&#23601;&#25226;&#35813;&#38382;&#39064;&#36716;&#21270;&#25104;&#21024;&#38500;&#25805;&#20316;&#30340;&#31532;&#19968;&#31181;&#24773;&#20917;&#65289;</span>
+<span style="color: #8a8a8a;">     </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #5f8700;">if</span> (node-&gt;left &amp;&amp; node-&gt;right) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21024;&#38500;&#25805;&#20316;&#30340;&#31532;&#20108;&#31181;&#24773;&#20917;</span>
+    {
+        node = node-&gt;right;
+        <span style="color: #5f8700;">while</span> ((left = node-&gt;left) != <span style="color: #00afaf;">NULL</span>) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26597;&#25214; M &#32467;&#28857;</span>
+        {
+            node = left;
+        }
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25214;&#21040; M &#21518;&#65292;M &#26367;&#20195; X &#25104;&#20026;&#24453;&#21024;&#32467;&#28857;&#12290;&#35760;&#24405; M &#32467;&#28857;&#30340;&#23401;&#23376;&#12289;&#29238;&#20146;&#12289;&#21644;&#39068;&#33394;&#65292;&#20026;&#20043;&#21518;&#35843;&#25972;&#20108;&#21449;&#25490;&#24207;&#26641;&#20570;&#20934;&#22791;</span>
+        child = node-&gt;right;
+        parent = node-&gt;parent;
+        color = node-&gt;color;
+
+        <span style="color: #5f8700;">if</span> (child)
+        {
+            child-&gt;parent = parent;
+        }
+        <span style="color: #5f8700;">if</span> (parent)
+        {
+            <span style="color: #5f8700;">if</span> (parent-&gt;left == node)
+            {
+                parent-&gt;left = child;
+            }
+            <span style="color: #5f8700;">else</span>
+            {
+                parent-&gt;right = child;
+            }
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            root = child;
+        }
+
+        <span style="color: #5f8700;">if</span> (node-&gt;parent == old)
+        {
+            parent = node;
+        }
+
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25226;&#32467;&#28857; M &#31227;&#21040;&#32467;&#28857; X &#30340;&#20301;&#32622;</span>
+        node-&gt;parent = old-&gt;parent;
+        node-&gt;color = old-&gt;color;
+        node-&gt;right = old-&gt;right;
+        node-&gt;left = old-&gt;left;
+
+        <span style="color: #5f8700;">if</span> (old-&gt;parent)
+        {
+            <span style="color: #5f8700;">if</span> (old-&gt;parent-&gt;left == old)
+            {
+                old-&gt;parent-&gt;left = node;
+            }
+            <span style="color: #5f8700;">else</span>
+            {
+                old-&gt;parent-&gt;right = node;
+            }
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            root = node;
+        }
+
+        old-&gt;left-&gt;parent = node;
+        <span style="color: #5f8700;">if</span>(old-&gt;right)
+        {
+            old-&gt;right-&gt;parent = node;
+        }
+    }
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#21024;&#38500;&#25805;&#20316;&#30340;&#31532;&#20108;&#31181;&#24773;&#20917;</span>
+<span style="color: #8a8a8a;">     * &#35299;&#39064;&#24605;&#36335;&#65306;</span>
+<span style="color: #8a8a8a;">     *     1.&#22914;&#26524;&#24453;&#21024;&#32467;&#28857; X &#26159;&#21494;&#32467;&#28857;&#65292;&#30452;&#25509;&#21024;&#38500;</span>
+<span style="color: #8a8a8a;">     *     2.&#22914;&#26524; X &#21482;&#26377;&#19968;&#39063;&#24038;&#23376;&#26641;&#65288;&#21491;&#23376;&#26641;&#65289;&#65292;&#21017;&#35753; X &#30340;&#24038;&#23376;&#26641;&#65288;&#21491;&#23376;&#26641;&#65289;&#25104;&#20026; X &#29238;&#32467;&#28857;&#30340;&#23376;&#26641;</span>
+<span style="color: #8a8a8a;">     </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #5f8700;">else</span>
+    {
+        <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>node-&gt;left)       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22788;&#29702;&#24038;&#23376;&#26641;&#19981;&#23384;&#22312;&#30340;&#24773;&#20917;</span>
+        {
+            child = node-&gt;right;
+        }
+        <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>node-&gt;right) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22788;&#29702;&#21491;&#23376;&#26641;&#19981;&#23384;&#22312;&#30340;&#24773;&#20917;</span>
+        {
+            child = node-&gt;left;
+        }
+        parent = node-&gt;parent;<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">parent &#20026;&#24453;&#21024;&#32467;&#28857;&#30340;&#29238;&#32467;&#28857;</span>
+        color = node-&gt;color;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">color &#20026;&#24453;&#21024;&#32467;&#28857;&#30340;&#39068;&#33394;</span>
+
+        <span style="color: #5f8700;">if</span>(child)    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">child &#20026;&#24453;&#21024;&#32467;&#28857;&#30340;&#23401;&#23376;</span>
+        {
+            child-&gt;parent = parent;
+        }
+        <span style="color: #5f8700;">if</span>(parent)
+        {
+            <span style="color: #5f8700;">if</span>(parent-&gt;left == node)
+            {
+                parent-&gt;left = child;
+            }
+            <span style="color: #5f8700;">else</span>
+            {
+                parent-&gt;right = child;
+            }
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            root = child;
+        }
+    }
+
+    free(old);
+
+    <span style="color: #5f8700;">if</span>(color == BLACK) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21024;&#38500;&#30340;&#26159;&#40657;&#32467;&#28857;&#65292;&#38656;&#35201;&#37325;&#26032;&#35843;&#25972;&#32418;&#40657;&#26641;</span>
+    {
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27492;&#26102;&#24453;&#21024;&#32467;&#28857;&#24050;&#32463;&#34987;&#21024;&#38500;&#65292;&#20108;&#21449;&#25490;&#24207;&#26641;&#30340;&#32467;&#26500;&#24050;&#32463;&#24674;&#22797;&#12290;&#35843;&#29992; rb_erase_rebalance &#26469;&#24674;&#22797;&#32418;&#40657;&#26641;&#24615;&#36136;</span>
+        root = rb_erase_rebalance(child, parent, root);
+    }
+
+    <span style="color: #5f8700;">return</span> root;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
