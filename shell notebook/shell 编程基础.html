@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-13 Tue 19:32 -->
+<!-- 2018-11-16 Fri 07:54 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>shell 编程基础</title>
@@ -39,16 +39,17 @@
 <li><a href="#orgf54da25">3. if 语句</a></li>
 <li><a href="#org7bf57f8">4. case</a></li>
 <li><a href="#orgf5f3952">5. for</a></li>
-<li><a href="#orgfe61bc0">6. 冒泡排序</a>
+<li><a href="#orgb7cce26">6. 冒泡排序</a>
 <ul>
 <li><a href="#orgbfdac07">6.1. $[] 讲解</a></li>
 <li><a href="#orgd642e34">6.2. (()) 讲解</a></li>
-<li><a href="#orgc4487d5">6.3. 冒泡排序</a></li>
+<li><a href="#orgc11ebbf">6.3. 冒泡排序</a></li>
 </ul>
 </li>
 <li><a href="#org7cd5f1c">7. while</a></li>
 <li><a href="#orgfee2497">8. until</a></li>
 <li><a href="#org527abc8">9. 函数</a></li>
+<li><a href="#orgf764c08">10. break continue return exit</a></li>
 </ul>
 </div>
 </div>
@@ -168,11 +169,21 @@ $ echo $<span style="color: #0087ff;">?</span>      <span style="color: #8a8a8a;
 <span style="color: #5f8700;">done</span>
 </pre>
 </div>
+
+<p>
+其它 for 句式<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #5f8700;">for</span> var<span style="color: #5f8700;"> in</span> one two three four five  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">for &#36941;&#21382;&#36825; 5 &#20010;&#20540;</span>
+<span style="color: #5f8700;">for</span> var                             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#19981;&#20351;&#29992; in &#26469;&#25351;&#23450;&#21464;&#37327;&#28165;&#21333;&#30340;&#35805;&#65292;&#20854;&#20540;&#20250;&#20174;$@&#65288;&#25110; $*&#65289;&#20013;&#32487;&#25215;</span>
+<span style="color: #5f8700;">for</span> ((<span style="color: #0087ff;">i</span> = 1; i &lt;= 10; i++))         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20063;&#33021;&#20351;&#29992; (())</span>
+</pre>
+</div>
 </div>
 </div>
 
-<div id="outline-container-orgfe61bc0" class="outline-2">
-<h2 id="orgfe61bc0"><span class="section-number-2">6</span> 冒泡排序</h2>
+<div id="outline-container-orgb7cce26" class="outline-2">
+<h2 id="orgb7cce26"><span class="section-number-2">6</span> 冒泡排序</h2>
 <div class="outline-text-2" id="text-6">
 </div>
 <div id="outline-container-orgbfdac07" class="outline-3">
@@ -208,14 +219,14 @@ $[&#x2026;] 表示中括号中的 &#x2026; 是一个算术表达式，可以用 
 <li>在双括号结构中，所有表达式可以像 c 语言一样，如：a++, b&#x2013; 等。<br></li>
 <li>在双括号结构中，所有变量可以不加入："$" 符号前缀。<br></li>
 <li>双括号可以进行逻辑运算，四则运算<br></li>
-<li>双括号结构 扩展了 for, while, if 条件测试运算<br></li>
+<li>双括号结构扩展了 for, while, if 条件测试运算<br></li>
 <li>支持多个表达式运算，各个表达式之间用 "," 分开<br></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc4487d5" class="outline-3">
-<h3 id="orgc4487d5"><span class="section-number-3">6.3</span> 冒泡排序</h3>
+<div id="outline-container-orgc11ebbf" class="outline-3">
+<h3 id="orgc11ebbf"><span class="section-number-3">6.3</span> 冒泡排序</h3>
 <div class="outline-text-3" id="text-6-3">
 <div class="org-src-container">
 <pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
@@ -258,6 +269,16 @@ $[&#x2026;] 表示中括号中的 &#x2026; 是一个算术表达式，可以用 
 <span style="color: #5f8700;">echo</span> ${<span style="color: #0087ff;">sum</span>}
 </pre>
 </div>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #5f8700;">while</span>:; <span style="color: #5f8700;">do</span>
+    <span style="color: #5f8700;">echo</span> looping...
+<span style="color: #5f8700;">done</span>
+</pre>
+</div>
+<p>
+这是一个死循环。其中， <code>:</code> 是 bash 的 null command，不做任何动作，除了返回 true 的 return value。因此这是一个死循环<br>
+</p>
 </div>
 </div>
 
@@ -267,7 +288,7 @@ $[&#x2026;] 表示中括号中的 &#x2026; 是一个算术表达式，可以用 
 <div class="org-src-container">
 <pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
 <span style="color: #0087ff;">var</span>=0
-<span style="color: #5f8700;">until</span> [ ${<span style="color: #0087ff;">var</span>} -eq 10 ]
+<span style="color: #5f8700;">until</span> [ <span style="color: #d70000;">!</span> ${<span style="color: #0087ff;">var</span>} -le 10 ]
 <span style="color: #5f8700;">do</span>
     <span style="color: #5f8700;">echo</span> ${<span style="color: #0087ff;">var</span>}
     <span style="color: #0087ff;">var</span>=$((var+1))
@@ -292,6 +313,17 @@ add a b
 <span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">?</span>
 </pre>
 </div>
+</div>
+</div>
+<div id="outline-container-orgf764c08" class="outline-2">
+<h2 id="orgf764c08"><span class="section-number-2">10</span> break continue return exit</h2>
+<div class="outline-text-2" id="text-10">
+<ul class="org-ul">
+<li><code>break</code> 用来中断循环，也就是强迫结束循环。 若 break 后面指定一个数值 n 的话，则从里向外中断第 n 个循环，预设值为 break 1，也就是中断当前循环<br></li>
+<li><code>continue</code> 强迫进入下一次循环动作。continue 后面也可以指定一个数值 n， 以决定继续哪一层(从里往外计算)的循环，预设值为 continue 1，也就是继续当前的循环。<br></li>
+<li><code>return</code> 是结束function<br></li>
+<li><code>exit</code> 是结束script/shell<br></li>
+</ul>
 </div>
 </div>
 </div>

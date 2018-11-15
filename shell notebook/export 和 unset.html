@@ -4,7 +4,7 @@
 <!-- 2018-11-16 Fri 07:54 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ffmpeg 基本操作</title>
+<title>export 和 unset</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
 <link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
@@ -29,55 +29,60 @@
 </div>
 </div>
 <div id="content">
-<h1 class="title">ffmpeg 基本操作</h1>
+<h1 class="title">export 和 unset</h1>
 <div id="table-of-contents">
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgef1bd51">1. 获取不带音频的视频</a></li>
-<li><a href="#org088e3c0">2. 提取音频</a></li>
-<li><a href="#org32dc7c2">3. 视频时长裁剪</a></li>
+<li><a href="#org9dcb91d">1. export</a></li>
+<li><a href="#org3873586">2. unset</a></li>
+<li><a href="#org471d59c">3. 什么时候变量前用 $ ，什么时候不用？</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgef1bd51" class="outline-2">
-<h2 id="orgef1bd51"><span class="section-number-2">1</span> 获取不带音频的视频</h2>
+<div id="outline-container-org9dcb91d" class="outline-2">
+<h2 id="org9dcb91d"><span class="section-number-2">1</span> export</h2>
 <div class="outline-text-2" id="text-1">
+<p>
+把一个已存在的局部变量声明为全局变量（即该进程的子进程中，该变量都是可见的）。但在子进程中对该变量进行操作（修改变量，删除变量）对父进程中的该变量无影响<br>
+</p>
+
 <div class="org-src-container">
-<pre class="src src-shell">$ ffmpeg -i bird.mov -vcodec copy -an bird.mp4
+<pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+
+<span style="color: #0087ff;">aaa</span>=<span style="color: #00afaf;">"How are you"</span>
+<span style="color: #5f8700;">export</span> aaa         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21464;&#37327; aaa &#21069;&#19981;&#24517;&#21152; $</span>
 </pre>
 </div>
-
-<dl class="org-dl">
-<dt><code>-an</code> </dt><dd>禁止输出音频<br></dd>
-<dt><code>-vcodec copy</code></dt><dd>复制视频编码<br></dd>
-</dl>
 </div>
 </div>
 
-<div id="outline-container-org088e3c0" class="outline-2">
-<h2 id="org088e3c0"><span class="section-number-2">2</span> 提取音频</h2>
+
+<div id="outline-container-org3873586" class="outline-2">
+<h2 id="org3873586"><span class="section-number-2">2</span> unset</h2>
 <div class="outline-text-2" id="text-2">
+<p>
+取消变量<br>
+</p>
 <div class="org-src-container">
-<pre class="src src-shell">$ ffmpeg -i input.mov -write_xing 0 output.mp3
+<pre class="src src-shell">$ unset aaa          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21464;&#37327; aaa &#21069;&#19981;&#24517;&#21152; $</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org32dc7c2" class="outline-2">
-<h2 id="org32dc7c2"><span class="section-number-2">3</span> 视频时长裁剪</h2>
+<div id="outline-container-org471d59c" class="outline-2">
+<h2 id="org471d59c"><span class="section-number-2">3</span> 什么时候变量前用 $ ，什么时候不用？</h2>
 <div class="outline-text-2" id="text-3">
+<p>
+如果要使用变量，就使用 $。如果要操作变量，就不使用 $。<br>
+有个例外就是 printenv 命令。例如：<br>
+</p>
 <div class="org-src-container">
-<pre class="src src-shell">$ ffmpeg -ss 00:00:01.000 -t 00:00:10.000 -i <span style="color: #00afaf;">"input.mov"</span> <span style="color: #00afaf;">"output.mov"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#31532;&#19968;&#31186;&#24320;&#22987;&#65292;&#33719;&#21462;10&#31186;&#30340;&#35270;&#39057;</span>
-$ ffmpeg -sseof -00:00:01.000 -i <span style="color: #00afaf;">"bird.mov"</span> <span style="color: #00afaf;">"bird.mp4"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#33719;&#21462;&#26368;&#21518;&#19968;&#31186;&#30340;&#35270;&#39057;&#65292;&#24182;&#36716;&#20026; mp4</span>
+<pre class="src src-shell">$ printenv PATH
 </pre>
 </div>
-
-<dl class="org-dl">
-<dt><code>-sseof</code> </dt><dd>相对于文件末尾的开始时间<br></dd>
-</dl>
 </div>
 </div>
 </div>

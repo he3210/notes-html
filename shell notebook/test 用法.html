@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-16 Fri 07:54 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>test 用法</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">test 用法</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgadd5881">1. test</a></li>
+<li><a href="#orgd79ed8e">2. 常用 test 表达式</a></li>
+<li><a href="#orgfb1cb5e">3. 举例一</a></li>
+<li><a href="#orge5b83d5">4. 举例二</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgadd5881" class="outline-2">
+<h2 id="orgadd5881"><span class="section-number-2">1</span> test</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+shell 命令的退出状态有两种：<br>
+</p>
+<ul class="org-ul">
+<li>0    true<br></li>
+<li>1    false<br></li>
+</ul>
+
+<p>
+test 表达式的两种写法：<br>
+</p>
+<ul class="org-ul">
+<li><code>test expression</code><br></li>
+<li><code>[ expression ]</code><br></li>
+</ul>
+
+<p>
+bash 的 test 目前支持的测试对象只有三种：<br>
+</p>
+<ul class="org-ul">
+<li>string：字符串，也就是纯文字。<br></li>
+<li>integer：整数( 0 或正整数、不含负数或小数)。<a href="./$() ${} $(()) 的用法.html#org0eda2b7">在这里</a> 比较和 <code>(())</code> 的区别<br></li>
+<li>file: 文件<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd79ed8e" class="outline-2">
+<h2 id="orgd79ed8e"><span class="section-number-2">2</span> 常用 test 表达式</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><code>-d file</code> 如果 file 是一个目录，返回 true<br></li>
+<li><code>-e file</code> 文件 file 存在返回 true<br></li>
+<li><code>-f file</code> 如果文件 file 是普通文件，返回 true<br></li>
+<li><code>-n string</code> 如果字符串 string 的长度非零，返回 true<br></li>
+<li><code>-z string</code> 如果字符串 string 的长度为零，返回 true<br></li>
+<li><code>-x file</code> file 如果是可执行文件，返回 true；file 如果是目录，且该目录可以被搜索到，返回 true<br></li>
+<li><code>-r file</code> <code>-w file</code> 文件可读/文件可写<br></li>
+<li><code>string</code> 字符串 string 非空（已定义 且 不为空字符串）<br></li>
+<li><code>s1 = s2</code> <code>s1 != s2</code> <code>s1 &lt; s2</code> <code>s1 &gt; s2</code> 字符串比较<br></li>
+<li><code>n1 -eq n2</code> <code>n1 -ne n2</code> <code>n1 -gt n2</code> <code>n1 -ge n2</code> <code>n1 -lt n2</code> <code>n1 -le n2</code> 整数比较<br></li>
+<li><code>! expression</code> <code>expression1 -a expression2</code> <code>expression1 -o expression2</code> 逻辑表达式<br></li>
+<li><code>( expression )</code> 如果 expression 为 true，返回 true<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfb1cb5e" class="outline-2">
+<h2 id="orgfb1cb5e"><span class="section-number-2">3</span> 举例一</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ [ <span style="color: #00afaf;">"$A"</span> = 123 ]       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23383;&#31526;&#20018;&#27979;&#35797;&#12290;$A &#26368;&#22909;&#21152; soft quote&#65292;&#22240;&#20026; $A &#22914;&#26524;&#26410;&#23450;&#20041;&#30340;&#35805;&#65292;&#35813; test &#34920;&#36798;&#24335;&#23601;&#20250;&#20986;&#29616;&#35821;&#27861;&#38169;&#35823;&#65292;shell &#23601;&#20250;&#25253;&#38169;</span>
+$ [ <span style="color: #00afaf;">"$A"</span> -eq 123 ]     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25972;&#25968;&#27979;&#35797;&#12290;&#27979;&#35797; $A &#26159;&#21542;&#31561;&#20110;&#25972;&#25968;123</span>
+$ [ -e <span style="color: #00afaf;">"$A"</span> ]          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21028;&#26029;&#25991;&#20214; $A &#26159;&#21542;&#23384;&#22312;</span>
+$ <span style="color: #0087ff;">file</span>=aaa.log
+$ [ -d <span style="color: #00afaf;">"$file"</span>  -a  -x <span style="color: #00afaf;">"$file"</span> ]    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">$file &#26159;&#30446;&#24405;&#19988; $file &#21516;&#26102;&#20855;&#26377; x &#26435;&#38480;&#12290;-a &#34920;&#31034; and&#65292;-o &#34920;&#31034; or</span>
+$ echo $<span style="color: #0087ff;">?</span>
+1
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge5b83d5" class="outline-2">
+<h2 id="orge5b83d5"><span class="section-number-2">4</span> 举例二</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+给定一个变量，判断是否小于100。如果不小于100，输出 too big!<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ [ -n <span style="color: #00afaf;">"$A"</span> ] &amp;&amp; [ <span style="color: #00afaf;">"$A"</span> -lt 100 ] || <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'too big!'</span>        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#38169;&#35823;&#30340;&#35299;&#27861;&#12290;&#22240;&#20026;&#22914;&#26524; $A &#26410;&#23450;&#20041;&#20250;&#36755;&#20986; too big!</span>
+$ [ -n <span style="color: #00afaf;">"$A"</span> ] &amp;&amp; ( [ <span style="color: #00afaf;">"$A"</span> -lt 100 ] || <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'too big!'</span> )    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26041;&#27861;&#19968;&#65306;&#22312; () &#20013;&#20351;&#29992;&#23376;&#36827;&#31243;&#12290;-n &#34920;&#31034;&#23383;&#31526;&#20018;&#38271;&#24230;&#22823;&#20110; 0 &#26102;&#36820;&#22238; 0&#65288;true&#65289;</span>
+$ [ -n <span style="color: #00afaf;">"$A"</span> ] &amp;&amp; { [ <span style="color: #00afaf;">"$A"</span> -lt 100 ] || <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'too big!'</span>}     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26041;&#27861;&#20108;&#65306;&#22312; {} &#20013;&#20351;&#29992; command group</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

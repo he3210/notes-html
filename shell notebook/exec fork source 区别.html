@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-16 Fri 07:54 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>exec fork source 区别</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">exec fork source 区别</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org01c7a93">1. 区别</a></li>
+<li><a href="#org8e5cbae">2. 举例</a></li>
+<li><a href="#org2d70bf3">3. 结果</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org01c7a93" class="outline-2">
+<h2 id="org01c7a93"><span class="section-number-2">1</span> 区别</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>exec    使用指定的命令会替换当前进程。进程号相同，执行的命令变更了，当前进程的后续命令不会再被执行了<br></li>
+<li>fork    使用子进程执行指定的命令<br></li>
+<li>source  使用当前进程执行指定的命令。<br></li>
+</ul>
+
+
+<p>
+source 命令的2种写法 <code>$ source ./my_script.sh</code> 或者 <code>$ . ./my_script.sh</code><br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8e5cbae" class="outline-2">
+<h2 id="org8e5cbae"><span class="section-number-2">2</span> 举例</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+1.sh<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+
+<span style="color: #0087ff;">A</span>=B
+<span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"PID for 1.sh before exec/source/fork:$$"</span>
+
+<span style="color: #5f8700;">export</span> A
+<span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"1.sh: \$A is $A"</span>
+
+<span style="color: #5f8700;">case</span> $<span style="color: #0087ff;">1</span><span style="color: #5f8700;"> in</span>
+        <span style="color: #5f8700;">exec</span>)         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21516; linux &#19979; exec &#20989;&#25968;&#12290;exec &#20351;&#29992;&#21629;&#20196;&#23545;&#24403;&#21069;&#36827;&#31243;&#36827;&#34892;&#26367;&#25442;&#12290;</span>
+                <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"using exec..."</span>
+                <span style="color: #5f8700;">exec</span> ./2.sh ;;
+        <span style="color: #5f8700;">source</span>)       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992; source &#25191;&#34892;&#21629;&#20196;&#19981;&#20250;&#21019;&#24314;&#23376;&#36827;&#31243;&#65292;&#22312;&#21407;&#26377;&#36827;&#31243;&#20013;&#25191;&#34892;&#21629;&#20196;</span>
+                <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"using source..."</span>
+                . ./2.sh ;;
+        *)            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#40664;&#35748;&#20351;&#29992; fork &#25191;&#34892;</span>
+                <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"using fork by default..."</span>
+                ./2.sh ;;
+<span style="color: #5f8700;">esac</span>
+
+<span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"PID for 1.sh after exec/source/fork:$$"</span>
+<span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"1.sh: \$A is $A"</span>
+</pre>
+</div>
+
+<p>
+2.sh<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
+
+<span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"PID for 2.sh: $$"</span>
+<span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"2.sh get \$A=$A from 1.sh"</span>
+
+<span style="color: #0087ff;">A</span>=C
+<span style="color: #5f8700;">export</span> A
+<span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"2.sh: \$A is $A"</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2d70bf3" class="outline-2">
+<h2 id="org2d70bf3"><span class="section-number-2">3</span> 结果</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ ./1.sh fork
+PID for 1.sh before exec/source/fork:27856
+1.sh: $<span style="color: #0087ff;">A</span> is B
+using fork by default...
+PID for 2.sh: 27857
+2.sh get $<span style="color: #0087ff;">A</span>=B from 1.sh
+2.sh: $<span style="color: #0087ff;">A</span> is C
+PID for 1.sh after exec/source/fork:27856
+1.sh: $<span style="color: #0087ff;">A</span> is B
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ ./1.sh exec
+PID for 1.sh before exec/source/fork:27889
+1.sh: $<span style="color: #0087ff;">A</span> is B
+using exec...
+PID for 2.sh: 27889
+2.sh get $<span style="color: #0087ff;">A</span>=B from 1.sh
+2.sh: $<span style="color: #0087ff;">A</span> is C
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ ./1.sh source
+PID for 1.sh before exec/source/fork:27921
+1.sh: $<span style="color: #0087ff;">A</span> is B
+using source...
+PID for 2.sh: 27921
+2.sh get $<span style="color: #0087ff;">A</span>=B from 1.sh
+2.sh: $<span style="color: #0087ff;">A</span> is C
+PID for 1.sh after exec/source/fork:27921
+1.sh: $<span style="color: #0087ff;">A</span> is C
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-16 Fri 07:54 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>$() ${} $(()) 的用法</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">$() ${} $(()) 的用法</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf8960a4">1. $()</a></li>
+<li><a href="#org9081676">2. ${}</a>
+<ul>
+<li><a href="#orgc295fda">2.1. shell 字符串的非贪婪(最小匹配)左删除</a></li>
+<li><a href="#org89ed05c">2.2. shell 字符串的贪婪(最大匹配)左删除</a></li>
+<li><a href="#orgdbc96f8">2.3. shell 字符串的非贪婪(最小匹配)右删除</a></li>
+<li><a href="#orgb27e3f5">2.4. shell 字符串的贪婪(最大匹配)右删除</a></li>
+<li><a href="#org76c1886">2.5. shell 根据下标提取字符串</a></li>
+<li><a href="#orgc7e4bdb">2.6. shell 字符串变量值的替换</a></li>
+<li><a href="#orgfb87401">2.7. shell 字符串变量默认值</a></li>
+<li><a href="#orgdbc390d">2.8. 计算 shell 字符串变量的长度</a></li>
+<li><a href="#orge8b916a">2.9. shell 数组</a></li>
+</ul>
+</li>
+<li><a href="#org0eda2b7">3. $(()) 和 (())</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf8960a4" class="outline-2">
+<h2 id="orgf8960a4"><span class="section-number-2">1</span> $()</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<code>$()</code> 和 <code>``</code> 都是用作命令替换 (command substitution) 的。<br>
+例如下面两个命令是等价的：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ command1 $(command2 $(command3))
+$ command1 <span style="color: #ff00ff;">`command2 \`command3\` `</span>
+</pre>
+</div>
+
+<p>
+首先执行 command3，其结果替换 $(command3) 作为 command2 的参数；然后执行 command2，其结果替换 $(command2 $(command3)) 作为 command1 的参数<br>
+其中第二种写法 `` 中的 `` 需要加 \ 进行转义<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ echo <span style="color: #00afaf;">"$(ls -al "$(echo $PWD)")"</span>
+$ echo <span style="color: #00afaf;">"`ls -al "\`echo $PWD\`" `"</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9081676" class="outline-2">
+<h2 id="org9081676"><span class="section-number-2">2</span> ${}</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<code>${}</code> 用作变量替换。例如: <code>$ A=B; echo ${A}B</code><br>
+</p>
+</div>
+
+<div id="outline-container-orgc295fda" class="outline-3">
+<h3 id="orgc295fda"><span class="section-number-3">2.1</span> shell 字符串的非贪婪(最小匹配)左删除</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ <span style="color: #0087ff;">file</span>=/dir1/dir2/dir3/my.file.txt
+$ echo ${<span style="color: #0087ff;">file</span>#*/}             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#24038;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#31532;&#19968;&#20010; / &#21491;&#38754;</span>
+dir1/dir2/dir3/my.file.txt
+$ echo ${<span style="color: #0087ff;">file</span>#*.}             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#24038;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#31532;&#19968;&#20010; . &#21491;&#38754;</span>
+file.txt
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org89ed05c" class="outline-3">
+<h3 id="org89ed05c"><span class="section-number-3">2.2</span> shell 字符串的贪婪(最大匹配)左删除</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>##*/}            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#24038;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#26368;&#21518;&#19968;&#20010; / &#21491;&#38754;</span>
+my.file.txt
+$ echo ${<span style="color: #0087ff;">file</span>##*.}            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#24038;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#26368;&#21518;&#19968;&#20010; . &#21491;&#38754;</span>
+txt
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdbc96f8" class="outline-3">
+<h3 id="orgdbc96f8"><span class="section-number-3">2.3</span> shell 字符串的非贪婪(最小匹配)右删除</h3>
+<div class="outline-text-3" id="text-2-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>%/*}             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#21491;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#31532;&#19968;&#20010; / &#24038;&#38754;</span>
+/dir1/dir2/dir3
+$ echo ${<span style="color: #0087ff;">file</span>%.*}             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#21491;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#31532;&#19968;&#20010; . &#24038;&#38754;</span>
+/dir1/dir2/dir3/my.file
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb27e3f5" class="outline-3">
+<h3 id="orgb27e3f5"><span class="section-number-3">2.4</span> shell 字符串的贪婪(最大匹配)右删除</h3>
+<div class="outline-text-3" id="text-2-4">
+<div class="org-src-container">
+<pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>%%/*}            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#21491;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#26368;&#21518;&#19968;&#20010; / &#24038;&#38754;</span>
+
+$ echo ${<span style="color: #0087ff;">file</span>%%.*}            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#21491;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#26368;&#21518;&#19968;&#20010; . &#24038;&#38754;</span>
+/dir1/dir2/dir3/my
+</pre>
+</div>
+
+<p>
+记忆方法：<br>
+</p>
+
+<p>
+## 表示最大匹配从左边开始删除<br>
+% 表示最小匹配从右边开始删除<br>
+%% 表示最大匹配从右边开始删除<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org76c1886" class="outline-3">
+<h3 id="org76c1886"><span class="section-number-3">2.5</span> shell 根据下标提取字符串</h3>
+<div class="outline-text-3" id="text-2-5">
+<div class="org-src-container">
+<pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>:1:4}               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#20013;&#25552;&#21462;&#23383;&#31526;&#20018;&#65292;&#24320;&#22987;&#19979;&#26631;&#20026; 1&#65292;&#25552;&#21462;&#23383;&#31526;&#25968;&#37327;&#20026; 4</span>
+dir1
+$ echo ${<span style="color: #0087ff;">file</span>:6:4}               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#20013;&#25552;&#21462;&#23383;&#31526;&#20018;&#65292;&#24320;&#22987;&#19979;&#26631;&#20026; 6&#65292;&#25552;&#21462;&#23383;&#31526;&#25968;&#37327;&#20026; 4</span>
+dir2
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc7e4bdb" class="outline-3">
+<h3 id="orgc7e4bdb"><span class="section-number-3">2.6</span> shell 字符串变量值的替换</h3>
+<div class="outline-text-3" id="text-2-6">
+<div class="org-src-container">
+<pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>/dir/path}          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226;&#21464;&#37327; file &#20013;&#30340;&#31532;&#19968;&#20010;&#23376;&#20018; dir &#26367;&#25442;&#25104; path</span>
+/path1/dir2/dir3/my.file.txt
+$ echo ${<span style="color: #0087ff;">file</span>//dir/path}         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226;&#21464;&#37327;&#20013;&#30340;&#25152;&#26377;&#23376;&#20018; dir &#26367;&#25442;&#25104; path</span>
+/path1/path2/path3/my.file.txt
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfb87401" class="outline-3">
+<h3 id="orgfb87401"><span class="section-number-3">2.7</span> shell 字符串变量默认值</h3>
+<div class="outline-text-3" id="text-2-7">
+<div class="org-src-container">
+<pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>-file.txt}              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21464;&#37327; file &#26410;&#23450;&#20041;&#65292;&#36820;&#22238; file.txt&#65307;&#21542;&#21017;&#65292;&#36820;&#22238; ${file}</span>
+$ echo ${<span style="color: #0087ff;">file</span>:-file.txt}             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21464;&#37327; file &#26410;&#23450;&#20041;&#25110;&#20026;&#31354;&#65292;&#36820;&#22238; file.txt&#65307;&#21542;&#21017;&#65292;&#36820;&#22238; ${file}</span>
+$ echo ${<span style="color: #0087ff;">file</span>+file.txt}              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21464;&#37327; file &#24050;&#23450;&#20041;&#65292;&#36820;&#22238; file.txt&#65307;&#21542;&#21017;&#65292;&#36820;&#22238; ${file}</span>
+$ echo ${<span style="color: #0087ff;">file</span>:+file.txt}             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21464;&#37327; file &#38750;&#31354;&#65292;&#36820;&#22238; file.txt;&#21542;&#21017;&#65292;&#36820;&#22238; ${file}</span>
+$ echo ${<span style="color: #0087ff;">file</span>=file.txt}              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21464;&#37327; file &#26410;&#23450;&#20041;&#65292;&#36820;&#22238; file.txt&#65292;&#21516;&#26102;&#32473;&#21464;&#37327; file &#36171;&#20540;&#65307;&#21542;&#21017;&#65292;&#36820;&#22238; ${file}</span>
+$ echo ${<span style="color: #0087ff;">file</span>:=file.txt}             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21464;&#37327; file &#26410;&#23450;&#20041;&#25110;&#20026;&#31354;&#65292;&#36820;&#22238; file.txt&#65292;&#21516;&#26102;&#32473;&#21464;&#37327; file &#36171;&#20540;&#65307;&#21542;&#21017;&#65292;&#36820;&#22238; ${file}</span>
+$ echo ${<span style="color: #0087ff;">file</span>?file.txt}              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21464;&#37327; file &#26410;&#23450;&#20041;&#65292;&#36755;&#20986; file.txt &#21040; STDERR&#65307;&#21542;&#21017;&#65292;&#36820;&#22238; ${file}</span>
+$ echo ${<span style="color: #0087ff;">file</span>:?file.txt}             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21464;&#37327; file &#26410;&#23450;&#20041;&#25110;&#20026;&#31354;&#65292;&#36755;&#20986; file.txt &#21040; STDERR&#65307;&#21542;&#21017;&#65292;&#36820;&#22238; ${file}</span>
+</pre>
+</div>
+
+<p>
+记忆方法：<br>
+</p>
+<ul class="org-ul">
+<li><code>-</code> 未定义<br></li>
+<li><code>+</code> 已定义<br></li>
+<li><code>=</code> 未定义 和 赋值<br></li>
+<li><code>?</code> 未定义 和 输出到 STDERR<br></li>
+<li><code>:</code> 为空 或 不为空 。具体含义需要看它和谁组合在一起<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdbc390d" class="outline-3">
+<h3 id="orgdbc390d"><span class="section-number-3">2.8</span> 计算 shell 字符串变量的长度</h3>
+<div class="outline-text-3" id="text-2-8">
+<div class="org-src-container">
+<pre class="src src-shell">$ echo ${#<span style="color: #0087ff;">file</span>}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge8b916a" class="outline-3">
+<h3 id="orge8b916a"><span class="section-number-3">2.9</span> shell 数组</h3>
+<div class="outline-text-3" id="text-2-9">
+<div class="org-src-container">
+<pre class="src src-shell">$ <span style="color: #0087ff;">A</span>=(a b c def)           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23450;&#20041;&#25968;&#32452;</span>
+$ echo ${<span style="color: #0087ff;">A</span>[@]}            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20986;&#25968;&#32452;&#20840;&#37096;&#20803;&#32032;</span>
+a b c def
+$ echo ${<span style="color: #0087ff;">A</span>[*]}            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20986;&#25968;&#32452;&#20840;&#37096;&#20803;&#32032;</span>
+a b c def
+$ echo ${<span style="color: #0087ff;">A</span>[0]}            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20986;&#25968;&#32452;&#31532;&#19968;&#20010;&#20803;&#32032;</span>
+a
+$ echo ${#<span style="color: #0087ff;">A</span>[@]}           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20986;&#25968;&#32452; length</span>
+4
+$ echo ${#<span style="color: #0087ff;">A</span>[*]}           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20986;&#25968;&#32452; length</span>
+4
+$ echo ${#<span style="color: #0087ff;">A</span>[3]}           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20986;&#25968;&#32452;&#31532;4&#20010;&#20803;&#32032;&#30340; length</span>
+3
+$ <span style="color: #0087ff;">A</span>[2]=xyz                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25968;&#32452;&#20803;&#32032;&#37325;&#26032;&#36171;&#20540;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0eda2b7" class="outline-2">
+<h2 id="org0eda2b7"><span class="section-number-2">3</span> $(()) 和 (())</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><b><b><code>$(())</code> 是用来做整数运算的</b></b> 。不能用于浮点数，因为它会当成字符串。<br>
+bash 中支持的运算符有 <code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code> <code>&amp;</code> <code>|</code> <code>^</code> (异或 XOR) <code>!</code> 。此外， <code>$(())</code> 还可作不同进制(如二进制、八进制、十六进制)的运算，只是输出结果均为十进制的。<br></li>
+<li><b><b><code>(())</code> 是用来做整数测试的，也可以重定义变量</b></b><br>
+常用于 <code>(())</code> 的测试符号有 <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code> <code>==</code> <code>!=</code><br></li>
+</ul>
+<p>
+<code>$(())</code> 或 <code>(())</code> 中的变量加不加 <code>$</code> 符号都可以<br>
+使用 <code>(())</code> 作整数测试时， 注意不要跟 <code>[]</code> 的整数测试搞混乱了。<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ <span style="color: #0087ff;">a</span>=11; <span style="color: #0087ff;">b</span>=2; <span style="color: #0087ff;">c</span>=4;
+$ echo $(((a+b) * 2))    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21482;&#35201;&#25324;&#21495;&#20013;&#30340;&#36816;&#31639;&#31526;&#12289;&#34920;&#36798;&#24335;&#31526;&#21512; C &#35821;&#35328;&#36816;&#31639;&#35268;&#21017;&#65292;&#37117;&#21487;&#29992;&#22312; $((exp))</span>
+$ echo $((16#11))        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20986;&#21313;&#20845;&#36827;&#21046;&#30340; 11 &#23545;&#24212;&#30340;&#21313;&#36827;&#21046;</span>
+17
+$ ((a++))                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992; (()) &#37325;&#23450;&#20041;&#21464;&#37327;&#20540;</span>
+$ ((a--))
+$ ((a&lt;b))                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524; a&lt;b&#65292;&#36820;&#22238;0&#65288;true&#65289;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

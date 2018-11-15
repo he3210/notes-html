@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-13 Tue 19:32 -->
+<!-- 2018-11-16 Fri 07:54 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>搭建我的笔记系统</title>
@@ -317,6 +317,8 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
 <ol class="org-ol">
 <li>生产环境和测试环境的环境变量的改变<br></li>
 <li>优化导出速度。文件如果未修改，则使用缓存的文件，而不是强制重新导出<br></li>
+<li>另外，之前发现导出后光标位置发生改变，会移动到文档第一行首个字符处，使用 save-excursion 函数保存当前 buffer 和当前光标位置，执行完其包含的代码段后恢复 buffer 和光标位置<br></li>
+<li>使用异步的方式导出笔记。未使用异步。在 org 文档中提到，org-publish-project 函数的最后一个参数改为非空即可创建一个新进程来导出项目。未使用异步是因为在新进程中做不到使用 htmlize 对代码进行高亮<br></li>
 </ol>
 
 <p>
@@ -335,7 +337,7 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
   (<span style="color: #5f8700;">if</span>(not window-system)
       (reload-solarized-termcolors 256))
 
-    (org-publish-project <span style="color: #00afaf;">"notes"</span> is-force nil)  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986; notes &#21040; html</span>
+  (<span style="color: #5f8700;">save-excursion</span> (org-publish-project <span style="color: #00afaf;">"notes"</span> is-force nil))  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986; notes &#21040; html&#12290;is-force &#34920;&#31034;&#26159;&#21542;&#24378;&#21046;&#23548;&#20986;</span>
 
   <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#23548;&#20986;&#23436;&#27605;&#21518;&#65292;&#37197;&#33394;&#20877;&#25913;&#22238;&#26469;&#65292;&#38450;&#27490; solarized &#22312;&#32456;&#31471;&#20013;&#39068;&#33394;&#28151;&#20081;</span>
   (<span style="color: #5f8700;">if</span>(not window-system)

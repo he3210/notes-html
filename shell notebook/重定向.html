@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-16 Fri 07:54 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>重定向</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">重定向</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf2cb91d">1. 重定向输入 n&lt; (input redirection)</a></li>
+<li><a href="#orgc213776">2. 重定向输出 n&gt; (output redirection)</a></li>
+<li><a href="#orgda1d65b">3. /dev/null</a></li>
+<li><a href="#orgcb408c0">4. I/O Redirection的优先级</a></li>
+<li><a href="#org8bfeecc">5. 管道</a></li>
+</ul>
+</div>
+</div>
+<p>
+重定向按照从左到右进行处理<br>
+</p>
+
+<div id="outline-container-orgf2cb91d" class="outline-2">
+<h2 id="orgf2cb91d"><span class="section-number-2">1</span> 重定向输入 n&lt; (input redirection)</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ cat &lt; aa.log    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20837;&#37325;&#23450;&#21521;&#20026; aa.log&#12290;&lt; &#40664;&#35748;&#20540;&#26159; 0&lt;</span>
+$ cat &lt;&lt;EOF       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#38190;&#30424;&#36755;&#20837;&#25991;&#26412;&#65292;&#30452;&#21040;&#35835;&#21040;&#23383;&#31526;&#20018; "EOF"</span>
+<span style="color: #ffa54f;">first line here</span>
+<span style="color: #ffa54f;">second line here</span>
+<span style="color: #ffa54f;">third line here</span>
+<span style="color: #ffa54f;">EOF</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc213776" class="outline-2">
+<h2 id="orgc213776"><span class="section-number-2">2</span> 重定向输出 n&gt; (output redirection)</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><code>1&gt;file</code>        改变 stdout 的输出通道（&gt; 默认值是 1&gt;）<br></li>
+<li><code>2&gt;file</code>        改变 stderr 的输出通道<br></li>
+<li><code>1&gt;&gt;file</code>       以追加的方式重定向1<br></li>
+<li><code>2&gt;&gt;file</code>       以追加的方式重定向2<br></li>
+<li><code>&gt;&amp;file descriptor</code>   重定向到文件描述符<br></li>
+<li><code>&amp;&gt;file</code> <code>&gt;&amp;file</code> 二者相同，它是一种特殊用法，等价于 <code>&gt;file 2&gt;&amp;1</code> ，表示把 stdout、stderr 都重定向到 file。<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ ls my.file no.such.file 1&gt;file.both 2&gt;file.both  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">1 &#21644; 2 &#21516;&#26102;&#23450;&#21521;&#21040;&#21516;&#19968;&#20010;&#25991;&#20214;&#12290;&#25991;&#20214;&#20869;&#23481;&#20250;&#30456;&#20114;&#35206;&#30422;</span>
+$ ls my.file no.such.file 1&gt;file.both 2&gt;&amp;1         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">1 &#37325;&#23450;&#21521;&#21040;&#25991;&#20214; file.both&#65292;&#28982;&#21518;&#25226; 2 &#37325;&#23450;&#21521;&#21040;&#25991;&#20214;&#25551;&#36848;&#31526; 1&#12290;&#35299;&#20915;&#20102;&#25991;&#20214;&#20869;&#23481;&#30456;&#20114;&#35206;&#30422;&#30340;&#38382;&#39064;&#12290;&#31561;&#20215;&#20110;&#19979;&#38754;&#19968;&#34892;&#21629;&#20196;</span>
+$ ls my.file no.such.file &gt;&amp;file.both
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgda1d65b" class="outline-2">
+<h2 id="orgda1d65b"><span class="section-number-2">3</span> /dev/null</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+将fd 1跟fd 2重定向到 /dev/null 去，就可忽略stdout, stderr的输出。<br>
+将fd 0重定向到 /dev/null，那就是读进空(nothing).<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ ls my.file no.such.file 2&gt;/dev/null       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24573;&#30053; stderr</span>
+$ ls my.file no.such.file &gt;/dev/null 2&gt;&amp;1   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24573;&#30053; stderr stdout</span>
+$ ls my.file no.such.file &amp;&gt;/dev/null       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226; 1 &#21644; 2 &#37117;&#37325;&#23450;&#21521;&#21040; /etc/null</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcb408c0" class="outline-2">
+<h2 id="orgcb408c0"><span class="section-number-2">4</span> I/O Redirection的优先级</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-shell">$ cat &lt;aa.log &gt;aa.log    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312; IO Redirection &#20013;, stdout &#19982; stderr &#30340;&#31649;&#36947;&#20250;&#20808;&#20934;&#22791;&#22909;&#65292;&#25165;&#20250;&#20174; stdin &#35835;&#20837;&#25968;&#25454;&#12290;&gt;aa.log &#20250;&#20808;&#28165;&#31354; aa.log&#65292;&#28982;&#21518;&#25165;&#35835;&#20837; &lt;aa.log&#65292;&#35835;&#20837;&#20869;&#23481;&#20026;&#31354;&#65292;&#36755;&#20986;&#20026;&#31354;&#65292;&#25152;&#20197; aa.log &#26368;&#21518;&#27809;&#26377;&#25968;&#25454;</span>
+$ cat &lt;aa.log &gt;&gt;aa.log   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">stdin &#37325;&#23450;&#21521;&#21040; aa.log&#65292;stdout &#37325;&#23450;&#21521;&#21040; aa.log&#12290;&#20250;&#20808;&#35835;&#20837; aa.log&#65292;&#28982;&#21518;&#36755;&#20986;&#20869;&#23481;&#21040; aa.log&#65292;aa.log &#32487;&#32493;&#35835;&#36755;&#20986;&#30340;&#20869;&#23481;&#65292;&#32487;&#32493;&#36755;&#20986;&#21040; aa.log&#12290;&#24490;&#29615;&#24448;&#22797;</span>
+$ cat &lt;&gt;aa.log           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31561;&#20215;&#20110; $ cat &lt;aa.log&#65288;&#22240;&#20026;&#25191;&#34892;&#23436;&#21518;&#65292;aa.log &#25991;&#20214;&#27809;&#26377;&#20462;&#25913;&#36807;&#65289;</span>
+</pre>
+</div>
+
+<p>
+为什么 <code>cat &lt;&gt;aa.log</code> 等价于 <code>cat &lt;aa.log</code> 呢？<br>
+<code>exec 5&lt;&gt;file; echo "abcd" &gt;&amp;5; cat &lt;&amp;5</code> 将 file 文件的输入、输出定向到文件描述符 5，从而描述符 5 可以接管 file 的输入输出； 因此， <code>cat &lt;&gt;file</code> 等价于 <code>cat &lt; file</code> 。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8bfeecc" class="outline-2">
+<h2 id="org8bfeecc"><span class="section-number-2">5</span> 管道</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+问题：用管道连接的多个命令，保存其中一个命令的输出<br>
+<code>$ cmd1 | cmd2 | cmd3 | ...</code><br>
+保存 cmd2 的输出到 aa.log<br>
+</p>
+
+<p>
+解决办法<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ cmd1 | cmd2 &gt;aa.log; cmd3 &lt;aa.log | ...    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#32570;&#28857;&#65306;file I/O &#20250;&#21464;&#25104;&#21452;&#20493;&#65292;&#35201;&#23613;&#21147;&#36991;&#20813;&#25110;&#38477;&#20302; file I/O &#30340;&#39057;&#24230;</span>
+$ cmd1 | cmd2 | tee file | cmd3 | ...        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992; tee &#21629;&#20196;&#65292;&#19981;&#24433;&#21709;&#21407;&#26412;&#25928;&#29575;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

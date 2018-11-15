@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-16 Fri 07:54 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>正则表达式（RE：regular expression）</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">正则表达式（RE：regular expression）</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc095f8d">1. 正则表达式和通配符的区别</a></li>
+<li><a href="#org1d078f6">2. character set</a></li>
+<li><a href="#org3e6d1b9">3. anchor</a></li>
+<li><a href="#org4443657">4. modifier</a></li>
+<li><a href="#orgbf3b2f7">5. 重视边界（boundary）字符的重要性</a></li>
+<li><a href="#orgf21a7ae">6. eval</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc095f8d" class="outline-2">
+<h2 id="orgc095f8d"><span class="section-number-2">1</span> 正则表达式和通配符的区别</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>在一个 command line 中 <code>$ command_name options arguments</code> ，wildcard 只作用于 command line 中 argument 的 path 上；<br></li>
+<li>而正则表达式是用于 "字符串处理" 的，它可以出现在 command line 中或脚本中。<br></li>
+</ul>
+
+<p>
+shell command line 上，字符分为 meta 与 literal 这两种不同的字符类型；<br>
+正则表达式里字符也分为 meta 与 literal 这两种<br>
+</p>
+
+<p>
+然而，不少正则表达式所使用的 meta 字符，跟 shell 的 meta 字符是冲突的。例如，字符 <code>*</code> ，在正则表达式中是一个 modifier(修饰符);而在 command line 上，却是 wildcard(通配符)。<br>
+</p>
+
+<p>
+如何解决冲突呢？<br>
+要知道，shell quoting 就是用来在 command line 上关闭 shell meta 的。所以，我们只需要用 shell quoting 关闭掉 shell meta 就是了，这样，一些冲突的字符就会被认为是正则表达式中的 modifier 了。<br>
+</p>
+
+<p>
+例如<br>
+若在 command line 的 path 中没有 quoting 处理的话，如 <code>abc*</code> 就会被作为 wildcard expression 来扩充及重组了。若将其置于 quoting 中，即 <code>"abc*"</code> ，则可以避免 wildcard expand 的处理。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1d078f6" class="outline-2">
+<h2 id="org1d078f6"><span class="section-number-2">2</span> character set</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+字符集合(character set): 就是将多个连续的字符作为一个集合<br>
+</p>
+<ul class="org-ul">
+<li><code>abc</code>       表示 abc 三个连续的字符，但彼此独立而非集合。(可简单视为三个 character set)<br></li>
+<li><code>(abc)</code>     表示 abc 这三个连续字符的集合。(可简单视为一个character set)<br></li>
+<li><code>abc|xyz</code>   表示 abc 或 xyz 这两个character set 之一<br></li>
+<li><code>[abc]</code>     表示单一字符，可为 a 或 b 或 c；与 wildcard 的 [abc] 原理相同。<br></li>
+<li><code>[^abc]</code>    表示单一字符，不为 a 或 b 或 c 即可。(与 wildcard [!abc] 原理相同)<br></li>
+<li><code>.</code>         表示除换行符之外的任意单个字符<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3e6d1b9" class="outline-2">
+<h2 id="org3e6d1b9"><span class="section-number-2">3</span> anchor</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+锚点(anchor): 用以标识 Regular Expression 在句子中的位置<br>
+</p>
+<ul class="org-ul">
+<li><code>^</code>     表示句首。如， <code>^abc</code> 表示以 abc 开头的句子<br></li>
+<li><code>$</code>     表示句尾。如， <code>abc$</code> 表示以 abc 结尾的句子<br></li>
+<li><code>\&lt;</code>    表示词首。如， <code>\\&lt;abc</code> 表示以 abc 开头的词<br></li>
+<li><code>\&gt;</code>    表示词尾。如， <code>abc\\&gt;</code> 表示以 abc 结尾的词<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4443657" class="outline-2">
+<h2 id="org4443657"><span class="section-number-2">4</span> modifier</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+修饰符(modifier)：独立表示时本身不具意义，专门用以修饰前一个 character set 出现的次数<br>
+</p>
+<ul class="org-ul">
+<li><code>*</code>         表示前一个 character set 出现 0 次或多次，即任意次。如 <code>ab*c</code> 表示 a 与 c 之间可以有 0 个或多个 b<br></li>
+<li><code>?</code>         表示前一个 character set 出现 0 次或 1 次，即至多出现 1 次。如 <code>ab?c</code> 表示 a 与 c 之间可以有 0 个或 1 个 b<br></li>
+<li><code>+</code>         表示前一个 character set 出现 1 次或多次，即至少出现 1 次。如 <code>ab+c</code> 表示 a 与 c 之间可以有 1 个或多个 b<br></li>
+<li><code>{n}</code>       表示前一个 character set 出现 n 次。如 <code>ab{n}c</code> 表示 a 与 c 之间可以有 n 个 b<br></li>
+<li><code>{n, }</code>     表示前一个 character set 至少出现 n 次。如 <code>ab{n}c</code> 表示 a 与 c 之间至少有 n 个 b<br></li>
+<li><code>{n, m}</code>    表示前一个 character set 至少出现 n 次，至多出现 m 次。如 <code>ab{n，m}c</code> 表示 a 与 c 之间至少有 n 个 b，至多有 m 个 b<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgbf3b2f7" class="outline-2">
+<h2 id="orgbf3b2f7"><span class="section-number-2">5</span> 重视边界（boundary）字符的重要性</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+对于字符串 "abbbbbbbbbbbbbc"<br>
+<code>ab{3,5}c</code> 能匹配到吗？不能，因为 a 和 c 是它的边界字符，字符 c 匹配不上<br>
+<code>ab{3,5}</code>  则可以匹配到。 <code>ab</code> 后面最多再匹配 5 个 <code>b</code> ，然而 5 个 b 后面，该正则表达式并没有规定要匹配什么字符，当然可以是任意字符了<br>
+<code>b{3,5}c</code>  同理，该正则表达式也可以匹配到。<br>
+</p>
+</div>
+</div>
+<div id="outline-container-orgf21a7ae" class="outline-2">
+<h2 id="orgf21a7ae"><span class="section-number-2">6</span> eval</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+简单来讲，eval 就是在 command line 进行替换重组后再来一次替换重组<br>
+</p>
+
+<p>
+例如<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ <span style="color: #0087ff;">a</span>=1
+$ <span style="color: #0087ff;">A1</span>=abc
+$ echo $<span style="color: #0087ff;">A1</span>
+abc
+$ eval echo <span style="color: #00afaf;">\$</span><span style="color: #0087ff;">A</span>$<span style="color: #0087ff;">a</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31532;&#19968;&#27425;&#26367;&#25442;&#37325;&#32452;&#24471;&#21040; echo $A1&#65292;&#28982;&#21518;&#23545;&#20854;&#20877;&#26469;&#19968;&#27425;&#26367;&#25442;&#37325;&#32452;&#23601;&#24471;&#21040;&#32467;&#26524;&#20102;</span>
+abc
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

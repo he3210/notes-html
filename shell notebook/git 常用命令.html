@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-13 Tue 19:32 -->
+<!-- 2018-11-16 Fri 07:54 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>git 常用命令</title>
@@ -67,6 +67,7 @@
 <ul class="org-ul">
 <li><a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">廖雪峰 Git 教程</a><br></li>
 <li><a href="http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html">常用 Git 命令清单</a><br></li>
+<li><a href="https://github.com/he3210/git-style-guide">git 使用风格</a><br></li>
 </ul>
 </div>
 </div>
@@ -151,6 +152,8 @@ $ git branch -d [branch-name]                         <span style="color: #8a8a8
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#36828;&#31243;&#20998;&#25903;</span>
 $ git push origin --delete [branch-name]
 $ git branch -dr [remote/branch]
+$ git branch --merged | grep -v <span style="color: #00afaf;">'*'</span>                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#21738;&#20123;&#20998;&#25903;&#24050;&#34987;&#24182;&#20837;&#24403;&#21069;&#20998;&#25903;&#12290;&#24050;&#34987;&#21512;&#24182;&#30340;&#20998;&#25903;&#19968;&#33324;&#37117;&#21487;&#20197;&#21024;&#25481;&#20102;&#12290;&#21152; * &#21495;&#30340;&#20998;&#25903;&#26159;&#24403;&#21069;&#20998;&#25903;</span>
+$ git branch --no-merged                              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#23578;&#26410;&#21512;&#24182;&#21040;&#24403;&#21069;&#20998;&#25903;&#30340;&#20998;&#25903;</span>
 </pre>
 </div>
 </div>

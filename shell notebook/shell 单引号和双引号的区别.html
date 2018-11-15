@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-13 Tue 19:32 -->
+<!-- 2018-11-16 Fri 07:54 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>shell 单引号和双引号的区别</title>
@@ -34,30 +34,19 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgcf8fb16">1. 参考</a></li>
-<li><a href="#org443d66e">2. shell command line 分解</a></li>
-<li><a href="#orgb6cfe65">3. quoting 处理</a></li>
-<li><a href="#org025f07f">4. shell meta 和 command meta 区别</a></li>
-<li><a href="#org4fb2c00">5. 举例1</a></li>
-<li><a href="#org89b201d">6. 举例2</a></li>
-<li><a href="#org5807510">7. 举例3</a></li>
-<li><a href="#orga98e2b1">8. 举例4</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgcf8fb16" class="outline-2">
-<h2 id="orgcf8fb16"><span class="section-number-2">1</span> 参考</h2>
-<div class="outline-text-2" id="text-1">
-<ul class="org-ul">
-<li><a href="https://github.com/wzb56/13_questions_of_shell">https://github.com/wzb56/13_questions_of_shell</a><br></li>
+<li><a href="#org443d66e">1. shell command line 分解</a></li>
+<li><a href="#orgb6cfe65">2. quoting 处理</a></li>
+<li><a href="#orgdc46304">3. 举例：从 Enter 键看区别</a></li>
+<li><a href="#orgc14ef7d">4. 举例：从 awk 命令看区别</a></li>
+<li><a href="#org535427d">5. 举例: 从 stdin 输入变量看区别</a></li>
+<li><a href="#orgff5ff67">6. 举例：输出原文件</a></li>
 </ul>
 </div>
 </div>
 
 <div id="outline-container-org443d66e" class="outline-2">
-<h2 id="org443d66e"><span class="section-number-2">2</span> shell command line 分解</h2>
-<div class="outline-text-2" id="text-2">
+<h2 id="org443d66e"><span class="section-number-2">1</span> shell command line 分解</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 shell command line 处理流程：<br>
 shell 会根据 IFS 把从 command line 输入的文字分解为每一个单词，然后对 meta 字符进行处理，最后按词重组 command line。<br>
@@ -89,69 +78,96 @@ command line 的每一个 charactor, 分为如下两种：<br>
 <li><code>!</code>    执行 histroy 列表中的命令<br></li>
 <li><code>IFS</code>  字段分隔符。由按键 space 或者 tab 或者 Enter 三者之一组成<br></li>
 <li><code>CR</code>   由 Enter 产生<br></li>
+<li>&#x2026;<br></li>
 </ul>
 </div>
 </div>
 
-
 <div id="outline-container-orgb6cfe65" class="outline-2">
-<h2 id="orgb6cfe65"><span class="section-number-2">3</span> quoting 处理</h2>
-<div class="outline-text-2" id="text-3">
+<h2 id="orgb6cfe65"><span class="section-number-2">2</span> quoting 处理</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 假如我们需要在 command line 中将这些保留元字符的功能关闭的话，就需要 quoting 处理了<br>
-在 bash 中，常用的quoting有以下三种方法：<br>
+在 bash 中，常用的 quoting 有以下三种方法：<br>
 </p>
 <ol class="org-ol">
-<li>hard quote：''(单引号)，凡在 hard quote 中的所有 meta 均被关闭<br></li>
+<li>hard quote：''(单引号)，凡在 hard quote 中的所有 meta 均被关闭，在 hard quote 中的 hard quote 中的所有 meta 均被开启<br></li>
 <li>soft quote：""(双引号)，凡在 soft quote 中大部分 meta 都会被关闭，但某些会保留(如 $ 等)<br></li>
 <li>escape: \ (反斜杠)，只有在紧接在 escape 之后的单一 meta 才被关闭<br></li>
 </ol>
+</div>
+</div>
 
-
-
+<div id="outline-container-orgdc46304" class="outline-2">
+<h2 id="orgdc46304"><span class="section-number-2">3</span> 举例：从 Enter 键看区别</h2>
+<div class="outline-text-2" id="text-3">
 <p>
-Enter 键的含义<br>
+Enter 存在如下含义<br>
 </p>
 <ul class="org-ul">
-<li><code>CR</code>    告诉 shell 命令可以执行了<br></li>
-<li><code>IFS</code>   字段分割符。<br></li>
+<li><code>CR</code>    告诉 shell 命令结束了，可以交由 shell 执行了。如果不使用 quoting 处理，Enter 就被解释为 CR<br></li>
+<li><code>IFS</code>   字段分割符。在 soft quote 种的 Enter 会被解释为 IFS<br></li>
 <li><code>NL</code>    new line。在 hard quote 中的 Enter 含义就是 NL<br></li>
 <li><code>FF</code>    Form Feed（换页）<br></li>
-<li><code>NULL</code><br></li>
+<li><code>NULL</code>  在 escape 后面，Enter 就被解释为 NULL<br></li>
 </ul>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">space &#38190;&#34987;&#20316;&#20026; IFS</span>
+$ <span style="color: #0087ff;">A</span>=B C   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31354;&#30333;&#31526;&#26410;&#34987;&#20851;&#38381;&#65292;&#20316;&#20026; IFS &#22788;&#29702;</span>
+C&#65306;command not found.
+$ echo $<span style="color: #0087ff;">A</span>
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">space &#38190;&#22312; "" &#20013;&#34987;&#35299;&#37322;&#20026; literal</span>
+$ <span style="color: #0087ff;">A</span>=<span style="color: #00afaf;">"B C"</span> <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31354;&#30333;&#31526;&#24050;&#34987;&#20851;&#25481;&#65292;&#20165;&#20316;&#20026;&#31354;&#30333;&#31526;</span>
+$ echo $<span style="color: #0087ff;">A</span>
+B C
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">Enter &#22312; '' &#20013;&#34987;&#35299;&#37322;&#20026; NL</span>
+$ <span style="color: #0087ff;">A</span>=<span style="color: #00afaf;">'B</span>
+<span style="color: #00afaf;">&gt; C</span>
+<span style="color: #00afaf;">&gt; '</span>
+$ echo <span style="color: #00afaf;">"$A"</span>
+B
+C
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">Enter &#22312; "" &#20013;&#34987;&#35299;&#37322;&#20026; IFS</span>
+$ <span style="color: #0087ff;">A</span>=<span style="color: #00afaf;">"B</span>
+<span style="color: #00afaf;">&gt; C</span>
+<span style="color: #00afaf;">&gt; "</span>
+$ echo $<span style="color: #0087ff;">A</span>
+B C
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">Enter &#22312; \ &#21518;&#34987;&#35299;&#37322;&#20026; NULL</span>
+$ <span style="color: #0087ff;">A</span>=B<span style="color: #00afaf;">\</span>
+&gt; C<span style="color: #00afaf;">\</span>
+&gt;
+$ echo $<span style="color: #0087ff;">A</span>
+BC
+</pre>
+</div>
 </div>
 </div>
 
-
-<div id="outline-container-org025f07f" class="outline-2">
-<h2 id="org025f07f"><span class="section-number-2">4</span> shell meta 和 command meta 区别</h2>
+<div id="outline-container-orgc14ef7d" class="outline-2">
+<h2 id="orgc14ef7d"><span class="section-number-2">4</span> 举例：从 awk 命令看区别</h2>
 <div class="outline-text-2" id="text-4">
+<p>
+shell meta 和 command meta 区别<br>
+</p>
 <ul class="org-ul">
 <li><code>shell meta</code>      shell 处理的 meta<br></li>
 <li><code>command meta</code>    command 程序自己处理的 meta<br></li>
 </ul>
-</div>
-</div>
 
-<div id="outline-container-org4fb2c00" class="outline-2">
-<h2 id="org4fb2c00"><span class="section-number-2">5</span> 举例1</h2>
-<div class="outline-text-2" id="text-5">
 <p>
 命令 <code>$ awk '{print $0}' 1.txt</code> 为什么要使用 hard quote，而不写成 <code>$ awk {print $0} 1.txt</code> ?<br>
-使用 hard meta 是为了将 {} &lt;space&gt; $ 这几个 shell meta 关闭，避免在 shell 中处理，而完整的成为 awk 中的 command meta<br>
-也可以写成 <code>$ awk "{print \$0}" 1.txt</code> 和 <code>$ awk \{print \$0\} 1.txt</code><br>
-</p>
-</div>
-</div>
-
-<div id="outline-container-org89b201d" class="outline-2">
-<h2 id="org89b201d"><span class="section-number-2">6</span> 举例2</h2>
-<div class="outline-text-2" id="text-6">
-<p>
-下面4种 awk 命令等价：<br>
+使用 hard meta 是为了将 {} &lt;space&gt; $ 这几个 shell meta 关闭，避免在 shell 中处理，而完整的成为 awk 中的 command meta。也可以写成如下 6 种形式<br>
 </p>
 <div class="org-src-container">
 <pre class="src src-shell">$ <span style="color: #0087ff;">A</span>=0
+$ awk <span style="color: #00afaf;">\{</span><span style="color: #5f8700;">print</span><span style="color: #00afaf;">\ \$</span><span style="color: #0087ff;">0</span><span style="color: #00afaf;">\}</span> 1.txt
+$ awk <span style="color: #00afaf;">"{print \$0}"</span> 1.txt
 $ awk <span style="color: #00afaf;">"{print \$$A}"</span> 1.txt
 $ awk  <span style="color: #00afaf;">\{</span><span style="color: #5f8700;">print</span><span style="color: #00afaf;">\ \$</span><span style="color: #0087ff;">$A</span><span style="color: #00afaf;">\}</span> 1.txt
 $ awk <span style="color: #00afaf;">'{print $'</span>$<span style="color: #0087ff;">A</span><span style="color: #00afaf;">'}'</span> 1.txt      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">hard quote &#20013;&#30340; hard quote &#20013;&#30340; meta &#22788;&#20110;&#24320;&#21551;&#29366;&#24577;</span>
@@ -161,19 +177,21 @@ $ awk <span style="color: #00afaf;">'{print $'"$A"'}'</span> 1.txt    <span styl
 </div>
 </div>
 
-<div id="outline-container-org5807510" class="outline-2">
-<h2 id="org5807510"><span class="section-number-2">7</span> 举例3</h2>
-<div class="outline-text-2" id="text-7">
+<div id="outline-container-org535427d" class="outline-2">
+<h2 id="org535427d"><span class="section-number-2">5</span> 举例: 从 stdin 输入变量看区别</h2>
+<div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ read A
       aaaa    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20837;&#30340; aaaa &#21069;&#26377; n &#20010;&#31354;&#26684;</span>
 $ echo $<span style="color: #0087ff;">A</span>
 aaaa          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20986;&#30340; $A &#27809;&#26377;&#31354;&#26684;</span>
+$ echo <span style="color: #00afaf;">"$A"</span>   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#27880;&#24847;&#35813;&#20363;&#23376;&#19982;&#19979;&#19968;&#20010;&#20363;&#23376;&#20013;&#30340; "$A" &#19981;&#21516;&#65292;&#27880;&#24847;&#27604;&#36739;</span>
+aaaa
 </pre>
 </div>
 
 <p>
-原因：shell 会根据 IFS 把从 command line 输入的文字分解为每一个单词，然后对 meta 字符进行处理，最后按词重组 command line。而输入的空格就是一个 IFS<br>
+原因：shell 会根据 IFS 把从 command line 输入的文字分解为每一个单词，然后对 meta 字符进行处理（如变量替换、quoting 处理等），最后按词重组 command line。而输入的空格就是一个 IFS。当然，你也可以将 IFS 替换成其它字符<br>
 改为：<br>
 </p>
 <div class="org-src-container">
@@ -183,12 +201,36 @@ $ echo $<span style="color: #0087ff;">A</span>
       aaaa
 </pre>
 </div>
+
+<p>
+再来一个：<br>
+下面例子可看出 <b><b>$A 和 "$A" 是有区别的</b></b><br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ <span style="color: #0087ff;">A</span>=<span style="color: #00afaf;">"  abc"</span>
+$ echo $<span style="color: #0087ff;">A</span>   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#32452;&#21629;&#20196;&#34892;&#30340;&#26102;&#20505;&#25226;&#21464;&#37327; A &#20013;&#30340;&#31354;&#26684;&#23383;&#31526;&#20316;&#20026; IFS &#34987;&#35009;&#21098;&#25481;&#20102;</span>
+abc
+$ echo <span style="color: #00afaf;">"$A"</span> <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21464;&#37327; A &#21152;&#19978; soft quote &#21518;&#65292;A &#20013;&#30340;&#31354;&#26684;&#23383;&#31526;&#34987;&#35299;&#37322;&#20026; literal</span>
+   abc
+$ <span style="color: #0087ff;">old_IFS</span>=$<span style="color: #0087ff;">IFS</span>
+$ <span style="color: #0087ff;">IFS</span>=;    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226; IFS &#35774;&#32622;&#20026; null charactor&#65292;&#32780;&#19981;&#26159; ;</span>
+$ echo $<span style="color: #0087ff;">A</span>
+   abc
+$ <span style="color: #0087ff;">IFS</span>=$<span style="color: #0087ff;">old_IFS</span>
+$ echo $<span style="color: #0087ff;">A</span>
+abc
+$ <span style="color: #0087ff;">A</span>=<span style="color: #00afaf;">"b;h;;test"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26356;&#25442; IFS</span>
+$ <span style="color: #0087ff;">IFS</span>=<span style="color: #00afaf;">";"</span>
+$ echo $<span style="color: #0087ff;">A</span>
+b h  test
+</pre>
+</div>
 </div>
 </div>
 
-<div id="outline-container-orga98e2b1" class="outline-2">
-<h2 id="orga98e2b1"><span class="section-number-2">8</span> 举例4</h2>
-<div class="outline-text-2" id="text-8">
+<div id="outline-container-orgff5ff67" class="outline-2">
+<h2 id="orgff5ff67"><span class="section-number-2">6</span> 举例：输出原文件</h2>
+<div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ cat aaaa | <span style="color: #5f8700;">while </span><span style="color: #5f8700;">read</span> i; <span style="color: #5f8700;">do</span>; <span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">i</span>; <span style="color: #5f8700;">done</span>;
 </pre>

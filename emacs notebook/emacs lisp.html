@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-13 Tue 19:32 -->
+<!-- 2018-11-16 Fri 07:54 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>emacs lisp</title>
@@ -37,6 +37,12 @@
 <li><a href="#org1c4ddf9">1. 检测 emacs 是在终端下启动还是 GUI 下启动</a>
 <ul>
 <li><a href="#org7aba377">1.1. 例：mac emacs 和系统共享剪切板</a></li>
+</ul>
+</li>
+<li><a href="#orgbb5d135">2. save-excursion</a>
+<ul>
+<li><a href="#orgd314e58">2.1. 例：对齐当前选中的内容或整个 buffer</a></li>
+<li><a href="#org41bd657">2.2. 例：导出笔记</a></li>
 </ul>
 </li>
 </ul>
@@ -84,6 +90,56 @@
              interprogram-paste-function 'gui-selection-value)))
 </pre>
 </div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbb5d135" class="outline-2">
+<h2 id="orgbb5d135"><span class="section-number-2">2</span> save-excursion</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+该函数用于保存当前 buffer 和当前光标位置，执行完其包含的代码段后恢复 buffer 和光标位置<br>
+</p>
+</div>
+<div id="outline-container-orgd314e58" class="outline-3">
+<h3 id="orgd314e58"><span class="section-number-3">2.1</span> 例：对齐当前选中的内容或整个 buffer</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+快捷键 <code>C-M-\</code> 默认是调用 indent-region 函数，现将其改为调用函数 indent-region-or-buffer。该函数会判断如果在选中状态，则对齐选中的内容；否则对齐整个 buffer<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">indent-buffer</span>()
+  <span style="color: #8a8a8a;">"Indent the currently visited buffer."</span>
+  (<span style="color: #5f8700;">interactive</span>)
+  (indent-region (point-min) (point-max)))    <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">point-min&#34920;&#31034;buffer&#24320;&#22987;&#20301;&#32622;&#65292;point-max&#34920;&#31034;buffer&#26411;&#23614;&#20301;&#32622;</span>
+
+(<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">indent-region-or-buffer</span>()
+  <span style="color: #8a8a8a;">"Indent a region if selected, otherwise the whole buffer."</span>
+  (<span style="color: #5f8700;">interactive</span>)
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">save-excursion &#20989;&#25968;&#20445;&#23384;&#24403;&#21069; buffer &#21644;&#24403;&#21069;&#20809;&#26631;&#20301;&#32622;&#65292;&#25191;&#34892;&#23436;&#20854;&#21253;&#21547;&#30340;&#20195;&#30721;&#27573;&#21518;&#24674;&#22797; buffer &#21644;&#20809;&#26631;&#20301;&#32622;</span>
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">region-active-p &#22914;&#26524; Transient-Mark Mode &#25171;&#24320;&#65292;&#24182;&#19988; mark &#22788;&#20110;&#28608;&#27963;&#29366;&#24577;&#65288;&#21363;&#22788;&#20110;&#36873;&#20013;&#29366;&#24577;&#19979;&#65289;&#65292;&#35813;&#20989;&#25968;&#36820;&#22238;&#38750;&#31354;</span>
+  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">region-beginning &#20989;&#25968;&#36820;&#22238;&#36873;&#20013;&#21306;&#22495;&#36215;&#22987;&#20301;&#32622;&#65292;region-end &#20989;&#25968;&#36820;&#22238;&#26411;&#23614;&#20301;&#32622;</span>
+  (<span style="color: #5f8700;">save-excursion</span>
+    (<span style="color: #5f8700;">if</span>(region-active-p)
+        (<span style="color: #5f8700;">progn</span>
+          (indent-region (region-beginning) (region-end))
+          (message <span style="color: #00afaf;">"Indented selected region."</span>))
+      (<span style="color: #5f8700;">progn</span>
+        (indent-buffer)
+        (message <span style="color: #00afaf;">"Indented buffer."</span>)))))
+
+(global-set-key (kbd <span style="color: #00afaf;">"C-M-\\"</span>) 'indent-region-or-buffer)  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#25913;&#36827;&#25991;&#26412;&#23545;&#40784;&#24555;&#25463;&#38190;&#12290;&#35813;&#24555;&#25463;&#38190;&#21407;&#20808;&#26159;&#35843;&#29992; indent-region</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org41bd657" class="outline-3">
+<h3 id="org41bd657"><span class="section-number-3">2.2</span> 例：导出笔记</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+<a href="./搭建我的笔记系统.html#org4653a6e">修复导出笔记前后光标位置改变的问题</a><br>
+</p>
 </div>
 </div>
 </div>
