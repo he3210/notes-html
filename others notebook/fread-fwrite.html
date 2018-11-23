@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-23 Fri 21:39 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fread-fwrite</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">fread-fwrite</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org396a082">1. 打印文件到标准输出</a></li>
+<li><a href="#org667633c">2. 对块的操作</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org396a082" class="outline-2">
+<h2 id="org396a082"><span class="section-number-2">1</span> 打印文件到标准输出</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string.h&gt;</span>
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">argc</span>, <span style="color: #af8700;">char</span> **<span style="color: #0087ff;">argv</span>)
+{
+    <span style="color: #af8700;">FILE</span> *<span style="color: #0087ff;">pFile</span> = fopen(<span style="color: #00afaf;">"/home/he/Desktop/test/a.dat"</span>, <span style="color: #00afaf;">"rb"</span>);
+    <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>pFile)
+    {
+        fprintf(stdout, <span style="color: #00afaf;">"open file error.\n"</span>);
+        <span style="color: #5f8700;">return</span> 0;
+    }
+
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">line</span>[16] = {0};
+    <span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">ret</span> = 0;
+    <span style="color: #5f8700;">while</span>(<span style="color: #d70000;">!</span>feof(pFile))
+    {
+        ret = fread(line, 1, 15, pFile);
+        ret = fwrite(line, 1, strlen(line), stdout);
+        memset(line, 0x00, 16);
+    }
+    fclose(pFile);
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org667633c" class="outline-2">
+<h2 id="org667633c"><span class="section-number-2">2</span> 对块的操作</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string.h&gt;</span>
+
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">student</span>
+{
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">szID</span>[5];
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">szName</span>[20];
+    <span style="color: #af8700;">double</span> <span style="color: #0087ff;">dScore</span>;
+};
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">argc</span>, <span style="color: #af8700;">char</span> **<span style="color: #0087ff;">argv</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">student</span> <span style="color: #0087ff;">stu</span>[3] = {
+        <span style="color: #00afaf;">"0001"</span>, <span style="color: #00afaf;">"Bob"</span>, 88,
+        <span style="color: #00afaf;">"0002"</span>, <span style="color: #00afaf;">"Rose"</span>, 90,
+        <span style="color: #00afaf;">"0003"</span>, <span style="color: #00afaf;">"Tom"</span>, 78.2};
+
+    <span style="color: #af8700;">FILE</span>* <span style="color: #0087ff;">pf</span> = fopen(<span style="color: #00afaf;">"/home/he/Desktop/test/a.dat"</span>, <span style="color: #00afaf;">"w+b"</span>);
+    <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>pf)
+    {
+        fprintf(stdout, <span style="color: #00afaf;">"open file error.\n"</span>);
+        <span style="color: #5f8700;">return</span> 0;
+    }
+
+    <span style="color: #af8700;">size_t</span> <span style="color: #0087ff;">ret</span> = fwrite(stu, <span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">student</span>), <span style="color: #5f8700;">sizeof</span>(stu)/<span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">student</span>), pf);
+
+    ret = fread(stu, <span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">student</span>), <span style="color: #5f8700;">sizeof</span>(stu)/<span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">student</span>), pf);
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

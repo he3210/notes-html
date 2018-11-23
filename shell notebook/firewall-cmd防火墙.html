@@ -4,7 +4,7 @@
 <!-- 2018-11-23 Fri 21:39 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ffmpeg 基本操作</title>
+<title>firewall-cmd 防火墙</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
 <link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
@@ -29,55 +29,61 @@
 </div>
 </div>
 <div id="content">
-<h1 class="title">ffmpeg 基本操作</h1>
+<h1 class="title">firewall-cmd 防火墙</h1>
 <div id="table-of-contents">
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgef1bd51">1. 获取不带音频的视频</a></li>
-<li><a href="#org088e3c0">2. 提取音频</a></li>
-<li><a href="#org32dc7c2">3. 视频时长裁剪</a></li>
+<li><a href="#orgb50c760">1. centos7 以上版本</a></li>
+<li><a href="#org9c750be">2. centos7 以下版本</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgef1bd51" class="outline-2">
-<h2 id="orgef1bd51"><span class="section-number-2">1</span> 获取不带音频的视频</h2>
+<div id="outline-container-orgb50c760" class="outline-2">
+<h2 id="orgb50c760"><span class="section-number-2">1</span> centos7 以上版本</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
-<pre class="src src-shell">$ ffmpeg -i bird.mov -vcodec copy -an bird.mp4
+<pre class="src src-shell"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">firewall-cmd --zone=public --add-port=8888/tcp --permanent  # &#24320;&#21551;&#31471;&#21475;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">firewall-cmd --reload               # &#37325;&#21551;&#38450;&#28779;&#22681;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">firewall-cmd --query-port=8888/tcp  # &#26597;&#30475; tcp 8888 &#31471;&#21475;&#26159;&#21542;&#24320;&#21551;</span>
 </pre>
 </div>
 
-<dl class="org-dl">
-<dt><code>-an</code> </dt><dd>禁止输出音频<br></dd>
-<dt><code>-vcodec copy</code></dt><dd>复制视频编码<br></dd>
-</dl>
+<ul class="org-ul">
+<li><code>--zone</code> 作用域<br></li>
+<li><code>--add-port=80/tcp</code>  开启的端口，格式为：端口/通讯协议<br></li>
+<li><code>--permanent</code>  永久生效，没有此参数重启后失效<br></li>
+</ul>
 </div>
 </div>
 
-<div id="outline-container-org088e3c0" class="outline-2">
-<h2 id="org088e3c0"><span class="section-number-2">2</span> 提取音频</h2>
+
+
+<div id="outline-container-org9c750be" class="outline-2">
+<h2 id="org9c750be"><span class="section-number-2">2</span> centos7 以下版本</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
-<pre class="src src-shell">$ ffmpeg -i input.mov -write_xing 0 output.mp3
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org32dc7c2" class="outline-2">
-<h2 id="org32dc7c2"><span class="section-number-2">3</span> 视频时长裁剪</h2>
-<div class="outline-text-2" id="text-3">
-<div class="org-src-container">
-<pre class="src src-shell">$ ffmpeg -ss 00:00:01.000 -t 00:00:10.000 -i <span style="color: #00afaf;">"input.mov"</span> <span style="color: #00afaf;">"output.mov"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#31532;&#19968;&#31186;&#24320;&#22987;&#65292;&#33719;&#21462;10&#31186;&#30340;&#35270;&#39057;</span>
-$ ffmpeg -sseof -00:00:01.000 -i <span style="color: #00afaf;">"bird.mov"</span> <span style="color: #00afaf;">"bird.mp4"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#33719;&#21462;&#26368;&#21518;&#19968;&#31186;&#30340;&#35270;&#39057;&#65292;&#24182;&#36716;&#20026; mp4</span>
+<pre class="src src-shell">$ sudo vim /etc/sysconfig/iptables
 </pre>
 </div>
 
-<dl class="org-dl">
-<dt><code>-sseof</code> </dt><dd>相对于文件末尾的开始时间<br></dd>
-</dl>
+<p>
+添加：<br>
+</p>
+<pre class="example">
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 8888 -j ACCEPT
+</pre>
+
+<pre class="example">
+$ service iptables restart
+Redirecting to /bin/systemctl restart iptables.service
+$ /bin/systemctl restart iptables.service
+</pre>
+
+<p>
+这样，就可以用端口 8888 tcp 通信了<br>
+</p>
 </div>
 </div>
 </div>

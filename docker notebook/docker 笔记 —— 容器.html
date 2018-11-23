@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-16 Fri 07:54 -->
+<!-- 2018-11-23 Fri 21:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker 笔记 —— 容器</title>
@@ -98,6 +98,7 @@ $ docker run -d -p 80 --name static_web he3210/static_web:v1 nginx -g <span styl
 $ docker run -ti -w /var/log ubuntu pwd
 $ docker run -d -p 80 --name website -v $<span style="color: #0087ff;">PWD</span>/website:/var/www/html/website he3210/nginx:v1 nginx    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31532;&#19968;&#26412;Docker&#20070; page102</span>
 $ docker run -d -p 80 --name website -v $<span style="color: #0087ff;">PWD</span>/website:/var/www/html/website:ro he3210/nginx:v1 nginx
+$ docker run --name notes -v /root/notes-html:/root/notes-html:ro -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro -d -p 80:80 nginx
 $ docker run -d --net=app --name db he3210/redis    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31532;&#19968;&#26412;Docker&#20070; page121</span>
 $ docker run -d -P --volumes-from he_blog --name server_blog he3210/apache
 </pre>
@@ -115,7 +116,7 @@ $ docker run -d -P --volumes-from he_blog --name server_blog he3210/apache
 <li><code>-p 127.0.0.1:8080:80</code> 映射到宿主机这个 IP 127.0.0.1 的 8080 端口。这样就可以使用宿主机的 IP 地址连接到容器中的进程了<br></li>
 <li><code>-P</code> 将容器的端口映射到宿主机的随机端口<br></li>
 <li><code>-w /var/log</code> 将容器内的工作目录设置为 /var/log ，会覆盖掉 Dockerfile 中 WORKDIR 指令设置的工作目录<br></li>
-<li><code>-v $PWD/website:/var/www/html/website</code> 将宿主机下的目录 $PWD/website 作为卷挂载到容器中的 website 目录<br></li>
+<li><code>-v $PWD/website:/var/www/html/website</code> 将宿主机下的目录 $PWD/website 作为卷挂载到容器中的 website 目录。该标签可以重复使用来挂载多个目录<br></li>
 <li><code>-v $PWD/website:/var/www/html/website:ro</code>   ro 和 rw 分别指定容器内目录只读和读写<br></li>
 <li><code>--net=app</code> 指定容器在哪个网络中运行<br></li>
 <li><code>--rm</code> 创建容器时，如果容器已存在，先删除该容器，在创建新容器。<br></li>

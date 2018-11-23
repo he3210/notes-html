@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-16 Fri 07:54 -->
+<!-- 2018-11-23 Fri 21:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker 笔记</title>
@@ -35,7 +35,8 @@
 <div id="text-table-of-contents">
 <ul>
 <li><a href="#org9382893">1. docker mac 上安装</a></li>
-<li><a href="#org3f0a9bc">2. docker volume</a></li>
+<li><a href="#org5a1aa95">2. docker centos7</a></li>
+<li><a href="#org3f0a9bc">3. docker volume</a></li>
 </ul>
 </div>
 </div>
@@ -51,9 +52,21 @@ $ docker info            <span style="color: #8a8a8a;"># </span><span style="col
 </div>
 </div>
 
-<div id="outline-container-org3f0a9bc" class="outline-2">
-<h2 id="org3f0a9bc"><span class="section-number-2">2</span> docker volume</h2>
+<div id="outline-container-org5a1aa95" class="outline-2">
+<h2 id="org5a1aa95"><span class="section-number-2">2</span> docker centos7</h2>
 <div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ yum install docker              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23433;&#35013;</span>
+$ systemctl start docker.service  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21551;&#21160; docker daemon</span>
+$ systemctl enable docker.service <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24320;&#26426;&#33258;&#21551;&#21160;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3f0a9bc" class="outline-2">
+<h2 id="org3f0a9bc"><span class="section-number-2">3</span> docker volume</h2>
+<div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker volume ls                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377; volume</span>
 $ docker volume rm f5f4ff5a9      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#25351;&#23450; volume</span>

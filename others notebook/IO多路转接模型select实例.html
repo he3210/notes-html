@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-23 Fri 21:39 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I/O 多路转接模型 select 实例</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">I/O 多路转接模型 select 实例</h1>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;unistd.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;sys/types.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;sys/stat.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;fcntl.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;sys/select.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;sys/time.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;string.h&gt;</span>
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">buf</span>[1024];
+
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">fd1</span> = open(<span style="color: #00afaf;">"aa.txt"</span>, O_RDWR);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">fd2</span> = open(<span style="color: #00afaf;">"bb.txt"</span>, O_RDWR);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">fd3</span> = open(<span style="color: #00afaf;">"cc.txt"</span>, O_RDWR);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">fd4</span> = open(<span style="color: #00afaf;">"dd.txt"</span>, O_RDWR);
+    <span style="color: #5f8700;">if</span>(-1 == fd1 || -1 == fd2 || -1 == fd3 || -1 == fd4)
+    {
+        perror(<span style="color: #00afaf;">"open"</span>);
+        exit(-1);
+    }
+
+    <span style="color: #af8700;">fd_set</span> <span style="color: #0087ff;">fdrd</span>, <span style="color: #0087ff;">fdwr</span>;
+    FD_ZERO(&amp;fdrd);
+    FD_ZERO(&amp;fdwr);
+    FD_SET(fd1, &amp;fdrd);
+    FD_SET(fd2, &amp;fdrd);
+    FD_SET(fd3, &amp;fdwr);
+    FD_SET(fd4, &amp;fdwr);
+
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">max</span> = fd1 &gt; fd2 ? fd1:fd2;
+    max = max &gt; fd3 ? max:fd3;
+    max = max &gt; fd4 ? max:fd4;
+
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> <span style="color: #0087ff;">tv</span>;
+    tv.tv_sec = 2;
+    tv.tv_usec = 0;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">ret</span>;
+
+    <span style="color: #5f8700;">while</span>(1)
+    {
+        fprintf(stdout, <span style="color: #00afaf;">"============================\n"</span>);
+        <span style="color: #5f8700;">if</span>(-1 == select(max + 1, &amp;fdrd, &amp;fdwr, <span style="color: #00afaf;">NULL</span>, &amp;tv))
+        {
+            perror(<span style="color: #00afaf;">"select"</span>);
+            exit(-1);
+        }
+
+        <span style="color: #5f8700;">if</span>(FD_ISSET(fd1, &amp;fdrd))
+        {
+            ret = read(fd1, buf, <span style="color: #5f8700;">sizeof</span>(buf)-1);
+            buf[ret] = 0;
+            puts(buf);
+            sleep(1);
+        }
+
+        <span style="color: #5f8700;">if</span>(FD_ISSET(fd2, &amp;fdrd))
+        {
+            ret = read(fd2, buf, <span style="color: #5f8700;">sizeof</span>(buf)-1);
+            buf[ret] = 0;
+            puts(buf);
+            sleep(1);
+        }
+
+        <span style="color: #5f8700;">if</span>(FD_ISSET(fd3, &amp;fdwr))
+        {
+            write(fd3, <span style="color: #00afaf;">"Hello, I am fd3."</span>, strlen(<span style="color: #00afaf;">"Hello, I am fd3."</span>));
+            sleep(2);
+        }
+
+        <span style="color: #5f8700;">if</span>(FD_ISSET(fd4, &amp;fdwr))
+        {
+            write(fd4, <span style="color: #00afaf;">"Hello, I am fd4."</span>, strlen(<span style="color: #00afaf;">"Hello, I am fd4."</span>));
+            sleep(2);
+        }
+    }
+    close(fd1);
+    close(fd2);
+    close(fd3);
+    close(fd4);
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
