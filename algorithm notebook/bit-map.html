@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-23 Fri 21:38 -->
+<!-- 2018-11-25 Sun 00:22 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>bit-map</title>
@@ -66,6 +66,47 @@
 <span style="color: #af8700;">int</span> <span style="color: #0087ff;">get</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>)
 {
     <span style="color: #5f8700;">return</span> a[i&gt;&gt;SHIFT] &amp; (1&lt;&lt;(i &amp; MASK));
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">BITWORD</span> 8
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">SHIFT</span> 3
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">MASK</span> 07
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 10000000
+<span style="color: #af8700;">char</span> <span style="color: #0087ff;">a</span>[1+N/BITWORD];
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#20301;&#22270; a &#20013;&#30340;&#31532; i bit &#35774;&#32622;&#20026; 1</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">set</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>)
+{
+    a[i&gt;&gt;SHIFT] |= (1&lt;&lt;(i &amp; MASK));
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#20301;&#22270; a &#20013;&#30340;&#31532; i bit &#35774;&#32622;&#20026; 0</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">clear</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>)
+{
+    a[i&gt;&gt;SHIFT] &amp;= ~(1&lt;&lt;(i &amp; MASK));
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33719;&#21462;&#20301;&#22270; a &#20013;&#30340;&#31532; i bit &#30340;&#20540;&#65292;&#36820;&#22238; int &#31867;&#22411;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">get</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>)
+{
+    <span style="color: #5f8700;">return</span> a[i&gt;&gt;SHIFT] &amp; (1&lt;&lt;(i &amp; MASK));
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    set(3);
+    set(10);
+    set(100);
+    printf(<span style="color: #00afaf;">"%x %x %x\n"</span>, get(3), get(10), get(100));
+    clear(10);
+    printf(<span style="color: #00afaf;">"%x %x %x\n"</span>, get(3), get(10), get(100));
+
+    <span style="color: #5f8700;">return</span> 0;
 }
 </pre>
 </div>

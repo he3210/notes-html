@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-23 Fri 21:39 -->
+<!-- 2018-11-25 Sun 00:22 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>选择排序</title>
@@ -196,7 +196,7 @@
 {
     <span style="color: #af8700;">int</span> <span style="color: #0087ff;">x</span> = A[k];
     <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = (k-1)/2;
-    <span style="color: #5f8700;">while</span>(k &gt; 0 &amp;&amp; x &gt; A[i])
+    <span style="color: #5f8700;">while</span>(k &gt; 0 &amp;&amp; x &gt; A[i])  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26465;&#20214; k &gt; 0 &#25442;&#25104; i &gt;= 0 &#20063;&#34892;</span>
     {
         A[k] = A[i];
         k = i;

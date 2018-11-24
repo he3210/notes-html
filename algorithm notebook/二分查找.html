@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-23 Fri 21:39 -->
+<!-- 2018-11-25 Sun 00:22 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>二分查找</title>
@@ -73,8 +73,8 @@
 <h2 id="orgae3f805"><span class="section-number-2">2</span> 扩展算法</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-有一个循环有序数组A，如：{7, 8, 9, 0, 1, 2, 3, 4, 5, 6}，不知道最小值的位置。如何从这样的数组中寻找一个特定的元素呢？<br>
-分析：如下图，首先判断mid位于两个子递增序列中的左边递增序列，还是右边递增序列<br>
+有一个循环有序数组 A，如：{7, 8, 9, 0, 1, 2, 3, 4, 5, 6}，不知道最小值的位置。如何从这样的数组中寻找一个特定的元素呢？<br>
+分析：如下图，首先判断 mid 位于两个子递增序列中的左边递增序列，还是右边递增序列<br>
 </p>
 
 
@@ -96,27 +96,27 @@
             <span style="color: #5f8700;">return</span> mid;
         <span style="color: #5f8700;">else</span>
         {
-            <span style="color: #5f8700;">if</span>(A[low] &lt;= A[mid])        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#31181;&#24773;&#20917;&#65292;mid&#22312;&#24038;&#20391;</span>
+            <span style="color: #5f8700;">if</span>(A[low] &lt;= A[mid])        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#31181;&#24773;&#20917;&#65292;mid &#20301;&#20110;&#24038;&#20391;&#30340;&#36882;&#22686;&#24207;&#21015;&#20013;</span>
             {
-                <span style="color: #5f8700;">if</span>(key &gt; A[mid])        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key&#22312;mid&#24038;&#20391;</span>
-                    high = mid - 1;
-                <span style="color: #5f8700;">else</span>                    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key&#22312;mid&#21491;&#20391;</span>
+                <span style="color: #5f8700;">if</span>(key &gt; A[mid])        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key &#20301;&#20110;&#24038;&#20391;&#30340;&#36882;&#22686;&#24207;&#21015;&#20013;&#65292;&#19988;&#22312; mid &#21491;&#20391;</span>
+                    low = mid + 1;
+                <span style="color: #5f8700;">else</span>
                 {
-                    <span style="color: #5f8700;">if</span>(key &gt;= A[low])
+                    <span style="color: #5f8700;">if</span>(key &gt;= A[low])   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key &#20301;&#20110;&#24038;&#20391;&#30340;&#36882;&#22686;&#24207;&#21015;&#20013;&#65292;&#19988;&#22312; mid &#24038;&#20391;</span>
                         high = mid - 1;
-                    <span style="color: #5f8700;">else</span>
+                    <span style="color: #5f8700;">else</span>                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key &#20301;&#20110;&#21491;&#20391;&#30340;&#36882;&#22686;&#24207;&#21015;&#20013;</span>
                         low = mid + 1;
                 }
             }
-            <span style="color: #5f8700;">else</span>                        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#20108;&#31181;&#24773;&#20917;mid&#22312;&#21491;&#20391;</span>
+            <span style="color: #5f8700;">else</span>                        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#20108;&#31181;&#24773;&#20917;&#65292;mid &#20301;&#20110;&#21491;&#20391;&#30340;&#36882;&#22686;&#24207;&#21015;&#20013;</span>
             {
-                <span style="color: #5f8700;">if</span>(key &lt; A[mid])        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key&#22312;mid&#24038;&#20391;</span>
+                <span style="color: #5f8700;">if</span>(key &lt; A[mid])        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key &#20301;&#20110;&#21491;&#20391;&#30340;&#36882;&#22686;&#24207;&#21015;&#20013;&#65292;&#19988;&#22312; mid &#24038;&#20391;</span>
                     high = mid - 1;
-                <span style="color: #5f8700;">else</span>                    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key&#22312;mid&#21491;&#20391;</span>
+                <span style="color: #5f8700;">else</span>
                 {
-                    <span style="color: #5f8700;">if</span>(key &lt;= A[high])
+                    <span style="color: #5f8700;">if</span>(key &lt;= A[high])  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key &#20301;&#20110;&#21491;&#20391;&#30340;&#36882;&#22686;&#24207;&#21015;&#20013;&#65292;&#19988;&#22312; mid &#21491;&#20391;</span>
                         low = mid + 1;
-                    <span style="color: #5f8700;">else</span>
+                    <span style="color: #5f8700;">else</span>                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">key &#20301;&#20110;&#24038;&#20391;&#30340;&#36882;&#22686;&#24207;&#21015;&#20013;</span>
                         high = mid - 1;
                 }
             }
