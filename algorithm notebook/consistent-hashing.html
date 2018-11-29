@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>consistent hashing</title>
@@ -34,23 +34,23 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org8e24660">1. 问题</a></li>
-<li><a href="#org7d57c1e">2. 2 种解法</a></li>
-<li><a href="#orgbfadd1d">3. consistent hashing</a>
+<li><a href="#org82720cb">1. 问题</a></li>
+<li><a href="#org5ff182c">2. 2 种解法</a></li>
+<li><a href="#org1fa2c99">3. consistent hashing</a>
 <ul>
-<li><a href="#orgac36dc2">3.1. 映射服务器结点到哈希环</a></li>
-<li><a href="#org9378802">3.2. 定位数据所在结点</a></li>
-<li><a href="#org18769b7">3.3. 删除结点</a></li>
-<li><a href="#org82f1461">3.4. 增加结点</a></li>
-<li><a href="#org9d694a4">3.5. 解决 hash 环中的数据不平衡问题 —— 虚拟结点</a></li>
+<li><a href="#orga2e49ba">3.1. 映射服务器结点到哈希环</a></li>
+<li><a href="#orgdeba0ed">3.2. 定位数据所在结点</a></li>
+<li><a href="#orga2a7d56">3.3. 删除结点</a></li>
+<li><a href="#org5b736bf">3.4. 增加结点</a></li>
+<li><a href="#orgb4fe763">3.5. 解决 hash 环中的数据不平衡问题 —— 虚拟结点</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org8e24660" class="outline-2">
-<h2 id="org8e24660"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org82720cb" class="outline-2">
+<h2 id="org82720cb"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 假设，我们有一个社交网站，使用 4 台 Redis 服务器缓存存储图片路径，存储的格式为键值对，key 为图片名称，value 为该图片所在文件服务器的路径，数据量大概有 2000W 左右，我们需要根据文件名查找该文件所在文件服务器上的路径。<br>
@@ -58,8 +58,8 @@
 </div>
 </div>
 
-<div id="outline-container-org7d57c1e" class="outline-2">
-<h2 id="org7d57c1e"><span class="section-number-2">2</span> 2 种解法</h2>
+<div id="outline-container-org5ff182c" class="outline-2">
+<h2 id="org5ff182c"><span class="section-number-2">2</span> 2 种解法</h2>
 <div class="outline-text-2" id="text-2">
 <ol class="org-ol">
 <li>把图片资源随机分配到 4 台 Redis 服务器上。如果要查询图片 "a.png" 所在文件服务器的路径，需要遍历这 4 台 Redis 服务器。显然，这不是我们想要的<br></li>
@@ -74,8 +74,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgbfadd1d" class="outline-2">
-<h2 id="orgbfadd1d"><span class="section-number-2">3</span> consistent hashing</h2>
+<div id="outline-container-org1fa2c99" class="outline-2">
+<h2 id="org1fa2c99"><span class="section-number-2">3</span> consistent hashing</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 类似于上述的解法 2 中哈希函数对缓存服务器数量 4 取模：hash("a.png")%4。<br>
@@ -89,8 +89,8 @@ consistent hashing 也是取模的算法，例如，它对 2<sup>32</sup> 进行
 </div>
 </div>
 
-<div id="outline-container-orgac36dc2" class="outline-3">
-<h3 id="orgac36dc2"><span class="section-number-3">3.1</span> 映射服务器结点到哈希环</h3>
+<div id="outline-container-orga2e49ba" class="outline-3">
+<h3 id="orga2e49ba"><span class="section-number-3">3.1</span> 映射服务器结点到哈希环</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 然后对各个缓存服务器进行一次哈希，具体可以选择服务器的 IP 或主机名作为关键字进行哈希，这样每台缓存服务器在哈希环上都有一个确定的位置。<br>
@@ -104,8 +104,8 @@ consistent hashing 也是取模的算法，例如，它对 2<sup>32</sup> 进行
 </div>
 </div>
 
-<div id="outline-container-org9378802" class="outline-3">
-<h3 id="org9378802"><span class="section-number-3">3.2</span> 定位数据所在结点</h3>
+<div id="outline-container-orgdeba0ed" class="outline-3">
+<h3 id="orgdeba0ed"><span class="section-number-3">3.2</span> 定位数据所在结点</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 根据哈希函数计算出图片在环上的哈希值，然后沿着此位置顺时针"行走"，直到遇到第一个缓存服务器结点（即找到第一个大于该哈希值的缓存服务器结点，如果没找到使用哈希值最小的缓存服务器结点）。该结点对应的服务器就是图片路径所在的 Redis<br>
@@ -122,8 +122,8 @@ consistent hashing 也是取模的算法，例如，它对 2<sup>32</sup> 进行
 </div>
 </div>
 
-<div id="outline-container-org18769b7" class="outline-3">
-<h3 id="org18769b7"><span class="section-number-3">3.3</span> 删除结点</h3>
+<div id="outline-container-orga2a7d56" class="outline-3">
+<h3 id="orga2a7d56"><span class="section-number-3">3.3</span> 删除结点</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 假设 Node C 不幸宕机，可以看到此时对象 A、B、D 不会受到影响，只有 C 对象被重定位到 Node D。一般的，在 consistent hashing 算法中，如果一台服务器不可用，则受影响的数据仅仅是此服务器到其环空间中前一台服务器（即沿着逆时针方向行走遇到的第一台服务器）之间数据，其它不会受到影响，如下所示：<br>
@@ -136,8 +136,8 @@ consistent hashing 也是取模的算法，例如，它对 2<sup>32</sup> 进行
 </div>
 </div>
 
-<div id="outline-container-org82f1461" class="outline-3">
-<h3 id="org82f1461"><span class="section-number-3">3.4</span> 增加结点</h3>
+<div id="outline-container-org5b736bf" class="outline-3">
+<h3 id="org5b736bf"><span class="section-number-3">3.4</span> 增加结点</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 如果在系统中增加一台服务器 Node X，如下图所示：<br>
@@ -153,8 +153,8 @@ consistent hashing 也是取模的算法，例如，它对 2<sup>32</sup> 进行
 </div>
 </div>
 
-<div id="outline-container-org9d694a4" class="outline-3">
-<h3 id="org9d694a4"><span class="section-number-3">3.5</span> 解决 hash 环中的数据不平衡问题 —— 虚拟结点</h3>
+<div id="outline-container-orgb4fe763" class="outline-3">
+<h3 id="orgb4fe763"><span class="section-number-3">3.5</span> 解决 hash 环中的数据不平衡问题 —— 虚拟结点</h3>
 <div class="outline-text-3" id="text-3-5">
 <p>
 consistent hashing 算法在服务结点太少时，容易因为结点分布不均匀而造成数据不平衡问题，例如系统中只有两台服务器，其环分布如下：<br>

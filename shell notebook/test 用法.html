@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>test 用法</title>
@@ -34,16 +34,16 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgadd5881">1. test</a></li>
-<li><a href="#orgd79ed8e">2. 常用 test 表达式</a></li>
-<li><a href="#orgfb1cb5e">3. 举例一</a></li>
-<li><a href="#orge5b83d5">4. 举例二</a></li>
+<li><a href="#org0fc6eef">1. test</a></li>
+<li><a href="#org25033f0">2. 常用 test 表达式</a></li>
+<li><a href="#org28211d5">3. 举例一</a></li>
+<li><a href="#org74862d8">4. 举例二</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgadd5881" class="outline-2">
-<h2 id="orgadd5881"><span class="section-number-2">1</span> test</h2>
+<div id="outline-container-org0fc6eef" class="outline-2">
+<h2 id="org0fc6eef"><span class="section-number-2">1</span> test</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 shell 命令的退出状态有两种：<br>
@@ -66,14 +66,14 @@ bash 的 test 目前支持的测试对象只有三种：<br>
 </p>
 <ul class="org-ul">
 <li>string：字符串，也就是纯文字。<br></li>
-<li>integer：整数( 0 或正整数、不含负数或小数)。<a href="./$() ${} $(()) 的用法.html#org0eda2b7">在这里</a> 比较和 <code>(())</code> 的区别<br></li>
+<li>integer：整数( 0 或正整数、不含负数或小数)。<a href="./$() ${} $(()) 的用法.html#orgae26f8c">在这里</a> 比较和 <code>(())</code> 的区别<br></li>
 <li>file: 文件<br></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd79ed8e" class="outline-2">
-<h2 id="orgd79ed8e"><span class="section-number-2">2</span> 常用 test 表达式</h2>
+<div id="outline-container-org25033f0" class="outline-2">
+<h2 id="org25033f0"><span class="section-number-2">2</span> 常用 test 表达式</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li><code>-d file</code> 如果 file 是一个目录，返回 true<br></li>
@@ -92,8 +92,8 @@ bash 的 test 目前支持的测试对象只有三种：<br>
 </div>
 </div>
 
-<div id="outline-container-orgfb1cb5e" class="outline-2">
-<h2 id="orgfb1cb5e"><span class="section-number-2">3</span> 举例一</h2>
+<div id="outline-container-org28211d5" class="outline-2">
+<h2 id="org28211d5"><span class="section-number-2">3</span> 举例一</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-shell">$ [ <span style="color: #00afaf;">"$A"</span> = 123 ]       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23383;&#31526;&#20018;&#27979;&#35797;&#12290;$A &#26368;&#22909;&#21152; soft quote&#65292;&#22240;&#20026; $A &#22914;&#26524;&#26410;&#23450;&#20041;&#30340;&#35805;&#65292;&#35813; test &#34920;&#36798;&#24335;&#23601;&#20250;&#20986;&#29616;&#35821;&#27861;&#38169;&#35823;&#65292;shell &#23601;&#20250;&#25253;&#38169;</span>
@@ -108,8 +108,8 @@ $ echo $<span style="color: #0087ff;">?</span>
 </div>
 </div>
 
-<div id="outline-container-orge5b83d5" class="outline-2">
-<h2 id="orge5b83d5"><span class="section-number-2">4</span> 举例二</h2>
+<div id="outline-container-org74862d8" class="outline-2">
+<h2 id="org74862d8"><span class="section-number-2">4</span> 举例二</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 给定一个变量，判断是否小于100。如果不小于100，输出 too big!<br>

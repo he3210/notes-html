@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>后缀树与后缀数组</title>
@@ -56,20 +56,20 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6a4b881">1. 后缀树</a></li>
-<li><a href="#org699246f">2. 后缀数组</a>
+<li><a href="#orgb39e3f3">1. 后缀树</a></li>
+<li><a href="#org5f8cdd4">2. 后缀数组</a>
 <ul>
-<li><a href="#orge38b772">2.1. 分析</a></li>
-<li><a href="#org763b4ed">2.2. 算法</a></li>
-<li><a href="#org3994cb4">2.3. 总结</a></li>
+<li><a href="#org45ea94b">2.1. 分析</a></li>
+<li><a href="#org777bedb">2.2. 算法</a></li>
+<li><a href="#orgd4d15e5">2.3. 总结</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6a4b881" class="outline-2">
-<h2 id="org6a4b881"><span class="section-number-2">1</span> 后缀树</h2>
+<div id="outline-container-orgb39e3f3" class="outline-2">
+<h2 id="orgb39e3f3"><span class="section-number-2">1</span> 后缀树</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 后缀树就是把文本和该文本的所有后缀子串构建一个 trie 树。相关问题例如：<br>
@@ -86,8 +86,8 @@
 </div>
 </div>
 
-<div id="outline-container-org699246f" class="outline-2">
-<h2 id="org699246f"><span class="section-number-2">2</span> 后缀数组</h2>
+<div id="outline-container-org5f8cdd4" class="outline-2">
+<h2 id="org5f8cdd4"><span class="section-number-2">2</span> 后缀数组</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 最长重复子串问题<br>
@@ -99,8 +99,8 @@
 </blockquote>
 </div>
 
-<div id="outline-container-orge38b772" class="outline-3">
-<h3 id="orge38b772"><span class="section-number-3">2.1</span> 分析</h3>
+<div id="outline-container-org45ea94b" class="outline-3">
+<h3 id="org45ea94b"><span class="section-number-3">2.1</span> 分析</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 对于母串 banana，使用数组 a 中的指针指向母串的后缀：<br>
@@ -122,8 +122,8 @@ a[5]: nana<br>
 </div>
 </div>
 
-<div id="outline-container-org763b4ed" class="outline-3">
-<h3 id="org763b4ed"><span class="section-number-3">2.2</span> 算法</h3>
+<div id="outline-container-org777bedb" class="outline-3">
+<h3 id="org777bedb"><span class="section-number-3">2.2</span> 算法</h3>
 <div class="outline-text-3" id="text-2-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
@@ -178,8 +178,8 @@ a[5]: nana<br>
 </div>
 </div>
 </div>
-<div id="outline-container-org3994cb4" class="outline-3">
-<h3 id="org3994cb4"><span class="section-number-3">2.3</span> 总结</h3>
+<div id="outline-container-orgd4d15e5" class="outline-3">
+<h3 id="orgd4d15e5"><span class="section-number-3">2.3</span> 总结</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 生成后缀数组时间复杂度为 O(n)，排序时间复杂度为 O(nlogn * n)，最后，依次检测相邻 2 个后缀子串的时间复杂度为 O(n<sup>2</sup>)<br>

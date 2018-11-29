@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>循环链表</title>
@@ -34,32 +34,32 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4c5f7eb">1. 判断单链表是否有环</a></li>
-<li><a href="#org2abc2b0">2. 寻找循环链表的入口</a>
+<li><a href="#org0cdf212">1. 判断单链表是否有环</a></li>
+<li><a href="#org594c993">2. 寻找循环链表的入口</a>
 <ul>
-<li><a href="#orgeab3661">2.1. 问题</a></li>
-<li><a href="#org253bcd6">2.2. 分析</a></li>
+<li><a href="#org15395f5">2.1. 问题</a></li>
+<li><a href="#org1bac19b">2.2. 分析</a></li>
 </ul>
 </li>
-<li><a href="#org332bdb7">3. 找出两个单链表的第一个公共结点</a>
+<li><a href="#orgd40d9e6">3. 找出两个单链表的第一个公共结点</a>
 <ul>
-<li><a href="#orgd02e6fa">3.1. 问题</a></li>
-<li><a href="#org5424010">3.2. 分析</a></li>
-<li><a href="#org7d50a40">3.3. 代码</a></li>
+<li><a href="#org0150aa3">3.1. 问题</a></li>
+<li><a href="#orgb85c61a">3.2. 分析</a></li>
+<li><a href="#orgd4656e7">3.3. 代码</a></li>
 </ul>
 </li>
-<li><a href="#org64f2314">4. 环状单向链表去重</a>
+<li><a href="#orgc418ec7">4. 环状单向链表去重</a>
 <ul>
-<li><a href="#org2652e97">4.1. 问题</a></li>
-<li><a href="#org3011141">4.2. 代码</a></li>
+<li><a href="#orgd8f9bd2">4.1. 问题</a></li>
+<li><a href="#orga1d93ba">4.2. 代码</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4c5f7eb" class="outline-2">
-<h2 id="org4c5f7eb"><span class="section-number-2">1</span> 判断单链表是否有环</h2>
+<div id="outline-container-org0cdf212" class="outline-2">
+<h2 id="org0cdf212"><span class="section-number-2">1</span> 判断单链表是否有环</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24555;&#24930;&#25351;&#38024;&#21028;&#26029;&#21333;&#38142;&#34920;&#20013;&#26159;&#21542;&#26377;&#29615;</span>
@@ -81,12 +81,12 @@
 </div>
 </div>
 
-<div id="outline-container-org2abc2b0" class="outline-2">
-<h2 id="org2abc2b0"><span class="section-number-2">2</span> 寻找循环链表的入口</h2>
+<div id="outline-container-org594c993" class="outline-2">
+<h2 id="org594c993"><span class="section-number-2">2</span> 寻找循环链表的入口</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgeab3661" class="outline-3">
-<h3 id="orgeab3661"><span class="section-number-3">2.1</span> 问题</h3>
+<div id="outline-container-org15395f5" class="outline-3">
+<h3 id="org15395f5"><span class="section-number-3">2.1</span> 问题</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 假设一链表存在环，如何找到环的入口<br>
@@ -94,8 +94,8 @@
 </div>
 </div>
 
-<div id="outline-container-org253bcd6" class="outline-3">
-<h3 id="org253bcd6"><span class="section-number-3">2.2</span> 分析</h3>
+<div id="outline-container-org1bac19b" class="outline-3">
+<h3 id="org1bac19b"><span class="section-number-3">2.2</span> 分析</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 设链表起始点到环入口长度为 a，环长度为 r<br>
@@ -142,12 +142,12 @@
 </div>
 </div>
 
-<div id="outline-container-org332bdb7" class="outline-2">
-<h2 id="org332bdb7"><span class="section-number-2">3</span> 找出两个单链表的第一个公共结点</h2>
+<div id="outline-container-orgd40d9e6" class="outline-2">
+<h2 id="orgd40d9e6"><span class="section-number-2">3</span> 找出两个单链表的第一个公共结点</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgd02e6fa" class="outline-3">
-<h3 id="orgd02e6fa"><span class="section-number-3">3.1</span> 问题</h3>
+<div id="outline-container-org0150aa3" class="outline-3">
+<h3 id="org0150aa3"><span class="section-number-3">3.1</span> 问题</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 两个单向链表，判断它们是否相交。若相交，找出它们的第一个公共结点<br>
@@ -155,8 +155,8 @@
 </div>
 </div>
 
-<div id="outline-container-org5424010" class="outline-3">
-<h3 id="org5424010"><span class="section-number-3">3.2</span> 分析</h3>
+<div id="outline-container-orgb85c61a" class="outline-3">
+<h3 id="orgb85c61a"><span class="section-number-3">3.2</span> 分析</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 首先判断2个单链表是否有环，分为三种情况<br>
@@ -173,8 +173,8 @@
 </div>
 </div>
 
-<div id="outline-container-org7d50a40" class="outline-3">
-<h3 id="org7d50a40"><span class="section-number-3">3.3</span> 代码</h3>
+<div id="outline-container-orgd4656e7" class="outline-3">
+<h3 id="orgd4656e7"><span class="section-number-3">3.3</span> 代码</h3>
 <div class="outline-text-3" id="text-3-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
@@ -287,12 +287,12 @@
 </div>
 </div>
 
-<div id="outline-container-org64f2314" class="outline-2">
-<h2 id="org64f2314"><span class="section-number-2">4</span> 环状单向链表去重</h2>
+<div id="outline-container-orgc418ec7" class="outline-2">
+<h2 id="orgc418ec7"><span class="section-number-2">4</span> 环状单向链表去重</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org2652e97" class="outline-3">
-<h3 id="org2652e97"><span class="section-number-3">4.1</span> 问题</h3>
+<div id="outline-container-orgd8f9bd2" class="outline-3">
+<h3 id="orgd8f9bd2"><span class="section-number-3">4.1</span> 问题</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 编码实现环状单向链表（尾指针直接指向头指针，中间没有空结点），去除连续的重复元素的操作<br>
@@ -302,8 +302,8 @@
 </div>
 </div>
 
-<div id="outline-container-org3011141" class="outline-3">
-<h3 id="org3011141"><span class="section-number-3">4.2</span> 代码</h3>
+<div id="outline-container-orga1d93ba" class="outline-3">
+<h3 id="orga1d93ba"><span class="section-number-3">4.2</span> 代码</h3>
 <div class="outline-text-3" id="text-4-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20998;&#26512;&#65306;&#36941;&#21382;&#27599;&#19968;&#20010;&#32467;&#28857;&#65292;&#36793;&#36941;&#21382;&#36793;&#21435;&#38500;&#20854;&#21518;&#30340;&#37325;&#22797;&#20803;&#32032;</span>

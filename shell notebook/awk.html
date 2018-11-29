@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>awk</title>
@@ -34,15 +34,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org76b8812">1. 替换域</a></li>
-<li><a href="#org3867f7c">2. awk 脚本写进文件</a></li>
-<li><a href="#orga5f15c0">3. 添加开始内容和结束内容</a></li>
+<li><a href="#org611615f">1. 替换域</a></li>
+<li><a href="#org23403d3">2. awk 脚本写进文件</a></li>
+<li><a href="#org2546c6c">3. 添加开始内容和结束内容</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org76b8812" class="outline-2">
-<h2 id="org76b8812"><span class="section-number-2">1</span> 替换域</h2>
+<div id="outline-container-org611615f" class="outline-2">
+<h2 id="org611615f"><span class="section-number-2">1</span> 替换域</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ echo <span style="color: #00afaf;">"My name is Rich"</span> | awk <span style="color: #00afaf;">'{$4="Christine"; print $0}'</span>    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26367;&#25442;&#31532;&#22235;&#22495;&#24182;&#25171;&#21360;</span>
@@ -53,8 +53,8 @@ My name is Christine
 </div>
 
 
-<div id="outline-container-org3867f7c" class="outline-2">
-<h2 id="org3867f7c"><span class="section-number-2">2</span> awk 脚本写进文件</h2>
+<div id="outline-container-org23403d3" class="outline-2">
+<h2 id="org23403d3"><span class="section-number-2">2</span> awk 脚本写进文件</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ cat /etc/passwd
@@ -73,8 +73,8 @@ nobody<span style="color: #00afaf;">'s home directory is /var/empty</span>
 </div>
 </div>
 
-<div id="outline-container-orga5f15c0" class="outline-2">
-<h2 id="orga5f15c0"><span class="section-number-2">3</span> 添加开始内容和结束内容</h2>
+<div id="outline-container-org2546c6c" class="outline-2">
+<h2 id="org2546c6c"><span class="section-number-2">3</span> 添加开始内容和结束内容</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-shell">$ cat /etc/passwd

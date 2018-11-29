@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-29 Thu 12:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>redis 源码难点：字典的遍历 dictScan</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">redis 源码难点：字典的遍历 dictScan</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0790034">1. 问题</a></li>
+<li><a href="#orgcfdd224">2. 算法核心原理</a></li>
+<li><a href="#org58ba42d">3. 为什么要采用这种算法</a>
+<ul>
+<li><a href="#org205ecd2">3.1. 该算法的迭代过程</a>
+<ul>
+<li><a href="#orgda4faf2">3.1.1. 哈希表扩展</a></li>
+<li><a href="#org74377b3">3.1.2. 哈希表收缩</a></li>
+</ul>
+</li>
+<li><a href="#orgb077f42">3.2. 普通的顺序迭代过程</a>
+<ul>
+<li><a href="#org6349018">3.2.1. 哈希表扩展</a></li>
+<li><a href="#org9c066c2">3.2.2. 哈希表收缩</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org608ebc7">4. dictScan 源码</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0790034" class="outline-2">
+<h2 id="org0790034"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+dict.c 中的 dictScan 函数，用来遍历字典，迭代其中的每个元素。该函数使用的算法十分精妙<br>
+</p>
+
+<p>
+遍历一个稳定的字典，当然不是什么难事，但 Redis 中的字典因为有 rehash 的过程，使字典可能扩展，也可能收缩。这就带来了问题，如果在两次遍历中间，字典的结构发生了变化（扩展或缩小），字典中的元素所在的位置相应的会发生变化，那如何保证字典中原有的元素都可以被遍历？又如何能尽可能少的重复迭代呢？<br>
+</p>
+
+<p>
+这就是该算法的精妙所在，使用该算法，可以做到下面两点：<br>
+</p>
+
+<ul class="org-ul">
+<li>开始遍历那一刻的所有元素，只要不被删除，肯定能被遍历到，不管字典扩展还是缩小；<br></li>
+<li>该算法可能会返回重复元素，但是已经把返回重复元素的可能性降到了最低;<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcfdd224" class="outline-2">
+<h2 id="orgcfdd224"><span class="section-number-2">2</span> 算法核心原理</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+该算法使用了游标 v 来遍历字典，它表示本次要访问的哈希表 bucket 的索引。bucket 中保存了一个 entry 链表（哈希表用的是链地址法来解决键冲突），因此每次迭代都会把该 bucket 的链表中的所有元素都遍历一遍。<br>
+</p>
+
+<p>
+第一次迭代时，v 置为 0，来调用 dictScan 函数。然后该函数会返回一个游标，该游标作为下一次遍历的 v 再次调用 dictScan，最终，dictScan 函数返回 0 表示迭代结束。<br>
+</p>
+
+<p>
+首先看一下游标 v 的演变过程，也是该算法的核心。这里 v 的演变是采用了 reverse binary iteration 方法，也就是每次是向 v 的二进制最高位加 1，并向低位方向进位。<br>
+</p>
+
+<p>
+下面具体解释，首先，提取 dictScan 写一个简单的测试函数，用来看游标 v 的演变过程:<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23545; v &#36827;&#34892;&#20108;&#36827;&#21046;&#36870;&#24207;&#25805;&#20316;</span>
+<span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">rev</span>(<span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">v</span>) {
+    <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">s</span> = 8 * <span style="color: #5f8700;">sizeof</span>(v);
+    <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">mask</span> = ~0;
+    <span style="color: #5f8700;">while</span> ((s &gt;&gt;= 1) &gt; 0) {
+        mask ^= (mask &lt;&lt; s);
+        v = ((v &gt;&gt; s) &amp; mask) | ((v &lt;&lt; s) &amp; ~mask);
+    }
+    <span style="color: #5f8700;">return</span> v;
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">printBits</span>(<span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">v</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">tablesize</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">cnt</span> = 0;
+    <span style="color: #5f8700;">while</span>(tablesize &gt;&gt; ++cnt);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = cnt-2; i &gt;= 0; --i)
+        printf(<span style="color: #00afaf;">"%lu"</span>, (v &gt;&gt; i) &amp; 1);
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">test_dictScan_cursor</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">tablesize</span>)
+{
+    <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">v</span>;
+    <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">m0</span>;
+
+    v = 0;
+    m0 = tablesize-1;
+    printBits(v, tablesize);
+
+    <span style="color: #5f8700;">do</span>
+    {
+        printf(<span style="color: #00afaf;">" -&gt; "</span>);
+        v |= ~m0;
+        v = rev(v);
+        v++;
+        v = rev(v);
+        printBits(v, tablesize);
+    }<span style="color: #5f8700;">while</span> (v != 0);
+    printf(<span style="color: #00afaf;">"\n"</span>);
+}
+
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    test_dictScan_cursor(8);
+    test_dictScan_cursor(16);
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+
+<p>
+参数 tablesize 表示哈希表的大小（redis 中，哈希表在内存中申请的空间大小 tablesize 必为 2<sup>n</sup>，m0 是哈希表索引的掩码，所以必为 tablesize-1）。printBits 用来打印 v 的低 n 二进制位，n 等于log<sub>2</sub>(tablesize)。<br>
+</p>
+
+<p>
+以 tablesize 为 8 和 16 分别运行该函数，结果如下：<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ gcc main.c -o main
+$ ./main
+000 -&gt; 100 -&gt; 010 -&gt; 110 -&gt; 001 -&gt; 101 -&gt; 011 -&gt; 111 -&gt; 000
+0000 -&gt; 1000 -&gt; 0100 -&gt; 1100 -&gt; 0010 -&gt; 1010 -&gt; 0110 -&gt; 1110 -&gt; 0001 -&gt; 1001 -&gt; 0101 -&gt; 1101 -&gt; 0011 -&gt; 1011 -&gt; 0111 -&gt; 1111 -&gt; 0000
+</pre>
+</div>
+
+<p>
+这就是 reverse binary iteration 方法，也就是每次是向 v 的最高位加 1，并向低位方向进位。比如 1101 的下一个数是 0011，因为 1101 的前三个数为 110，最高位加 1，并且向低位进位就是 001，所以最终得到 0011。<br>
+</p>
+
+<p>
+算法的详细计算过程如下：<br>
+</p>
+<ul class="org-ul">
+<li><code>v |= ~m0;</code> 用于保留 v 的低 n 位数，其余位全置为 1<br></li>
+<li><code>v = rev(v);</code> 将 v 的二进制位进行翻转，所以，v的低 n 位数成了高 n 位数，并且进行了翻转<br></li>
+<li><code>v++;</code> v 自增 1<br></li>
+<li><code>v = rev(v);</code> 再次二进制翻转<br></li>
+</ul>
+
+<p>
+因此，最终得到的新 v，就是向最高位加 1，且向低位方向进位<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org58ba42d" class="outline-2">
+<h2 id="org58ba42d"><span class="section-number-2">3</span> 为什么要采用这种算法</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+这样设计的原因就在于，字典中的哈希表有可能扩展（redis 中扩展指的是调整哈希表大小，使 load-factor &lt;= 0.5 附近），也有可能收缩（redis 中收缩指的是调整哈希表大小，使 load-factor &lt;= 1 附近）。在字典不稳定的情况下，既要遍历到所有没被删除的元素，又要尽可能较少的重复遍历。<br>
+</p>
+
+<p>
+下面详细解释一下这样设计的好处，以及为什么不是按照普通的 0, 1, 2, &#x2026; 这样的正常顺序进行迭代？<br>
+</p>
+
+<p>
+<b><b>计算一个哈希表节点索引的方法</b></b> 是 hash(key)&amp;mask。哈希表容量为 8，则 mask 为 111，因此，节点的索引值就取决于哈希值的低 3 bit，设索引值是 abc。如果哈希表容量为 16，则 mask 为 1111，该节点的哈希值不变，而索引值是 ?abc，其中 ? 取 0 或 1 中的一个，也就是说，该节点在容量为 16 的哈希表中，索引要么是 0abc 要么是 1abc。以此类推，如果哈希表容量为32，则该节点的索引可能是 00abc，01abc，10abc 或者 11abc 中的一个。<br>
+</p>
+</div>
+
+<div id="outline-container-org205ecd2" class="outline-3">
+<h3 id="org205ecd2"><span class="section-number-3">3.1</span> 该算法的迭代过程</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+重新看一下该算法中，哈希表容量分别为 8 和 16 时，v 的迭代过程：<br>
+</p>
+
+<pre class="example">
+000 -&gt; 100 -&gt; 010 -&gt; 110 -&gt; 001 -&gt; 101 -&gt; 011 -&gt; 111 -&gt; 000
+0000 -&gt; 1000 -&gt; 0100 -&gt; 1100 -&gt; 0010 -&gt; 1010 -&gt; 0110 -&gt; 1110 -&gt; 0001 -&gt; 1001 -&gt; 0101 -&gt; 1101 -&gt; 0011 -&gt; 1011 -&gt; 0111 -&gt; 1111 -&gt; 0000
+</pre>
+</div>
+
+<div id="outline-container-orgda4faf2" class="outline-4">
+<h4 id="orgda4faf2"><span class="section-number-4">3.1.1</span> 哈希表扩展</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+哈希表容量为 8 时，第 i 个 v 的值（0 &lt;= i &lt;=7），扩展到容量为 16 的哈希表中，对应的值是 2i 和 2i+1，它们是相邻的，这点很重要。<br>
+</p>
+
+<p>
+首先是字典扩展的情况，假设当前字典哈希表容量为 8，在迭代完索引为 010 的 bucket 之后，下一个索引值为 110。假设在下一次迭代前，字典哈希表容量扩展成了 16。110 这个索引，在容量为 16 的情况下，就成了 0110，因此开始迭代索引为 0110 的 bucket 中的节点。<br>
+</p>
+
+<p>
+在容量为 8 时，已经迭代过的索引分别是：000，100，010。哈希表容量扩展到 16 后，在这些索引的 bucket 中的节点，分布到新的 bucket 中，新 bucket 的索引将会是：0000，1000，0100，1100，0010，1010。而这些，正好是将要迭代的 0110 之前的索引，从 0110 开始，按照容量为 16 的哈希表的索引迭代下去，这样既不会漏掉节点，也不会迭代重复的节点。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org74377b3" class="outline-4">
+<h4 id="org74377b3"><span class="section-number-4">3.1.2</span> 哈希表收缩</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+再看一下字典哈希表收缩的情况，也就是由 16 收缩为 8。在容量为 16 时，迭代完索引 0100 之后，下一个索引为 1100，假设此时哈希表容量收缩为 8。1100 这个索引，在容量为 8 的情况下，就成了 100。因此开始迭代索引为 100 的 bucket 中的节点。<br>
+</p>
+
+<p>
+在容量为 16 时，已经迭代过的索引是：0000，1000，0100，哈希表容量收缩后，这些索引的 bucket 中的节点，分布到新的 bucket 中，新 bucket 的索引将会是：000 和 100。现在要从索引为 100 的 bucket 开始迭代，这样不会漏掉节点，但是之前容量为 16 时，索引为 0100 中的节点会被重复迭代，然而，也就仅 0100 这一个 bucket 中的节点会重复而已。<br>
+</p>
+
+<p>
+原哈希表容量为 x，收缩后容量为 y，则最多会有 <code>x/y – 1</code> 个原 bucket 的节点会被重复迭代。比如由 16 缩小为 8，则最多就有 1 个 bucket 节点会重复迭代，要是由 32 缩小为 8，则最多会有3个。<br>
+</p>
+
+<p>
+当然也有可能不产生重复迭代，还是从 16 收缩为 8 的情况，如果已经迭代完 1100，下一个索引为 0010，此时容量收缩为 8，下一个索引就成了010。<br>
+</p>
+
+<p>
+容量为 16 时，已经迭代过的索引为 0000，1000，0100，1100，容量收缩后，这些索引对应到新的索引是 000 和 100，正好是 010 之前的索引，从 010 开始，按照容量为 8 的索引走下去，不会漏掉节点，也不会重复迭代节点。<br>
+</p>
+
+<p>
+所以说这种算法，保证了：能迭代完所有节点而不会漏掉；又能尽可能较少的重复遍历。<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb077f42" class="outline-3">
+<h3 id="orgb077f42"><span class="section-number-3">3.2</span> 普通的顺序迭代过程</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+如果按照正常的顺序迭代，哈希表容量分别为 8 和 16 时，v 的迭代过程如下：<br>
+</p>
+
+<pre class="example">
+000 -&gt; 001 -&gt; 010 -&gt; 011 -&gt; 100 -&gt; 101 -&gt; 110 -&gt; 111 -&gt; 000     
+0000 -&gt; 0001 -&gt; 0010 -&gt; 0011 -&gt; 0100 -&gt; 0101 -&gt; 0110 -&gt; 0111 -&gt; 1000 -&gt; 1001 -&gt; 1010 -&gt; 1011 -&gt; 1100 -&gt; 1101 -&gt; 1110 -&gt; 1111 -&gt; 0000  
+</pre>
+</div>
+
+<div id="outline-container-org6349018" class="outline-4">
+<h4 id="org6349018"><span class="section-number-4">3.2.1</span> 哈希表扩展</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+字典扩展的情况，当前字典哈希表容量为 8，假设在迭代完索引为 010 的 bucket 之后，下一个索引为 011。迭代 011 之前，字典容量扩展成了 16。011 这个索引，在容量为 16 的情况下，就成了 0011，因此开始迭代索引为 0011 的 bucket 中的节点。<br>
+</p>
+
+<p>
+在容量为 8 时，已经迭代过的索引是：000，001，010。哈希表容量扩展到 16 后，这些索引的 bucket 中的节点，会分布到新的 bucket 中，新 bucket 的索引将会是：0000，1000，0001，1001，0010 和 1010。现在要开始迭代的索引为 0011，而 1000，1001，1010 这些 bucket 中的节点在后续还是会遍历到，这就产生了重复遍历。<br>
+</p>
+
+<p>
+虽然这种情况不会发生漏掉节点的情况，但是肯定会有重复的情况发生，而且容量变化发生的时机越晚，重复遍历的节点越多，比如容量为 8 时，迭代完 110 后，下一个索引为 111，容量扩展为 16 后，这个索引就成了 0111。<br>
+</p>
+
+<p>
+容量为 8 时，已经迭代过的索引为 000，001，010，011，100，101，110，扩展到容量为 16 的哈希表中，这些 bucket 中的节点会分布到索引为：0000，1000，0001，1001，0010，1010，0011，1011，0100，1100，0101，1101，0110，1110。现在容量为16，要开始迭代索引为0111，而 1000，1001，1010，1011 和 1110 这些节点后续还会遍历到，重复的节点增多了。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9c066c2" class="outline-4">
+<h4 id="org9c066c2"><span class="section-number-4">3.2.2</span> 哈希表收缩</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+再看一下容量缩小的情况，容量由 16 缩小为 8。在容量为 16 时，迭代完 0100 之后，下一个为 0101，此时容量缩小为 8。0101 在容量为 8 的情况下，就成了101。<br>
+</p>
+
+<p>
+在容量为 16 时，尚未迭代过的索引是：0101，0110，0111，1000，1001，1010，1011，1100，1101，1110，1111。这些索引，在哈希表容量缩小后，分配到新的 bucket 中，索引将会是：000，001，010，011，100，101，110，111。现在要开始迭代的索引为 101，那 101 之前的 000，001，010，011，100 这些索引就不会迭代了，这样，原来的某些节点就被漏掉了。<br>
+</p>
+
+<p>
+另外，还是从 16 收缩为 8 的情况，如果已经迭代完 1100，下一个为 1101，在容量为 8 的情况下，就成了 101。<br>
+</p>
+
+<p>
+容量为 16 时，已经迭代过的索引为 0000，0001，0010，0011，0100，0101，0110，0111，1000，1001，1010，1011，1100。这些索引，在哈希表容量收缩后，分配到新的 bucket 中，索引分别是：000，001，010，011，100，101，110，111。容量变为 8 后，从 101 开始，很明显，原来已经迭代过的 0101，0110，0111 就会产生重复迭代。<br>
+</p>
+
+<p>
+因此，顺序迭代不是一个满足要求的迭代方法。<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org608ebc7" class="outline-2">
+<h2 id="org608ebc7"><span class="section-number-2">4</span> dictScan 源码</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">dictScan</span>(<span style="color: #af8700;">dict</span> *<span style="color: #0087ff;">d</span>,
+                       <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">v</span>,
+                       <span style="color: #af8700;">dictScanFunction</span> *<span style="color: #0087ff;">fn</span>,
+                       <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">privdata</span>)
+{
+    <span style="color: #af8700;">dictht</span> *<span style="color: #0087ff;">t0</span>, *<span style="color: #0087ff;">t1</span>;
+    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">dictEntry</span> *<span style="color: #0087ff;">de</span>;
+    <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">m0</span>, <span style="color: #0087ff;">m1</span>;
+
+    <span style="color: #5f8700;">if</span> (dictSize(d) == 0) <span style="color: #5f8700;">return</span> 0;
+
+    <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>dictIsRehashing(d)) {
+        t0 = &amp;(d-&gt;ht[0]);
+        m0 = t0-&gt;sizemask;
+
+        de = t0-&gt;table[v &amp; m0];
+        <span style="color: #5f8700;">while</span> (de) {
+            fn(privdata, de);
+            de = de-&gt;next;
+        }
+
+    } <span style="color: #5f8700;">else</span> {
+        t0 = &amp;d-&gt;ht[0];
+        t1 = &amp;d-&gt;ht[1];
+
+        <span style="color: #5f8700;">if</span> (t0-&gt;size &gt; t1-&gt;size) {
+            t0 = &amp;d-&gt;ht[1];
+            t1 = &amp;d-&gt;ht[0];
+        }
+
+        m0 = t0-&gt;sizemask;
+        m1 = t1-&gt;sizemask;
+
+        de = t0-&gt;table[v &amp; m0];
+        <span style="color: #5f8700;">while</span> (de) {
+            fn(privdata, de);
+            de = de-&gt;next;
+        }
+
+        <span style="color: #5f8700;">do</span> {
+            de = t1-&gt;table[v &amp; m1];
+            <span style="color: #5f8700;">while</span> (de) {
+                fn(privdata, de);
+                de = de-&gt;next;
+            }
+
+            v = (((v | m0) + 1) &amp; ~m0) | (v &amp; m0);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23601;&#26159;&#23545; v &#30340;&#20302; m1-m0 &#20301;&#21152; 1&#65292;&#24182;&#20445;&#30041; v &#30340;&#20302; m0 &#20301;</span>
+
+        } <span style="color: #5f8700;">while</span> (v &amp; (m0 ^ m1));  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24490;&#29615;&#26465;&#20214; v &amp;(m0 ^ m1)&#65292;&#34920;&#31034;&#30452;&#21040; v &#30340;&#20302; m1-m0 &#20301;&#21040;&#20302; m1 &#20301;&#20043;&#38388;&#20840;&#37096;&#20026; 0 &#20026;&#27490;&#12290;</span>
+    }
+
+    v |= ~m0;
+
+    v = rev(v);
+    v++;
+    v = rev(v);
+
+    <span style="color: #5f8700;">return</span> v;
+}
+</pre>
+</div>
+
+<p>
+如果字典当前没有 rehash，则比较简单，直接根据 v 找到需要迭代的 bucket 索引，针对该 bucket 中链表中的所有节点，调用用户提供的 fn 函数。<br>
+</p>
+
+<p>
+如果字典当前正在 rehash，则需要先遍历较小的哈希表，然后是较大的哈希表。<br>
+</p>
+
+<p>
+首先使 t0 指向小表，t1 指向大表；m0 为小表的 mask，m1 为大表的 mask。<br>
+</p>
+
+<p>
+根据 v&amp;m0，找到 t0 中需要迭代的 bucket，然后迭代其中的每个节点即可。<br>
+</p>
+
+<p>
+接下来的代码稍显复杂，但是，本质上，就是 t0 中，索引为 v&amp;m0 的 bucket 中的所有节点，再其扩展到 t1 中后，遍历其所有可能的 bucket 中的节点。语言不好描述，举个例子就明白了：若 t0 长度为 8，则 m0 为 111，v&amp;m0 就是保留 v 的低三位，假设为 abc。若 t1 长度为 32，则 m1 为 11111，该过程就是：遍历完 t0 中索引为 abc 的 bucket 之后，接着遍历 t1 中，索引为 00abc、01abc、10abc、11abc 的 bucket 中的节点。<br>
+</p>
+
+<p>
+提取核心代码逻辑来进行测试：<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">test_dictScan_iter</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">smalltablesize</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">largetablesize</span>)
+{
+    <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">v</span>;
+    <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">m0</span>, <span style="color: #0087ff;">m1</span>;
+
+    v = 0;
+    m0 = smalltablesize-1;
+    m1 = largetablesize-1;
+
+    <span style="color: #5f8700;">do</span>
+    {
+        printf(<span style="color: #00afaf;">"\nsmall v is: "</span>);
+        printBits(v, smalltablesize);
+        printf(<span style="color: #00afaf;">"\n"</span>);
+
+        <span style="color: #5f8700;">do</span>
+        {
+            printf(<span style="color: #00afaf;">"large v is: "</span>);
+            printBits(v, largetablesize);
+            printf(<span style="color: #00afaf;">"\n"</span>);
+
+            v = (((v | m0) + 1) &amp; ~m0) | (v &amp; m0);
+        }<span style="color: #5f8700;">while</span> (v &amp; (m0 ^ m1));
+
+        v |= ~m0;
+        v = rev(v);
+        v++;
+        v = rev(v);
+    }<span style="color: #5f8700;">while</span> (v != 0);
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    test_dictScan_iter(8, 32);
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+
+<p>
+结果如下：<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ ./main
+
+small v is: 000
+large v is: 00000
+large v is: 01000
+large v is: 10000
+large v is: 11000
+
+small v is: 100
+large v is: 00100
+large v is: 01100
+large v is: 10100
+large v is: 11100
+
+small v is: 010
+large v is: 00010
+large v is: 01010
+large v is: 10010
+large v is: 11010
+
+small v is: 110
+large v is: 00110
+large v is: 01110
+large v is: 10110
+large v is: 11110
+
+small v is: 001
+large v is: 00001
+large v is: 01001
+large v is: 10001
+large v is: 11001
+
+small v is: 101
+large v is: 00101
+large v is: 01101
+large v is: 10101
+large v is: 11101
+
+small v is: 011
+large v is: 00011
+large v is: 01011
+large v is: 10011
+large v is: 11011
+
+small v is: 111
+large v is: 00111
+large v is: 01111
+large v is: 10111
+large v is: 11111
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

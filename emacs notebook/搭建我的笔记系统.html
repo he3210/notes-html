@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>搭建我的笔记系统</title>
@@ -34,13 +34,13 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org148194d">1. 为什么选用 org-mode 构建？</a></li>
-<li><a href="#org8b5afb3">2. 笔记系统最终目录结构</a></li>
-<li><a href="#orgd132a57">3. org-mode 导出成网站的基本配置</a></li>
-<li><a href="#org8195e07">4. 后续优化1 —— 代码块右侧显示代码类型</a></li>
-<li><a href="#org4653a6e">5. 后续优化2 —— 生产环境测试环境分离</a></li>
-<li><a href="#orgdb5b5cc">6. 后续优化3 —— 目录聚焦当前大纲</a></li>
-<li><a href="#org0b5d8d1">7. 后续优化4 —— 添加 google 搜索</a></li>
+<li><a href="#orgb1199de">1. 为什么选用 org-mode 构建？</a></li>
+<li><a href="#orgc9153e0">2. 笔记系统最终目录结构</a></li>
+<li><a href="#orge9c0800">3. org-mode 导出成网站的基本配置</a></li>
+<li><a href="#orgdc76417">4. 后续优化1 —— 代码块右侧显示代码类型</a></li>
+<li><a href="#orgb0f3023">5. 后续优化2 —— 生产环境测试环境分离</a></li>
+<li><a href="#org826f6b4">6. 后续优化3 —— 目录聚焦当前大纲</a></li>
+<li><a href="#org4141bc2">7. 后续优化4 —— 添加 google 搜索</a></li>
 </ul>
 </div>
 </div>
@@ -75,8 +75,8 @@
 </tbody>
 </table>
 
-<div id="outline-container-org148194d" class="outline-2">
-<h2 id="org148194d"><span class="section-number-2">1</span> 为什么选用 org-mode 构建？</h2>
+<div id="outline-container-orgb1199de" class="outline-2">
+<h2 id="orgb1199de"><span class="section-number-2">1</span> 为什么选用 org-mode 构建？</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 之前一直使用 evernote + gitbook 等工具记笔记。然而每个都有各自很大的缺点<br>
@@ -112,8 +112,8 @@
 </div>
 </div>
 
-<div id="outline-container-org8b5afb3" class="outline-2">
-<h2 id="org8b5afb3"><span class="section-number-2">2</span> 笔记系统最终目录结构</h2>
+<div id="outline-container-orgc9153e0" class="outline-2">
+<h2 id="orgc9153e0"><span class="section-number-2">2</span> 笔记系统最终目录结构</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ tree -N -I <span style="color: #00afaf;">"algorithm|libevent|test"</span> notes
@@ -148,8 +148,8 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
 </div>
 </div>
 
-<div id="outline-container-orgd132a57" class="outline-2">
-<h2 id="orgd132a57"><span class="section-number-2">3</span> org-mode 导出成网站的基本配置</h2>
+<div id="outline-container-orge9c0800" class="outline-2">
+<h2 id="orge9c0800"><span class="section-number-2">3</span> org-mode 导出成网站的基本配置</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 我的 emacs org-mode 的配置文件是 <code>init-org.el</code> ，向该文件添加如下配置<br>
@@ -254,8 +254,8 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
 </p>
 </div>
 </div>
-<div id="outline-container-org8195e07" class="outline-2">
-<h2 id="org8195e07"><span class="section-number-2">4</span> 后续优化1 —— 代码块右侧显示代码类型</h2>
+<div id="outline-container-orgdc76417" class="outline-2">
+<h2 id="orgdc76417"><span class="section-number-2">4</span> 后续优化1 —— 代码块右侧显示代码类型</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 如果代码块是 shell 脚本，代码块右上角显示 shell；如果是 python 代码，右上角显示 python；&#x2026;<br>
@@ -308,8 +308,8 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
 </div>
 </div>
 </div>
-<div id="outline-container-org4653a6e" class="outline-2">
-<h2 id="org4653a6e"><span class="section-number-2">5</span> 后续优化2 —— 生产环境测试环境分离</h2>
+<div id="outline-container-orgb0f3023" class="outline-2">
+<h2 id="orgb0f3023"><span class="section-number-2">5</span> 后续优化2 —— 生产环境测试环境分离</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 需要做到<br>
@@ -392,8 +392,8 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
 </div>
 </div>
 
-<div id="outline-container-orgdb5b5cc" class="outline-2">
-<h2 id="orgdb5b5cc"><span class="section-number-2">6</span> 后续优化3 —— 目录聚焦当前大纲</h2>
+<div id="outline-container-org826f6b4" class="outline-2">
+<h2 id="org826f6b4"><span class="section-number-2">6</span> 后续优化3 —— 目录聚焦当前大纲</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>效果一：目录显示当前屏幕位置处的大纲，使用 jquery 来实现<br></li>
@@ -468,8 +468,8 @@ document.addEventListener(<span style="color: #00afaf;">'DOMContentLoaded'</span
 </div>
 </div>
 </div>
-<div id="outline-container-org0b5d8d1" class="outline-2">
-<h2 id="org0b5d8d1"><span class="section-number-2">7</span> 后续优化4 —— 添加 google 搜索</h2>
+<div id="outline-container-org4141bc2" class="outline-2">
+<h2 id="org4141bc2"><span class="section-number-2">7</span> 后续优化4 —— 添加 google 搜索</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 实现思路：向 google 发送 http get 请求，搜索 <code>www.langdebuqing.com</code> 网站中的内容。<br>

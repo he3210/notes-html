@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>数字三角形</title>
@@ -56,16 +56,16 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org73265ac">1. 问题</a></li>
-<li><a href="#orgfb51527">2. 状态转移方程</a></li>
-<li><a href="#orgfa1750c">3. 动态规划</a></li>
-<li><a href="#orgd61cb86">4. 备忘录</a></li>
+<li><a href="#org3a13b38">1. 问题</a></li>
+<li><a href="#orga0393eb">2. 状态转移方程</a></li>
+<li><a href="#orgc6f74b7">3. 动态规划</a></li>
+<li><a href="#orgc11aec7">4. 备忘录</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org73265ac" class="outline-2">
-<h2 id="org73265ac"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org3a13b38" class="outline-2">
+<h2 id="org3a13b38"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 有一个非负整数组成的三角形，第一行只有一个数，除了最下行之外每个数的左下方和右下方各有一个数<br>
@@ -85,8 +85,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgfb51527" class="outline-2">
-<h2 id="orgfb51527"><span class="section-number-2">2</span> 状态转移方程</h2>
+<div id="outline-container-orga0393eb" class="outline-2">
+<h2 id="orga0393eb"><span class="section-number-2">2</span> 状态转移方程</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 \[
@@ -105,8 +105,8 @@ a(i, j) 为位置 (i, j) 的值 n 为数字三角形的层数<br>
 </div>
 </div>
 
-<div id="outline-container-orgfa1750c" class="outline-2">
-<h2 id="orgfa1750c"><span class="section-number-2">3</span> 动态规划</h2>
+<div id="outline-container-orgc6f74b7" class="outline-2">
+<h2 id="orgc6f74b7"><span class="section-number-2">3</span> 动态规划</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 4
@@ -138,8 +138,8 @@ a(i, j) 为位置 (i, j) 的值 n 为数字三角形的层数<br>
 </div>
 </div>
 
-<div id="outline-container-orgd61cb86" class="outline-2">
-<h2 id="orgd61cb86"><span class="section-number-2">4</span> 备忘录</h2>
+<div id="outline-container-orgc11aec7" class="outline-2">
+<h2 id="orgc11aec7"><span class="section-number-2">4</span> 备忘录</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 4

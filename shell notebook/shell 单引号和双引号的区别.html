@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>shell 单引号和双引号的区别</title>
@@ -34,18 +34,18 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org443d66e">1. shell command line 分解</a></li>
-<li><a href="#orgb6cfe65">2. quoting 处理</a></li>
-<li><a href="#orgdc46304">3. 举例：从 Enter 键看区别</a></li>
-<li><a href="#orgc14ef7d">4. 举例：从 awk 命令看区别</a></li>
-<li><a href="#org535427d">5. 举例: 从 stdin 输入变量看区别</a></li>
-<li><a href="#orgff5ff67">6. 举例：输出原文件</a></li>
+<li><a href="#orgd5b5a8b">1. shell command line 分解</a></li>
+<li><a href="#org0e4c1dc">2. quoting 处理</a></li>
+<li><a href="#orgf30010f">3. 举例：从 Enter 键看区别</a></li>
+<li><a href="#org1eee13e">4. 举例：从 awk 命令看区别</a></li>
+<li><a href="#orgb062f19">5. 举例: 从 stdin 输入变量看区别</a></li>
+<li><a href="#org60cd765">6. 举例：输出原文件</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org443d66e" class="outline-2">
-<h2 id="org443d66e"><span class="section-number-2">1</span> shell command line 分解</h2>
+<div id="outline-container-orgd5b5a8b" class="outline-2">
+<h2 id="orgd5b5a8b"><span class="section-number-2">1</span> shell command line 分解</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 shell command line 处理流程：<br>
@@ -83,8 +83,8 @@ command line 的每一个 charactor, 分为如下两种：<br>
 </div>
 </div>
 
-<div id="outline-container-orgb6cfe65" class="outline-2">
-<h2 id="orgb6cfe65"><span class="section-number-2">2</span> quoting 处理</h2>
+<div id="outline-container-org0e4c1dc" class="outline-2">
+<h2 id="org0e4c1dc"><span class="section-number-2">2</span> quoting 处理</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 假如我们需要在 command line 中将这些保留元字符的功能关闭的话，就需要 quoting 处理了<br>
@@ -98,8 +98,8 @@ command line 的每一个 charactor, 分为如下两种：<br>
 </div>
 </div>
 
-<div id="outline-container-orgdc46304" class="outline-2">
-<h2 id="orgdc46304"><span class="section-number-2">3</span> 举例：从 Enter 键看区别</h2>
+<div id="outline-container-orgf30010f" class="outline-2">
+<h2 id="orgf30010f"><span class="section-number-2">3</span> 举例：从 Enter 键看区别</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Enter 存在如下含义<br>
@@ -149,8 +149,8 @@ BC
 </div>
 </div>
 
-<div id="outline-container-orgc14ef7d" class="outline-2">
-<h2 id="orgc14ef7d"><span class="section-number-2">4</span> 举例：从 awk 命令看区别</h2>
+<div id="outline-container-org1eee13e" class="outline-2">
+<h2 id="org1eee13e"><span class="section-number-2">4</span> 举例：从 awk 命令看区别</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 shell meta 和 command meta 区别<br>
@@ -177,8 +177,8 @@ $ awk <span style="color: #00afaf;">'{print $'"$A"'}'</span> 1.txt    <span styl
 </div>
 </div>
 
-<div id="outline-container-org535427d" class="outline-2">
-<h2 id="org535427d"><span class="section-number-2">5</span> 举例: 从 stdin 输入变量看区别</h2>
+<div id="outline-container-orgb062f19" class="outline-2">
+<h2 id="orgb062f19"><span class="section-number-2">5</span> 举例: 从 stdin 输入变量看区别</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ read A
@@ -228,8 +228,8 @@ b h  test
 </div>
 </div>
 
-<div id="outline-container-orgff5ff67" class="outline-2">
-<h2 id="orgff5ff67"><span class="section-number-2">6</span> 举例：输出原文件</h2>
+<div id="outline-container-org60cd765" class="outline-2">
+<h2 id="org60cd765"><span class="section-number-2">6</span> 举例：输出原文件</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ cat aaaa | <span style="color: #5f8700;">while </span><span style="color: #5f8700;">read</span> i; <span style="color: #5f8700;">do</span>; <span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">i</span>; <span style="color: #5f8700;">done</span>;

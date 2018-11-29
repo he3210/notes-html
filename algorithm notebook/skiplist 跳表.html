@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>skiplist 跳表</title>
@@ -34,23 +34,23 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org295047b">1. 介绍</a>
+<li><a href="#orgc11bed1">1. 介绍</a>
 <ul>
-<li><a href="#org1c7bebb">1.1. 查找</a></li>
-<li><a href="#org74bd297">1.2. 插入</a></li>
-<li><a href="#orgbdf2c52">1.3. 删除</a></li>
+<li><a href="#org752083f">1.1. 查找</a></li>
+<li><a href="#orgdbc9c57">1.2. 插入</a></li>
+<li><a href="#orgc828156">1.3. 删除</a></li>
 </ul>
 </li>
-<li><a href="#org9ddcb87">2. main.c</a></li>
-<li><a href="#org7ab465a">3. skiplist.h</a></li>
-<li><a href="#org704f7e8">4. skiplist.c</a></li>
-<li><a href="#orgef64fe8">5. 结果</a></li>
+<li><a href="#org2b91dd1">2. main.c</a></li>
+<li><a href="#orgbf5910e">3. skiplist.h</a></li>
+<li><a href="#org180a139">4. skiplist.c</a></li>
+<li><a href="#orga1f8bae">5. 结果</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org295047b" class="outline-2">
-<h2 id="org295047b"><span class="section-number-2">1</span> 介绍</h2>
+<div id="outline-container-orgc11bed1" class="outline-2">
+<h2 id="orgc11bed1"><span class="section-number-2">1</span> 介绍</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 跳表（skiplist）是一个非常优秀的数据结构，实现简单，插入、删除、查找的复杂度均为 O(logN)。LevelDB 的核心数据结构是用跳表实现的，redis 的 sorted set 数据结构也是有跳表实现的。<br>
@@ -59,8 +59,8 @@
 </p>
 </div>
 
-<div id="outline-container-org1c7bebb" class="outline-3">
-<h3 id="org1c7bebb"><span class="section-number-3">1.1</span> 查找</h3>
+<div id="outline-container-org752083f" class="outline-3">
+<h3 id="org752083f"><span class="section-number-3">1.1</span> 查找</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 下图就是一个跳表结构，红色箭头为查找 30 的过程：20 ==&gt;30<br>
@@ -69,8 +69,8 @@
 </div>
 </div>
 
-<div id="outline-container-org74bd297" class="outline-3">
-<h3 id="org74bd297"><span class="section-number-3">1.2</span> 插入</h3>
+<div id="outline-container-orgdbc9c57" class="outline-3">
+<h3 id="orgdbc9c57"><span class="section-number-3">1.2</span> 插入</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 下图是插入示意图，红色箭头表示查找插入位置的过程，绿色箭头表示指针的移动<br>
@@ -81,8 +81,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgbdf2c52" class="outline-3">
-<h3 id="orgbdf2c52"><span class="section-number-3">1.3</span> 删除</h3>
+<div id="outline-container-orgc828156" class="outline-3">
+<h3 id="orgc828156"><span class="section-number-3">1.3</span> 删除</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 下图是删除操作图，删除节点要注意的是：删除节点之后，可能需要降层：因为当前跳表最高层的节点数量可能变成 0 了<br>
@@ -96,8 +96,8 @@
 </div>
 </div>
 
-<div id="outline-container-org9ddcb87" class="outline-2">
-<h2 id="org9ddcb87"><span class="section-number-2">2</span> main.c</h2>
+<div id="outline-container-org2b91dd1" class="outline-2">
+<h2 id="org2b91dd1"><span class="section-number-2">2</span> main.c</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
@@ -135,8 +135,8 @@
 </div>
 </div>
 
-<div id="outline-container-org7ab465a" class="outline-2">
-<h2 id="org7ab465a"><span class="section-number-2">3</span> skiplist.h</h2>
+<div id="outline-container-orgbf5910e" class="outline-2">
+<h2 id="orgbf5910e"><span class="section-number-2">3</span> skiplist.h</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> __SKIPLIST_H
@@ -148,7 +148,7 @@
 <span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">skiplistNode</span>
 {
     <span style="color: #af8700;">double</span> <span style="color: #0087ff;">score</span>;
-    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">skiplistNode</span> *<span style="color: #0087ff;">backward</span>;      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24403;&#21069;&#33410;&#28857;&#22312;&#31532; 0 &#23618;&#19978;&#30340;&#19978;&#19968;&#20010;&#33410;&#28857;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">skiplistNode</span> *<span style="color: #0087ff;">backward</span>;      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24403;&#21069;&#33410;&#28857;&#22312;&#31532; 0 &#23618;&#19978;&#30340;&#19978;&#19968;&#20010;&#33410;&#28857;&#12290;&#22914;&#26524;&#19978;&#19968;&#20010;&#32467;&#28857;&#20026;&#22836;&#33410;&#28857;&#65292;&#21017;&#35813;&#20540;&#20026; NULL</span>
     <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">skiplistLevel</span>
     {
         <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">skiplistNode</span> *<span style="color: #0087ff;">forward</span>;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29992;&#26469;&#23384;&#20648;&#35813;&#33410;&#28857;&#30340;&#21508;&#20010; level &#19978;&#30340;&#19979;&#19968;&#20010;&#33410;&#28857;</span>
@@ -179,8 +179,8 @@
 </div>
 </div>
 
-<div id="outline-container-org704f7e8" class="outline-2">
-<h2 id="org704f7e8"><span class="section-number-2">4</span> skiplist.c</h2>
+<div id="outline-container-org180a139" class="outline-2">
+<h2 id="org180a139"><span class="section-number-2">4</span> skiplist.c</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"skiplist.h"</span>
@@ -376,8 +376,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgef64fe8" class="outline-2">
-<h2 id="orgef64fe8"><span class="section-number-2">5</span> 结果</h2>
+<div id="outline-container-orga1f8bae" class="outline-2">
+<h2 id="orga1f8bae"><span class="section-number-2">5</span> 结果</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ gcc main.c skiplist.c -o main

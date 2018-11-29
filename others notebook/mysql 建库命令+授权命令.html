@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>mysql 建库命令+授权命令</title>
@@ -34,27 +34,27 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4e87a22">1. 参考</a></li>
-<li><a href="#org54e0095">2. 显示数据库 使用数据库</a></li>
-<li><a href="#org2d3165b">3. 建库 删库</a></li>
-<li><a href="#org86f2434">4. 创建用户</a></li>
-<li><a href="#org76779f9">5. 把权限授权给 movier 账户  数据的增删改查</a></li>
-<li><a href="#org8d1b05e">6. 把权限授权给movier账户  表的增删改</a></li>
-<li><a href="#orgf6d9fc2">7. 授权操作外键权限</a></li>
-<li><a href="#orga537856">8. 授权操作临时表权限</a></li>
-<li><a href="#orgbd23a84">9. 授权操作索引权限</a></li>
-<li><a href="#orgac0b800">10. 授权操作视图、查看视图源码权限</a></li>
-<li><a href="#org82c372d">11. 授权操作存储过程、函数权限</a></li>
-<li><a href="#org61d7bd1">12. 授权普通DBA管理数据库</a></li>
-<li><a href="#orgf2e0751">13. 授权高级DBA管理所有数据库</a></li>
-<li><a href="#org2c14bd2">14. 取消授权</a></li>
-<li><a href="#org01d105e">15. 查看用户权限</a></li>
+<li><a href="#org7f8764f">1. 参考</a></li>
+<li><a href="#org40758bd">2. 显示数据库 使用数据库</a></li>
+<li><a href="#orgbdd5581">3. 建库 删库</a></li>
+<li><a href="#orgb40b848">4. 创建用户</a></li>
+<li><a href="#org86f131e">5. 把权限授权给 movier 账户  数据的增删改查</a></li>
+<li><a href="#org69f8d86">6. 把权限授权给movier账户  表的增删改</a></li>
+<li><a href="#orgeeab8fc">7. 授权操作外键权限</a></li>
+<li><a href="#orgfe51cc5">8. 授权操作临时表权限</a></li>
+<li><a href="#org8336aab">9. 授权操作索引权限</a></li>
+<li><a href="#org6b29afd">10. 授权操作视图、查看视图源码权限</a></li>
+<li><a href="#org6370f7d">11. 授权操作存储过程、函数权限</a></li>
+<li><a href="#org065a7ae">12. 授权普通DBA管理数据库</a></li>
+<li><a href="#org5159c37">13. 授权高级DBA管理所有数据库</a></li>
+<li><a href="#org30c19d1">14. 取消授权</a></li>
+<li><a href="#org835899a">15. 查看用户权限</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4e87a22" class="outline-2">
-<h2 id="org4e87a22"><span class="section-number-2">1</span> 参考</h2>
+<div id="outline-container-org7f8764f" class="outline-2">
+<h2 id="org7f8764f"><span class="section-number-2">1</span> 参考</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><a href="http://www.cnblogs.com/rmbteam/archive/2011/10/20/2219368.html">http://www.cnblogs.com/rmbteam/archive/2011/10/20/2219368.html</a><br></li>
@@ -62,8 +62,8 @@
 </div>
 </div>
 
-<div id="outline-container-org54e0095" class="outline-2">
-<h2 id="org54e0095"><span class="section-number-2">2</span> 显示数据库 使用数据库</h2>
+<div id="outline-container-org40758bd" class="outline-2">
+<h2 id="org40758bd"><span class="section-number-2">2</span> 显示数据库 使用数据库</h2>
 <div class="outline-text-2" id="text-2">
 <pre class="example">
 mysql&gt; show databases;
@@ -72,8 +72,8 @@ mysql&gt; use MovierDC;
 </div>
 </div>
 
-<div id="outline-container-org2d3165b" class="outline-2">
-<h2 id="org2d3165b"><span class="section-number-2">3</span> 建库 删库</h2>
+<div id="outline-container-orgbdd5581" class="outline-2">
+<h2 id="orgbdd5581"><span class="section-number-2">3</span> 建库 删库</h2>
 <div class="outline-text-2" id="text-3">
 <pre class="example">
 mysql&gt; create database MovierDC; # 使用 root 用户登录数据库
@@ -82,8 +82,8 @@ mysql&gt; drop database MovierDC;
 </div>
 </div>
 
-<div id="outline-container-org86f2434" class="outline-2">
-<h2 id="org86f2434"><span class="section-number-2">4</span> 创建用户</h2>
+<div id="outline-container-orgb40b848" class="outline-2">
+<h2 id="orgb40b848"><span class="section-number-2">4</span> 创建用户</h2>
 <div class="outline-text-2" id="text-4">
 <pre class="example">
 mysql&gt; CREATE USER 'WangLi'@'%' IDENTIFIED BY 'WL123'; # 创建密码为 WL123 的用户 WangLi，该用户可以在任意地址登陆数据库
@@ -91,8 +91,8 @@ mysql&gt; CREATE USER 'WangLi'@'%' IDENTIFIED BY 'WL123'; # 创建密码为 WL12
 </div>
 </div>
 
-<div id="outline-container-org76779f9" class="outline-2">
-<h2 id="org76779f9"><span class="section-number-2">5</span> 把权限授权给 movier 账户  数据的增删改查</h2>
+<div id="outline-container-org86f131e" class="outline-2">
+<h2 id="org86f131e"><span class="section-number-2">5</span> 把权限授权给 movier 账户  数据的增删改查</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 授权语法<br>
@@ -114,8 +114,8 @@ mysql&gt; grant select, insert, update, delete on MovierDC.* to movier@'%';
 </div>
 </div>
 
-<div id="outline-container-org8d1b05e" class="outline-2">
-<h2 id="org8d1b05e"><span class="section-number-2">6</span> 把权限授权给movier账户  表的增删改</h2>
+<div id="outline-container-org69f8d86" class="outline-2">
+<h2 id="org69f8d86"><span class="section-number-2">6</span> 把权限授权给movier账户  表的增删改</h2>
 <div class="outline-text-2" id="text-6">
 <pre class="example">
 mysql&gt; grant create on MovierDC.* to movier@'192.168.0.%'; # 授建表权给从 "192.168.0.%" 登陆数据库的 movier 账户，% 代表任意
@@ -130,8 +130,8 @@ mysql&gt; grant create, alter, drop  on MovierDC.* to movier@'%';
 </pre>
 </div>
 </div>
-<div id="outline-container-orgf6d9fc2" class="outline-2">
-<h2 id="orgf6d9fc2"><span class="section-number-2">7</span> 授权操作外键权限</h2>
+<div id="outline-container-orgeeab8fc" class="outline-2">
+<h2 id="orgeeab8fc"><span class="section-number-2">7</span> 授权操作外键权限</h2>
 <div class="outline-text-2" id="text-7">
 <pre class="example">
 mysql&gt; grant references on MovierDC.* to movier@'%';
@@ -139,8 +139,8 @@ mysql&gt; grant references on MovierDC.* to movier@'%';
 </div>
 </div>
 
-<div id="outline-container-orga537856" class="outline-2">
-<h2 id="orga537856"><span class="section-number-2">8</span> 授权操作临时表权限</h2>
+<div id="outline-container-orgfe51cc5" class="outline-2">
+<h2 id="orgfe51cc5"><span class="section-number-2">8</span> 授权操作临时表权限</h2>
 <div class="outline-text-2" id="text-8">
 <pre class="example">
 mysql&gt; grant create temporary tables on MovierDC.* to movier@'192.168.0.%';
@@ -148,8 +148,8 @@ mysql&gt; grant create temporary tables on MovierDC.* to movier@'192.168.0.%';
 </div>
 </div>
 
-<div id="outline-container-orgbd23a84" class="outline-2">
-<h2 id="orgbd23a84"><span class="section-number-2">9</span> 授权操作索引权限</h2>
+<div id="outline-container-org8336aab" class="outline-2">
+<h2 id="org8336aab"><span class="section-number-2">9</span> 授权操作索引权限</h2>
 <div class="outline-text-2" id="text-9">
 <pre class="example">
 mysql&gt; grant index on MovierDC.* to movier@'%';
@@ -157,8 +157,8 @@ mysql&gt; grant index on MovierDC.* to movier@'%';
 </div>
 </div>
 
-<div id="outline-container-orgac0b800" class="outline-2">
-<h2 id="orgac0b800"><span class="section-number-2">10</span> 授权操作视图、查看视图源码权限</h2>
+<div id="outline-container-org6b29afd" class="outline-2">
+<h2 id="org6b29afd"><span class="section-number-2">10</span> 授权操作视图、查看视图源码权限</h2>
 <div class="outline-text-2" id="text-10">
 <pre class="example">
 mysql&gt; grant create view on MovierDC.* to movier@'%'; 
@@ -167,8 +167,8 @@ mysql&gt; grant show  view on MovierDC.* to movier@'%';
 </div>
 </div>
 
-<div id="outline-container-org82c372d" class="outline-2">
-<h2 id="org82c372d"><span class="section-number-2">11</span> 授权操作存储过程、函数权限</h2>
+<div id="outline-container-org6370f7d" class="outline-2">
+<h2 id="org6370f7d"><span class="section-number-2">11</span> 授权操作存储过程、函数权限</h2>
 <div class="outline-text-2" id="text-11">
 <pre class="example">
 mysql&gt; grant create routine on MovierDC.* to movier@'%'; -- now, can show procedure status;
@@ -178,8 +178,8 @@ mysql&gt; grant execute on MovierDC.* to movier@'%';
 </div>
 </div>
 
-<div id="outline-container-org61d7bd1" class="outline-2">
-<h2 id="org61d7bd1"><span class="section-number-2">12</span> 授权普通DBA管理数据库</h2>
+<div id="outline-container-org065a7ae" class="outline-2">
+<h2 id="org065a7ae"><span class="section-number-2">12</span> 授权普通DBA管理数据库</h2>
 <div class="outline-text-2" id="text-12">
 <pre class="example">
 mysql&gt; grant all privileges on MovierDC.* to movier@'localhost';
@@ -187,8 +187,8 @@ mysql&gt; grant all privileges on MovierDC.* to movier@'localhost';
 </div>
 </div>
 
-<div id="outline-container-orgf2e0751" class="outline-2">
-<h2 id="orgf2e0751"><span class="section-number-2">13</span> 授权高级DBA管理所有数据库</h2>
+<div id="outline-container-org5159c37" class="outline-2">
+<h2 id="org5159c37"><span class="section-number-2">13</span> 授权高级DBA管理所有数据库</h2>
 <div class="outline-text-2" id="text-13">
 <pre class="example">
 mysql&gt; grant all on *.* to movier@'localhost';
@@ -196,8 +196,8 @@ mysql&gt; grant all on *.* to movier@'localhost';
 </div>
 </div>
 
-<div id="outline-container-org2c14bd2" class="outline-2">
-<h2 id="org2c14bd2"><span class="section-number-2">14</span> 取消授权</h2>
+<div id="outline-container-org30c19d1" class="outline-2">
+<h2 id="org30c19d1"><span class="section-number-2">14</span> 取消授权</h2>
 <div class="outline-text-2" id="text-14">
 <pre class="example">
 mysql&gt; revoke all privileges on MovierDC.* from movier@'%';
@@ -205,8 +205,8 @@ mysql&gt; revoke all privileges on MovierDC.* from movier@'%';
 </div>
 </div>
 
-<div id="outline-container-org01d105e" class="outline-2">
-<h2 id="org01d105e"><span class="section-number-2">15</span> 查看用户权限</h2>
+<div id="outline-container-org835899a" class="outline-2">
+<h2 id="org835899a"><span class="section-number-2">15</span> 查看用户权限</h2>
 <div class="outline-text-2" id="text-15">
 <pre class="example">
 mysql&gt; show grants; # 查看当前用户权限

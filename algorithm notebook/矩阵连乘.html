@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>矩阵连乘</title>
@@ -56,18 +56,18 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org8941a06">1. 问题</a></li>
-<li><a href="#org9aa9d2c">2. 分析</a></li>
-<li><a href="#orgcb5a4a4">3. 状态转移方程</a></li>
-<li><a href="#org0b84d6c">4. 填表过程</a></li>
-<li><a href="#orga9afa49">5. 动态规划</a></li>
-<li><a href="#org97aab27">6. 备忘录</a></li>
+<li><a href="#orgfac2893">1. 问题</a></li>
+<li><a href="#org507906d">2. 分析</a></li>
+<li><a href="#orga62c2b3">3. 状态转移方程</a></li>
+<li><a href="#org5a82044">4. 填表过程</a></li>
+<li><a href="#orgf2dbf4c">5. 动态规划</a></li>
+<li><a href="#orgbcf7b7d">6. 备忘录</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org8941a06" class="outline-2">
-<h2 id="org8941a06"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-orgfac2893" class="outline-2">
+<h2 id="orgfac2893"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 设有矩阵 A<sub>1</sub>(30*35)、A<sub>2</sub>(35*15)、A<sub>3</sub>(15*5)、A<sub>4</sub>(5*10)，M = A<sub>1</sub>*A<sub>2</sub>*A<sub>3</sub>*A<sub>4</sub>，计算所需乘法次数的最小值<br>
@@ -75,8 +75,8 @@
 </div>
 </div>
 
-<div id="outline-container-org9aa9d2c" class="outline-2">
-<h2 id="org9aa9d2c"><span class="section-number-2">2</span> 分析</h2>
+<div id="outline-container-org507906d" class="outline-2">
+<h2 id="org507906d"><span class="section-number-2">2</span> 分析</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 A<sub>1</sub>*A<sub>2</sub> 的乘法次数为 30*35*15<br>
@@ -95,8 +95,8 @@ m[i][j] 表示A<sub>i</sub>*A<sub>i+1</sub>*&#x2026;*A<sub>j</sub> 所需乘法�
 </div>
 </div>
 
-<div id="outline-container-orgcb5a4a4" class="outline-2">
-<h2 id="orgcb5a4a4"><span class="section-number-2">3</span> 状态转移方程</h2>
+<div id="outline-container-orga62c2b3" class="outline-2">
+<h2 id="orga62c2b3"><span class="section-number-2">3</span> 状态转移方程</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 \[
@@ -114,8 +114,8 @@ m[i][j]=\left\{
 </div>
 </div>
 
-<div id="outline-container-org0b84d6c" class="outline-2">
-<h2 id="org0b84d6c"><span class="section-number-2">4</span> 填表过程</h2>
+<div id="outline-container-org5a82044" class="outline-2">
+<h2 id="org5a82044"><span class="section-number-2">4</span> 填表过程</h2>
 <div class="outline-text-2" id="text-4">
 <table>
 
@@ -177,8 +177,8 @@ m[i][j]=\left\{
 </div>
 </div>
 
-<div id="outline-container-orga9afa49" class="outline-2">
-<h2 id="orga9afa49"><span class="section-number-2">5</span> 动态规划</h2>
+<div id="outline-container-orgf2dbf4c" class="outline-2">
+<h2 id="orgf2dbf4c"><span class="section-number-2">5</span> 动态规划</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[1024][1024];    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#20248;&#35299;</span>
@@ -243,8 +243,8 @@ m[i][j]=\left\{
 </div>
 </div>
 
-<div id="outline-container-org97aab27" class="outline-2">
-<h2 id="org97aab27"><span class="section-number-2">6</span> 备忘录</h2>
+<div id="outline-container-orgbcf7b7d" class="outline-2">
+<h2 id="orgbcf7b7d"><span class="section-number-2">6</span> 备忘录</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">fun2</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span>)

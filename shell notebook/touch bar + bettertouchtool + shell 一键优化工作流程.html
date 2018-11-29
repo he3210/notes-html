@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>touch bar + bettertouchtool + shell 一键优化工作流程</title>
@@ -34,20 +34,20 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0739d65">1. Macbook pro touch bar</a></li>
-<li><a href="#org5a2ed17">2. bettertouchtool touch bar 基本配置</a></li>
-<li><a href="#orgc6c1258">3. touch bar 简化工作流程</a>
+<li><a href="#org72f4374">1. Macbook pro touch bar</a></li>
+<li><a href="#org48cb334">2. bettertouchtool touch bar 基本配置</a></li>
+<li><a href="#org1e1f882">3. touch bar 简化工作流程</a>
 <ul>
-<li><a href="#orga46fb39">3.1. 发包步骤</a></li>
-<li><a href="#org35328b7">3.2. 优化发包步骤</a></li>
+<li><a href="#orgcd60a96">3.1. 发包步骤</a></li>
+<li><a href="#org78d55e2">3.2. 优化发包步骤</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0739d65" class="outline-2">
-<h2 id="org0739d65"><span class="section-number-2">1</span> Macbook pro touch bar</h2>
+<div id="outline-container-org72f4374" class="outline-2">
+<h2 id="org72f4374"><span class="section-number-2">1</span> Macbook pro touch bar</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 对我来说，Apple 的 Touch Bar 的设计毫无意义：<br>
@@ -82,8 +82,8 @@ touch bar 的优势在于它是一个条形触摸屏，而不是键盘。比如�
 </div>
 </div>
 
-<div id="outline-container-org5a2ed17" class="outline-2">
-<h2 id="org5a2ed17"><span class="section-number-2">2</span> bettertouchtool touch bar 基本配置</h2>
+<div id="outline-container-org48cb334" class="outline-2">
+<h2 id="org48cb334"><span class="section-number-2">2</span> bettertouchtool touch bar 基本配置</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 借助 bettertouchtool 可定制 mac 的快捷键、触控板、touch bar、键盘改键、鼠标、siri、遥控器等。这里用到对 touch bar 的定制。<br>
@@ -146,15 +146,15 @@ touch bar 的优势在于它是一个条形触摸屏，而不是键盘。比如�
 </div>
 </div>
 
-<div id="outline-container-orgc6c1258" class="outline-2">
-<h2 id="orgc6c1258"><span class="section-number-2">3</span> touch bar 简化工作流程</h2>
+<div id="outline-container-org1e1f882" class="outline-2">
+<h2 id="org1e1f882"><span class="section-number-2">3</span> touch bar 简化工作流程</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 在工作中碰到的一些事情，可以使用 shell 脚本优化工作流程。例如：为 IOS 客户端发包<br>
 </p>
 </div>
-<div id="outline-container-orga46fb39" class="outline-3">
-<h3 id="orga46fb39"><span class="section-number-3">3.1</span> 发包步骤</h3>
+<div id="outline-container-orgcd60a96" class="outline-3">
+<h3 id="orgcd60a96"><span class="section-number-3">3.1</span> 发包步骤</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 IOS ipa 包：xxxx_xxxx_xxxx_1.0.81.1707171146.ipa<br>
@@ -170,15 +170,15 @@ build 号码：ipa 包名的末尾 1707171146 就是 build 号。其中，前 6 
 </div>
 </div>
 
-<div id="outline-container-org35328b7" class="outline-3">
-<h3 id="org35328b7"><span class="section-number-3">3.2</span> 优化发包步骤</h3>
+<div id="outline-container-org78d55e2" class="outline-3">
+<h3 id="org78d55e2"><span class="section-number-3">3.2</span> 优化发包步骤</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 写 2 个 shell 脚本，1.sh 放在本地，2.sh 放在服务器<br>
 </p>
 <ul class="org-ul">
 <li>1.sh 做的事情首先是 scp 命令上传 ipa 文件到服务器，然后使用 ssh 命令在服务器上执行 2.sh。最后根据执行结果，使用 <code>osascript</code> 命令向桌面推送一个通知<br></li>
-<li>2.sh 需要做的是 <a href="#orga46fb39">发包步骤</a> 中的 2~5 步<br></li>
+<li>2.sh 需要做的是 <a href="#orgcd60a96">发包步骤</a> 中的 2~5 步<br></li>
 </ul>
 
 <p>

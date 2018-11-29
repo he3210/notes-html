@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>shell 编程基础</title>
@@ -34,28 +34,28 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org49772f2">1. 特殊变量</a></li>
-<li><a href="#orga9b2698">2. 数组</a></li>
-<li><a href="#orgf54da25">3. if 语句</a></li>
-<li><a href="#org7bf57f8">4. case</a></li>
-<li><a href="#orgf5f3952">5. for</a></li>
-<li><a href="#orgcc7c225">6. 冒泡排序</a>
+<li><a href="#org9af6937">1. 特殊变量</a></li>
+<li><a href="#orgdd84e31">2. 数组</a></li>
+<li><a href="#orgade6ec5">3. if 语句</a></li>
+<li><a href="#org994ca3a">4. case</a></li>
+<li><a href="#org043e834">5. for</a></li>
+<li><a href="#orgdcd0e33">6. 冒泡排序</a>
 <ul>
-<li><a href="#orgbfdac07">6.1. $[] 讲解</a></li>
-<li><a href="#orgd642e34">6.2. (()) 讲解</a></li>
-<li><a href="#org8765dd2">6.3. 冒泡排序</a></li>
+<li><a href="#org14b39ba">6.1. $[] 讲解</a></li>
+<li><a href="#orgbce48b5">6.2. (()) 讲解</a></li>
+<li><a href="#org77e43e9">6.3. 冒泡排序</a></li>
 </ul>
 </li>
-<li><a href="#org7cd5f1c">7. while</a></li>
-<li><a href="#orgfee2497">8. until</a></li>
-<li><a href="#org527abc8">9. 函数</a></li>
-<li><a href="#orgf764c08">10. break continue return exit</a></li>
+<li><a href="#org28a96f5">7. while</a></li>
+<li><a href="#org17a084a">8. until</a></li>
+<li><a href="#org212b122">9. 函数</a></li>
+<li><a href="#org5864659">10. break continue return exit</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org49772f2" class="outline-2">
-<h2 id="org49772f2"><span class="section-number-2">1</span> 特殊变量</h2>
+<div id="outline-container-org9af6937" class="outline-2">
+<h2 id="org9af6937"><span class="section-number-2">1</span> 特殊变量</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ cat test.sh
@@ -88,8 +88,8 @@ $ echo $<span style="color: #0087ff;">?</span>      <span style="color: #8a8a8a;
 </div>
 </div>
 
-<div id="outline-container-orga9b2698" class="outline-2">
-<h2 id="orga9b2698"><span class="section-number-2">2</span> 数组</h2>
+<div id="outline-container-orgdd84e31" class="outline-2">
+<h2 id="orgdd84e31"><span class="section-number-2">2</span> 数组</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 输出数组的所有元素<br>
@@ -108,8 +108,8 @@ $ echo $<span style="color: #0087ff;">?</span>      <span style="color: #8a8a8a;
 </div>
 </div>
 
-<div id="outline-container-orgf54da25" class="outline-2">
-<h2 id="orgf54da25"><span class="section-number-2">3</span> if 语句</h2>
+<div id="outline-container-orgade6ec5" class="outline-2">
+<h2 id="orgade6ec5"><span class="section-number-2">3</span> if 语句</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
@@ -133,8 +133,8 @@ $ echo $<span style="color: #0087ff;">?</span>      <span style="color: #8a8a8a;
 </div>
 </div>
 
-<div id="outline-container-org7bf57f8" class="outline-2">
-<h2 id="org7bf57f8"><span class="section-number-2">4</span> case</h2>
+<div id="outline-container-org994ca3a" class="outline-2">
+<h2 id="org994ca3a"><span class="section-number-2">4</span> case</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
@@ -153,8 +153,8 @@ $ echo $<span style="color: #0087ff;">?</span>      <span style="color: #8a8a8a;
 </div>
 </div>
 
-<div id="outline-container-orgf5f3952" class="outline-2">
-<h2 id="orgf5f3952"><span class="section-number-2">5</span> for</h2>
+<div id="outline-container-org043e834" class="outline-2">
+<h2 id="org043e834"><span class="section-number-2">5</span> for</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
@@ -182,12 +182,12 @@ $ echo $<span style="color: #0087ff;">?</span>      <span style="color: #8a8a8a;
 </div>
 </div>
 
-<div id="outline-container-orgcc7c225" class="outline-2">
-<h2 id="orgcc7c225"><span class="section-number-2">6</span> 冒泡排序</h2>
+<div id="outline-container-orgdcd0e33" class="outline-2">
+<h2 id="orgdcd0e33"><span class="section-number-2">6</span> 冒泡排序</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-orgbfdac07" class="outline-3">
-<h3 id="orgbfdac07"><span class="section-number-3">6.1</span> $[] 讲解</h3>
+<div id="outline-container-org14b39ba" class="outline-3">
+<h3 id="org14b39ba"><span class="section-number-3">6.1</span> $[] 讲解</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 $[&#x2026;] 表示中括号中的 &#x2026; 是一个算术表达式，可以用 $[] 把 &#x2026; 从字符串转换成数字<br>
@@ -212,8 +212,8 @@ $[&#x2026;] 表示中括号中的 &#x2026; 是一个算术表达式，可以用 
 </div>
 </div>
 
-<div id="outline-container-orgd642e34" class="outline-3">
-<h3 id="orgd642e34"><span class="section-number-3">6.2</span> (()) 讲解</h3>
+<div id="outline-container-orgbce48b5" class="outline-3">
+<h3 id="orgbce48b5"><span class="section-number-3">6.2</span> (()) 讲解</h3>
 <div class="outline-text-3" id="text-6-2">
 <ul class="org-ul">
 <li>在双括号结构中，所有表达式可以像 c 语言一样，如：a++, b&#x2013; 等。<br></li>
@@ -225,8 +225,8 @@ $[&#x2026;] 表示中括号中的 &#x2026; 是一个算术表达式，可以用 
 </div>
 </div>
 
-<div id="outline-container-org8765dd2" class="outline-3">
-<h3 id="org8765dd2"><span class="section-number-3">6.3</span> 冒泡排序</h3>
+<div id="outline-container-org77e43e9" class="outline-3">
+<h3 id="org77e43e9"><span class="section-number-3">6.3</span> 冒泡排序</h3>
 <div class="outline-text-3" id="text-6-3">
 <div class="org-src-container">
 <pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
@@ -251,8 +251,8 @@ $[&#x2026;] 表示中括号中的 &#x2026; 是一个算术表达式，可以用 
 </div>
 </div>
 
-<div id="outline-container-org7cd5f1c" class="outline-2">
-<h2 id="org7cd5f1c"><span class="section-number-2">7</span> while</h2>
+<div id="outline-container-org28a96f5" class="outline-2">
+<h2 id="org28a96f5"><span class="section-number-2">7</span> while</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 1+2+3+&#x2026;+100=?<br>
@@ -282,8 +282,8 @@ $[&#x2026;] 表示中括号中的 &#x2026; 是一个算术表达式，可以用 
 </div>
 </div>
 
-<div id="outline-container-orgfee2497" class="outline-2">
-<h2 id="orgfee2497"><span class="section-number-2">8</span> until</h2>
+<div id="outline-container-org17a084a" class="outline-2">
+<h2 id="org17a084a"><span class="section-number-2">8</span> until</h2>
 <div class="outline-text-2" id="text-8">
 <div class="org-src-container">
 <pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
@@ -298,8 +298,8 @@ $[&#x2026;] 表示中括号中的 &#x2026; 是一个算术表达式，可以用 
 </div>
 </div>
 
-<div id="outline-container-org527abc8" class="outline-2">
-<h2 id="org527abc8"><span class="section-number-2">9</span> 函数</h2>
+<div id="outline-container-org212b122" class="outline-2">
+<h2 id="org212b122"><span class="section-number-2">9</span> 函数</h2>
 <div class="outline-text-2" id="text-9">
 <div class="org-src-container">
 <pre class="src src-shell"><span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/</span><span style="color: #5f8700;">bash</span>
@@ -315,8 +315,8 @@ add a b
 </div>
 </div>
 </div>
-<div id="outline-container-orgf764c08" class="outline-2">
-<h2 id="orgf764c08"><span class="section-number-2">10</span> break continue return exit</h2>
+<div id="outline-container-org5864659" class="outline-2">
+<h2 id="org5864659"><span class="section-number-2">10</span> break continue return exit</h2>
 <div class="outline-text-2" id="text-10">
 <ul class="org-ul">
 <li><code>break</code> 用来中断循环，也就是强迫结束循环。 若 break 后面指定一个数值 n 的话，则从里向外中断第 n 个循环，预设值为 break 1，也就是中断当前循环<br></li>

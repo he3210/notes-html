@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>查找符合条件的路径</title>
@@ -34,15 +34,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org42c2615">1. 问题</a></li>
-<li><a href="#org2dbba45">2. 分析</a></li>
-<li><a href="#org6de731f">3. 先序遍历递归实现</a></li>
+<li><a href="#org367d275">1. 问题</a></li>
+<li><a href="#orgba47e71">2. 分析</a></li>
+<li><a href="#org75ec230">3. 先序遍历递归实现</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org42c2615" class="outline-2">
-<h2 id="org42c2615"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org367d275" class="outline-2">
+<h2 id="org367d275"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 一棵二叉树每个结点包含一个整数，请设计一个算法输出所有满足条件的路径。此路径上的所有结点之和等于给定值，该路径不要求必须从根结点开始<br>
@@ -50,8 +50,8 @@
 </div>
 </div>
 
-<div id="outline-container-org2dbba45" class="outline-2">
-<h2 id="org2dbba45"><span class="section-number-2">2</span> 分析</h2>
+<div id="outline-container-orgba47e71" class="outline-2">
+<h2 id="orgba47e71"><span class="section-number-2">2</span> 分析</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 先序遍历二叉树，遍历过程中会得到每一个路径上的结点值，存入 path。对 path 上的结点值从后向前遍历，判断该路径及其子路径是否符合要求<br>
@@ -59,8 +59,8 @@
 </div>
 </div>
 
-<div id="outline-container-org6de731f" class="outline-2">
-<h2 id="org6de731f"><span class="section-number-2">3</span> 先序遍历递归实现</h2>
+<div id="outline-container-org75ec230" class="outline-2">
+<h2 id="org75ec230"><span class="section-number-2">3</span> 先序遍历递归实现</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25171;&#21360;&#36335;&#24452;</span>

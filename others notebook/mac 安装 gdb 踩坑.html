@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>mac 安装 gdb 踩坑</title>
@@ -34,15 +34,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1928ccb">1. 参考</a></li>
-<li><a href="#org23c8e67">2. 安装 gdb 并为其签名</a></li>
-<li><a href="#orgd97f934">3. 解决错误</a></li>
+<li><a href="#orgc4fa504">1. 参考</a></li>
+<li><a href="#orgfa053cf">2. 安装 gdb 并为其签名</a></li>
+<li><a href="#orge35c951">3. 解决错误</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1928ccb" class="outline-2">
-<h2 id="org1928ccb"><span class="section-number-2">1</span> 参考</h2>
+<div id="outline-container-orgc4fa504" class="outline-2">
+<h2 id="orgc4fa504"><span class="section-number-2">1</span> 参考</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><a href="https://sourceware.org/gdb/wiki/BuildingOnDarwin">https://sourceware.org/gdb/wiki/BuildingOnDarwin</a><br></li>
@@ -52,8 +52,8 @@
 </div>
 
 
-<div id="outline-container-org23c8e67" class="outline-2">
-<h2 id="org23c8e67"><span class="section-number-2">2</span> 安装 gdb 并为其签名</h2>
+<div id="outline-container-orgfa053cf" class="outline-2">
+<h2 id="orgfa053cf"><span class="section-number-2">2</span> 安装 gdb 并为其签名</h2>
 <div class="outline-text-2" id="text-2">
 <ol class="org-ol">
 <li><p>
@@ -114,8 +114,8 @@ During startup program terminated with signal SIGTRAP, Trace/breakpoint trap.
 </div>
 </div>
 
-<div id="outline-container-orgd97f934" class="outline-2">
-<h2 id="orgd97f934"><span class="section-number-2">3</span> 解决错误</h2>
+<div id="outline-container-orge35c951" class="outline-2">
+<h2 id="orge35c951"><span class="section-number-2">3</span> 解决错误</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 需要更换 gdb v8.1 到 gdb v8.0.1，用如下代码替换上述步骤1<br>

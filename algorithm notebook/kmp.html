@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KMP</title>
@@ -34,17 +34,17 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgcec2f1c">1. 问题描述</a></li>
-<li><a href="#org60daaa1">2. BF 解法</a></li>
-<li><a href="#orgdd25f10">3. KMP 解法</a></li>
-<li><a href="#orgec7da70">4. 优化</a></li>
-<li><a href="#org1b7b2dd">5. previous 数组</a></li>
+<li><a href="#orgba3510a">1. 问题描述</a></li>
+<li><a href="#orgb8b24ce">2. BF 解法</a></li>
+<li><a href="#orgdaa99a4">3. KMP 解法</a></li>
+<li><a href="#org05a503d">4. 优化</a></li>
+<li><a href="#orgb11e5d4">5. previous 数组</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgcec2f1c" class="outline-2">
-<h2 id="orgcec2f1c"><span class="section-number-2">1</span> 问题描述</h2>
+<div id="outline-container-orgba3510a" class="outline-2">
+<h2 id="orgba3510a"><span class="section-number-2">1</span> 问题描述</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 给定字符串 A 和其子串 B， 在 A 中查找 B，返回其下标<br>
@@ -52,8 +52,8 @@
 </div>
 </div>
 
-<div id="outline-container-org60daaa1" class="outline-2">
-<h2 id="org60daaa1"><span class="section-number-2">2</span> BF 解法</h2>
+<div id="outline-container-orgb8b24ce" class="outline-2">
+<h2 id="orgb8b24ce"><span class="section-number-2">2</span> BF 解法</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;assert.h&gt;</span>
@@ -81,8 +81,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgdd25f10" class="outline-2">
-<h2 id="orgdd25f10"><span class="section-number-2">3</span> KMP 解法</h2>
+<div id="outline-container-orgdaa99a4" class="outline-2">
+<h2 id="orgdaa99a4"><span class="section-number-2">3</span> KMP 解法</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span>
@@ -146,8 +146,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgec7da70" class="outline-2">
-<h2 id="orgec7da70"><span class="section-number-2">4</span> 优化</h2>
+<div id="outline-container-org05a503d" class="outline-2">
+<h2 id="org05a503d"><span class="section-number-2">4</span> 优化</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">getPrevious</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenPattern</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">previous</span>)
@@ -183,8 +183,8 @@
 </div>
 </div>
 
-<div id="outline-container-org1b7b2dd" class="outline-2">
-<h2 id="org1b7b2dd"><span class="section-number-2">5</span> previous 数组</h2>
+<div id="outline-container-orgb11e5d4" class="outline-2">
+<h2 id="orgb11e5d4"><span class="section-number-2">5</span> previous 数组</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 对于模式串"xyxyyxxyx"，previous数组为<br>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker-compose 命令</title>
@@ -34,22 +34,22 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org21ba855">1. 参考</a></li>
-<li><a href="#orgf928a8e">2. centos7 安装 docker-compose</a></li>
-<li><a href="#org97938b5">3. 运行 Compose 项目</a></li>
-<li><a href="#org50e0886">4. 查看 Compose 日志</a></li>
-<li><a href="#org591dfb1">5. 停止 Compose</a></li>
-<li><a href="#orge1e729d">6. 启动 Compose</a></li>
-<li><a href="#org27ae6e0">7. 向 Compose 发送信号</a></li>
-<li><a href="#orgd11be93">8. 删除停止状态的容器或未用到的数据卷</a></li>
-<li><a href="#orged76e6a">9. 查看项目中的所有容器</a></li>
-<li><a href="#orgee65189">10. 列出 Compose 项目中的所有镜像</a></li>
+<li><a href="#org022d0e1">1. 参考</a></li>
+<li><a href="#org709aaa5">2. centos7 安装 docker-compose</a></li>
+<li><a href="#org73c87c8">3. 运行 Compose 项目</a></li>
+<li><a href="#orga6c687f">4. 查看 Compose 日志</a></li>
+<li><a href="#org8bad6e0">5. 停止 Compose</a></li>
+<li><a href="#org1358b87">6. 启动 Compose</a></li>
+<li><a href="#org62d4885">7. 向 Compose 发送信号</a></li>
+<li><a href="#orgeae84f4">8. 删除停止状态的容器或未用到的数据卷</a></li>
+<li><a href="#orgbd2b623">9. 查看项目中的所有容器</a></li>
+<li><a href="#orgd190385">10. 列出 Compose 项目中的所有镜像</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org21ba855" class="outline-2">
-<h2 id="org21ba855"><span class="section-number-2">1</span> 参考</h2>
+<div id="outline-container-org022d0e1" class="outline-2">
+<h2 id="org022d0e1"><span class="section-number-2">1</span> 参考</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><a href="https://yeasy.gitbooks.io/docker_practice/content/compose/commands.html">参考</a><br></li>
@@ -62,8 +62,8 @@ Docker Compose 简介：<br>
 </div>
 </div>
 
-<div id="outline-container-orgf928a8e" class="outline-2">
-<h2 id="orgf928a8e"><span class="section-number-2">2</span> centos7 安装 docker-compose</h2>
+<div id="outline-container-org709aaa5" class="outline-2">
+<h2 id="org709aaa5"><span class="section-number-2">2</span> centos7 安装 docker-compose</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 使用二进制安装。在 <a href="https://github.com/docker/compose/releases">这里</a> 找到最新的二进制包<br>
@@ -77,8 +77,8 @@ $ docker-compose -version
 </div>
 </div>
 
-<div id="outline-container-org97938b5" class="outline-2">
-<h2 id="org97938b5"><span class="section-number-2">3</span> 运行 Compose 项目</h2>
+<div id="outline-container-org73c87c8" class="outline-2">
+<h2 id="org73c87c8"><span class="section-number-2">3</span> 运行 Compose 项目</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 该命令会尝试构建镜像、创建服务容器、启动服务容器、并关联服务相关容器<br>
@@ -91,8 +91,8 @@ $ docker-compose up -d    <span style="color: #8a8a8a;"># </span><span style="co
 </div>
 </div>
 
-<div id="outline-container-org50e0886" class="outline-2">
-<h2 id="org50e0886"><span class="section-number-2">4</span> 查看 Compose 日志</h2>
+<div id="outline-container-orga6c687f" class="outline-2">
+<h2 id="orga6c687f"><span class="section-number-2">4</span> 查看 Compose 日志</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker-compose logs     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#26085;&#24535;</span>
@@ -102,8 +102,8 @@ $ docker-compose logs -f  <span style="color: #8a8a8a;"># </span><span style="co
 </div>
 </div>
 
-<div id="outline-container-org591dfb1" class="outline-2">
-<h2 id="org591dfb1"><span class="section-number-2">5</span> 停止 Compose</h2>
+<div id="outline-container-org8bad6e0" class="outline-2">
+<h2 id="org8bad6e0"><span class="section-number-2">5</span> 停止 Compose</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker-compose stop     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20572;&#27490;&#27491;&#22312;&#36816;&#34892;&#29366;&#24577;&#30340;&#23481;&#22120;</span>
@@ -112,8 +112,8 @@ $ docker-compose logs -f  <span style="color: #8a8a8a;"># </span><span style="co
 </div>
 </div>
 
-<div id="outline-container-orge1e729d" class="outline-2">
-<h2 id="orge1e729d"><span class="section-number-2">6</span> 启动 Compose</h2>
+<div id="outline-container-org1358b87" class="outline-2">
+<h2 id="org1358b87"><span class="section-number-2">6</span> 启动 Compose</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker-compose start    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21551;&#21160;&#24050;&#23384;&#22312;&#30340;&#26381;&#21153;&#23481;&#22120;</span>
@@ -123,8 +123,8 @@ $ docker-compose restart  <span style="color: #8a8a8a;"># </span><span style="co
 </div>
 </div>
 
-<div id="outline-container-org27ae6e0" class="outline-2">
-<h2 id="org27ae6e0"><span class="section-number-2">7</span> 向 Compose 发送信号</h2>
+<div id="outline-container-org62d4885" class="outline-2">
+<h2 id="org62d4885"><span class="section-number-2">7</span> 向 Compose 发送信号</h2>
 <div class="outline-text-2" id="text-7">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker-compose kill              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#40664;&#35748;&#21457;&#36865; SIGKILL &#20449;&#21495;</span>
@@ -134,8 +134,8 @@ $ docker-compose kill -s SIGINT    <span style="color: #8a8a8a;"># </span><span 
 </div>
 </div>
 
-<div id="outline-container-orgd11be93" class="outline-2">
-<h2 id="orgd11be93"><span class="section-number-2">8</span> 删除停止状态的容器或未用到的数据卷</h2>
+<div id="outline-container-orgeae84f4" class="outline-2">
+<h2 id="orgeae84f4"><span class="section-number-2">8</span> 删除停止状态的容器或未用到的数据卷</h2>
 <div class="outline-text-2" id="text-8">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker-compose rm       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#25152;&#26377; Compose &#26381;&#21153;&#19979;&#27809;&#26377;&#36816;&#34892;&#30340;&#23481;&#22120;</span>
@@ -145,8 +145,8 @@ $ docker-compose rm -v    <span style="color: #8a8a8a;"># </span><span style="co
 </div>
 </div>
 
-<div id="outline-container-orged76e6a" class="outline-2">
-<h2 id="orged76e6a"><span class="section-number-2">9</span> 查看项目中的所有容器</h2>
+<div id="outline-container-orgbd2b623" class="outline-2">
+<h2 id="orgbd2b623"><span class="section-number-2">9</span> 查看项目中的所有容器</h2>
 <div class="outline-text-2" id="text-9">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker-compose ps       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23637;&#31034;&#26381;&#21153;&#21517;&#12289;&#23481;&#22120;&#20013;&#26381;&#21153;&#30340;&#21551;&#21160;&#21629;&#20196;&#12289;&#23481;&#22120;&#29366;&#24577;&#12289;&#26381;&#21153;&#31471;&#21475;</span>
@@ -156,8 +156,8 @@ $ docker-compose ps -q    <span style="color: #8a8a8a;"># </span><span style="co
 </div>
 </div>
 
-<div id="outline-container-orgee65189" class="outline-2">
-<h2 id="orgee65189"><span class="section-number-2">10</span> 列出 Compose 项目中的所有镜像</h2>
+<div id="outline-container-orgd190385" class="outline-2">
+<h2 id="orgd190385"><span class="section-number-2">10</span> 列出 Compose 项目中的所有镜像</h2>
 <div class="outline-text-2" id="text-10">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker-compose images

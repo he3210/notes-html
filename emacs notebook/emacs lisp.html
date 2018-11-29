@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>emacs lisp</title>
@@ -34,23 +34,23 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1c4ddf9">1. 检测 emacs 是在终端下启动还是 GUI 下启动</a>
+<li><a href="#org4265516">1. 检测 emacs 是在终端下启动还是 GUI 下启动</a>
 <ul>
-<li><a href="#org7aba377">1.1. 例：mac emacs 和系统共享剪切板</a></li>
+<li><a href="#org7926a71">1.1. 例：mac emacs 和系统共享剪切板</a></li>
 </ul>
 </li>
-<li><a href="#orgbb5d135">2. save-excursion</a>
+<li><a href="#orgbd2e00b">2. save-excursion</a>
 <ul>
-<li><a href="#orgd314e58">2.1. 例：对齐当前选中的内容或整个 buffer</a></li>
-<li><a href="#org41bd657">2.2. 例：导出笔记</a></li>
+<li><a href="#org338d419">2.1. 例：对齐当前选中的内容或整个 buffer</a></li>
+<li><a href="#orge81da6b">2.2. 例：导出笔记</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1c4ddf9" class="outline-2">
-<h2 id="org1c4ddf9"><span class="section-number-2">1</span> 检测 emacs 是在终端下启动还是 GUI 下启动</h2>
+<div id="outline-container-org4265516" class="outline-2">
+<h2 id="org4265516"><span class="section-number-2">1</span> 检测 emacs 是在终端下启动还是 GUI 下启动</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 我一般在终端下使用 emacs，有些配置需要区分 emacs 运行在终端下还是在 GUI 模式下，以便加载不通的配置<br>
@@ -65,8 +65,8 @@
 </ul>
 </div>
 
-<div id="outline-container-org7aba377" class="outline-3">
-<h3 id="org7aba377"><span class="section-number-3">1.1</span> 例：mac emacs 和系统共享剪切板</h3>
+<div id="outline-container-org7926a71" class="outline-3">
+<h3 id="org7926a71"><span class="section-number-3">1.1</span> 例：mac emacs 和系统共享剪切板</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 问题：mac GUI 模式下已支持该功能。但是终端模式下并不能和系统共享剪切板<br>
@@ -94,15 +94,15 @@
 </div>
 </div>
 
-<div id="outline-container-orgbb5d135" class="outline-2">
-<h2 id="orgbb5d135"><span class="section-number-2">2</span> save-excursion</h2>
+<div id="outline-container-orgbd2e00b" class="outline-2">
+<h2 id="orgbd2e00b"><span class="section-number-2">2</span> save-excursion</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 该函数用于保存当前 buffer 和当前光标位置，执行完其包含的代码段后恢复 buffer 和光标位置<br>
 </p>
 </div>
-<div id="outline-container-orgd314e58" class="outline-3">
-<h3 id="orgd314e58"><span class="section-number-3">2.1</span> 例：对齐当前选中的内容或整个 buffer</h3>
+<div id="outline-container-org338d419" class="outline-3">
+<h3 id="org338d419"><span class="section-number-3">2.1</span> 例：对齐当前选中的内容或整个 buffer</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 快捷键 <code>C-M-\</code> 默认是调用 indent-region 函数，现将其改为调用函数 indent-region-or-buffer。该函数会判断如果在选中状态，则对齐选中的内容；否则对齐整个 buffer<br>
@@ -134,11 +134,11 @@
 </div>
 </div>
 
-<div id="outline-container-org41bd657" class="outline-3">
-<h3 id="org41bd657"><span class="section-number-3">2.2</span> 例：导出笔记</h3>
+<div id="outline-container-orge81da6b" class="outline-3">
+<h3 id="orge81da6b"><span class="section-number-3">2.2</span> 例：导出笔记</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
-<a href="./搭建我的笔记系统.html#org4653a6e">修复导出笔记前后光标位置改变的问题</a><br>
+<a href="./搭建我的笔记系统.html#orgb0f3023">修复导出笔记前后光标位置改变的问题</a><br>
 </p>
 </div>
 </div>

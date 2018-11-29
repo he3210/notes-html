@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ffmpeg 基本操作</title>
@@ -34,15 +34,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgef1bd51">1. 获取不带音频的视频</a></li>
-<li><a href="#org088e3c0">2. 提取音频</a></li>
-<li><a href="#org32dc7c2">3. 视频时长裁剪</a></li>
+<li><a href="#org270cd8a">1. 获取不带音频的视频</a></li>
+<li><a href="#orgef14a15">2. 提取音频</a></li>
+<li><a href="#org64d46ec">3. 视频时长裁剪</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgef1bd51" class="outline-2">
-<h2 id="orgef1bd51"><span class="section-number-2">1</span> 获取不带音频的视频</h2>
+<div id="outline-container-org270cd8a" class="outline-2">
+<h2 id="org270cd8a"><span class="section-number-2">1</span> 获取不带音频的视频</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ ffmpeg -i bird.mov -vcodec copy -an bird.mp4
@@ -56,8 +56,8 @@
 </div>
 </div>
 
-<div id="outline-container-org088e3c0" class="outline-2">
-<h2 id="org088e3c0"><span class="section-number-2">2</span> 提取音频</h2>
+<div id="outline-container-orgef14a15" class="outline-2">
+<h2 id="orgef14a15"><span class="section-number-2">2</span> 提取音频</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ ffmpeg -i input.mov -write_xing 0 output.mp3
@@ -66,8 +66,8 @@
 </div>
 </div>
 
-<div id="outline-container-org32dc7c2" class="outline-2">
-<h2 id="org32dc7c2"><span class="section-number-2">3</span> 视频时长裁剪</h2>
+<div id="outline-container-org64d46ec" class="outline-2">
+<h2 id="org64d46ec"><span class="section-number-2">3</span> 视频时长裁剪</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-shell">$ ffmpeg -ss 00:00:01.000 -t 00:00:10.000 -i <span style="color: #00afaf;">"input.mov"</span> <span style="color: #00afaf;">"output.mov"</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#31532;&#19968;&#31186;&#24320;&#22987;&#65292;&#33719;&#21462;10&#31186;&#30340;&#35270;&#39057;</span>

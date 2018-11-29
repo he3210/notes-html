@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>正则表达式（RE：regular expression）</title>
@@ -34,18 +34,18 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc095f8d">1. 正则表达式和通配符的区别</a></li>
-<li><a href="#org1d078f6">2. character set</a></li>
-<li><a href="#org3e6d1b9">3. anchor</a></li>
-<li><a href="#org4443657">4. modifier</a></li>
-<li><a href="#orgbf3b2f7">5. 重视边界（boundary）字符的重要性</a></li>
-<li><a href="#orgf21a7ae">6. eval</a></li>
+<li><a href="#org9b7783f">1. 正则表达式和通配符的区别</a></li>
+<li><a href="#org924bcca">2. character set</a></li>
+<li><a href="#org41ee39d">3. anchor</a></li>
+<li><a href="#org6b24f5e">4. modifier</a></li>
+<li><a href="#orgca64de5">5. 重视边界（boundary）字符的重要性</a></li>
+<li><a href="#orgffc211d">6. eval</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc095f8d" class="outline-2">
-<h2 id="orgc095f8d"><span class="section-number-2">1</span> 正则表达式和通配符的区别</h2>
+<div id="outline-container-org9b7783f" class="outline-2">
+<h2 id="org9b7783f"><span class="section-number-2">1</span> 正则表达式和通配符的区别</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>在一个 command line 中 <code>$ command_name options arguments</code> ，wildcard 只作用于 command line 中 argument 的 path 上；<br></li>
@@ -73,8 +73,8 @@ shell command line 上，字符分为 meta 与 literal 这两种不同的字符�
 </div>
 </div>
 
-<div id="outline-container-org1d078f6" class="outline-2">
-<h2 id="org1d078f6"><span class="section-number-2">2</span> character set</h2>
+<div id="outline-container-org924bcca" class="outline-2">
+<h2 id="org924bcca"><span class="section-number-2">2</span> character set</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 字符集合(character set): 就是将多个连续的字符作为一个集合<br>
@@ -90,8 +90,8 @@ shell command line 上，字符分为 meta 与 literal 这两种不同的字符�
 </div>
 </div>
 
-<div id="outline-container-org3e6d1b9" class="outline-2">
-<h2 id="org3e6d1b9"><span class="section-number-2">3</span> anchor</h2>
+<div id="outline-container-org41ee39d" class="outline-2">
+<h2 id="org41ee39d"><span class="section-number-2">3</span> anchor</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 锚点(anchor): 用以标识 Regular Expression 在句子中的位置<br>
@@ -105,8 +105,8 @@ shell command line 上，字符分为 meta 与 literal 这两种不同的字符�
 </div>
 </div>
 
-<div id="outline-container-org4443657" class="outline-2">
-<h2 id="org4443657"><span class="section-number-2">4</span> modifier</h2>
+<div id="outline-container-org6b24f5e" class="outline-2">
+<h2 id="org6b24f5e"><span class="section-number-2">4</span> modifier</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 修饰符(modifier)：独立表示时本身不具意义，专门用以修饰前一个 character set 出现的次数<br>
@@ -121,8 +121,8 @@ shell command line 上，字符分为 meta 与 literal 这两种不同的字符�
 </ul>
 </div>
 </div>
-<div id="outline-container-orgbf3b2f7" class="outline-2">
-<h2 id="orgbf3b2f7"><span class="section-number-2">5</span> 重视边界（boundary）字符的重要性</h2>
+<div id="outline-container-orgca64de5" class="outline-2">
+<h2 id="orgca64de5"><span class="section-number-2">5</span> 重视边界（boundary）字符的重要性</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 对于字符串 "abbbbbbbbbbbbbc"<br>
@@ -132,8 +132,8 @@ shell command line 上，字符分为 meta 与 literal 这两种不同的字符�
 </p>
 </div>
 </div>
-<div id="outline-container-orgf21a7ae" class="outline-2">
-<h2 id="orgf21a7ae"><span class="section-number-2">6</span> eval</h2>
+<div id="outline-container-orgffc211d" class="outline-2">
+<h2 id="orgffc211d"><span class="section-number-2">6</span> eval</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 简单来讲，eval 就是在 command line 进行替换重组后再来一次替换重组<br>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>bloom filter</title>
@@ -56,16 +56,16 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org22c798b">1. bloom filter</a></li>
-<li><a href="#org6adf623">2. bloom filter 特点</a></li>
-<li><a href="#org8641e93">3. 参数调优</a></li>
-<li><a href="#orgec000fc">4. 一个简易的布隆过滤器</a></li>
+<li><a href="#org99e91d2">1. bloom filter</a></li>
+<li><a href="#org642d3e7">2. bloom filter 特点</a></li>
+<li><a href="#org971be90">3. 参数调优</a></li>
+<li><a href="#orged23b7c">4. 一个简易的布隆过滤器</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org22c798b" class="outline-2">
-<h2 id="org22c798b"><span class="section-number-2">1</span> bloom filter</h2>
+<div id="outline-container-org99e91d2" class="outline-2">
+<h2 id="org99e91d2"><span class="section-number-2">1</span> bloom filter</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 布隆过滤器算法用不太严谨的话来说就是 hash + bit-map 的组合算法。<br>
@@ -77,8 +77,8 @@
 </div>
 </div>
 
-<div id="outline-container-org6adf623" class="outline-2">
-<h2 id="org6adf623"><span class="section-number-2">2</span> bloom filter 特点</h2>
+<div id="outline-container-org642d3e7" class="outline-2">
+<h2 id="org642d3e7"><span class="section-number-2">2</span> bloom filter 特点</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>不存在漏报。如果某个元素在某个集合中，肯定能检测出<br></li>
@@ -89,8 +89,8 @@
 </div>
 </div>
 
-<div id="outline-container-org8641e93" class="outline-2">
-<h2 id="org8641e93"><span class="section-number-2">3</span> 参数调优</h2>
+<div id="outline-container-org971be90" class="outline-2">
+<h2 id="org971be90"><span class="section-number-2">3</span> 参数调优</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 参考 <a href="https://en.wikipedia.org/wiki/Bloom_filter">Wikipedia</a><br>
@@ -110,8 +110,8 @@ p 为误判率<br>
 </ol>
 </div>
 </div>
-<div id="outline-container-orgec000fc" class="outline-2">
-<h2 id="orgec000fc"><span class="section-number-2">4</span> 一个简易的布隆过滤器</h2>
+<div id="outline-container-orged23b7c" class="outline-2">
+<h2 id="orged23b7c"><span class="section-number-2">4</span> 一个简易的布隆过滤器</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;iostream&gt;</span>

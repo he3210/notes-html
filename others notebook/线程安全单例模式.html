@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>线程安全单例模式</title>
@@ -34,14 +34,14 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc316901">1. 饿汉模式</a></li>
-<li><a href="#orga75beaa">2. 懒汉模式</a></li>
+<li><a href="#org0b4dca8">1. 饿汉模式</a></li>
+<li><a href="#org6cccee3">2. 懒汉模式</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc316901" class="outline-2">
-<h2 id="orgc316901"><span class="section-number-2">1</span> 饿汉模式</h2>
+<div id="outline-container-org0b4dca8" class="outline-2">
+<h2 id="org0b4dca8"><span class="section-number-2">1</span> 饿汉模式</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 饿汉模式：即无论是否调用该类的实例，在程序开始时就会产生一个该类的实例，并在以后仅返回此实例。<br>
@@ -107,8 +107,8 @@ $ ./Singleton
 </div>
 </div>
 
-<div id="outline-container-orga75beaa" class="outline-2">
-<h2 id="orga75beaa"><span class="section-number-2">2</span> 懒汉模式</h2>
+<div id="outline-container-org6cccee3" class="outline-2">
+<h2 id="org6cccee3"><span class="section-number-2">2</span> 懒汉模式</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 懒汉模式：即第一次调用该类实例的时候才产生一个新的该类实例，并在以后仅返回此实例。<br>

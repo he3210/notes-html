@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-29 Thu 12:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>多级时间轮定时器</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">多级时间轮定时器</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6ac1568">1. 高效定时器的设计方案</a></li>
+<li><a href="#orgbec8cac">2. 时间轮（Timing-Wheel）算法</a></li>
+<li><a href="#orgda8825c">3. 多级时间轮算法</a>
+<ul>
+<li><a href="#org856d06a">3.1. 多级时间轮算法处理定时器过程</a></li>
+</ul>
+</li>
+<li><a href="#org8c63d5c">4. 关于 monotonic 时间</a></li>
+<li><a href="#org8edbddf">5. 代码实现</a>
+<ul>
+<li><a href="#org32f9936">5.1. def.h</a></li>
+<li><a href="#org3f87f76">5.2. Timer.h</a></li>
+<li><a href="#org06ed5dc">5.3. Timer.c</a></li>
+<li><a href="#orgd5aac21">5.4. Thread.h</a></li>
+<li><a href="#orgf766e6e">5.5. Thread.c</a></li>
+<li><a href="#orgd7a1b02">5.6. main.c</a></li>
+<li><a href="#org75bfe6d">5.7. Makefile</a></li>
+</ul>
+</li>
+<li><a href="#org51b0c2c">6. 简单测试结果</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6ac1568" class="outline-2">
+<h2 id="org6ac1568"><span class="section-number-2">1</span> 高效定时器的设计方案</h2>
+<div class="outline-text-2" id="text-1">
+<ol class="org-ol">
+<li>libevent 源码中采用的方案是：I/O 多路复用函数（select、epoll、kqueue等） + 小根堆 + common-timeout 队列存放相同超时时长的事件<br></li>
+<li>linux 源码中采用的是多级时间轮<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgbec8cac" class="outline-2">
+<h2 id="orgbec8cac"><span class="section-number-2">2</span> 时间轮（Timing-Wheel）算法</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<img src="../images/Timing-Wheel.jpg" alt="Timing-Wheel.jpg"><br>
+如上图就是一个简单的时间轮。类比于时钟的秒针表盘，秒针表盘共 60 秒的刻度，以恒定速度每秒 1 刻度进行读秒。时间轮也是一样，该时间轮共有 N 个 tick 刻度，以恒定速度每次走 1 个 tick 单位时间。每个 tick 对应的是一个双向循环链表，该链表元素为计时器。<br>
+</p>
+
+<p>
+<b><b>处理定时器的过程</b></b> ：如图，指针指向 1，说明 tick 1 所在的链表中的计时器全部到期，遍历该链表，执行到期的计时器的回调函数。再过 1 tick 时间，表盘指针指向 2，tick 2 所在的链表中的计时器全部到期，然后遍历链表处理到期的计时器。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgda8825c" class="outline-2">
+<h2 id="orgda8825c"><span class="section-number-2">3</span> 多级时间轮算法</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+还以秒针表盘为例，秒针表盘 60s 需要 60 个刻度，如果是 1h 呢？难道需要 3600 个刻度吗？不是这样的，时钟有 3 级表盘，秒针、分针、时针，它们的粒度分别是 1s、1min、1h。<br>
+</p>
+
+<p>
+同样的，表示一个 32bits 以毫秒为单位的时间，粒度为 1ms，如果采用 1 级时间轮算法，则需要 2<sup>32</sup> 个 tick，这对于内存空间的消耗非常大。当然，可以降低定时器精度，使每个 tick 表示的时间长一点，但这样的代价将是定时器的精度大打折扣。<br>
+</p>
+
+<p>
+linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮的粒度分别为：1ms、256ms、256*64ms、256*64*64ms、256*64*64*64ms。它们每级时间轮 tick 刻度数量分别为 256(低 8bits)、64(次 6bits)、64(次 6bits)、64(次 6bits)、64(高 6bits)。<br>
+</p>
+</div>
+
+<div id="outline-container-org856d06a" class="outline-3">
+<h3 id="org856d06a"><span class="section-number-3">3.1</span> 多级时间轮算法处理定时器过程</h3>
+<div class="outline-text-3" id="text-3-1">
+<ol class="org-ol">
+<li>对于一个 32bits 以毫秒为单位的时间 t。tick 取 t 的低 8bits。如果 tick 不为 0，执行步骤 6；如果 tick 为 0，执行步骤 2<br></li>
+<li>tick 取 t 的次 6 bits，如果 tick 不为 0，取出 2 级时间轮该 tick 的双向循环链表，然后遍历该链表的定时器，根据到期时间来判断将定时器插入到 1 级时间轮还是 2 级时间轮，执行步骤 6。如果 tick 为 0，执行步骤3<br></li>
+<li>tick 取 t 的次 6 bits，如果 tick 不为 0，取出 3 级时间轮该 tick 的双向循环链表，然后遍历该链表的定时器，根据到期时间来判断将定时器插入到 1 级、2 级、3 级时间轮，执行步骤 6。如果 tick 为 0，执行步骤4<br></li>
+<li>tick 取 t 的次 6 bits，如果 tick 不为 0，取出 4 级时间轮该 tick 的双向循环链表，然后遍历该链表的定时器，根据到期时间来判断将定时器插入到 1 级、2 级、3 级、4 级时间轮，执行步骤 6。如果 tick 为 0，执行步骤5<br></li>
+<li>tick 取 t 的高 6 bits，如果 tick 不为 0，取出 5 级时间轮该 tick 的双向循环链表，遍历，根据到期时间来判断将定时器插入到 1 级、2 级、3 级、4 级、5 级时间轮，执行步骤 6<br></li>
+<li>遍历 1 级时间轮中该 tick 的双向循环链表，执行这些到期定时器的回调函数<br></li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8c63d5c" class="outline-2">
+<h2 id="org8c63d5c"><span class="section-number-2">4</span> 关于 monotonic 时间</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+计时系统使用的是 monotonic 时间，它表示从系统启动这一刻起到现在的时长。不受系统时间被用户修改的影响。<br>
+如果系统不支持 monotonic 时间的话，就可能出现用户修改系统时间，导致计时器混乱的情况。如果出现这种情况，需要进行时间校正。代码中使用了 monotonic 时间，无需时间校正。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8edbddf" class="outline-2">
+<h2 id="org8edbddf"><span class="section-number-2">5</span> 代码实现</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+特点<br>
+</p>
+<ul class="org-ul">
+<li>可添加大量计时器<br></li>
+<li>支持从系统启动到 2<sup>32</sup>ms 的时间<br></li>
+<li>时间精度为毫秒<br></li>
+<li>可添加 One-Shot Timer（一次性的计时器），也可添加 Repeating Timer（带有首次触发时间和再次触发时间间隔的计时器）<br></li>
+<li>采用多级时间轮算法，节省内存<br></li>
+<li>使用 select 进行计时，而不是 sigaction (SIGALRM, , ) + setitimer (ITIMER_REAL, , );<br></li>
+<li>定时器的增删执行时间复杂度均为 O(1)<br></li>
+<li>时间轮的运行需要 1 个线程<br></li>
+</ul>
+</div>
+
+<div id="outline-container-org32f9936" class="outline-3">
+<h3 id="org32f9936"><span class="section-number-3">5.1</span> def.h</h3>
+<div class="outline-text-3" id="text-5-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> _DEF_H_
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">_DEF_H_</span>
+
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#22522;&#26412;&#25968;&#25454;&#31867;&#22411;&#23450;&#20041;</span>
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">char</span> <span style="color: #af8700;">int8</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">char</span> <span style="color: #af8700;">uint8</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">uint8</span> <span style="color: #af8700;">byte</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">short</span> <span style="color: #af8700;">int16</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">short</span> <span style="color: #af8700;">uint16</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">long</span> <span style="color: #af8700;">int32</span>;
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #af8700;">uint32</span>;
+
+<span style="color: #d75f00;">#endif</span> <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">_DEF_H_</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3f87f76" class="outline-3">
+<h3 id="org3f87f76"><span class="section-number-3">5.2</span> Timer.h</h3>
+<div class="outline-text-3" id="text-5-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> _TIMER_H_
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">_TIMER_H_</span>
+
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"def.h"</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"Thread.h"</span>
+
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">CONFIG_BASE_SMALL</span> 0    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">TVN_SIZE=64  TVR_SIZE=256</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TVN_BITS</span> (CONFIG_BASE_SMALL ? 4 : 6)
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TVR_BITS</span> (CONFIG_BASE_SMALL ? 6 : 8)
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TVN_SIZE</span> (1 &lt;&lt; TVN_BITS)
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TVR_SIZE</span> (1 &lt;&lt; TVR_BITS)
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TVN_MASK</span> (TVN_SIZE - 1)
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TVR_MASK</span> (TVR_SIZE - 1)
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">MAX_TVAL</span> ((<span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span>)((1ULL &lt;&lt; (TVR_BITS + 4*TVN_BITS)) - 1))
+
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TIME_AFTER</span>(<span style="color: #0087ff;">a</span>,<span style="color: #0087ff;">b</span>) ((<span style="color: #af8700;">long</span>)(b) - (<span style="color: #af8700;">long</span>)(a) &lt; 0)
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TIME_BEFORE</span>(<span style="color: #0087ff;">a</span>,<span style="color: #0087ff;">b</span>) TIME_AFTER(b,a)
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TIME_AFTER_EQ</span>(<span style="color: #0087ff;">a</span>,<span style="color: #0087ff;">b</span>) ((<span style="color: #af8700;">long</span>)(a) - (<span style="color: #af8700;">long</span>)(b) &gt;= 0)
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TIME_BEFORE_EQ</span>(<span style="color: #0087ff;">a</span>,<span style="color: #0087ff;">b</span>) TIME_AFTER_EQ(b,a)
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span>
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pPrev</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pNext</span>;
+} <span style="color: #af8700;">LISTTIMER</span>, *<span style="color: #af8700;">LPLISTTIMER</span>;
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_NODE</span>
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> <span style="color: #0087ff;">ltTimer</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#26102;&#22120;&#21452;&#21521;&#38142;&#34920;&#30340;&#20837;&#21475;</span>
+    <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uExpires</span>;            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#26102;&#22120;&#21040;&#26399;&#26102;&#38388;</span>
+    <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uPeriod</span>;             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#26102;&#22120;&#35302;&#21457;&#21518;&#65292;&#20877;&#27425;&#35302;&#21457;&#30340;&#38388;&#38548;&#26102;&#38271;&#12290;&#22914;&#26524;&#20026; 0&#65292;&#34920;&#31034;&#35813;&#23450;&#26102;&#22120;&#20026;&#19968;&#27425;&#24615;&#30340;</span>
+    <span style="color: #af8700;">void</span> (*timerFn)(<span style="color: #af8700;">void</span> *);    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#26102;&#22120;&#22238;&#35843;&#20989;&#25968;</span>
+    <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">pParam</span>;               <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22238;&#35843;&#20989;&#25968;&#30340;&#21442;&#25968;</span>
+} <span style="color: #af8700;">TIMERNODE</span>, *<span style="color: #af8700;">LPTIMERNODE</span>;
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_MANAGER</span>
+{
+    <span style="color: #af8700;">pthread_mutex_t</span> <span style="color: #0087ff;">lock</span>;       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21516;&#27493;&#38145;</span>
+    <span style="color: #af8700;">pthread_t</span> <span style="color: #0087ff;">thread</span>;           <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#32447;&#31243;&#21477;&#26564;</span>
+    <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uExitFlag</span>;           <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#32447;&#31243;&#36864;&#20986;&#26631;&#35782;(0:Continue, other: Exit)</span>
+    <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uJiffies</span>;            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22522;&#20934;&#26102;&#38388;(&#24403;&#21069;&#26102;&#38388;)&#65292;&#21333;&#20301;&#65306;&#27627;&#31186;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> <span style="color: #0087ff;">arrListTimer1</span>[TVR_SIZE];  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">1 &#32423;&#26102;&#38388;&#36718;&#12290;&#22312;&#36825;&#37324;&#34920;&#31034;&#23384;&#20648;&#26410;&#26469;&#30340; 0 ~ 255 &#27627;&#31186;&#30340;&#35745;&#26102;&#22120;&#12290;tick &#30340;&#31890;&#24230;&#20026; 1 &#27627;&#31186;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> <span style="color: #0087ff;">arrListTimer2</span>[TVN_SIZE];  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">2 &#32423;&#26102;&#38388;&#36718;&#12290;&#23384;&#20648;&#26410;&#26469;&#30340; 256 ~ 256*64-1 &#27627;&#31186;&#30340;&#35745;&#26102;&#22120;&#12290;tick &#30340;&#31890;&#24230;&#20026; 256 &#27627;&#31186;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> <span style="color: #0087ff;">arrListTimer3</span>[TVN_SIZE];  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">3 &#32423;&#26102;&#38388;&#36718;&#12290;&#23384;&#20648;&#26410;&#26469;&#30340; 256*64 ~ 256*64*64-1 &#27627;&#31186;&#30340;&#35745;&#26102;&#22120;&#12290;tick &#30340;&#31890;&#24230;&#20026; 256*64 &#27627;&#31186;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> <span style="color: #0087ff;">arrListTimer4</span>[TVN_SIZE];  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">4 &#32423;&#26102;&#38388;&#36718;&#12290;&#23384;&#20648;&#26410;&#26469;&#30340; 256*64*64 ~ 256*64*64*64-1 &#27627;&#31186;&#30340;&#35745;&#26102;&#22120;&#12290;tick &#30340;&#31890;&#24230;&#20026; 256*64*64 &#27627;&#31186;</span>
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> <span style="color: #0087ff;">arrListTimer5</span>[TVN_SIZE];  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">5 &#32423;&#26102;&#38388;&#36718;&#12290;&#23384;&#20648;&#26410;&#26469;&#30340; 256*64*64*64 ~ 256*64*64*64*64-1 &#27627;&#31186;&#30340;&#35745;&#26102;&#22120;&#12290;tick &#30340;&#31890;&#24230;&#20026; 256*64*64 &#27627;&#31186;</span>
+} <span style="color: #af8700;">TIMERMANAGER</span>, *<span style="color: #af8700;">LPTIMERMANAGER</span>;
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">SleepMilliseconds</span>(<span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uMs</span>);
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21019;&#24314;&#23450;&#26102;&#22120;&#31649;&#29702;&#22120;</span>
+<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">CreateTimerManager</span>(<span style="color: #af8700;">void</span>);
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21024;&#38500;&#23450;&#26102;&#22120;&#31649;&#29702;&#22120;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">DestroyTimerManager</span>(<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">lpTimerManager</span>);
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21019;&#24314;&#19968;&#20010;&#23450;&#26102;&#22120;&#12290;fnTimer &#22238;&#35843;&#20989;&#25968;&#22320;&#22336;&#12290;pParam &#22238;&#35843;&#20989;&#25968;&#30340;&#21442;&#25968;&#12290;uDueTime &#39318;&#27425;&#35302;&#21457;&#30340;&#36229;&#26102;&#26102;&#38388;&#38388;&#38548;&#12290;uPeriod &#23450;&#26102;&#22120;&#24490;&#29615;&#21608;&#26399;&#65292;&#33509;&#20026;0&#65292;&#21017;&#35813;&#23450;&#26102;&#22120;&#21482;&#36816;&#34892;&#19968;&#27425;&#12290;</span>
+<span style="color: #af8700;">LPTIMERNODE</span> <span style="color: #0087ff;">CreateTimer</span>(<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">lpTimerManager</span>, <span style="color: #af8700;">void</span> (*<span style="color: #0087ff;">timerFn</span>)(<span style="color: #af8700;">void</span>*), <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">pParam</span>, <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uDueTime</span>, <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uPeriod</span>);
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21024;&#38500;&#23450;&#26102;&#22120;</span>
+<span style="color: #af8700;">int32</span> <span style="color: #0087ff;">DeleteTimer</span>(<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">lpTimerManager</span>, <span style="color: #af8700;">LPTIMERNODE</span> <span style="color: #0087ff;">lpTimer</span>);
+
+<span style="color: #d75f00;">#endif</span> <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">_TIMER_H_</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org06ed5dc" class="outline-3">
+<h3 id="org06ed5dc"><span class="section-number-3">5.3</span> Timer.c</h3>
+<div class="outline-text-3" id="text-5-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stddef.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;sys/time.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"Timer.h"</span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33719;&#21462;&#22522;&#20934;&#26102;&#38388;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">GetJiffies_old</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> <span style="color: #0087ff;">tv</span>;
+    gettimeofday(&amp;tv, <span style="color: #00afaf;">NULL</span>);
+    <span style="color: #5f8700;">return</span> tv.tv_sec * 1000 + tv.tv_usec / 1000;
+}
+
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">GetJiffies</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timespec</span> <span style="color: #0087ff;">ts</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31934;&#30830;&#21040;&#32435;&#31186;&#65288;10 &#30340; -9 &#27425;&#26041;&#31186;&#65289;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992; clock_gettime &#20989;&#25968;&#26102;&#65292;&#26377;&#20123;&#31995;&#32479;&#38656;&#36830;&#25509; rt &#24211;&#65292;&#21152; -lrt &#21442;&#25968;&#65292;&#26377;&#20123;&#19981;&#38656;&#35201;&#36830;&#25509; rt &#24211;</span>
+    clock_gettime(CLOCK_MONOTONIC, &amp;ts);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33719;&#21462;&#26102;&#38388;&#12290;&#20854;&#20013;&#65292;CLOCK_MONOTONIC &#34920;&#31034;&#20174;&#31995;&#32479;&#21551;&#21160;&#36825;&#19968;&#21051;&#36215;&#24320;&#22987;&#35745;&#26102;,&#19981;&#21463;&#31995;&#32479;&#26102;&#38388;&#34987;&#29992;&#25143;&#25913;&#21464;&#30340;&#24433;&#21709;</span>
+    <span style="color: #5f8700;">return</span> (ts.tv_sec * 1000 + ts.tv_nsec / 1000000);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36820;&#22238;&#27627;&#31186;&#26102;&#38388;</span>
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;&#21452;&#21521;&#24490;&#29615;&#38142;&#34920;&#30340;&#26032;&#32467;&#28857;&#25554;&#20837;&#21040;&#32467;&#28857; pPrev &#21644; pNext &#20043;&#38388;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> <span style="color: #0087ff;">ListTimerInsert</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pNew</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pPrev</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pNext</span>)
+{
+    pNext-&gt;pPrev = pNew;
+    pNew-&gt;pNext = pNext;
+    pNew-&gt;pPrev = pPrev;
+    pPrev-&gt;pNext = pNew;
+}
+
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> <span style="color: #0087ff;">ListTimerInsertHead</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pNew</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pHead</span>)
+{
+    ListTimerInsert(pNew, pHead, pHead-&gt;pNext);
+}
+
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> <span style="color: #0087ff;">ListTimerInsertTail</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pNew</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pHead</span>)
+{
+    ListTimerInsert(pNew, pHead-&gt;pPrev, pHead);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992;&#26032;&#32467;&#28857; pNew &#26367;&#25442; pOld &#22312;&#21452;&#21521;&#24490;&#29615;&#38142;&#34920;&#20013;&#30340;&#20301;&#32622;&#12290;&#22914;&#26524;&#21452;&#21521;&#38142;&#34920;&#20013;&#20165;&#26377;&#19968;&#20010;&#32467;&#28857; pOld&#65292;&#20351;&#29992; pNew &#26367;&#25442;&#21518;&#65292;&#21516;&#26679;&#65292;&#20165;&#26377;&#19968;&#20010;&#32467;&#28857; pNew</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> <span style="color: #0087ff;">ListTimerReplace</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pOld</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pNew</span>)
+{
+    pNew-&gt;pNext = pOld-&gt;pNext;
+    pNew-&gt;pNext-&gt;pPrev = pNew;
+    pNew-&gt;pPrev = pOld-&gt;pPrev;
+    pNew-&gt;pPrev-&gt;pNext = pNew;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992;&#26032;&#32467;&#28857; pNew &#26367;&#25442; pOld &#22312;&#21452;&#21521;&#24490;&#29615;&#38142;&#34920;&#20013;&#30340;&#20301;&#32622;&#12290;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> <span style="color: #0087ff;">ListTimerReplaceInit</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pOld</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pNew</span>)
+{
+    ListTimerReplace(pOld, pNew);
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992; pNew &#26367;&#25442; pOld &#22312;&#21452;&#21521;&#24490;&#29615;&#38142;&#34920;&#20013;&#30340;&#20301;&#32622;&#21518;&#65292;pOld &#32467;&#28857;&#20174;&#38142;&#34920;&#20013;&#29420;&#31435;&#20986;&#26469;&#20102;&#65292;&#25152;&#20197;&#35201;&#35753; pOld &#25351;&#21521;&#33258;&#24049;</span>
+    pOld-&gt;pNext = pOld;
+    pOld-&gt;pPrev = pOld;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21021;&#22987;&#21270;&#26102;&#38388;&#36718;&#20013;&#30340;&#25152;&#26377; tick&#12290;&#21021;&#22987;&#21270;&#21518;&#65292;&#27599;&#20010; tick &#20013;&#30340;&#21452;&#21521;&#38142;&#34920;&#21482;&#26377;&#19968;&#20010;&#22836;&#32467;&#28857;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> <span style="color: #0087ff;">InitArrayListTimer</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">arrListTimer</span>, <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">nSize</span>)
+{
+    <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">i</span>;
+    <span style="color: #5f8700;">for</span>(i=0; i&lt;nSize; i++)
+    {
+        arrListTimer[i].pPrev = &amp;arrListTimer[i];
+        arrListTimer[i].pNext = &amp;arrListTimer[i];
+    }
+}
+
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> <span style="color: #0087ff;">DeleteArrayListTimer</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">arrListTimer</span>, <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uSize</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> <span style="color: #0087ff;">listTmr</span>, *<span style="color: #0087ff;">pListTimer</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_NODE</span> *<span style="color: #0087ff;">pTmr</span>;
+    <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">idx</span>;
+
+    <span style="color: #5f8700;">for</span>(idx=0; idx&lt;uSize; idx++)
+    {
+        ListTimerReplaceInit(&amp;arrListTimer[idx], &amp;listTmr);
+        pListTimer = listTmr.pNext;
+        <span style="color: #5f8700;">while</span>(pListTimer != &amp;listTmr)
+        {
+            pTmr = (<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_NODE</span> *)((<span style="color: #af8700;">uint8</span> *)pListTimer - offsetof(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_NODE</span>, ltTimer));
+            pListTimer = pListTimer-&gt;pNext;
+            free(pTmr);
+        }
+    }
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26681;&#25454;&#35745;&#26102;&#22120;&#30340;&#32467;&#26463;&#26102;&#38388;&#35745;&#31639;&#25152;&#23646;&#26102;&#38388;&#36718;&#12289;&#22312;&#35813;&#26102;&#38388;&#36718;&#19978;&#30340; tick&#12289;&#28982;&#21518;&#23558;&#26032;&#35745;&#26102;&#22120;&#32467;&#28857;&#25554;&#20837;&#21040;&#35813; tick &#30340;&#21452;&#21521;&#24490;&#29615;&#38142;&#34920;&#30340;&#23614;&#37096;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> <span style="color: #0087ff;">AddTimer</span>(<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">lpTimerManager</span>, <span style="color: #af8700;">LPTIMERNODE</span> <span style="color: #0087ff;">pTmr</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pHead</span>;
+    <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">i</span>, <span style="color: #0087ff;">uDueTime</span>, <span style="color: #0087ff;">uExpires</span>;
+
+    uExpires = pTmr-&gt;uExpires; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#26102;&#22120;&#21040;&#26399;&#30340;&#26102;&#21051;</span>
+    uDueTime = uExpires - lpTimerManager-&gt;uJiffies;
+    <span style="color: #5f8700;">if</span> (uDueTime &lt; TVR_SIZE)   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">idx &lt; 256 (2&#30340;8&#27425;&#26041;)</span>
+    {
+        i = uExpires &amp; TVR_MASK; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">expires &amp; 255</span>
+        pHead = &amp;lpTimerManager-&gt;arrListTimer1[i];
+    }
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span> (uDueTime &lt; 1 &lt;&lt; (TVR_BITS + TVN_BITS)) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">idx &lt; 16384 (2&#30340;14&#27425;&#26041;)</span>
+    {
+        i = (uExpires &gt;&gt; TVR_BITS) &amp; TVN_MASK;      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">i = (expires&gt;&gt;8) &amp; 63</span>
+        pHead = &amp;lpTimerManager-&gt;arrListTimer2[i];
+    }
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span> (uDueTime &lt; 1 &lt;&lt; (TVR_BITS + 2 * TVN_BITS)) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">idx &lt; 1048576 (2&#30340;20&#27425;&#26041;)</span>
+    {
+        i = (uExpires &gt;&gt; (TVR_BITS + TVN_BITS)) &amp; TVN_MASK; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">i = (expires&gt;&gt;14) &amp; 63</span>
+        pHead = &amp;lpTimerManager-&gt;arrListTimer3[i];
+    }
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span> (uDueTime &lt; 1 &lt;&lt; (TVR_BITS + 3 * TVN_BITS)) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">idx &lt; 67108864 (2&#30340;26&#27425;&#26041;)</span>
+    {
+        i = (uExpires &gt;&gt; (TVR_BITS + 2 * TVN_BITS)) &amp; TVN_MASK; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">i = (expires&gt;&gt;20) &amp; 63</span>
+        pHead = &amp;lpTimerManager-&gt;arrListTimer4[i];
+    }
+    <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span> ((<span style="color: #af8700;">signed</span> <span style="color: #af8700;">long</span>) uDueTime &lt; 0)
+    {
+        <span style="color: #8a8a8a;">/*</span>
+<span style="color: #8a8a8a;">         * Can happen if you add a timer with expires == jiffies,</span>
+<span style="color: #8a8a8a;">         * or you set a timer to go off in the past</span>
+<span style="color: #8a8a8a;">         </span><span style="color: #8a8a8a;">*/</span>
+        pHead = &amp;lpTimerManager-&gt;arrListTimer1[(lpTimerManager-&gt;uJiffies &amp; TVR_MASK)];
+    }
+    <span style="color: #5f8700;">else</span>
+    {
+        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">If the timeout is larger than 0xffffffff on 64-bit</span>
+<span style="color: #8a8a8a;">         * architectures then we use the maximum timeout:</span>
+<span style="color: #8a8a8a;">         </span><span style="color: #8a8a8a;">*/</span>
+        <span style="color: #5f8700;">if</span> (uDueTime &gt; 0xffffffffUL)
+        {
+            uDueTime = 0xffffffffUL;
+            uExpires = uDueTime + lpTimerManager-&gt;uJiffies;
+        }
+        i = (uExpires &gt;&gt; (TVR_BITS + 3 * TVN_BITS)) &amp; TVN_MASK; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">i = (expires&gt;&gt;26) &amp; 63</span>
+        pHead = &amp;lpTimerManager-&gt;arrListTimer5[i];
+    }
+    ListTimerInsertTail(&amp;pTmr-&gt;ltTimer, pHead);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382;&#26102;&#38388;&#36718; arrlistTimer &#30340;&#21452;&#21521;&#24490;&#29615;&#38142;&#34920;&#65292;&#23558;&#20854;&#20013;&#30340;&#35745;&#26102;&#22120;&#26681;&#25454;&#21040;&#26399;&#26102;&#38388;&#21152;&#20837;&#21040;&#25351;&#23450;&#30340;&#26102;&#38388;&#36718;&#20013;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">CascadeTimer</span>(<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">lpTimerManager</span>, <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">arrListTimer</span>, <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">idx</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> <span style="color: #0087ff;">listTmr</span>, *<span style="color: #0087ff;">pListTimer</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_NODE</span> *<span style="color: #0087ff;">pTmr</span>;
+
+    ListTimerReplaceInit(&amp;arrListTimer[idx], &amp;listTmr);
+    pListTimer = listTmr.pNext;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382;&#21452;&#21521;&#24490;&#29615;&#38142;&#34920;&#65292;&#28155;&#21152;&#23450;&#26102;&#22120;</span>
+    <span style="color: #5f8700;">while</span>(pListTimer != &amp;listTmr)
+    {
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26681;&#25454;&#32467;&#26500;&#20307; struct TIMER_NODE &#30340;&#25104;&#21592; ltTimer &#30340;&#25351;&#38024;&#22320;&#22336;&#21644;&#35813;&#25104;&#21592;&#22312;&#32467;&#26500;&#20307;&#20013;&#30340;&#20415;&#23452;&#37327;&#65292;&#35745;&#31639;&#32467;&#26500;&#20307; struct TIMER_NODE &#30340;&#22320;&#22336;</span>
+        pTmr = (<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_NODE</span> *)((<span style="color: #af8700;">uint8</span> *)pListTimer - offsetof(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_NODE</span>, ltTimer));
+        pListTimer = pListTimer-&gt;pNext;
+        AddTimer(lpTimerManager, pTmr);
+    }
+    <span style="color: #5f8700;">return</span> idx;
+}
+
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> <span style="color: #0087ff;">RunTimer</span>(<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">lpTimerManager</span>)
+{
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">INDEX</span>(<span style="color: #0087ff;">N</span>) ((lpTimerManager-&gt;uJiffies &gt;&gt; (TVR_BITS + (N) * TVN_BITS)) &amp; TVN_MASK)
+    <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">idx</span>, <span style="color: #0087ff;">uJiffies</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> <span style="color: #0087ff;">listTmrExpire</span>, *<span style="color: #0087ff;">pListTmrExpire</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_NODE</span> *<span style="color: #0087ff;">pTmr</span>;
+
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> == lpTimerManager)
+        <span style="color: #5f8700;">return</span>;
+    uJiffies = GetJiffies();
+    pthread_mutex_lock(&amp;lpTimerManager-&gt;lock);
+    <span style="color: #5f8700;">while</span>(TIME_AFTER_EQ(uJiffies, lpTimerManager-&gt;uJiffies))
+    {
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">unint32 &#20849; 32bit&#65292;idx &#20026;&#24403;&#21069;&#26102;&#38388;&#30340;&#20302; 8bit&#65292;INDEX(0) &#20026;&#27425; 6bit&#65292;INDEX(1) &#20026;&#20877;&#27425; 6bit&#65292;INDEX(2) &#20026;&#20877;&#27425; 6bit&#65292;INDEX(3) &#20026;&#39640; 6bit</span>
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; 1 &#32423;&#26102;&#38388;&#36718;&#30340; 256 &#27627;&#31186;&#36208;&#23436;&#20102;&#65292;&#20250;&#36941;&#21382;&#25226; 2 &#32423;&#26102;&#38388;&#36718;&#20013;&#30340;&#35745;&#26102;&#22120;&#65292;&#23558;&#20854;&#20013;&#30340;&#35745;&#26102;&#22120;&#26681;&#25454;&#21040;&#26399;&#26102;&#38388;&#21152;&#20837;&#21040;&#25351;&#23450;&#26102;&#38388;&#36718;&#12290;&#36825;&#26679; 1 &#32423;&#26102;&#38388;&#36718;&#20013;&#23601;&#26377;&#35745;&#26102;&#22120;&#20102;&#12290;</span>
+        <span style="color: #8a8a8a;">//  </span><span style="color: #8a8a8a;">&#22914;&#26524; 1&#12289;2 &#32423;&#26102;&#38388;&#36718;&#30340; 256*64 &#27627;&#31186;&#37117;&#36208;&#23436;&#20102;&#65292;&#20250;&#36941;&#21382; 3 &#32423;&#26102;&#38388;&#36718;&#65292;&#23558;&#20854;&#20013;&#30340;&#35745;&#26102;&#22120;&#21152;&#20837;&#21040;&#25351;&#23450;&#26102;&#38388;&#36718;&#12290;&#36825;&#26679; 1 &#32423;&#21644; 2 &#32423;&#26102;&#38388;&#36718;&#20013;&#23601;&#26377;&#35745;&#26102;&#22120;&#20102;&#12290;</span>
+        <span style="color: #8a8a8a;">//   </span><span style="color: #8a8a8a;">&#22914;&#26524; 1&#12289;2&#12289;3 &#32423;&#26102;&#38388;&#36718;&#30340; 256*64*64 &#27627;&#31186;&#37117;&#36208;&#23436;&#20102;&#65292;...</span>
+        <span style="color: #8a8a8a;">//    </span><span style="color: #8a8a8a;">&#22914;&#26524; 1&#12289;2&#12289;3&#12289;4 &#32423;&#26102;&#38388;&#36718;&#30340; 256*64*64*64 &#27627;&#31186;&#37117;&#36208;&#23436;&#20102;&#65292;...</span>
+        idx = lpTimerManager-&gt;uJiffies &amp; TVR_MASK;
+        <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>idx &amp;&amp;
+                (<span style="color: #d70000;">!</span>CascadeTimer(lpTimerManager, lpTimerManager-&gt;arrListTimer2, INDEX(0))) &amp;&amp;
+                (<span style="color: #d70000;">!</span>CascadeTimer(lpTimerManager, lpTimerManager-&gt;arrListTimer3, INDEX(1))) &amp;&amp;
+                <span style="color: #d70000;">!</span>CascadeTimer(lpTimerManager, lpTimerManager-&gt;arrListTimer4, INDEX(2)))
+            CascadeTimer(lpTimerManager, lpTimerManager-&gt;arrListTimer5, INDEX(3));
+        pListTmrExpire = &amp;listTmrExpire;
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26032;&#32467;&#28857; pListTmrExpire &#26367;&#25442; arrListTimer1[idx] &#21518;&#65292;&#21452;&#21521;&#24490;&#29615;&#38142;&#34920; arrListTimer1[idx] &#23601;&#21482;&#26377;&#23427;&#33258;&#24049;&#19968;&#20010;&#32467;&#28857;&#20102;&#12290;pListTmrExpire &#25104;&#20026;&#21452;&#21521;&#24490;&#29615;&#38142;&#34920;&#30340;&#20837;&#21475;</span>
+        ListTimerReplaceInit(&amp;lpTimerManager-&gt;arrListTimer1[idx], pListTmrExpire);
+        <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36941;&#21382;&#26102;&#38388;&#36718; arrListTimer1 &#30340;&#21452;&#21521;&#24490;&#29615;&#38142;&#34920;&#65292;&#25191;&#34892;&#35813;&#38142;&#34920;&#25152;&#26377;&#23450;&#26102;&#22120;&#30340;&#22238;&#35843;&#20989;&#25968;</span>
+        pListTmrExpire = pListTmrExpire-&gt;pNext;
+        <span style="color: #5f8700;">while</span>(pListTmrExpire != &amp;listTmrExpire)
+        {
+            pTmr = (<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_NODE</span> *)((<span style="color: #af8700;">uint8</span> *)pListTmrExpire - offsetof(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">TIMER_NODE</span>, ltTimer));
+            pListTmrExpire = pListTmrExpire-&gt;pNext;
+            pTmr-&gt;timerFn(pTmr-&gt;pParam);
+            <span style="color: #8a8a8a;">//</span>
+            <span style="color: #5f8700;">if</span>(pTmr-&gt;uPeriod != 0)
+            {
+                pTmr-&gt;uExpires = lpTimerManager-&gt;uJiffies + pTmr-&gt;uPeriod;
+                AddTimer(lpTimerManager, pTmr);
+            }
+            <span style="color: #5f8700;">else</span> free(pTmr);
+        }
+        lpTimerManager-&gt;uJiffies++;
+    }
+    pthread_mutex_unlock(&amp;lpTimerManager-&gt;lock);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35745;&#26102;&#22120;&#32447;&#31243;&#12290;&#20197; 1 &#27627;&#31186;&#20026;&#21333;&#20301;&#36827;&#34892;&#35745;&#26102;</span>
+<span style="color: #5f8700;">static</span> <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ThreadRunTimer</span>(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">pParam</span>)
+{
+    <span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">pTimerMgr</span>;
+
+    pTimerMgr = (<span style="color: #af8700;">LPTIMERMANAGER</span>)pParam;
+    <span style="color: #5f8700;">if</span>(pTimerMgr == <span style="color: #00afaf;">NULL</span>)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #5f8700;">while</span>(<span style="color: #d70000;">!</span>pTimerMgr-&gt;uExitFlag)
+    {
+        RunTimer(pTimerMgr);
+        SleepMilliseconds(1);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#32447;&#31243;&#30561; 1 &#27627;&#31186;</span>
+    }
+    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#30561; uMs &#27627;&#31186;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">SleepMilliseconds</span>(<span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uMs</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span> <span style="color: #0087ff;">tv</span>;
+    tv.tv_sec = 0;
+    tv.tv_usec = uMs * 1000;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">tv.tv_usec &#21333;&#20301;&#26159;&#24494;&#31186;</span>
+    select(0, <span style="color: #00afaf;">NULL</span>, <span style="color: #00afaf;">NULL</span>, <span style="color: #00afaf;">NULL</span>, &amp;tv);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21019;&#24314;&#23450;&#26102;&#22120;&#31649;&#29702;&#22120;</span>
+<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">CreateTimerManager</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">lpTimerMgr</span> = (<span style="color: #af8700;">LPTIMERMANAGER</span>)malloc(<span style="color: #5f8700;">sizeof</span>(TIMERMANAGER));
+    <span style="color: #5f8700;">if</span>(lpTimerMgr != <span style="color: #00afaf;">NULL</span>)
+    {
+        lpTimerMgr-&gt;thread = (<span style="color: #af8700;">pthread_t</span>)0;
+        lpTimerMgr-&gt;uExitFlag = 0;
+        pthread_mutex_init(&amp;lpTimerMgr-&gt;lock, <span style="color: #00afaf;">NULL</span>);
+        lpTimerMgr-&gt;uJiffies = GetJiffies();
+        InitArrayListTimer(lpTimerMgr-&gt;arrListTimer1, <span style="color: #5f8700;">sizeof</span>(lpTimerMgr-&gt;arrListTimer1)/<span style="color: #5f8700;">sizeof</span>(lpTimerMgr-&gt;arrListTimer1[0]));
+        InitArrayListTimer(lpTimerMgr-&gt;arrListTimer2, <span style="color: #5f8700;">sizeof</span>(lpTimerMgr-&gt;arrListTimer2)/<span style="color: #5f8700;">sizeof</span>(lpTimerMgr-&gt;arrListTimer2[0]));
+        InitArrayListTimer(lpTimerMgr-&gt;arrListTimer3, <span style="color: #5f8700;">sizeof</span>(lpTimerMgr-&gt;arrListTimer3)/<span style="color: #5f8700;">sizeof</span>(lpTimerMgr-&gt;arrListTimer3[0]));
+        InitArrayListTimer(lpTimerMgr-&gt;arrListTimer4, <span style="color: #5f8700;">sizeof</span>(lpTimerMgr-&gt;arrListTimer4)/<span style="color: #5f8700;">sizeof</span>(lpTimerMgr-&gt;arrListTimer4[0]));
+        InitArrayListTimer(lpTimerMgr-&gt;arrListTimer5, <span style="color: #5f8700;">sizeof</span>(lpTimerMgr-&gt;arrListTimer5)/<span style="color: #5f8700;">sizeof</span>(lpTimerMgr-&gt;arrListTimer5[0]));
+        lpTimerMgr-&gt;thread = ThreadCreate(ThreadRunTimer, lpTimerMgr);
+    }
+    <span style="color: #5f8700;">return</span> lpTimerMgr;
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21024;&#38500;&#23450;&#26102;&#22120;&#31649;&#29702;&#22120;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">DestroyTimerManager</span>(<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">lpTimerManager</span>)
+{
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> == lpTimerManager)
+        <span style="color: #5f8700;">return</span>;
+    lpTimerManager-&gt;uExitFlag = 1;
+    <span style="color: #5f8700;">if</span>((<span style="color: #af8700;">pthread_t</span>)0 != lpTimerManager-&gt;thread)
+    {
+        ThreadJoin(lpTimerManager-&gt;thread);
+        ThreadDestroy(lpTimerManager-&gt;thread);
+        lpTimerManager-&gt;thread = (<span style="color: #af8700;">pthread_t</span>)0;
+    }
+    DeleteArrayListTimer(lpTimerManager-&gt;arrListTimer1, <span style="color: #5f8700;">sizeof</span>(lpTimerManager-&gt;arrListTimer1)/<span style="color: #5f8700;">sizeof</span>(lpTimerManager-&gt;arrListTimer1[0]));
+    DeleteArrayListTimer(lpTimerManager-&gt;arrListTimer2, <span style="color: #5f8700;">sizeof</span>(lpTimerManager-&gt;arrListTimer2)/<span style="color: #5f8700;">sizeof</span>(lpTimerManager-&gt;arrListTimer2[0]));
+    DeleteArrayListTimer(lpTimerManager-&gt;arrListTimer3, <span style="color: #5f8700;">sizeof</span>(lpTimerManager-&gt;arrListTimer3)/<span style="color: #5f8700;">sizeof</span>(lpTimerManager-&gt;arrListTimer3[0]));
+    DeleteArrayListTimer(lpTimerManager-&gt;arrListTimer4, <span style="color: #5f8700;">sizeof</span>(lpTimerManager-&gt;arrListTimer4)/<span style="color: #5f8700;">sizeof</span>(lpTimerManager-&gt;arrListTimer4[0]));
+    DeleteArrayListTimer(lpTimerManager-&gt;arrListTimer5, <span style="color: #5f8700;">sizeof</span>(lpTimerManager-&gt;arrListTimer5)/<span style="color: #5f8700;">sizeof</span>(lpTimerManager-&gt;arrListTimer5[0]));
+    pthread_mutex_destroy(&amp;lpTimerManager-&gt;lock);
+    free(lpTimerManager);
+}
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21019;&#24314;&#19968;&#20010;&#23450;&#26102;&#22120;&#12290;fnTimer &#22238;&#35843;&#20989;&#25968;&#22320;&#22336;&#12290;pParam &#22238;&#35843;&#20989;&#25968;&#30340;&#21442;&#25968;&#12290;uDueTime &#39318;&#27425;&#35302;&#21457;&#30340;&#36229;&#26102;&#26102;&#38388;&#38388;&#38548;&#12290;uPeriod &#23450;&#26102;&#22120;&#24490;&#29615;&#21608;&#26399;&#65292;&#33509;&#20026;0&#65292;&#21017;&#35813;&#23450;&#26102;&#22120;&#21482;&#36816;&#34892;&#19968;&#27425;&#12290;</span>
+<span style="color: #af8700;">LPTIMERNODE</span> <span style="color: #0087ff;">CreateTimer</span>(<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">lpTimerManager</span>, <span style="color: #af8700;">void</span> (*<span style="color: #0087ff;">timerFn</span>)(<span style="color: #af8700;">void</span>*), <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">pParam</span>, <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uDueTime</span>, <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uPeriod</span>)
+{
+    <span style="color: #af8700;">LPTIMERNODE</span> <span style="color: #0087ff;">pTmr</span> = <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> == timerFn || <span style="color: #00afaf;">NULL</span> == lpTimerManager)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
+    pTmr = (<span style="color: #af8700;">LPTIMERNODE</span>)malloc(<span style="color: #5f8700;">sizeof</span>(TIMERNODE));
+    <span style="color: #5f8700;">if</span>(pTmr != <span style="color: #00afaf;">NULL</span>)
+    {
+        pTmr-&gt;uPeriod = uPeriod;
+        pTmr-&gt;timerFn = timerFn;
+        pTmr-&gt;pParam = pParam;
+
+        pthread_mutex_lock(&amp;lpTimerManager-&gt;lock);
+        pTmr-&gt;uExpires = lpTimerManager-&gt;uJiffies + uDueTime;
+        AddTimer(lpTimerManager, pTmr);
+        pthread_mutex_unlock(&amp;lpTimerManager-&gt;lock);
+    }
+    <span style="color: #5f8700;">return</span> pTmr;
+}
+
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#21024;&#38500;&#23450;&#26102;&#22120;</span>
+<span style="color: #af8700;">int32</span> <span style="color: #0087ff;">DeleteTimer</span>(<span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">lpTimerManager</span>, <span style="color: #af8700;">LPTIMERNODE</span> <span style="color: #0087ff;">lpTimer</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> *<span style="color: #0087ff;">pListTmr</span>;
+    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> != lpTimerManager &amp;&amp; <span style="color: #00afaf;">NULL</span> != lpTimer)
+    {
+        pthread_mutex_lock(&amp;lpTimerManager-&gt;lock);
+        pListTmr = &amp;lpTimer-&gt;ltTimer;
+        pListTmr-&gt;pPrev-&gt;pNext = pListTmr-&gt;pNext;
+        pListTmr-&gt;pNext-&gt;pPrev = pListTmr-&gt;pPrev;
+        free(lpTimer);
+        pthread_mutex_unlock(&amp;lpTimerManager-&gt;lock);
+        <span style="color: #5f8700;">return</span> 0;
+    }
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> -1;
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd5aac21" class="outline-3">
+<h3 id="orgd5aac21"><span class="section-number-3">5.4</span> Thread.h</h3>
+<div class="outline-text-3" id="text-5-4">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> _THREAD_H_
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">_THREAD_H_</span>
+
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;pthread.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"def.h"</span>
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">void</span>* (*<span style="color: #af8700;">FNTHREAD</span>)(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">pParam</span>);
+
+<span style="color: #af8700;">pthread_t</span> <span style="color: #0087ff;">ThreadCreate</span>(<span style="color: #af8700;">FNTHREAD</span> <span style="color: #0087ff;">fnThreadProc</span>, <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">pParam</span>);
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">ThreadJoin</span>(<span style="color: #af8700;">pthread_t</span> <span style="color: #0087ff;">thread</span>);
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">ThreadDestroy</span>(<span style="color: #af8700;">pthread_t</span> <span style="color: #0087ff;">thread</span>);
+
+<span style="color: #d75f00;">#endif</span> <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">_THREAD_H_</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf766e6e" class="outline-3">
+<h3 id="orgf766e6e"><span class="section-number-3">5.5</span> Thread.c</h3>
+<div class="outline-text-3" id="text-5-5">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"Thread.h"</span>
+
+<span style="color: #af8700;">pthread_t</span> <span style="color: #0087ff;">ThreadCreate</span>(<span style="color: #af8700;">FNTHREAD</span> <span style="color: #0087ff;">fnThreadProc</span>, <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">pParam</span>)
+{
+    <span style="color: #af8700;">pthread_t</span> <span style="color: #0087ff;">t</span>;
+    <span style="color: #5f8700;">if</span>(fnThreadProc == <span style="color: #00afaf;">NULL</span>)
+        <span style="color: #5f8700;">return</span> 0;
+    <span style="color: #5f8700;">if</span>(pthread_create(&amp;t, <span style="color: #00afaf;">NULL</span>, fnThreadProc, pParam) == 0)
+        <span style="color: #5f8700;">return</span> t;
+    <span style="color: #5f8700;">else</span>
+        <span style="color: #5f8700;">return</span> (<span style="color: #af8700;">pthread_t</span>)0;
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">ThreadJoin</span>(<span style="color: #af8700;">pthread_t</span> <span style="color: #0087ff;">thread</span>)
+{
+    pthread_join(thread, <span style="color: #00afaf;">NULL</span>);
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">ThreadDestroy</span>(<span style="color: #af8700;">pthread_t</span> <span style="color: #0087ff;">thread</span>)
+{
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd7a1b02" class="outline-3">
+<h3 id="orgd7a1b02"><span class="section-number-3">5.6</span> main.c</h3>
+<div class="outline-text-3" id="text-5-6">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"Timer.h"</span>
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">TimerFun</span>(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">pParam</span>)
+{
+    <span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">pMgr</span>;
+    pMgr = (<span style="color: #af8700;">LPTIMERMANAGER</span>)pParam;
+    printf(<span style="color: #00afaf;">"Timer expire! Jiffies: %lu\n"</span>, pMgr-&gt;uJiffies);
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #af8700;">LPTIMERMANAGER</span> <span style="color: #0087ff;">pMgr</span>;
+    <span style="color: #af8700;">LPTIMERNODE</span> <span style="color: #0087ff;">pTn</span>;
+    pMgr = CreateTimerManager();
+    CreateTimer(pMgr, TimerFun, pMgr, 2000, 0);
+    pTn = CreateTimer(pMgr, TimerFun, pMgr, 4000, 1000);
+    SleepMilliseconds(10001);
+    DeleteTimer(pMgr, pTn);
+    SleepMilliseconds(3000);
+    DestroyTimerManager(pMgr);
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org75bfe6d" class="outline-3">
+<h3 id="org75bfe6d"><span class="section-number-3">5.7</span> Makefile</h3>
+<div class="outline-text-3" id="text-5-7">
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">Makefile for test timer</span>
+
+<span style="color: #0087ff;">CC</span>          = gcc
+<span style="color: #0087ff;">CXX</span>         = g++
+<span style="color: #0087ff;">CFLAGS</span>      = -c -Wall -O -Wno-unused
+<span style="color: #0087ff;">CXXFLAGS</span>    = -c
+<span style="color: #0087ff;">LDFLAGS</span>     = -lrt -lpthread -L.
+<span style="color: #0087ff;">LD</span>          = gcc
+<span style="color: #0087ff;">CXXLD</span>       = g++
+
+<span style="color: #0087ff;">OBJS</span>        = Thread.o Timer.o main.o
+
+<span style="color: #0087ff;">TARGET_APP</span>  = main
+
+<span style="color: #0087ff;">all</span>: $(<span style="color: #0087ff;">TARGET_APP</span>)
+    @echo done.
+
+<span style="color: #0087ff;">$(</span><span style="color: #0087ff;">TARGET_APP</span><span style="color: #0087ff;">)</span>: $(<span style="color: #0087ff;">OBJS</span>)
+    @echo <span style="color: #00afaf;">"---- Build : </span><span style="color: #00afaf;">$</span><span style="color: #00afaf;">@</span><span style="color: #00afaf;"> ----"</span>
+    $(<span style="color: #0087ff;">LD</span>) $(<span style="color: #0087ff;">OBJS</span>) $(<span style="color: #0087ff;">LDFLAGS</span>) -o <span style="color: #0087ff;">$</span><span style="color: #00afaf;">@</span>
+
+<span style="color: #0087ff;">%.o</span>: ./Timer/%.c
+    $(<span style="color: #0087ff;">CC</span>) $(<span style="color: #0087ff;">CFLAGS</span>) -o <span style="color: #0087ff;">$</span><span style="color: #00afaf;">@</span> $<span style="color: #00afaf;">&lt;</span>
+
+<span style="color: #0087ff;">.PHONY</span>: clean cleanobj
+<span style="color: #0087ff;">clean</span>:
+    rm -f *.o
+    rm -f $(<span style="color: #0087ff;">TARGET_APP</span>)
+
+<span style="color: #0087ff;">cleanobj</span>:
+    rm -f *.o
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org51b0c2c" class="outline-2">
+<h2 id="org51b0c2c"><span class="section-number-2">6</span> 简单测试结果</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-shell">$ make                                                                                                                                                                             &#57522; &#61452; &#57522; 03:23:30 &#61463;
+gcc -c -Wall -O -Wno-unused   -c -o Thread.o Thread.c
+gcc -c -Wall -O -Wno-unused   -c -o Timer.o Timer.c
+gcc -c -Wall -O -Wno-unused   -c -o main.o main.c
+---- Build : main ----
+gcc Thread.o Timer.o main.o -lrt -lpthread -L. -o main
+done.
+$ ./main                                                                                                                                                                           &#57522; &#61452; &#57522; 03:23:32 &#61463;
+Timer expire! Jiffies: 5596783743
+Timer expire! Jiffies: 5596785743
+Timer expire! Jiffies: 5596786743
+Timer expire! Jiffies: 5596787743
+Timer expire! Jiffies: 5596788743
+Timer expire! Jiffies: 5596789743
+Timer expire! Jiffies: 5596790743
+Timer expire! Jiffies: 5596791743
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

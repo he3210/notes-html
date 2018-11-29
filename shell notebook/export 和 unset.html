@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>export 和 unset</title>
@@ -34,15 +34,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9dcb91d">1. export</a></li>
-<li><a href="#org3873586">2. unset</a></li>
-<li><a href="#org471d59c">3. 什么时候变量前用 $ ，什么时候不用？</a></li>
+<li><a href="#org792eb7e">1. export</a></li>
+<li><a href="#org6e5258b">2. unset</a></li>
+<li><a href="#orgb4f4327">3. 什么时候变量前用 $ ，什么时候不用？</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9dcb91d" class="outline-2">
-<h2 id="org9dcb91d"><span class="section-number-2">1</span> export</h2>
+<div id="outline-container-org792eb7e" class="outline-2">
+<h2 id="org792eb7e"><span class="section-number-2">1</span> export</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 把一个已存在的局部变量声明为全局变量（即该进程的子进程中，该变量都是可见的）。但在子进程中对该变量进行操作（修改变量，删除变量）对父进程中的该变量无影响<br>
@@ -59,8 +59,8 @@
 </div>
 
 
-<div id="outline-container-org3873586" class="outline-2">
-<h2 id="org3873586"><span class="section-number-2">2</span> unset</h2>
+<div id="outline-container-org6e5258b" class="outline-2">
+<h2 id="org6e5258b"><span class="section-number-2">2</span> unset</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 取消变量<br>
@@ -72,8 +72,8 @@
 </div>
 </div>
 
-<div id="outline-container-org471d59c" class="outline-2">
-<h2 id="org471d59c"><span class="section-number-2">3</span> 什么时候变量前用 $ ，什么时候不用？</h2>
+<div id="outline-container-orgb4f4327" class="outline-2">
+<h2 id="orgb4f4327"><span class="section-number-2">3</span> 什么时候变量前用 $ ，什么时候不用？</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 如果要使用变量，就使用 $。如果要操作变量，就不使用 $。<br>

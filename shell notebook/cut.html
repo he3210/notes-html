@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>cut</title>
@@ -34,9 +34,9 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge64f7d4">1. 域的提取</a></li>
-<li><a href="#org7ac5ccd">2. 根据字节提取文本</a></li>
-<li><a href="#org7ce23e1">3. 根据字符（多字节）提取文本</a></li>
+<li><a href="#orgaf41115">1. 域的提取</a></li>
+<li><a href="#org2b0a9d6">2. 根据字节提取文本</a></li>
+<li><a href="#org5973577">3. 根据字符（多字节）提取文本</a></li>
 </ul>
 </div>
 </div>
@@ -71,8 +71,8 @@ $ cat bbb.log
 </pre>
 </div>
 
-<div id="outline-container-orge64f7d4" class="outline-2">
-<h2 id="orge64f7d4"><span class="section-number-2">1</span> 域的提取</h2>
+<div id="outline-container-orgaf41115" class="outline-2">
+<h2 id="orgaf41115"><span class="section-number-2">1</span> 域的提取</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><code>-d</code>    自定义分隔符，默认为制表符。分隔符为一字节（所以 cut 只适合处理以一字节大小间隔符间隔的文本）<br></li>
@@ -100,8 +100,8 @@ $ cut -d : -f -3,3- bbb.log
 </div>
 </div>
 
-<div id="outline-container-org7ac5ccd" class="outline-2">
-<h2 id="org7ac5ccd"><span class="section-number-2">2</span> 根据字节提取文本</h2>
+<div id="outline-container-org2b0a9d6" class="outline-2">
+<h2 id="org2b0a9d6"><span class="section-number-2">2</span> 根据字节提取文本</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li><code>-b</code>    以字节为单位进行提取<br></li>
@@ -133,8 +133,8 @@ b
 </div>
 </div>
 
-<div id="outline-container-org7ce23e1" class="outline-2">
-<h2 id="org7ce23e1"><span class="section-number-2">3</span> 根据字符（多字节）提取文本</h2>
+<div id="outline-container-org5973577" class="outline-2">
+<h2 id="org5973577"><span class="section-number-2">3</span> 根据字符（多字节）提取文本</h2>
 <div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li><code>-c</code>    以字符为单位进行提取<br></li>

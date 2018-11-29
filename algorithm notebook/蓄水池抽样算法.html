@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>蓄水池抽样算法</title>
@@ -34,16 +34,16 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9bb4a79">1. 蓄水池抽样问题</a></li>
-<li><a href="#orgc88f965">2. n 个样本随机抽取 1 个（n 未知）</a></li>
-<li><a href="#org4602fdc">3. n 个样本随机抽取 m 个不同样本（n 未知）</a></li>
-<li><a href="#orgb7dd587">4. n 个样本随机抽取 m 个不同样本（n 已知）</a></li>
+<li><a href="#org18a8901">1. 蓄水池抽样问题</a></li>
+<li><a href="#orgda0f50b">2. n 个样本随机抽取 1 个（n 未知）</a></li>
+<li><a href="#orge03388e">3. n 个样本随机抽取 m 个不同样本（n 未知）</a></li>
+<li><a href="#org7a220f4">4. n 个样本随机抽取 m 个不同样本（n 已知）</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9bb4a79" class="outline-2">
-<h2 id="org9bb4a79"><span class="section-number-2">1</span> 蓄水池抽样问题</h2>
+<div id="outline-container-org18a8901" class="outline-2">
+<h2 id="org18a8901"><span class="section-number-2">1</span> 蓄水池抽样问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 如果我们知道 n 的值，那么问题就可以简单的用一个大随机数 rand()%n 得到一个确切的随机位置，那么该位置的对象就是所求的对象，选中的概率是 1/n。<br>
@@ -52,8 +52,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgc88f965" class="outline-2">
-<h2 id="orgc88f965"><span class="section-number-2">2</span> n 个样本随机抽取 1 个（n 未知）</h2>
+<div id="outline-container-orgda0f50b" class="outline-2">
+<h2 id="orgda0f50b"><span class="section-number-2">2</span> n 个样本随机抽取 1 个（n 未知）</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 我们这个问题是蓄水池抽样问题的一个特例，即 k=1。<br>
@@ -123,8 +123,8 @@
 </div>
 
 
-<div id="outline-container-org4602fdc" class="outline-2">
-<h2 id="org4602fdc"><span class="section-number-2">3</span> n 个样本随机抽取 m 个不同样本（n 未知）</h2>
+<div id="outline-container-orge03388e" class="outline-2">
+<h2 id="orge03388e"><span class="section-number-2">3</span> n 个样本随机抽取 m 个不同样本（n 未知）</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 对应蓄水池抽样问题，可以类似的思路解决。先把读到的前k个对象放入“水库”，对于第 k+1 个对象开始，以 k/(k+1) 的概率选择该对象，以 k/(k+2) 的概率选择第 k+2 个对象，以此类推，以 k/m 的概率选择第 m 个对象（m&gt;k）。如果 m 被选中，则随机替换水库中的一个对象。最终每个对象被选中的概率均为 k/n，证明如下。<br>
@@ -204,8 +204,8 @@
 </div>
 
 
-<div id="outline-container-orgb7dd587" class="outline-2">
-<h2 id="orgb7dd587"><span class="section-number-2">4</span> n 个样本随机抽取 m 个不同样本（n 已知）</h2>
+<div id="outline-container-org7a220f4" class="outline-2">
+<h2 id="org7a220f4"><span class="section-number-2">4</span> n 个样本随机抽取 m 个不同样本（n 已知）</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>

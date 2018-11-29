@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>sed</title>
@@ -34,27 +34,27 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge2b2fd1">1. 参考</a></li>
-<li><a href="#org60fbfd4">2. sed 编辑器处理流程</a></li>
-<li><a href="#org07506fb">3. 语法</a></li>
-<li><a href="#org52361e7">4. 替换行</a>
+<li><a href="#orgab5aaed">1. 参考</a></li>
+<li><a href="#org1b4484c">2. sed 编辑器处理流程</a></li>
+<li><a href="#org60a1f6a">3. 语法</a></li>
+<li><a href="#orgf927b93">4. 替换行</a>
 <ul>
-<li><a href="#org007f76a">4.1. script 语法</a></li>
-<li><a href="#org718ef67">4.2. 示例</a></li>
+<li><a href="#org2a0ad6f">4.1. script 语法</a></li>
+<li><a href="#org8c6120a">4.2. 示例</a></li>
 </ul>
 </li>
-<li><a href="#orgbd30f56">5. 删除行</a></li>
-<li><a href="#org93f3f42">6. <span class="todo TODO">TODO</span> 插入和附加</a></li>
-<li><a href="#org7d636c5">7. <span class="todo TODO">TODO</span> 修改整行</a></li>
-<li><a href="#orgdecf69f">8. <span class="todo TODO">TODO</span> 转换单个字符</a></li>
-<li><a href="#orga8c76c9">9. <span class="todo TODO">TODO</span> 打印</a></li>
-<li><a href="#org99b8ee7">10. <span class="todo TODO">TODO</span> 写入文件、读取文件</a></li>
+<li><a href="#org00bbe07">5. 删除行</a></li>
+<li><a href="#orge9a31af">6. <span class="todo TODO">TODO</span> 插入和附加</a></li>
+<li><a href="#orgb0f47cc">7. <span class="todo TODO">TODO</span> 修改整行</a></li>
+<li><a href="#orga13af7f">8. <span class="todo TODO">TODO</span> 转换单个字符</a></li>
+<li><a href="#orgd0c7285">9. <span class="todo TODO">TODO</span> 打印</a></li>
+<li><a href="#orgfb09e63">10. <span class="todo TODO">TODO</span> 写入文件、读取文件</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge2b2fd1" class="outline-2">
-<h2 id="orge2b2fd1"><span class="section-number-2">1</span> 参考</h2>
+<div id="outline-container-orgab5aaed" class="outline-2">
+<h2 id="orgab5aaed"><span class="section-number-2">1</span> 参考</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>《Linux命令行与shell脚本编程大全（第三版）》<br></li>
@@ -62,8 +62,8 @@
 </div>
 </div>
 
-<div id="outline-container-org60fbfd4" class="outline-2">
-<h2 id="org60fbfd4"><span class="section-number-2">2</span> sed 编辑器处理流程</h2>
+<div id="outline-container-org1b4484c" class="outline-2">
+<h2 id="org1b4484c"><span class="section-number-2">2</span> sed 编辑器处理流程</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 sed 作为流编辑器，它的一次数据处理流程如下：<br>
@@ -80,8 +80,8 @@ sed 作为流编辑器，它的一次数据处理流程如下：<br>
 </div>
 </div>
 
-<div id="outline-container-org07506fb" class="outline-2">
-<h2 id="org07506fb"><span class="section-number-2">3</span> 语法</h2>
+<div id="outline-container-org60a1f6a" class="outline-2">
+<h2 id="org60a1f6a"><span class="section-number-2">3</span> 语法</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 <code>$ sed options script file</code><br>
@@ -96,12 +96,12 @@ options 有：<br>
 </div>
 </div>
 
-<div id="outline-container-org52361e7" class="outline-2">
-<h2 id="org52361e7"><span class="section-number-2">4</span> 替换行</h2>
+<div id="outline-container-orgf927b93" class="outline-2">
+<h2 id="orgf927b93"><span class="section-number-2">4</span> 替换行</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org007f76a" class="outline-3">
-<h3 id="org007f76a"><span class="section-number-3">4.1</span> script 语法</h3>
+<div id="outline-container-org2a0ad6f" class="outline-3">
+<h3 id="org2a0ad6f"><span class="section-number-3">4.1</span> script 语法</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 <code>s/pattern/replacement/flags</code><br>
@@ -118,8 +118,8 @@ options 有：<br>
 </p>
 </div>
 </div>
-<div id="outline-container-org718ef67" class="outline-3">
-<h3 id="org718ef67"><span class="section-number-3">4.2</span> 示例</h3>
+<div id="outline-container-org8c6120a" class="outline-3">
+<h3 id="org8c6120a"><span class="section-number-3">4.2</span> 示例</h3>
 <div class="outline-text-3" id="text-4-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ sed <span style="color: #00afaf;">'s/test/test project/'</span> test.txt        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226; test &#26367;&#25442;&#25104; test project&#65292;&#40664;&#35748;&#26367;&#25442;&#25152;&#26377;&#21305;&#37197;&#39033;&#12290;&#20250;&#25226;&#26367;&#25442;&#21518;&#30340;&#23436;&#25972;&#25991;&#26412;&#20869;&#23481;&#36755;&#20986;&#21040; stdout</span>
@@ -152,8 +152,8 @@ $ sed -n <span style="color: #00afaf;">'/^this/s/test/test project/p'</span> aaa
 </div>
 
 
-<div id="outline-container-orgbd30f56" class="outline-2">
-<h2 id="orgbd30f56"><span class="section-number-2">5</span> 删除行</h2>
+<div id="outline-container-org00bbe07" class="outline-2">
+<h2 id="org00bbe07"><span class="section-number-2">5</span> 删除行</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ sed <span style="color: #00afaf;">'d'</span> test.txt  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#25152;&#26377;&#34892;</span>
@@ -174,20 +174,20 @@ $ sed <span style="color: #00afaf;">'/first/,/second/d'</span> test.txt
 </div>
 </div>
 
-<div id="outline-container-org93f3f42" class="outline-2">
-<h2 id="org93f3f42"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> 插入和附加</h2>
+<div id="outline-container-orge9a31af" class="outline-2">
+<h2 id="orge9a31af"><span class="section-number-2">6</span> <span class="todo TODO">TODO</span> 插入和附加</h2>
 </div>
-<div id="outline-container-org7d636c5" class="outline-2">
-<h2 id="org7d636c5"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> 修改整行</h2>
+<div id="outline-container-orgb0f47cc" class="outline-2">
+<h2 id="orgb0f47cc"><span class="section-number-2">7</span> <span class="todo TODO">TODO</span> 修改整行</h2>
 </div>
-<div id="outline-container-orgdecf69f" class="outline-2">
-<h2 id="orgdecf69f"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> 转换单个字符</h2>
+<div id="outline-container-orga13af7f" class="outline-2">
+<h2 id="orga13af7f"><span class="section-number-2">8</span> <span class="todo TODO">TODO</span> 转换单个字符</h2>
 </div>
-<div id="outline-container-orga8c76c9" class="outline-2">
-<h2 id="orga8c76c9"><span class="section-number-2">9</span> <span class="todo TODO">TODO</span> 打印</h2>
+<div id="outline-container-orgd0c7285" class="outline-2">
+<h2 id="orgd0c7285"><span class="section-number-2">9</span> <span class="todo TODO">TODO</span> 打印</h2>
 </div>
-<div id="outline-container-org99b8ee7" class="outline-2">
-<h2 id="org99b8ee7"><span class="section-number-2">10</span> <span class="todo TODO">TODO</span> 写入文件、读取文件</h2>
+<div id="outline-container-orgfb09e63" class="outline-2">
+<h2 id="orgfb09e63"><span class="section-number-2">10</span> <span class="todo TODO">TODO</span> 写入文件、读取文件</h2>
 </div>
 </div>
 <div id="postamble" class="status">

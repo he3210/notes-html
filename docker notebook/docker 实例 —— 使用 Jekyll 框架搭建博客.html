@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker 实例 —— 使用 Jekyll 框架搭建博客</title>
@@ -34,21 +34,21 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2ca50bf">1. 目录结构</a></li>
-<li><a href="#org52383cf">2. 文件 ./jekyll/Dockerfile</a></li>
-<li><a href="#org7a74861">3. 文件 ./apache/Dockerfile</a></li>
-<li><a href="#org8e9e8a5">4. 下载 james_blog 网站</a></li>
-<li><a href="#orga0ae7f4">5. 构建镜像</a></li>
-<li><a href="#orge30aea3">6. 启动 Jekyll 网站</a></li>
-<li><a href="#org791e467">7. 最后 &amp; 总结</a></li>
-<li><a href="#orgf54696b">8. 备份 Jekyll 卷</a></li>
-<li><a href="#orga768a98">9. 拓展</a></li>
+<li><a href="#org6e25555">1. 目录结构</a></li>
+<li><a href="#org7c8c4f2">2. 文件 ./jekyll/Dockerfile</a></li>
+<li><a href="#orgc4d0d5c">3. 文件 ./apache/Dockerfile</a></li>
+<li><a href="#orgcd2ee27">4. 下载 james_blog 网站</a></li>
+<li><a href="#orgf99da35">5. 构建镜像</a></li>
+<li><a href="#orgee20664">6. 启动 Jekyll 网站</a></li>
+<li><a href="#org6f754d4">7. 最后 &amp; 总结</a></li>
+<li><a href="#orgc661373">8. 备份 Jekyll 卷</a></li>
+<li><a href="#org7fd1054">9. 拓展</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2ca50bf" class="outline-2">
-<h2 id="org2ca50bf"><span class="section-number-2">1</span> 目录结构</h2>
+<div id="outline-container-org6e25555" class="outline-2">
+<h2 id="org6e25555"><span class="section-number-2">1</span> 目录结构</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ tree -N /Users/he/test/
@@ -66,8 +66,8 @@
 </div>
 </div>
 
-<div id="outline-container-org52383cf" class="outline-2">
-<h2 id="org52383cf"><span class="section-number-2">2</span> 文件 ./jekyll/Dockerfile</h2>
+<div id="outline-container-org7c8c4f2" class="outline-2">
+<h2 id="org7c8c4f2"><span class="section-number-2">2</span> 文件 ./jekyll/Dockerfile</h2>
 <div class="outline-text-2" id="text-2">
 <pre class="example">
 FROM ubuntu:16.04
@@ -94,8 +94,8 @@ ENTRYPOINT 指令指定自动构建的命令，该命令会将工作目录 <code
 </div>
 </div>
 
-<div id="outline-container-org7a74861" class="outline-2">
-<h2 id="org7a74861"><span class="section-number-2">3</span> 文件 ./apache/Dockerfile</h2>
+<div id="outline-container-orgc4d0d5c" class="outline-2">
+<h2 id="orgc4d0d5c"><span class="section-number-2">3</span> 文件 ./apache/Dockerfile</h2>
 <div class="outline-text-2" id="text-3">
 <pre class="example">
 FROM ubuntu:16.04
@@ -132,8 +132,8 @@ ENTRYPOINT 和 CMD 指令在容器启动时默认运行 Apache<br>
 </div>
 </div>
 
-<div id="outline-container-org8e9e8a5" class="outline-2">
-<h2 id="org8e9e8a5"><span class="section-number-2">4</span> 下载 james_blog 网站</h2>
+<div id="outline-container-orgcd2ee27" class="outline-2">
+<h2 id="orgcd2ee27"><span class="section-number-2">4</span> 下载 james_blog 网站</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-shell">$ git clone https://github.com/jamtur01/james_blog.git
@@ -146,8 +146,8 @@ ENTRYPOINT 和 CMD 指令在容器启动时默认运行 Apache<br>
 </div>
 </div>
 
-<div id="outline-container-orga0ae7f4" class="outline-2">
-<h2 id="orga0ae7f4"><span class="section-number-2">5</span> 构建镜像</h2>
+<div id="outline-container-orgf99da35" class="outline-2">
+<h2 id="orgf99da35"><span class="section-number-2">5</span> 构建镜像</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ cd jekyll
@@ -159,8 +159,8 @@ $ docker build -t he3210/apache .
 </div>
 </div>
 
-<div id="outline-container-orge30aea3" class="outline-2">
-<h2 id="orge30aea3"><span class="section-number-2">6</span> 启动 Jekyll 网站</h2>
+<div id="outline-container-orgee20664" class="outline-2">
+<h2 id="orgee20664"><span class="section-number-2">6</span> 启动 Jekyll 网站</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker run -v /Users/he/test/james_blog:/data/ --name he_blog he3210/jekyll
@@ -185,8 +185,8 @@ $ docker build -t he3210/apache .
 </div>
 </div>
 
-<div id="outline-container-org791e467" class="outline-2">
-<h2 id="org791e467"><span class="section-number-2">7</span> 最后 &amp; 总结</h2>
+<div id="outline-container-org6f754d4" class="outline-2">
+<h2 id="org6f754d4"><span class="section-number-2">7</span> 最后 &amp; 总结</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 查看下 Apache 在宿主机上的端口，在本地浏览器访问博客<br>
@@ -195,8 +195,8 @@ $ docker build -t he3210/apache .
 </div>
 </div>
 
-<div id="outline-container-orgf54696b" class="outline-2">
-<h2 id="orgf54696b"><span class="section-number-2">8</span> 备份 Jekyll 卷</h2>
+<div id="outline-container-orgc661373" class="outline-2">
+<h2 id="orgc661373"><span class="section-number-2">8</span> 备份 Jekyll 卷</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 备份 he_blog 容器中的 <code>/var/www/html</code> 卷到宿主机的当前目录<br>
@@ -212,8 +212,8 @@ $ docker build -t he3210/apache .
 </div>
 </div>
 
-<div id="outline-container-orga768a98" class="outline-2">
-<h2 id="orga768a98"><span class="section-number-2">9</span> 拓展</h2>
+<div id="outline-container-org7fd1054" class="outline-2">
+<h2 id="org7fd1054"><span class="section-number-2">9</span> 拓展</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 web 集群：                运行多个 Apache 容器，在这些容器前加一个负载均衡器。<br>

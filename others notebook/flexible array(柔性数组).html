@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>flexible array(柔性数组)</title>
@@ -34,15 +34,16 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1b4c713">1. main.c</a></li>
-<li><a href="#org99397f4">2. 结果</a></li>
-<li><a href="#org097e942">3. 附</a></li>
+<li><a href="#orgf240073">1. main.c</a></li>
+<li><a href="#org290c1d2">2. 结果</a></li>
+<li><a href="#orgdc7375d">3. 附</a></li>
+<li><a href="#org9a3abdc">4. redis 中 sdshdr 中也用到了柔性数组</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1b4c713" class="outline-2">
-<h2 id="org1b4c713"><span class="section-number-2">1</span> main.c</h2>
+<div id="outline-container-orgf240073" class="outline-2">
+<h2 id="orgf240073"><span class="section-number-2">1</span> main.c</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
@@ -79,8 +80,8 @@
 </div>
 </div>
 
-<div id="outline-container-org99397f4" class="outline-2">
-<h2 id="org99397f4"><span class="section-number-2">2</span> 结果</h2>
+<div id="outline-container-org290c1d2" class="outline-2">
+<h2 id="org290c1d2"><span class="section-number-2">2</span> 结果</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-bash">$ gcc main.c -o main -std=99
@@ -100,8 +101,8 @@ level[7].b = 7,  2204030d
 </div>
 </div>
 
-<div id="outline-container-org097e942" class="outline-2">
-<h2 id="org097e942"><span class="section-number-2">3</span> 附</h2>
+<div id="outline-container-orgdc7375d" class="outline-2">
+<h2 id="orgdc7375d"><span class="section-number-2">3</span> 附</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 如果结构体声明如下<br>
@@ -125,6 +126,19 @@ level[7].b = 7,  2204030d
 <pre class="src src-bash">$ gcc main.c -o main -std=c99
 main.c:16:3: error: flexible array member not at end of struct
   }level[];
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org9a3abdc" class="outline-2">
+<h2 id="org9a3abdc"><span class="section-number-2">4</span> redis 中 sdshdr 中也用到了柔性数组</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">sdshdr</span> {
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">len</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">free</span>;
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">buf</span>[];
+};
 </pre>
 </div>
 </div>

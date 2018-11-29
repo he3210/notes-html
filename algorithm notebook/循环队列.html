@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>循环队列</title>
@@ -34,11 +34,11 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5563541">1. 区分队空队满的三种方法</a>
+<li><a href="#org0571c72">1. 区分队空队满的三种方法</a>
 <ul>
-<li><a href="#orgf26b6be">1.1. 方法一</a></li>
-<li><a href="#org892c846">1.2. 方法二</a></li>
-<li><a href="#org483a8fe">1.3. 方法三</a></li>
+<li><a href="#org643ec7c">1.1. 方法一</a></li>
+<li><a href="#org9c2d951">1.2. 方法二</a></li>
+<li><a href="#orgffbe984">1.3. 方法三</a></li>
 </ul>
 </li>
 </ul>
@@ -53,12 +53,12 @@
 队列长度：(N + q.rear - q.front) % N<br>
 </p>
 
-<div id="outline-container-org5563541" class="outline-2">
-<h2 id="org5563541"><span class="section-number-2">1</span> 区分队空队满的三种方法</h2>
+<div id="outline-container-org0571c72" class="outline-2">
+<h2 id="org0571c72"><span class="section-number-2">1</span> 区分队空队满的三种方法</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgf26b6be" class="outline-3">
-<h3 id="orgf26b6be"><span class="section-number-3">1.1</span> 方法一</h3>
+<div id="outline-container-org643ec7c" class="outline-3">
+<h3 id="org643ec7c"><span class="section-number-3">1.1</span> 方法一</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 队满条件：（q.rear+1) % N = q.front<br>
@@ -116,8 +116,8 @@
 </div>
 </div>
 
-<div id="outline-container-org892c846" class="outline-3">
-<h3 id="org892c846"><span class="section-number-3">1.2</span> 方法二</h3>
+<div id="outline-container-org9c2d951" class="outline-3">
+<h3 id="org9c2d951"><span class="section-number-3">1.2</span> 方法二</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 数据结构中增设表示元素个数的数据成员 q.length。<br>
@@ -127,8 +127,8 @@
 </div>
 </div>
 
-<div id="outline-container-org483a8fe" class="outline-3">
-<h3 id="org483a8fe"><span class="section-number-3">1.3</span> 方法三</h3>
+<div id="outline-container-orgffbe984" class="outline-3">
+<h3 id="orgffbe984"><span class="section-number-3">1.3</span> 方法三</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 数据结构中增设 q.tag 数据成员，以区分是队空还是队满<br>

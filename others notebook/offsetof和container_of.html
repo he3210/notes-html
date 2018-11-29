@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-29 Thu 12:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>offsetof 和 container_of</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">offsetof 和 container_of</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgb2b42e0">1. offsetof</a></li>
+<li><a href="#org0cffb21">2. container_of</a></li>
+<li><a href="#org8ca810f">3. 实验</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb2b42e0" class="outline-2">
+<h2 id="orgb2b42e0"><span class="section-number-2">1</span> offsetof</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+头文件 stddef.h，用于求出一个 struct 或 union 数据类型的给定成员的 size_t 类型的字节偏移值。offsetof() 宏有两个参数，分别是结构名与结构内的成员名<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0cffb21" class="outline-2">
+<h2 id="org0cffb21"><span class="section-number-2">2</span> container_of</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+container_of 宏用来根据成员的地址来获取结构体的地址<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8ca810f" class="outline-2">
+<h2 id="org8ca810f"><span class="section-number-2">3</span> 实验</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">#include &lt;stddef.h&gt;</span>
+
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">NAME_STR_LEN</span>  32
+
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">offsetof</span>(<span style="color: #0087ff;">type</span>, <span style="color: #0087ff;">member</span>) ((<span style="color: #af8700;">size_t</span>)&amp;(((<span style="color: #af8700;">type</span>*)0)-&gt;member))
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">container_of</span>(<span style="color: #0087ff;">ptr</span>, <span style="color: #0087ff;">type</span>, <span style="color: #0087ff;">member</span>) ((<span style="color: #af8700;">type</span> *)((<span style="color: #af8700;">char</span> *)(1 ? (ptr) : &amp;((<span style="color: #af8700;">type</span> *)0)-&gt;member) - offsetof(type, member)))
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">student_info</span>
+{
+    <span style="color: #af8700;">int</span>  <span style="color: #0087ff;">id</span>;
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">name</span>[NAME_STR_LEN];
+    <span style="color: #af8700;">int</span>  <span style="color: #0087ff;">age</span>;
+}<span style="color: #af8700;">student_info</span>;
+
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>()
+{
+    printf(<span style="color: #00afaf;">"id offset: %lu\n"</span>, offsetof(student_info, id));
+    printf(<span style="color: #00afaf;">"name offset: %lu\n"</span>, offsetof(student_info, name));
+    printf(<span style="color: #00afaf;">"age offset: %lu\n"</span>, offsetof(student_info, age));
+
+    <span style="color: #af8700;">student_info</span> *<span style="color: #0087ff;">stu</span> = (<span style="color: #af8700;">student_info</span> *)malloc(<span style="color: #5f8700;">sizeof</span>(student_info));
+    stu-&gt;age = 10;
+    <span style="color: #af8700;">student_info</span> *<span style="color: #0087ff;">ptr</span> = container_of(&amp;(stu-&gt;age), student_info, age);
+    printf(<span style="color: #00afaf;">"stu address:%p\n"</span>, stu);
+    printf(<span style="color: #00afaf;">"ptr address:%p\n"</span>, ptr);
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

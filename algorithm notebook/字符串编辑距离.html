@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>字符串编辑距离</title>
@@ -56,17 +56,17 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org57198ed">1. 问题</a></li>
-<li><a href="#orgca0cd54">2. 分析</a></li>
-<li><a href="#org0318674">3. 状态转移方程</a></li>
-<li><a href="#org2ae9b6f">4. 动态规划</a></li>
-<li><a href="#org2f167eb">5. 备忘录</a></li>
+<li><a href="#org398511b">1. 问题</a></li>
+<li><a href="#orgf68e608">2. 分析</a></li>
+<li><a href="#org0d66d5c">3. 状态转移方程</a></li>
+<li><a href="#orge357eb4">4. 动态规划</a></li>
+<li><a href="#orgabc7c15">5. 备忘录</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org57198ed" class="outline-2">
-<h2 id="org57198ed"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org398511b" class="outline-2">
+<h2 id="org398511b"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 给定一个源串和目标串，能够对串进行如下操作：<br>
@@ -83,8 +83,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgca0cd54" class="outline-2">
-<h2 id="orgca0cd54"><span class="section-number-2">2</span> 分析</h2>
+<div id="outline-container-orgf68e608" class="outline-2">
+<h2 id="orgf68e608"><span class="section-number-2">2</span> 分析</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 增删改的操作数都是1，权值相同，所以不必区分增删改，都是一步操作。<br>
@@ -99,8 +99,8 @@
 </div>
 </div>
 
-<div id="outline-container-org0318674" class="outline-2">
-<h2 id="org0318674"><span class="section-number-2">3</span> 状态转移方程</h2>
+<div id="outline-container-org0d66d5c" class="outline-2">
+<h2 id="org0d66d5c"><span class="section-number-2">3</span> 状态转移方程</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 \[
@@ -123,8 +123,8 @@ c[i, j] 是 X 的前 i 个字符和 Y 的前 j 个字符的最小编辑距离<br
 </div>
 </div>
 
-<div id="outline-container-org2ae9b6f" class="outline-2">
-<h2 id="org2ae9b6f"><span class="section-number-2">4</span> 动态规划</h2>
+<div id="outline-container-orge357eb4" class="outline-2">
+<h2 id="orge357eb4"><span class="section-number-2">4</span> 动态规划</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[2048][2048];
@@ -160,8 +160,8 @@ c[i, j] 是 X 的前 i 个字符和 Y 的前 j 个字符的最小编辑距离<br
 </div>
 </div>
 
-<div id="outline-container-org2f167eb" class="outline-2">
-<h2 id="org2f167eb"><span class="section-number-2">5</span> 备忘录</h2>
+<div id="outline-container-orgabc7c15" class="outline-2">
+<h2 id="orgabc7c15"><span class="section-number-2">5</span> 备忘录</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">INF</span> -1

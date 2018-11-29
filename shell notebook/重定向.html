@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>重定向</title>
@@ -34,11 +34,11 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf2cb91d">1. 重定向输入 n&lt; (input redirection)</a></li>
-<li><a href="#orgc213776">2. 重定向输出 n&gt; (output redirection)</a></li>
-<li><a href="#orgda1d65b">3. /dev/null</a></li>
-<li><a href="#orgcb408c0">4. I/O Redirection的优先级</a></li>
-<li><a href="#org8bfeecc">5. 管道</a></li>
+<li><a href="#org0f78665">1. 重定向输入 n&lt; (input redirection)</a></li>
+<li><a href="#org14c2713">2. 重定向输出 n&gt; (output redirection)</a></li>
+<li><a href="#org4ca51d6">3. /dev/null</a></li>
+<li><a href="#org33c2aa8">4. I/O Redirection的优先级</a></li>
+<li><a href="#org4cf7638">5. 管道</a></li>
 </ul>
 </div>
 </div>
@@ -46,8 +46,8 @@
 重定向按照从左到右进行处理<br>
 </p>
 
-<div id="outline-container-orgf2cb91d" class="outline-2">
-<h2 id="orgf2cb91d"><span class="section-number-2">1</span> 重定向输入 n&lt; (input redirection)</h2>
+<div id="outline-container-org0f78665" class="outline-2">
+<h2 id="org0f78665"><span class="section-number-2">1</span> 重定向输入 n&lt; (input redirection)</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ cat &lt; aa.log    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36755;&#20837;&#37325;&#23450;&#21521;&#20026; aa.log&#12290;&lt; &#40664;&#35748;&#20540;&#26159; 0&lt;</span>
@@ -61,8 +61,8 @@ $ cat &lt;&lt;EOF       <span style="color: #8a8a8a;"># </span><span style="colo
 </div>
 </div>
 
-<div id="outline-container-orgc213776" class="outline-2">
-<h2 id="orgc213776"><span class="section-number-2">2</span> 重定向输出 n&gt; (output redirection)</h2>
+<div id="outline-container-org14c2713" class="outline-2">
+<h2 id="org14c2713"><span class="section-number-2">2</span> 重定向输出 n&gt; (output redirection)</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li><code>1&gt;file</code>        改变 stdout 的输出通道（&gt; 默认值是 1&gt;）<br></li>
@@ -82,8 +82,8 @@ $ ls my.file no.such.file &gt;&amp;file.both
 </div>
 </div>
 
-<div id="outline-container-orgda1d65b" class="outline-2">
-<h2 id="orgda1d65b"><span class="section-number-2">3</span> /dev/null</h2>
+<div id="outline-container-org4ca51d6" class="outline-2">
+<h2 id="org4ca51d6"><span class="section-number-2">3</span> /dev/null</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 将fd 1跟fd 2重定向到 /dev/null 去，就可忽略stdout, stderr的输出。<br>
@@ -99,8 +99,8 @@ $ ls my.file no.such.file &amp;&gt;/dev/null       <span style="color: #8a8a8a;"
 </div>
 </div>
 
-<div id="outline-container-orgcb408c0" class="outline-2">
-<h2 id="orgcb408c0"><span class="section-number-2">4</span> I/O Redirection的优先级</h2>
+<div id="outline-container-org33c2aa8" class="outline-2">
+<h2 id="org33c2aa8"><span class="section-number-2">4</span> I/O Redirection的优先级</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-shell">$ cat &lt;aa.log &gt;aa.log    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312; IO Redirection &#20013;, stdout &#19982; stderr &#30340;&#31649;&#36947;&#20250;&#20808;&#20934;&#22791;&#22909;&#65292;&#25165;&#20250;&#20174; stdin &#35835;&#20837;&#25968;&#25454;&#12290;&gt;aa.log &#20250;&#20808;&#28165;&#31354; aa.log&#65292;&#28982;&#21518;&#25165;&#35835;&#20837; &lt;aa.log&#65292;&#35835;&#20837;&#20869;&#23481;&#20026;&#31354;&#65292;&#36755;&#20986;&#20026;&#31354;&#65292;&#25152;&#20197; aa.log &#26368;&#21518;&#27809;&#26377;&#25968;&#25454;</span>
@@ -116,8 +116,8 @@ $ cat &lt;&gt;aa.log           <span style="color: #8a8a8a;"># </span><span styl
 </div>
 </div>
 
-<div id="outline-container-org8bfeecc" class="outline-2">
-<h2 id="org8bfeecc"><span class="section-number-2">5</span> 管道</h2>
+<div id="outline-container-org4cf7638" class="outline-2">
+<h2 id="org4cf7638"><span class="section-number-2">5</span> 管道</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 问题：用管道连接的多个命令，保存其中一个命令的输出<br>

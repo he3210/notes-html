@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>git 常用命令</title>
@@ -34,17 +34,17 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3be72c5">1. 参考</a></li>
-<li><a href="#org08e650e">2. 新建代码库</a></li>
-<li><a href="#org79322f0">3. 配置</a></li>
-<li><a href="#orgce407e9">4. 增加/删除文件</a></li>
-<li><a href="#orgd6b4839">5. 代码提交</a></li>
-<li><a href="#org2f52609">6. 分支</a></li>
-<li><a href="#orgd69e82b">7. 标签</a></li>
-<li><a href="#org58aec17">8. 查看信息</a></li>
-<li><a href="#org7e62fb0">9. 远程同步</a></li>
-<li><a href="#orgfb70300">10. 撤销</a></li>
-<li><a href="#org958a641">11. 其他</a></li>
+<li><a href="#orgae12526">1. 参考</a></li>
+<li><a href="#org77e31e6">2. 新建代码库</a></li>
+<li><a href="#orgde6f809">3. 配置</a></li>
+<li><a href="#org6e262fc">4. 增加/删除文件</a></li>
+<li><a href="#org028cfb6">5. 代码提交</a></li>
+<li><a href="#org6faf562">6. 分支</a></li>
+<li><a href="#orgf49f6d1">7. 标签</a></li>
+<li><a href="#org815493b">8. 查看信息</a></li>
+<li><a href="#org5ee42b1">9. 远程同步</a></li>
+<li><a href="#org890549c">10. 撤销</a></li>
+<li><a href="#orge9b2203">11. 其他</a></li>
 </ul>
 </div>
 </div>
@@ -61,8 +61,8 @@
 <li>Remote：远程仓库<br></li>
 </ul>
 
-<div id="outline-container-org3be72c5" class="outline-2">
-<h2 id="org3be72c5"><span class="section-number-2">1</span> 参考</h2>
+<div id="outline-container-orgae12526" class="outline-2">
+<h2 id="orgae12526"><span class="section-number-2">1</span> 参考</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000">廖雪峰 Git 教程</a><br></li>
@@ -72,8 +72,8 @@
 </div>
 </div>
 
-<div id="outline-container-org08e650e" class="outline-2">
-<h2 id="org08e650e"><span class="section-number-2">2</span> 新建代码库</h2>
+<div id="outline-container-org77e31e6" class="outline-2">
+<h2 id="org77e31e6"><span class="section-number-2">2</span> 新建代码库</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ git init                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#24403;&#21069;&#30446;&#24405;&#26032;&#24314;&#19968;&#20010;Git&#20195;&#30721;&#24211;</span>
@@ -84,8 +84,8 @@ $ git clone [url]                <span style="color: #8a8a8a;"># </span><span st
 </div>
 </div>
 
-<div id="outline-container-org79322f0" class="outline-2">
-<h2 id="org79322f0"><span class="section-number-2">3</span> 配置</h2>
+<div id="outline-container-orgde6f809" class="outline-2">
+<h2 id="orgde6f809"><span class="section-number-2">3</span> 配置</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）。<br>
@@ -101,8 +101,8 @@ $ git config [--global] user.email <span style="color: #00afaf;">"[email address
 </div>
 </div>
 
-<div id="outline-container-orgce407e9" class="outline-2">
-<h2 id="orgce407e9"><span class="section-number-2">4</span> 增加/删除文件</h2>
+<div id="outline-container-org6e262fc" class="outline-2">
+<h2 id="org6e262fc"><span class="section-number-2">4</span> 增加/删除文件</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-shell">$ git add [file1] [file2] ...            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28155;&#21152;&#25351;&#23450;&#25991;&#20214;&#21040;&#26242;&#23384;&#21306;</span>
@@ -117,8 +117,8 @@ $ git mv [file-original] [file-renamed]  <span style="color: #8a8a8a;"># </span>
 </div>
 </div>
 
-<div id="outline-container-orgd6b4839" class="outline-2">
-<h2 id="orgd6b4839"><span class="section-number-2">5</span> 代码提交</h2>
+<div id="outline-container-org028cfb6" class="outline-2">
+<h2 id="org028cfb6"><span class="section-number-2">5</span> 代码提交</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ git commit -m [message]                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#26242;&#23384;&#21306;&#21040;&#20179;&#24211;&#21306;</span>
@@ -132,8 +132,8 @@ $ git commit --amend [file1] [file2] ...       <span style="color: #8a8a8a;"># <
 </div>
 </div>
 
-<div id="outline-container-org2f52609" class="outline-2">
-<h2 id="org2f52609"><span class="section-number-2">6</span> 分支</h2>
+<div id="outline-container-org6faf562" class="outline-2">
+<h2 id="org6faf562"><span class="section-number-2">6</span> 分支</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ git branch                                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377;&#26412;&#22320;&#20998;&#25903;</span>
@@ -159,8 +159,8 @@ $ git branch --no-merged                              <span style="color: #8a8a8
 </div>
 </div>
 
-<div id="outline-container-orgd69e82b" class="outline-2">
-<h2 id="orgd69e82b"><span class="section-number-2">7</span> 标签</h2>
+<div id="outline-container-orgf49f6d1" class="outline-2">
+<h2 id="orgf49f6d1"><span class="section-number-2">7</span> 标签</h2>
 <div class="outline-text-2" id="text-7">
 <div class="org-src-container">
 <pre class="src src-shell">$ git tag                               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377;tag</span>
@@ -177,8 +177,8 @@ $ git checkout -b [branch] [tag]        <span style="color: #8a8a8a;"># </span><
 </div>
 </div>
 
-<div id="outline-container-org58aec17" class="outline-2">
-<h2 id="org58aec17"><span class="section-number-2">8</span> 查看信息</h2>
+<div id="outline-container-org815493b" class="outline-2">
+<h2 id="org815493b"><span class="section-number-2">8</span> 查看信息</h2>
 <div class="outline-text-2" id="text-8">
 <div class="org-src-container">
 <pre class="src src-shell">$ git status                                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26377;&#21464;&#26356;&#30340;&#25991;&#20214;</span>
@@ -208,8 +208,8 @@ $ git reflog                                 <span style="color: #8a8a8a;"># </s
 </div>
 </div>
 
-<div id="outline-container-org7e62fb0" class="outline-2">
-<h2 id="org7e62fb0"><span class="section-number-2">9</span> 远程同步</h2>
+<div id="outline-container-org5ee42b1" class="outline-2">
+<h2 id="org5ee42b1"><span class="section-number-2">9</span> 远程同步</h2>
 <div class="outline-text-2" id="text-9">
 <div class="org-src-container">
 <pre class="src src-shell">$ git fetch [remote]                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#19979;&#36733;&#36828;&#31243;&#20179;&#24211;&#30340;&#25152;&#26377;&#21464;&#21160;</span>
@@ -225,8 +225,8 @@ $ git push [remote] --all             <span style="color: #8a8a8a;"># </span><sp
 </div>
 </div>
 
-<div id="outline-container-orgfb70300" class="outline-2">
-<h2 id="orgfb70300"><span class="section-number-2">10</span> 撤销</h2>
+<div id="outline-container-org890549c" class="outline-2">
+<h2 id="org890549c"><span class="section-number-2">10</span> 撤销</h2>
 <div class="outline-text-2" id="text-10">
 <div class="org-src-container">
 <pre class="src src-shell">$ git checkout [file]             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24674;&#22797;&#26242;&#23384;&#21306;&#30340;&#25351;&#23450;&#25991;&#20214;&#21040;&#24037;&#20316;&#21306;</span>
@@ -246,8 +246,8 @@ $ git stash pop
 </div>
 </div>
 
-<div id="outline-container-org958a641" class="outline-2">
-<h2 id="org958a641"><span class="section-number-2">11</span> 其他</h2>
+<div id="outline-container-orge9b2203" class="outline-2">
+<h2 id="orge9b2203"><span class="section-number-2">11</span> 其他</h2>
 <div class="outline-text-2" id="text-11">
 <div class="org-src-container">
 <pre class="src src-shell">$ git archive  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#29983;&#25104;&#19968;&#20010;&#21487;&#20379;&#21457;&#24067;&#30340;&#21387;&#32553;&#21253;</span>

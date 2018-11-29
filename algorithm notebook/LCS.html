@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LCS</title>
@@ -56,10 +56,10 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0ddd36d">1. 问题</a></li>
-<li><a href="#org5761d41">2. 状态转移方程</a></li>
-<li><a href="#org6089a8b">3. 动态规划</a></li>
-<li><a href="#orgf207e1a">4. 备忘录</a></li>
+<li><a href="#org0b728a6">1. 问题</a></li>
+<li><a href="#orgfbf5fa4">2. 状态转移方程</a></li>
+<li><a href="#orgf4473c8">3. 动态规划</a></li>
+<li><a href="#orga24b3ff">4. 备忘录</a></li>
 </ul>
 </div>
 </div>
@@ -68,8 +68,8 @@ LCS(Longest Common Subsequence) 问题即最长公共子序列问题。<br>
 例如：字符串 ABCBDAB 和 BDCABA，字符串 BCBA 和 BDAB 都是它们的最长公共子序列<br>
 </p>
 
-<div id="outline-container-org0ddd36d" class="outline-2">
-<h2 id="org0ddd36d"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org0b728a6" class="outline-2">
+<h2 id="org0b728a6"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 请编写一个函数，输入两个字符串，求它们的最长公共子序列长度。<br>
@@ -77,8 +77,8 @@ LCS(Longest Common Subsequence) 问题即最长公共子序列问题。<br>
 </div>
 </div>
 
-<div id="outline-container-org5761d41" class="outline-2">
-<h2 id="org5761d41"><span class="section-number-2">2</span> 状态转移方程</h2>
+<div id="outline-container-orgfbf5fa4" class="outline-2">
+<h2 id="orgfbf5fa4"><span class="section-number-2">2</span> 状态转移方程</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 \[
@@ -100,8 +100,8 @@ c[i, j] 是 X 的前 i 个字符和 Y 的前 j 个字符的最长公共子序列
 </div>
 </div>
 
-<div id="outline-container-org6089a8b" class="outline-2">
-<h2 id="org6089a8b"><span class="section-number-2">3</span> 动态规划</h2>
+<div id="outline-container-orgf4473c8" class="outline-2">
+<h2 id="orgf4473c8"><span class="section-number-2">3</span> 动态规划</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">c</span>[100][100];
@@ -133,8 +133,8 @@ c[i, j] 是 X 的前 i 个字符和 Y 的前 j 个字符的最长公共子序列
 </div>
 </div>
 
-<div id="outline-container-orgf207e1a" class="outline-2">
-<h2 id="orgf207e1a"><span class="section-number-2">4</span> 备忘录</h2>
+<div id="outline-container-orga24b3ff" class="outline-2">
+<h2 id="orga24b3ff"><span class="section-number-2">4</span> 备忘录</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;"># define</span> <span style="color: #0087ff;">INF</span> -1

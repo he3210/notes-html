@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>libevent源码&#x2013;TAILQ队列</title>
@@ -34,16 +34,16 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4803bc8">1. TAILQ 队列结构图</a></li>
-<li><a href="#org225e1d7">2. TAILQ 队列源码</a></li>
-<li><a href="#org5c4c7b9">3. 注意</a></li>
-<li><a href="#org89cbcec">4. TAILQ 队列的使用</a></li>
+<li><a href="#orgb635168">1. TAILQ 队列结构图</a></li>
+<li><a href="#org3c4310a">2. TAILQ 队列源码</a></li>
+<li><a href="#org2ec46f5">3. 注意</a></li>
+<li><a href="#org215a6a2">4. TAILQ 队列的使用</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4803bc8" class="outline-2">
-<h2 id="org4803bc8"><span class="section-number-2">1</span> TAILQ 队列结构图</h2>
+<div id="outline-container-orgb635168" class="outline-2">
+<h2 id="orgb635168"><span class="section-number-2">1</span> TAILQ 队列结构图</h2>
 <div class="outline-text-2" id="text-1">
 
 <div class="figure">
@@ -67,8 +67,8 @@
 </div>
 </div>
 
-<div id="outline-container-org225e1d7" class="outline-2">
-<h2 id="org225e1d7"><span class="section-number-2">2</span> TAILQ 队列源码</h2>
+<div id="outline-container-org3c4310a" class="outline-2">
+<h2 id="org3c4310a"><span class="section-number-2">2</span> TAILQ 队列源码</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#20041;&#38431;&#21015;&#30340;&#22836;&#32467;&#28857;&#32467;&#26500;&#20307;&#30340;&#23439;</span>
@@ -190,8 +190,8 @@
 </div>
 </div>
 
-<div id="outline-container-org5c4c7b9" class="outline-2">
-<h2 id="org5c4c7b9"><span class="section-number-2">3</span> 注意</h2>
+<div id="outline-container-org2ec46f5" class="outline-2">
+<h2 id="org2ec46f5"><span class="section-number-2">3</span> 注意</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 为什么宏 TAILQ_LAST 和 TAILQ_PREV 中将 (head)-&gt;tqh_last) 转换为 TAILQ_HEAD 而不是转换为 TAILQ_ENTRY?<br>
@@ -201,8 +201,8 @@
 </div>
 </div>
 
-<div id="outline-container-org89cbcec" class="outline-2">
-<h2 id="org89cbcec"><span class="section-number-2">4</span> TAILQ 队列的使用</h2>
+<div id="outline-container-org215a6a2" class="outline-2">
+<h2 id="org215a6a2"><span class="section-number-2">4</span> TAILQ 队列的使用</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AF_INET 域与 AF_UNIX 域 socket 通信原理区别</title>
@@ -34,17 +34,17 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd6906ff">1. AF_INET 域 socket 通信过程</a></li>
-<li><a href="#orgdd3ed7c">2. AF_UNIX 域 socket 通信过程</a></li>
-<li><a href="#orgac921b9">3. 相同点</a></li>
-<li><a href="#org79538f5">4. 不同点</a></li>
-<li><a href="#org87e036c">5. 使用场景</a></li>
+<li><a href="#org2dea8b2">1. AF_INET 域 socket 通信过程</a></li>
+<li><a href="#orgdfe968e">2. AF_UNIX 域 socket 通信过程</a></li>
+<li><a href="#orgc540762">3. 相同点</a></li>
+<li><a href="#orgec400fc">4. 不同点</a></li>
+<li><a href="#org23856e7">5. 使用场景</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd6906ff" class="outline-2">
-<h2 id="orgd6906ff"><span class="section-number-2">1</span> AF_INET 域 socket 通信过程</h2>
+<div id="outline-container-org2dea8b2" class="outline-2">
+<h2 id="org2dea8b2"><span class="section-number-2">1</span> AF_INET 域 socket 通信过程</h2>
 <div class="outline-text-2" id="text-1">
 
 <div class="figure">
@@ -60,8 +60,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgdd3ed7c" class="outline-2">
-<h2 id="orgdd3ed7c"><span class="section-number-2">2</span> AF_UNIX 域 socket 通信过程</h2>
+<div id="outline-container-orgdfe968e" class="outline-2">
+<h2 id="orgdfe968e"><span class="section-number-2">2</span> AF_UNIX 域 socket 通信过程</h2>
 <div class="outline-text-2" id="text-2">
 
 <div class="figure">
@@ -75,8 +75,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgac921b9" class="outline-2">
-<h2 id="orgac921b9"><span class="section-number-2">3</span> 相同点</h2>
+<div id="outline-container-orgc540762" class="outline-2">
+<h2 id="orgc540762"><span class="section-number-2">3</span> 相同点</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 操作系统提供的接口 socket(), bind(), connect(), accept(), send(), recv()，以及用来对其进行多路复用事件检测的 select(), poll(), epoll() 都是完全相同的。收发数据的过程中，上层应用感知不到底层的差别。<br>
@@ -84,8 +84,8 @@
 </div>
 </div>
 
-<div id="outline-container-org79538f5" class="outline-2">
-<h2 id="org79538f5"><span class="section-number-2">4</span> 不同点</h2>
+<div id="outline-container-orgec400fc" class="outline-2">
+<h2 id="orgec400fc"><span class="section-number-2">4</span> 不同点</h2>
 <div class="outline-text-2" id="text-4">
 <ol class="org-ol">
 <li>建立 socket 传递的地址域，及 bind() 的地址结构稍有区别：<br>
@@ -100,8 +100,8 @@
 </div>
 </div>
 
-<div id="outline-container-org87e036c" class="outline-2">
-<h2 id="org87e036c"><span class="section-number-2">5</span> 使用场景</h2>
+<div id="outline-container-org23856e7" class="outline-2">
+<h2 id="org23856e7"><span class="section-number-2">5</span> 使用场景</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 AF_UNIX 由于其对系统 cpu 的较少消耗，不受限于网卡带宽，及高效的传递速率，本机通信则首选 AF_UNIX 域。<br>

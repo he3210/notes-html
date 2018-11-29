@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ac 自动机</title>
@@ -56,23 +56,23 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge51d11c">1. 参考</a></li>
-<li><a href="#org2a8e8fa">2. 问题</a></li>
-<li><a href="#org6e35859">3. 解题思路</a></li>
-<li><a href="#org4cb63e5">4. Aho–Corasick algorithm</a></li>
-<li><a href="#org119d58f">5. 解法一</a>
+<li><a href="#org66e84ad">1. 参考</a></li>
+<li><a href="#orge127d77">2. 问题</a></li>
+<li><a href="#orge2c2a5e">3. 解题思路</a></li>
+<li><a href="#orged8f9a2">4. Aho–Corasick algorithm</a></li>
+<li><a href="#org81966ea">5. 解法一</a>
 <ul>
-<li><a href="#org47d5a9b">5.1. trie + fail 指针的一般解法</a></li>
-<li><a href="#orgcdf45c2">5.2. 进一步优化</a></li>
+<li><a href="#org66618d8">5.1. trie + fail 指针的一般解法</a></li>
+<li><a href="#org9a3cd1f">5.2. 进一步优化</a></li>
 </ul>
 </li>
-<li><a href="#orgd5a9e17">6. 解法二：使用数组存储 trie 图</a></li>
+<li><a href="#orgbc1c556">6. 解法二：使用数组存储 trie 图</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge51d11c" class="outline-2">
-<h2 id="orge51d11c"><span class="section-number-2">1</span> 参考</h2>
+<div id="outline-container-org66e84ad" class="outline-2">
+<h2 id="org66e84ad"><span class="section-number-2">1</span> 参考</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><a href="https://zh.wikipedia.org/wiki/AC%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%AE%97%E6%B3%95">wiki-AC自动机算法</a><br></li>
@@ -81,8 +81,8 @@
 </div>
 </div>
 
-<div id="outline-container-org2a8e8fa" class="outline-2">
-<h2 id="org2a8e8fa"><span class="section-number-2">2</span> 问题</h2>
+<div id="outline-container-orge127d77" class="outline-2">
+<h2 id="orge127d77"><span class="section-number-2">2</span> 问题</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 给一个很长的文本，长度为 n，然后再给 m 个模式串。求这 m 个模式串中有多少个是这个文本的子串。<br>
@@ -94,8 +94,8 @@
 </div>
 </div>
 
-<div id="outline-container-org6e35859" class="outline-2">
-<h2 id="org6e35859"><span class="section-number-2">3</span> 解题思路</h2>
+<div id="outline-container-orge2c2a5e" class="outline-2">
+<h2 id="orge2c2a5e"><span class="section-number-2">3</span> 解题思路</h2>
 <div class="outline-text-2" id="text-3">
 <ol class="org-ol">
 <li><code>暴力破解</code>  时间复杂度为 O(n*m*len(m))，显然时间复杂度太高<br></li>
@@ -133,8 +133,8 @@ ac 自动机算法时间复杂度为 O(n+len(m)*m)<br>
 </div>
 </div>
 
-<div id="outline-container-org4cb63e5" class="outline-2">
-<h2 id="org4cb63e5"><span class="section-number-2">4</span> Aho–Corasick algorithm</h2>
+<div id="outline-container-orged8f9a2" class="outline-2">
+<h2 id="orged8f9a2"><span class="section-number-2">4</span> Aho–Corasick algorithm</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 在<a href="https://zh.wikipedia.org/wiki/AC%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%AE%97%E6%B3%95">维基百科</a>中 AC 自动机的简介如下<br>
@@ -168,12 +168,12 @@ AC 自动机是一个 <code>确定有限状态自动机</code> ，确定有限�
 </div>
 </div>
 
-<div id="outline-container-org119d58f" class="outline-2">
-<h2 id="org119d58f"><span class="section-number-2">5</span> 解法一</h2>
+<div id="outline-container-org81966ea" class="outline-2">
+<h2 id="org81966ea"><span class="section-number-2">5</span> 解法一</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org47d5a9b" class="outline-3">
-<h3 id="org47d5a9b"><span class="section-number-3">5.1</span> trie + fail 指针的一般解法</h3>
+<div id="outline-container-org66618d8" class="outline-3">
+<h3 id="org66618d8"><span class="section-number-3">5.1</span> trie + fail 指针的一般解法</h3>
 <div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
 <pre class="src src-c++"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdio&gt;</span>
@@ -332,8 +332,8 @@ Found 2 pattern strings
 </div>
 </div>
 
-<div id="outline-container-orgcdf45c2" class="outline-3">
-<h3 id="orgcdf45c2"><span class="section-number-3">5.2</span> 进一步优化</h3>
+<div id="outline-container-org9a3cd1f" class="outline-3">
+<h3 id="org9a3cd1f"><span class="section-number-3">5.2</span> 进一步优化</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 该解法并不符合 <code>确定有限状态自动机</code> 的定义。原因如下：<br>
@@ -419,8 +419,8 @@ Found 2 pattern strings
 </div>
 </div>
 
-<div id="outline-container-orgd5a9e17" class="outline-2">
-<h2 id="orgd5a9e17"><span class="section-number-2">6</span> 解法二：使用数组存储 trie 图</h2>
+<div id="outline-container-orgbc1c556" class="outline-2">
+<h2 id="orgbc1c556"><span class="section-number-2">6</span> 解法二：使用数组存储 trie 图</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-c++"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdio&gt;</span>

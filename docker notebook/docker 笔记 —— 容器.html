@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker 笔记 —— 容器</title>
@@ -34,32 +34,32 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbe00c9e">1. 根据镜像创建容器并在容器中执行命令</a>
+<li><a href="#org08dd44f">1. 根据镜像创建容器并在容器中执行命令</a>
 <ul>
-<li><a href="#org2549000">1.1. 基本命令</a></li>
-<li><a href="#org7e401b8">1.2. 其它常用命令示例</a></li>
+<li><a href="#org18909d2">1.1. 基本命令</a></li>
+<li><a href="#org4ca1ef1">1.2. 其它常用命令示例</a></li>
 </ul>
 </li>
-<li><a href="#orga8279c0">2. 列出 docker 容器</a></li>
-<li><a href="#org8918631">3. 查看指定容器的端口被映射到哪了</a></li>
-<li><a href="#org9fc2277">4. 停止容器运行</a></li>
-<li><a href="#org6d2a4fc">5. 启动已经停止的容器</a></li>
-<li><a href="#org0a299a8">6. 列出容器日志</a></li>
-<li><a href="#orgd1cbe2b">7. 列出容器内进程</a></li>
-<li><a href="#org4dd60ad">8. 动态展示指定的一个或多个容器的统计信息</a></li>
-<li><a href="#orga3d7ec9">9. 在容器内部运行进程</a></li>
-<li><a href="#org288d286">10. 获取指定容器/镜像的元数据</a></li>
-<li><a href="#org9b69491">11. 删除容器</a></li>
+<li><a href="#orgf296e81">2. 列出 docker 容器</a></li>
+<li><a href="#orgbb9d629">3. 查看指定容器的端口被映射到哪了</a></li>
+<li><a href="#orgc5d3fcf">4. 停止容器运行</a></li>
+<li><a href="#org4e45ddc">5. 启动已经停止的容器</a></li>
+<li><a href="#org89641eb">6. 列出容器日志</a></li>
+<li><a href="#org916ad64">7. 列出容器内进程</a></li>
+<li><a href="#org3af288c">8. 动态展示指定的一个或多个容器的统计信息</a></li>
+<li><a href="#org47c2e36">9. 在容器内部运行进程</a></li>
+<li><a href="#orgeebc008">10. 获取指定容器/镜像的元数据</a></li>
+<li><a href="#org6008f12">11. 删除容器</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbe00c9e" class="outline-2">
-<h2 id="orgbe00c9e"><span class="section-number-2">1</span> 根据镜像创建容器并在容器中执行命令</h2>
+<div id="outline-container-org08dd44f" class="outline-2">
+<h2 id="org08dd44f"><span class="section-number-2">1</span> 根据镜像创建容器并在容器中执行命令</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org2549000" class="outline-3">
-<h3 id="org2549000"><span class="section-number-3">1.1</span> 基本命令</h3>
+<div id="outline-container-org18909d2" class="outline-3">
+<h3 id="org18909d2"><span class="section-number-3">1.1</span> 基本命令</h3>
 <div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker run -i -t ubuntu /bin/bash
@@ -85,8 +85,8 @@
 </div>
 </div>
 
-<div id="outline-container-org7e401b8" class="outline-3">
-<h3 id="org7e401b8"><span class="section-number-3">1.2</span> 其它常用命令示例</h3>
+<div id="outline-container-org4ca1ef1" class="outline-3">
+<h3 id="org4ca1ef1"><span class="section-number-3">1.2</span> 其它常用命令示例</h3>
 <div class="outline-text-3" id="text-1-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker run --name bob_the_container -i -t ubuntu /bin/bash
@@ -127,8 +127,8 @@ $ docker run -d -P --volumes-from he_blog --name server_blog he3210/apache
 </div>
 </div>
 
-<div id="outline-container-orga8279c0" class="outline-2">
-<h2 id="orga8279c0"><span class="section-number-2">2</span> 列出 docker 容器</h2>
+<div id="outline-container-orgf296e81" class="outline-2">
+<h2 id="orgf296e81"><span class="section-number-2">2</span> 列出 docker 容器</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker ps       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#27491;&#22312;&#36816;&#34892;&#30340; docker &#23481;&#22120;</span>
@@ -141,8 +141,8 @@ $ docker ps -q    <span style="color: #8a8a8a;"># </span><span style="color: #8a
 </div>
 </div>
 
-<div id="outline-container-org8918631" class="outline-2">
-<h2 id="org8918631"><span class="section-number-2">3</span> 查看指定容器的端口被映射到哪了</h2>
+<div id="outline-container-orgbb9d629" class="outline-2">
+<h2 id="orgbb9d629"><span class="section-number-2">3</span> 查看指定容器的端口被映射到哪了</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker port static_web 80
@@ -156,8 +156,8 @@ $ docker ps -q    <span style="color: #8a8a8a;"># </span><span style="color: #8a
 </div>
 </div>
 
-<div id="outline-container-org9fc2277" class="outline-2">
-<h2 id="org9fc2277"><span class="section-number-2">4</span> 停止容器运行</h2>
+<div id="outline-container-orgc5d3fcf" class="outline-2">
+<h2 id="orgc5d3fcf"><span class="section-number-2">4</span> 停止容器运行</h2>
 <div class="outline-text-2" id="text-4">
 <ol class="org-ol">
 <li><p>
@@ -179,8 +179,8 @@ $ docker ps -q    <span style="color: #8a8a8a;"># </span><span style="color: #8a
 </div>
 </div>
 
-<div id="outline-container-org6d2a4fc" class="outline-2">
-<h2 id="org6d2a4fc"><span class="section-number-2">5</span> 启动已经停止的容器</h2>
+<div id="outline-container-org4e45ddc" class="outline-2">
+<h2 id="org4e45ddc"><span class="section-number-2">5</span> 启动已经停止的容器</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker start bob_the_container    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21551;&#21160;</span>
@@ -195,8 +195,8 @@ $ docker attach bob_the_container   <span style="color: #8a8a8a;"># </span><span
 </div>
 </div>
 
-<div id="outline-container-org0a299a8" class="outline-2">
-<h2 id="org0a299a8"><span class="section-number-2">6</span> 列出容器日志</h2>
+<div id="outline-container-org89641eb" class="outline-2">
+<h2 id="org89641eb"><span class="section-number-2">6</span> 列出容器日志</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker logs daemon_dave
@@ -212,8 +212,8 @@ $ docker logs --tail 0 -ft daemon_dave <span style="color: #8a8a8a;"># </span><s
 </div>
 </div>
 
-<div id="outline-container-orgd1cbe2b" class="outline-2">
-<h2 id="orgd1cbe2b"><span class="section-number-2">7</span> 列出容器内进程</h2>
+<div id="outline-container-org916ad64" class="outline-2">
+<h2 id="org916ad64"><span class="section-number-2">7</span> 列出容器内进程</h2>
 <div class="outline-text-2" id="text-7">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker top daemon_dwayne
@@ -222,8 +222,8 @@ $ docker logs --tail 0 -ft daemon_dave <span style="color: #8a8a8a;"># </span><s
 </div>
 </div>
 
-<div id="outline-container-org4dd60ad" class="outline-2">
-<h2 id="org4dd60ad"><span class="section-number-2">8</span> 动态展示指定的一个或多个容器的统计信息</h2>
+<div id="outline-container-org3af288c" class="outline-2">
+<h2 id="org3af288c"><span class="section-number-2">8</span> 动态展示指定的一个或多个容器的统计信息</h2>
 <div class="outline-text-2" id="text-8">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker stats daemon_dave daemon_dwayne
@@ -232,8 +232,8 @@ $ docker logs --tail 0 -ft daemon_dave <span style="color: #8a8a8a;"># </span><s
 </div>
 </div>
 
-<div id="outline-container-orga3d7ec9" class="outline-2">
-<h2 id="orga3d7ec9"><span class="section-number-2">9</span> 在容器内部运行进程</h2>
+<div id="outline-container-org47c2e36" class="outline-2">
+<h2 id="org47c2e36"><span class="section-number-2">9</span> 在容器内部运行进程</h2>
 <div class="outline-text-2" id="text-9">
 <ol class="org-ol">
 <li><p>
@@ -255,8 +255,8 @@ $ docker logs --tail 0 -ft daemon_dave <span style="color: #8a8a8a;"># </span><s
 </div>
 </div>
 
-<div id="outline-container-org288d286" class="outline-2">
-<h2 id="org288d286"><span class="section-number-2">10</span> 获取指定容器/镜像的元数据</h2>
+<div id="outline-container-orgeebc008" class="outline-2">
+<h2 id="orgeebc008"><span class="section-number-2">10</span> 获取指定容器/镜像的元数据</h2>
 <div class="outline-text-2" id="text-10">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker inspect daemon_dave
@@ -266,8 +266,8 @@ $ docker inspect he3210/apache2:webserver
 </div>
 </div>
 
-<div id="outline-container-org9b69491" class="outline-2">
-<h2 id="org9b69491"><span class="section-number-2">11</span> 删除容器</h2>
+<div id="outline-container-org6008f12" class="outline-2">
+<h2 id="org6008f12"><span class="section-number-2">11</span> 删除容器</h2>
 <div class="outline-text-2" id="text-11">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker rm 9b8edf8426f1

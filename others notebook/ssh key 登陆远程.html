@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ssh key 登陆远程</title>
@@ -34,16 +34,16 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgee8fdf9">1. 生成 public_key 和 private_key</a></li>
-<li><a href="#org56e0e93">2. 公钥拷贝到远程</a></li>
-<li><a href="#org7922e3a">3. 修改本机的配置文件</a></li>
-<li><a href="#orgf167763">4. 登陆</a></li>
+<li><a href="#orge43b1e1">1. 生成 public_key 和 private_key</a></li>
+<li><a href="#org6172816">2. 公钥拷贝到远程</a></li>
+<li><a href="#org4948e1e">3. 修改本机的配置文件</a></li>
+<li><a href="#org4f48019">4. 使用</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgee8fdf9" class="outline-2">
-<h2 id="orgee8fdf9"><span class="section-number-2">1</span> 生成 public_key 和 private_key</h2>
+<div id="outline-container-orge43b1e1" class="outline-2">
+<h2 id="orge43b1e1"><span class="section-number-2">1</span> 生成 public_key 和 private_key</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ ssh-keygen -t rsa -C <span style="color: #00afaf;">"shi_zhonghe@163.com&#8221;</span>
@@ -63,8 +63,8 @@
 </div>
 </div>
 
-<div id="outline-container-org56e0e93" class="outline-2">
-<h2 id="org56e0e93"><span class="section-number-2">2</span> 公钥拷贝到远程</h2>
+<div id="outline-container-org6172816" class="outline-2">
+<h2 id="org6172816"><span class="section-number-2">2</span> 公钥拷贝到远程</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 拷贝 id_ras.pub 到远程服务器，并重命名为 authorized_keys，然后拷贝到用户根目录下的 .ssh/ 目录<br>
@@ -76,8 +76,8 @@
 </div>
 </div>
 
-<div id="outline-container-org7922e3a" class="outline-2">
-<h2 id="org7922e3a"><span class="section-number-2">3</span> 修改本机的配置文件</h2>
+<div id="outline-container-org4948e1e" class="outline-2">
+<h2 id="org4948e1e"><span class="section-number-2">3</span> 修改本机的配置文件</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 修改本地主机 ~/.ssh/config 文件，添加如下类似内容：<br>
@@ -93,14 +93,12 @@ Host he
 </div>
 </div>
 
-<div id="outline-container-orgf167763" class="outline-2">
-<h2 id="orgf167763"><span class="section-number-2">4</span> 登陆</h2>
+<div id="outline-container-org4f48019" class="outline-2">
+<h2 id="org4f48019"><span class="section-number-2">4</span> 使用</h2>
 <div class="outline-text-2" id="text-4">
-<p>
-使用下面的命令即可登录（只有首次登陆时需要输入密码，以后则不需要）<br>
-</p>
 <div class="org-src-container">
-<pre class="src src-shell">$ ssh he
+<pre class="src src-shell">$ ssh he  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992;&#35813;&#21629;&#20196;&#21363;&#21487;&#30331;&#24405;&#65288;&#21482;&#26377;&#39318;&#27425;&#30331;&#38470;&#26102;&#38656;&#35201;&#36755;&#20837;&#23494;&#30721;&#65292;&#20197;&#21518;&#21017;&#19981;&#38656;&#35201;&#65289;</span>
+$ scp -r test he:/root/  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">scp &#21629;&#20196;&#20063;&#25903;&#25345; ssh key</span>
 </pre>
 </div>
 </div>

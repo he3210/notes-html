@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-25 Sun 00:22 -->
+<!-- 2018-11-29 Thu 12:38 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>exec fork source 区别</title>
@@ -34,15 +34,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org01c7a93">1. 区别</a></li>
-<li><a href="#org8e5cbae">2. 举例</a></li>
-<li><a href="#org2d70bf3">3. 结果</a></li>
+<li><a href="#orgd8210cc">1. 区别</a></li>
+<li><a href="#org6e855ea">2. 举例</a></li>
+<li><a href="#org2c29370">3. 结果</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org01c7a93" class="outline-2">
-<h2 id="org01c7a93"><span class="section-number-2">1</span> 区别</h2>
+<div id="outline-container-orgd8210cc" class="outline-2">
+<h2 id="orgd8210cc"><span class="section-number-2">1</span> 区别</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>exec    使用指定的命令会替换当前进程。进程号相同，执行的命令变更了，当前进程的后续命令不会再被执行了<br></li>
@@ -57,8 +57,8 @@ source 命令的2种写法 <code>$ source ./my_script.sh</code> 或者 <code>$ .
 </div>
 </div>
 
-<div id="outline-container-org8e5cbae" class="outline-2">
-<h2 id="org8e5cbae"><span class="section-number-2">2</span> 举例</h2>
+<div id="outline-container-org6e855ea" class="outline-2">
+<h2 id="org6e855ea"><span class="section-number-2">2</span> 举例</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 1.sh<br>
@@ -106,8 +106,8 @@ source 命令的2种写法 <code>$ source ./my_script.sh</code> 或者 <code>$ .
 </div>
 </div>
 
-<div id="outline-container-org2d70bf3" class="outline-2">
-<h2 id="org2d70bf3"><span class="section-number-2">3</span> 结果</h2>
+<div id="outline-container-org2c29370" class="outline-2">
+<h2 id="org2c29370"><span class="section-number-2">3</span> 结果</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-shell">$ ./1.sh fork

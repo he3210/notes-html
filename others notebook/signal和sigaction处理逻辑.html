@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-11-29 Thu 12:38 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>连续到来多个信号时，signal 和 sigaction 的处理逻辑</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">连续到来多个信号时，signal 和 sigaction 的处理逻辑</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf51ee4a">1. signal</a></li>
+<li><a href="#orgfa67517">2. sigaction</a>
+<ul>
+<li><a href="#org75cecd0">2.1. 测试代码</a></li>
+<li><a href="#org3ace77b">2.2. 结果</a></li>
+<li><a href="#org1712af0">2.3. 结论</a></li>
+<li><a href="#org0c090c8">2.4. 关于 SA_RESTART</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf51ee4a" class="outline-2">
+<h2 id="orgf51ee4a"><span class="section-number-2">1</span> signal</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>一次注册，可多次使用<br></li>
+<li>对于较短时间内的多个同种信号，按顺序依次执行信号处理函数<br></li>
+<li>对于较短时间内的多个不同种信号，递归处理。先跳转去处理另一个信号，处理完毕后才会继续处理当前信号<br></li>
+<li>如果程序阻塞在一个系统调用（如 read）时，此时收到一个信号，程序会先执行信号调用函数，然后再重新执行 read 函数。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfa67517" class="outline-2">
+<h2 id="orgfa67517"><span class="section-number-2">2</span> sigaction</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org75cecd0" class="outline-3">
+<h3 id="org75cecd0"><span class="section-number-3">2.1</span> 测试代码</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;unistd.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;string.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;signal.h&gt;</span>
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">cnt</span> = 0;
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">sighandler_new</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">signo</span>, <span style="color: #af8700;">siginfo_t</span> *<span style="color: #0087ff;">psigninfo</span>, <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">pReserved</span>)
+{
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">count</span> = ++cnt;
+    printf(<span style="color: #00afaf;">"%d enter, signo: %d\n"</span>, count, signo);
+    sleep(3);
+    printf(<span style="color: #00afaf;">"%d leave, signo: %d\n"</span>, count, signo);
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">sigaction</span> <span style="color: #0087ff;">act</span>;
+    act.sa_flags = SA_SIGINFO | SA_RESTART;
+    act.sa_sigaction = sighandler_new;
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20551;&#22914; SIGQUIT &#22312;&#20449;&#21495;&#23631;&#34109;&#38598;&#21512;&#20013;&#65292;&#32780;&#31243;&#24207;&#27491;&#22312;&#25191;&#34892; SIGINT &#30340;&#20449;&#21495;&#22788;&#29702;&#20989;&#25968;&#65292;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27492;&#26102;&#26469;&#20102;&#19968;&#20010; SIGQUIT &#20449;&#21495;&#65292;&#21017; SIGQUIT &#26242;&#26102;&#34987;&#23631;&#34109;&#65292;</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">SIGINT &#20449;&#21495;&#22788;&#29702;&#20989;&#25968;&#25191;&#34892;&#23436;&#27605;&#21518;&#25165;&#21435;&#25191;&#34892; SIGQUIT &#20449;&#21495;&#22788;&#29702;&#20989;&#25968;&#12290;</span>
+    sigemptyset(&amp;act.sa_mask);
+    sigaddset(&amp;act.sa_mask, SIGQUIT);
+    sigaction(SIGINT, &amp;act, <span style="color: #00afaf;">NULL</span>);
+
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">buf</span>[8];
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">iret</span>;
+    <span style="color: #5f8700;">do</span>
+    {
+        iret = read(STDIN_FILENO, buf, <span style="color: #5f8700;">sizeof</span>(buf) - 1);
+        <span style="color: #5f8700;">if</span>(-1 == iret)
+        {
+            perror(<span style="color: #00afaf;">"read error"</span>);
+            exit(-1);
+        }
+        buf[iret] = <span style="color: #00afaf;">'\0'</span>;
+        puts(buf);
+    }<span style="color: #5f8700;">while</span>(strcmp(buf, <span style="color: #00afaf;">"quit\n"</span>));
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3ace77b" class="outline-3">
+<h3 id="org3ace77b"><span class="section-number-3">2.2</span> 结果</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+第一次运行 main，使用快捷键 <code>ctrl-c</code> 发出 1 个 SIGINT 信号，然后使用快捷键 <code>ctrl-\</code> 发出 4 个 SIGQUIT 信号<br>
+第二次运行 main，使用快捷键 <code>ctrl-c</code> 连续发出 6 个 SIGINT 信号<br>
+结果如下<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ gcc main.c -o main
+$ ./main
+^C1 enter, signo: 2
+^<span style="color: #00afaf;">\^\^\^</span>\1 leave, signo: 2
+[1]    9358 quit       ./main
+$ ./main
+^C1 enter, signo: 2
+^C^C^C^C^C1 leave, signo: 2
+2 enter, signo: 2
+2 leave, signo: 2
+</pre>
+</div>
+
+<p>
+如果 SIGQUIT 不在信号屏蔽集合中，即删除如下 2 行代码<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c">sigemptyset(&amp;act.sa_mask);
+sigaddset(&amp;act.sa_mask, SIGQUIT);
+</pre>
+</div>
+
+<p>
+先发送一个 SIGINT 信号，再发送一个 SIGQUIT 信号，结果如下<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ gcc main.c -o main
+$ ./main
+^C1 enter, signo: 2
+^<span style="color: #00afaf;">\[</span>1]    9644 quit       ./main
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1712af0" class="outline-3">
+<h3 id="org1712af0"><span class="section-number-3">2.3</span> 结论</h3>
+<div class="outline-text-3" id="text-2-3">
+<ol class="org-ol">
+<li>同种信号，按信号到来的先后顺序依次处理<br></li>
+<li>结果中，为什么连续发出多个 SIGINT 信号只会执行 2 次？<br>
+对于同种信号，当一个信号被阻塞之后（即在执行信号处理函数时），在解除阻塞之前，无论该信号发生多少次，但是解除阻塞的时候，内核只会向进程发送一个信号而已，而不管在其阻塞期间有多少个信号产生，因为linux并不会对信号进行排队。<br></li>
+<li>异种信号，递归处理。例如：如果当前正在处理 SIGINT 信号，此时来了一个 SIGQUIT 信号，会先处理 SIGQUIT 信号，处理完毕后才会继续处理 SIGINT 信号<br></li>
+<li>异种信号，如果到来的异种信号在屏蔽集合中，先处理完当前信号，再处理异种信号。例如：SIGQUIT 被加入到 SIGINT 的屏蔽集合中了，会先处理完 SIGINT 信号再处理 SIGQUIT<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org0c090c8" class="outline-3">
+<h3 id="org0c090c8"><span class="section-number-3">2.4</span> 关于 SA_RESTART</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+如果程序正阻塞在一个系统调用，此时收到一个信号，系统调用被打断，程序去执行信号处理函数了。该标志就是在信号处理函数执行完毕后，使被信号打断的系统调用自动重新发起。<br>
+例如该测试代码，如果不指定该标志，信号处理完毕后，read 函数会读取失败。如下：<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ gcc main.c -o main
+$ ./main                                                                                                                                                                                 &#57522; &#61452; &#57522; 20:49:21 &#61463;
+^C1 enter, signo: 2
+1 leave, signo: 2
+<span style="color: #5f8700;">read</span> error: Interrupted system call
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
