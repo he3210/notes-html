@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2018-11-29 Thu 12:38 -->
+<!-- 2018-12-09 Sun 11:30 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>redis 源码难点：字典的遍历 dictScan</title>
@@ -40,14 +40,14 @@
 <ul>
 <li><a href="#org205ecd2">3.1. 该算法的迭代过程</a>
 <ul>
-<li><a href="#orgda4faf2">3.1.1. 哈希表扩展</a></li>
-<li><a href="#org74377b3">3.1.2. 哈希表收缩</a></li>
+<li><a href="#orgdf00d21">3.1.1. 哈希表扩展</a></li>
+<li><a href="#org97d7bfb">3.1.2. 哈希表收缩</a></li>
 </ul>
 </li>
 <li><a href="#orgb077f42">3.2. 普通的顺序迭代过程</a>
 <ul>
-<li><a href="#org6349018">3.2.1. 哈希表扩展</a></li>
-<li><a href="#org9c066c2">3.2.2. 哈希表收缩</a></li>
+<li><a href="#org20c89c4">3.2.1. 哈希表扩展</a></li>
+<li><a href="#orga9c5692">3.2.2. 哈希表收缩</a></li>
 </ul>
 </li>
 </ul>
@@ -216,8 +216,8 @@ $ ./main
 </pre>
 </div>
 
-<div id="outline-container-orgda4faf2" class="outline-4">
-<h4 id="orgda4faf2"><span class="section-number-4">3.1.1</span> 哈希表扩展</h4>
+<div id="outline-container-orgdf00d21" class="outline-4">
+<h4 id="orgdf00d21"><span class="section-number-4">3.1.1</span> 哈希表扩展</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
 哈希表容量为 8 时，第 i 个 v 的值（0 &lt;= i &lt;=7），扩展到容量为 16 的哈希表中，对应的值是 2i 和 2i+1，它们是相邻的，这点很重要。<br>
@@ -233,8 +233,8 @@ $ ./main
 </div>
 </div>
 
-<div id="outline-container-org74377b3" class="outline-4">
-<h4 id="org74377b3"><span class="section-number-4">3.1.2</span> 哈希表收缩</h4>
+<div id="outline-container-org97d7bfb" class="outline-4">
+<h4 id="org97d7bfb"><span class="section-number-4">3.1.2</span> 哈希表收缩</h4>
 <div class="outline-text-4" id="text-3-1-2">
 <p>
 再看一下字典哈希表收缩的情况，也就是由 16 收缩为 8。在容量为 16 时，迭代完索引 0100 之后，下一个索引为 1100，假设此时哈希表容量收缩为 8。1100 这个索引，在容量为 8 的情况下，就成了 100。因此开始迭代索引为 100 的 bucket 中的节点。<br>
@@ -276,8 +276,8 @@ $ ./main
 </pre>
 </div>
 
-<div id="outline-container-org6349018" class="outline-4">
-<h4 id="org6349018"><span class="section-number-4">3.2.1</span> 哈希表扩展</h4>
+<div id="outline-container-org20c89c4" class="outline-4">
+<h4 id="org20c89c4"><span class="section-number-4">3.2.1</span> 哈希表扩展</h4>
 <div class="outline-text-4" id="text-3-2-1">
 <p>
 字典扩展的情况，当前字典哈希表容量为 8，假设在迭代完索引为 010 的 bucket 之后，下一个索引为 011。迭代 011 之前，字典容量扩展成了 16。011 这个索引，在容量为 16 的情况下，就成了 0011，因此开始迭代索引为 0011 的 bucket 中的节点。<br>
@@ -297,8 +297,8 @@ $ ./main
 </div>
 </div>
 
-<div id="outline-container-org9c066c2" class="outline-4">
-<h4 id="org9c066c2"><span class="section-number-4">3.2.2</span> 哈希表收缩</h4>
+<div id="outline-container-orga9c5692" class="outline-4">
+<h4 id="orga9c5692"><span class="section-number-4">3.2.2</span> 哈希表收缩</h4>
 <div class="outline-text-4" id="text-3-2-2">
 <p>
 再看一下容量缩小的情况，容量由 16 缩小为 8。在容量为 16 时，迭代完 0100 之后，下一个为 0101，此时容量缩小为 8。0101 在容量为 8 的情况下，就成了101。<br>

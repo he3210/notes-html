@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2018-12-09 Sun 11:30 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>redis 3.0 源码阅读计划</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Search..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">redis 3.0 源码阅读计划</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgbee1ec2">1. 介绍</a></li>
+<li><a href="#org7a965d0">2. 底层数据结构实现</a>
+<ul>
+<li><a href="#org834b0dc">2.1. <span class="done DONE">DONE</span> sds</a></li>
+<li><a href="#org29b57ed">2.2. <span class="done DONE">DONE</span> 双端链表</a></li>
+<li><a href="#org6b70cea">2.3. <span class="done DONE">DONE</span> skiplist</a></li>
+<li><a href="#orgd850dae">2.4. <span class="todo DELAY">DELAY</span> hyperloglog</a></li>
+</ul>
+</li>
+<li><a href="#org1670fee">3. 内存编码数据结构实现</a>
+<ul>
+<li><a href="#orgdc3f68a">3.1. <span class="done DONE">DONE</span> inset 数据结构</a></li>
+<li><a href="#org17f762e">3.2. <span class="done DONE">DONE</span> ziplist 数据结构</a></li>
+</ul>
+</li>
+<li><a href="#org5ddd0ff">4. redis 数据类型实现</a>
+<ul>
+<li><a href="#org2ebe9ef">4.1. <span class="done DONE">DONE</span> list 键</a></li>
+<li><a href="#org7094a40">4.2. <span class="done DONE">DONE</span> hash 键</a></li>
+<li><a href="#orga4a2a57">4.3. <span class="done DONE">DONE</span> set 键</a></li>
+<li><a href="#org6cfd058">4.4. <span class="todo DOING">DOING</span> zset 键</a></li>
+<li><a href="#orgfc27162">4.5. <span class="todo DELAY">DELAY</span> hyperloglog 键</a></li>
+</ul>
+</li>
+<li><a href="#org081bb12">5. 数据库的实现</a>
+<ul>
+<li><a href="#orgb2717e4">5.1. <span class="done DONE">DONE</span> Redis 数据库实现</a></li>
+<li><a href="#org021a32f">5.2. <span class="done DONE">DONE</span> Redis 数据库通知功能实现</a></li>
+<li><a href="#org7f5ccbe">5.3. <span class="done DONE">DONE</span> 发布与订阅功能的实现</a></li>
+<li><a href="#orga483e3f">5.4. <span class="todo TODO">TODO</span> RDB 持久化</a></li>
+<li><a href="#orgdcca766">5.5. <span class="todo TODO">TODO</span> AOF 持久化</a></li>
+</ul>
+</li>
+<li><a href="#org848c726">6. 客户端和服务器的实现</a>
+<ul>
+<li><a href="#org2ec2b31">6.1. <span class="todo TODO">TODO</span> 事件处理器实现</a></li>
+<li><a href="#org3c5d3de">6.2. <span class="todo TODO">TODO</span> Redis 的网络连接库</a></li>
+<li><a href="#org2e3d05b">6.3. <span class="todo TODO">TODO</span> 单机 Redis 服务器的实现</a></li>
+</ul>
+</li>
+<li><a href="#org0c6c58b">7. 多机功能的实现</a>
+<ul>
+<li><a href="#orgc0c3990">7.1. <span class="todo TODO">TODO</span> redis 主从复制</a></li>
+<li><a href="#org9b62fbc">7.2. <span class="todo TODO">TODO</span> redis sentinel</a></li>
+<li><a href="#orgedabf49">7.3. <span class="todo TODO">TODO</span> redis 集群</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbee1ec2" class="outline-2">
+<h2 id="orgbee1ec2"><span class="section-number-2">1</span> 介绍</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+第 2 部分和第 3 部分为 reids 底层数据结构的实现<br>
+第 4 部分为 redis 对外提供的键值对的数据类型<br>
+第 5 部分包括数据库的实现，持久化，和一些 redis 独立的功能模块<br>
+第 6 部分为 redis 客户端与服务器的实现<br>
+第 7 部分为主从复制，redis sentinel，redis 集群的实现<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7a965d0" class="outline-2">
+<h2 id="org7a965d0"><span class="section-number-2">2</span> 底层数据结构实现</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org834b0dc" class="outline-3">
+<h3 id="org834b0dc"><span class="section-number-3">2.1</span> <span class="done DONE">DONE</span> sds</h3>
+</div>
+
+<div id="outline-container-org29b57ed" class="outline-3">
+<h3 id="org29b57ed"><span class="section-number-3">2.2</span> <span class="done DONE">DONE</span> 双端链表</h3>
+</div>
+
+<div id="outline-container-org6b70cea" class="outline-3">
+<h3 id="org6b70cea"><span class="section-number-3">2.3</span> <span class="done DONE">DONE</span> skiplist</h3>
+</div>
+
+<div id="outline-container-orgd850dae" class="outline-3">
+<h3 id="orgd850dae"><span class="section-number-3">2.4</span> <span class="todo DELAY">DELAY</span> hyperloglog</h3>
+</div>
+</div>
+
+<div id="outline-container-org1670fee" class="outline-2">
+<h2 id="org1670fee"><span class="section-number-2">3</span> 内存编码数据结构实现</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgdc3f68a" class="outline-3">
+<h3 id="orgdc3f68a"><span class="section-number-3">3.1</span> <span class="done DONE">DONE</span> inset 数据结构</h3>
+</div>
+
+<div id="outline-container-org17f762e" class="outline-3">
+<h3 id="org17f762e"><span class="section-number-3">3.2</span> <span class="done DONE">DONE</span> ziplist 数据结构</h3>
+</div>
+</div>
+
+<div id="outline-container-org5ddd0ff" class="outline-2">
+<h2 id="org5ddd0ff"><span class="section-number-2">4</span> redis 数据类型实现</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org2ebe9ef" class="outline-3">
+<h3 id="org2ebe9ef"><span class="section-number-3">4.1</span> <span class="done DONE">DONE</span> list 键</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+文件：t_list.c<br>
+</p>
+
+<p>
+该文件主要是 <b><b>列表的实现</b></b> 和 <b><b>列表键命令的实现</b></b> 。<br>
+</p>
+
+<p>
+需要注意或做到的事情：<br>
+</p>
+<ul class="org-ul">
+<li>列表底层使用两种编码方式：ziplist 和 linkedlist。所以该文件涉及到列表键转码，如何从 ziplist 转码成 linkedlist，以及转码需要满足什么条件<br></li>
+<li>列表的 entry 肯定要对应到 ziplist 和 linkedlist 的 entry。<br>
+<ul class="org-ul">
+<li>列表 entry 的迭代器肯定要对应到底层 ziplist 和 linkedlist 的迭代器；<br></li>
+<li>列表 push、pop 一个 entry 肯定要对应到 ziplist 和 linkedlist 的 push、pop；等等<br></li>
+</ul></li>
+<li>关于对象 rojb 的引用计数的注意事项。ziplist 和 linkedlist 在引用计数上肯定是不同的。<br>
+<ul class="org-ul">
+<li>例如在插入时，对于 ziplist，会直接拷贝对象的成员中的值成员到 ziplist 的 entry 中，该对象的引用计数不必变化；而对于 linkedlist，会直接用其 entry 中的一个指针指向这个对象，所以该对象引用计数肯定要自增一的。<br></li>
+</ul></li>
+<li>删除迭代器指定的 entry 时，要注意删除 entry 后，迭代器的更新。为什么呢？因为 ziplist 每次在删除一个 entry 的时候都会重新为整个 ziplist 分配空间，所以迭代器位置会发生变化；而 linkedlist 需要迭代器指向下一个 entry 位置<br></li>
+<li>brpoplpush 是原子操作。例如：从 a 列表弹出表尾元素插入到 b 列表。如果元素插入 b 列表失败时，会重新把元素放入 a 列表的表尾<br></li>
+<li>阻塞相关命令的实现机制。例如：blpop、brpop、brpoplpush。<br>
+<b><b>阻塞实现机制如下</b></b> ：<br>
+<ul class="org-ul">
+<li><p>
+相关结构体<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">redisDb</span> {
+    <span style="color: #af8700;">dict</span> *<span style="color: #0087ff;">blocking_keys</span>;<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38190;&#26159;&#25968;&#25454;&#24211;&#20013; key&#65292;&#20540;&#26159;&#34987;&#35813; key &#38459;&#22622;&#30340; redisClient &#38142;&#34920;</span>
+    <span style="color: #af8700;">dict</span> *<span style="color: #0087ff;">ready_keys</span>;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23601;&#32490;&#30340; key &#30340;&#38598;&#21512;&#12290;&#35813;&#23383;&#20856;&#21482;&#26377;&#38190;&#27809;&#26377;&#20540;&#65292;&#30456;&#24403;&#20110;&#38598;&#21512;&#12290;&#24403;&#34987;&#38459;&#22622;&#30340; key &#23545;&#24212;&#30340;&#21015;&#34920;&#34987; push &#36827;&#25968;&#25454;&#20102;&#65292;&#23601;&#20250;&#25226;&#36825;&#20010; key &#28155;&#21152;&#21040;&#35813;&#38598;&#21512;&#20013;&#12290;&#29992;&#20110;&#38450;&#27490;&#21457;&#36865;&#23601;&#32490;&#20449;&#21495;&#26102;&#65292;&#37325;&#22797;&#21521; redisServer.ready_keys &#28155;&#21152;&#25968;&#25454;&#12290;</span>
+} <span style="color: #af8700;">redisDb</span>;
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">blockingState</span> {
+    <span style="color: #af8700;">mstime_t</span> <span style="color: #0087ff;">timeout</span>;      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38459;&#22622;&#36229;&#26102;&#26102;&#38388;</span>
+    <span style="color: #af8700;">dict</span> *<span style="color: #0087ff;">keys</span>;            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36896;&#25104;&#23458;&#25143;&#31471;&#38459;&#22622;&#30340;&#38190;&#30340;&#38598;&#21512;&#65288;&#20540;&#20026; NULL &#30340;&#23383;&#20856;&#65289;</span>
+    <span style="color: #af8700;">robj</span> *<span style="color: #0087ff;">target</span>;          <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312;&#34987;&#38459;&#22622;&#30340;&#38190;&#26377;&#26032;&#20803;&#32032;&#36827;&#20837;&#26102;&#65292;&#38656;&#35201;&#23558;&#36825;&#20123;&#26032;&#20803;&#32032;&#28155;&#21152;&#21040;&#21738;&#37324;&#30340;&#30446;&#26631;&#38190;&#12290;&#29992;&#20110; brpoplpush &#21629;&#20196;</span>
+} <span style="color: #af8700;">blockingState</span>;
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">redisClient</span> {
+    <span style="color: #af8700;">blockingState</span> <span style="color: #0087ff;">bpop</span>;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35760;&#24405;&#23458;&#25143;&#31471;&#20351;&#29992;&#21629;&#20196; brpop blpop brpoplpush &#38459;&#22622;&#21518;&#30340;&#38459;&#22622;&#20449;&#24687;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">flags</span>;             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21487;&#20197;&#35774;&#32622;&#20026;&#38459;&#22622;&#29366;&#24577; REDIS_BLOCKED&#65292;&#26469;&#23545;&#23458;&#25143;&#31471;&#36827;&#34892;&#38459;&#22622;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">btype</span>;             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38459;&#22622;&#31867;&#22411;&#12290;&#24403; flags &#20026; REDIS_BLOCKED&#65292;&#35774;&#32622;&#35813;&#20540;&#20026; REDIS_BLOCKED_LIST</span>
+} <span style="color: #af8700;">redisClient</span>;
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">readyList</span> {
+    <span style="color: #af8700;">redisDb</span> *<span style="color: #0087ff;">db</span>;
+    <span style="color: #af8700;">robj</span> *<span style="color: #0087ff;">key</span>;
+} <span style="color: #af8700;">readyList</span>;
+
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">redisServer</span> {
+    <span style="color: #af8700;">list</span> *<span style="color: #0087ff;">ready_keys</span>;      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38142;&#34920;&#32467;&#28857;&#20026; readyList &#31867;&#22411;&#12290;&#27599;&#20010;&#32467;&#28857;&#37117;&#35760;&#24405;&#20102;&#19968;&#20010;&#25351;&#23450;&#25968;&#25454;&#24211;&#21644;&#35813;&#25968;&#25454;&#24211;&#19978;&#19968;&#20010;&#23601;&#32490;&#30340; key</span>
+};
+</pre>
+</div></li>
+<li><b><b>调用 bpop 相关命令后，若被阻塞，执行阻塞操作 blockForKeys()</b></b> ：设置 redisClient 的 bpop 成员值；将该客户端添加到 redisDb.blocking_keys；设置 redisClient 阻塞标记 flags 和 btype<br></li>
+<li><b><b>调用 push 相关命令后，列表中有数据了。所以发送就绪信号 signalListAsReady()</b></b> ：生成一个 readyList 结构体对象，插入到 redisServer 的 ready_keys 链表中。<br></li>
+<li><b><b>解除阻塞操作 handleClientsBlockedOnLists()</b></b> ：遍历 redisServer.ready_keys 链表上的 readyList 元素，在 redisDb.blocking_keys 获取相应被该 key 阻塞的客户端链表。以先阻塞先解除阻塞的原则，从列表中 pop 数据，然后为指定客户端解除阻塞。每解除一个，就将该客户端从客户端链表删除，直到列表中没数据了，没解除阻塞的客户端等待下次列表被 push 数据<br>
+<ul class="org-ul">
+<li><b><b>为指定客户端解除阻塞 unblockClient()</b></b> ：遍历 redisClient.keys 上的所有 key；在 redisDb.blocking_keys 中获取被该 key 阻塞的 redisClient 链表；遍历该链表，找到该客户端并删除。设置 redisClient 非阻塞标记 flags 和 btyp<br></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7094a40" class="outline-3">
+<h3 id="org7094a40"><span class="section-number-3">4.2</span> <span class="done DONE">DONE</span> hash 键</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+文件：t_hash.c<br>
+</p>
+
+<p>
+该文件主要是 <b><b>散列键的实现</b></b><br>
+</p>
+
+<p>
+散列键底层的两种编码方式：ziplist 和 dict<br>
+</p>
+
+<p>
+也就是在 ziplist 和 dict 上封装了一层，封装了一些多态操作，将对 hash 的操作根据编码方式转化为对 ziplist 和 dict 的操作。文件内容主要包含有编码转换，迭代器的初始化、迭代、释放等，获取键值对，判断键值对是否存在，设置键值对，删除键值对，获取键值对数量，哈希键命令的实现等。<br>
+</p>
+
+<p>
+关于 scan 类命令要注意的事项<br>
+</p>
+<pre class="example">
+scan cursor [match pattern] [count n]
+hscan key cursor [match pattern] [count n]
+sscan key cursor [match pattern] [count n]
+zscan key cursor [match pattern] [count n]
+</pre>
+
+<ul class="org-ul">
+<li>如果底层是 dict 的话<br>
+<ul class="org-ul">
+<li>最多取 count 个元素（键值对）（取了 count 个元素，可能会根据 pattern 被过滤掉，所以最多取 count 个元素），如果 dict 中不够 count 个元素就取所有元素<br></li>
+<li>参考另一篇笔记：<a href="./redis源码难点：字典的遍历dictScan.html">字典的遍历 dictScan</a><br>
+<ul class="org-ul">
+<li>该算法可能会返回重复元素，但是已经把返回重复元素的可能性降到了最低;<br>
+<ol class="org-ol">
+<li>当 dict 哈希表在两次迭代过程之间发生收缩，原哈希表容量为 x，收缩后容量为 y，则最多会有 x/y – 1 个原 bucket 的节点会被重复迭代；<br></li>
+<li>当 dict 哈希表在两次迭代过程之间发生扩展，不会存在同一个结点重复迭代的情况；<br></li>
+</ol></li>
+<li>开始遍历那一刻起，只要 dict 哈希表中的元素在迭代过程期间不被删除，肯定能被遍历到，不管 dict 哈希表扩展还是缩小；<br></li>
+</ul></li>
+</ul></li>
+<li>如果底层使用 inset 的话，直接取所有元素，忽略 count 参数<br></li>
+<li>如果底层是 ziplist 的话，直接取所有元素（键值对），忽略 count 参数<br></li>
+</ul>
+
+<p>
+如果用 dict 编码作为哈希对象的底层实现，哈希表的一个 entry 存储一对键值对<br>
+</p>
+<ul class="org-ul">
+<li>字典的每个键都是一个字符串对象，而不会是整型对象<br></li>
+<li>字典的每个值都是一个字符串对象，而不会是整型对象<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga4a2a57" class="outline-3">
+<h3 id="orga4a2a57"><span class="section-number-3">4.3</span> <span class="done DONE">DONE</span> set 键</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+文件：t_set.c<br>
+</p>
+
+<p>
+该文件主要是 <b><b>集合的实现</b></b><br>
+</p>
+
+<p>
+set 底层使用两种编码方式：intset 和 dict<br>
+</p>
+
+<p>
+它也就是在 intset 和 dict 上封装了一层，封装了一些多态操作。编码转换，迭代器的初始化、迭代、释放等，set 对象创建，删除、添加集合元素，判断是否是集合元素，随机一个元素，获取集合元素个数，<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6cfd058" class="outline-3">
+<h3 id="org6cfd058"><span class="section-number-3">4.4</span> <span class="todo DOING">DOING</span> zset 键</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+文件：t_zset.c 中除 zsl 开头的函数之外的所有函数<br>
+</p>
+
+<p>
+zset 底层使用两种编码方式：ziplist 和 skiplist + dict。<br>
+</p>
+
+<ul class="org-ul">
+<li><p>
+对于 skiplist + dict 的编码方式。当插入一个元素时，既插入到 skiplist 中又插入到一个 dict 中。其结构体如下：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">zset</span> {
+    <span style="color: #af8700;">dict</span> *<span style="color: #0087ff;">dict</span>;      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29992;&#20110;&#25903;&#25345; O(1) &#22797;&#26434;&#24230;&#30340;&#25353;&#25104;&#21592;&#21462;&#20998;&#20540;&#25805;&#20316;</span>
+    <span style="color: #af8700;">zskiplist</span> *<span style="color: #0087ff;">zsl</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29992;&#20110;&#25903;&#25345;&#24179;&#22343;&#22797;&#26434;&#24230;&#20026; O(log N) &#30340;&#25353;&#20998;&#20540;&#23450;&#20301;&#25104;&#21592;&#25805;&#20316;&#20197;&#21450;&#33539;&#22260;&#25805;&#20316;</span>
+} <span style="color: #af8700;">zset</span>;
+</pre>
+</div></li>
+<li>对于第二种编码方式 skiplist + dict，为什么有序集合使用跳表和字典结合的方式来实现呢，而不单独使用跳表或字典实现？<br>
+<ul class="org-ul">
+<li>跳表和字典各有其优缺点，例如：dict 能以 O(1) 时间复杂度来查找元素，而 skiplist 查找元素则需要 O(log(n))；skiplist 按分值从小到大排列元素，它的优势在于范围型操作，例如：zrank、zrange 等命令就是通过 skiplist 的 API 来实现的。而 dict 中的哈希表保存的元素是乱序的，进行范围型操作时十分麻烦。skiplist + dict 结合的方式能充分利用 skiplist 和 dict 的优点。<br></li>
+<li>skiplist 和 dict 一起使用并不会浪费太多内存。有序集合中一个 element 对应一个 score，element 对象使用了引用计数的方式在 skiplist 和 dict 间共享，不会浪费内存；dict 中也不存储 score 值，它通过一个指针指向 skiplist 结点中的 double 类型的 score。<br></li>
+</ul></li>
+<li>对于 ziplist 的编码方式。使用 2 个 entry 来保存一个有序集合元素。第一个 entry 保存 element，第二个保存 score。使用 ziplist 编码的有序集合的元素是按 score 从小到大顺序排列的<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfc27162" class="outline-3">
+<h3 id="orgfc27162"><span class="section-number-3">4.5</span> <span class="todo DELAY">DELAY</span> hyperloglog 键</h3>
+</div>
+</div>
+
+<div id="outline-container-org081bb12" class="outline-2">
+<h2 id="org081bb12"><span class="section-number-2">5</span> 数据库的实现</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgb2717e4" class="outline-3">
+<h3 id="orgb2717e4"><span class="section-number-3">5.1</span> <span class="done DONE">DONE</span> Redis 数据库实现</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+文件：redis.h 文件中的 redisDb 结构， 以及 db.c 文件<br>
+</p>
+
+<p>
+封装了对数据库的一些操作。例如：对键的增删改查，清空数据库，随机返回数据库的一个键，键改名，对过期时间的操作等等。<br>
+</p>
+
+<p>
+redis 数据库中使用 redisDb.dict 字典来保存所有键值对。其中 key 是 sds 类型的，value 是 robj 类型的<br>
+</p>
+
+<p>
+redis 数据库中使用 redisDb.expires 字典来保存到期时间。其中 key 值是通过指针指向 redisDb.dict 中的 key，它们是共享的，并不会额外增加内存开销；value 是 UNIX 时间戳，是 int64_t 类型的<br>
+</p>
+
+<p>
+<b><b>redis 对过期键的删除策略</b></b> 。不难想到，过期键的删除策略可以有如下 3 种：（redis 使用了第 2 和第 3 种）<br>
+</p>
+<ol class="org-ol">
+<li>定时器。在为一个键设置过期时间的时候，创建一个定时器，定时器时间到后执行对键的删除操作。对内存最友好，对 CPU 时间极不友好。并且 redis 的时间事件使用无序链表实现的，查找事件的时间复杂度高达 O(N)。所以不使用该策略；<br></li>
+<li>惰性删除。每次从键空间获取键时，都检查键是否过期，过期则删除键，未过期则返回键。对内存极不友好，对 CPU 时间友好。它会存在过期键长期不被删除的情况。为解决这些问题，需要该策略和定期删除策略一起使用；<br></li>
+<li>定期删除。每隔一段时间就遍历一遍数据库中带过期时间的键，过期则删除。在 redis 中，会周期性执行定期删除函数。定期删除函数流程为：在规定的时间内，遍历各个数据库，从每个数据库中随机抽取一部分带过期时间的 key，检查并删除其中的过期键。如果规定时间到，暂停执行，等待下一次调用该函数。<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org021a32f" class="outline-3">
+<h3 id="org021a32f"><span class="section-number-3">5.2</span> <span class="done DONE">DONE</span> Redis 数据库通知功能实现</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+文件：notify.c<br>
+</p>
+
+<p>
+当键空间发生变化时，根据键空间的类型向指定频道发出一个通知。如果有客户端订阅了该频道，该客户端就可以收到通知<br>
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">键空间通知类型</th>
+<th scope="col" class="org-left">表示关联到该通知类型的配置</th>
+<th scope="col" class="org-left">代码是否已支持</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">REDIS_NOTIFY_KEYSPACE</td>
+<td class="org-left">K</td>
+<td class="org-left">支持</td>
+</tr>
+
+<tr>
+<td class="org-left">REDIS_NOTIFY_KEYEVENT</td>
+<td class="org-left">E</td>
+<td class="org-left">支持</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">REDIS_NOTIFY_GENERIC</td>
+<td class="org-left">g</td>
+<td class="org-left">不支持</td>
+</tr>
+
+<tr>
+<td class="org-left">REDIS_NOTIFY_STRING</td>
+<td class="org-left">$</td>
+<td class="org-left">不支持</td>
+</tr>
+
+<tr>
+<td class="org-left">REDIS_NOTIFY_LIST</td>
+<td class="org-left">l</td>
+<td class="org-left">不支持</td>
+</tr>
+
+<tr>
+<td class="org-left">REDIS_NOTIFY_SET</td>
+<td class="org-left">s</td>
+<td class="org-left">不支持</td>
+</tr>
+
+<tr>
+<td class="org-left">REDIS_NOTIFY_HASH</td>
+<td class="org-left">h</td>
+<td class="org-left">不</td>
+</tr>
+
+<tr>
+<td class="org-left">REDIS_NOTIFY_ZSET</td>
+<td class="org-left">z</td>
+<td class="org-left">不</td>
+</tr>
+
+<tr>
+<td class="org-left">REDIS_NOTIFY_EXPIRED</td>
+<td class="org-left">x</td>
+<td class="org-left">不</td>
+</tr>
+
+<tr>
+<td class="org-left">REDIS_NOTIFY_EVICTED</td>
+<td class="org-left">e</td>
+<td class="org-left">不</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org7f5ccbe" class="outline-3">
+<h3 id="org7f5ccbe"><span class="section-number-3">5.3</span> <span class="done DONE">DONE</span> 发布与订阅功能的实现</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+文件：pubsub.c 和 redis.h 文件的 pubsubPattern 结构<br>
+</p>
+
+<p>
+实现了频道订阅发布的 API 和相关命令。API 有：订阅频道/退订频道，订阅频道模式串/退订频道模式串，退订所有频道/退订所有频道模式串，发布消息到指定频道<br>
+</p>
+
+<p>
+订阅与发布功能基本结构体如下：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">pubsubPattern</span> {
+    <span style="color: #af8700;">redisClient</span> *<span style="color: #0087ff;">client</span>;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35746;&#38405;&#39057;&#36947;&#27169;&#24335;&#30340;&#23458;&#25143;&#31471;</span>
+    <span style="color: #af8700;">robj</span> *<span style="color: #0087ff;">pattern</span>;          <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35746;&#38405;&#30340;&#39057;&#36947;&#27169;&#24335;</span>
+} <span style="color: #af8700;">pubsubPattern</span>;
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">redisClient</span> {
+    <span style="color: #af8700;">dict</span> *<span style="color: #0087ff;">pubsub_channels</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35813;&#23383;&#20856;&#35760;&#24405;&#20102;&#23458;&#25143;&#31471;&#25152;&#26377;&#35746;&#38405;&#30340;&#39057;&#36947;&#12290;&#38190;&#20026;&#39057;&#36947;&#21517;&#23383;&#65292;&#20540;&#20026; NULL&#12290;&#20063;&#21363;&#26159;&#19968;&#20010;&#23458;&#25143;&#31471;&#35746;&#38405;&#30340;&#39057;&#36947;&#38598;&#21512;</span>
+    <span style="color: #af8700;">list</span> *<span style="color: #0087ff;">pubsub_patterns</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38142;&#34920;&#20803;&#32032;&#20026; pattern &#23545;&#35937;&#12290;&#35760;&#24405;&#30528;&#35813;&#23458;&#25143;&#31471;&#35746;&#38405;&#30340;&#39057;&#36947;&#27169;&#24335;&#12290;&#27599;&#27425;&#37117;&#28155;&#21152;&#21040;&#34920;&#23614;</span>
+} <span style="color: #af8700;">redisClient</span>;
+
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">redisServer</span> {
+    <span style="color: #af8700;">dict</span> *<span style="color: #0087ff;">pubsub_channels</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23383;&#20856;&#65292;&#38190;&#20026;&#39057;&#36947;&#65292;&#20540;&#20026;&#38142;&#34920;&#12290;&#38142;&#34920;&#20013;&#20445;&#23384;&#20102;&#25152;&#26377;&#35746;&#38405;&#26576;&#20010;&#39057;&#36947;&#30340;&#23458;&#25143;&#31471;&#12290;&#26032;&#23458;&#25143;&#31471;&#24635;&#26159;&#34987;&#28155;&#21152;&#21040;&#38142;&#34920;&#30340;&#34920;&#23614;</span>
+    <span style="color: #af8700;">list</span> *<span style="color: #0087ff;">pubsub_patterns</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38142;&#34920;&#20803;&#32032;&#20026; pubsub_patterns&#12290;&#27599;&#27425;&#37117;&#28155;&#21152;&#21040;&#34920;&#23614;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">notify_keyspace_events</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38190;&#31354;&#38388;&#21457;&#29983;&#25913;&#21464;&#26102;&#65292;&#36890;&#30693;&#30340;&#31867;&#22411;&#12290;&#29992;&#20110;&#23454;&#29616;&#36890;&#30693;&#21151;&#33021;</span>
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga483e3f" class="outline-3">
+<h3 id="orga483e3f"><span class="section-number-3">5.4</span> <span class="todo TODO">TODO</span> RDB 持久化</h3>
+</div>
+<div id="outline-container-orgdcca766" class="outline-3">
+<h3 id="orgdcca766"><span class="section-number-3">5.5</span> <span class="todo TODO">TODO</span> AOF 持久化</h3>
+</div>
+</div>
+
+<div id="outline-container-org848c726" class="outline-2">
+<h2 id="org848c726"><span class="section-number-2">6</span> 客户端和服务器的实现</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org2ec2b31" class="outline-3">
+<h3 id="org2ec2b31"><span class="section-number-3">6.1</span> <span class="todo TODO">TODO</span> 事件处理器实现</h3>
+</div>
+<div id="outline-container-org3c5d3de" class="outline-3">
+<h3 id="org3c5d3de"><span class="section-number-3">6.2</span> <span class="todo TODO">TODO</span> Redis 的网络连接库</h3>
+</div>
+<div id="outline-container-org2e3d05b" class="outline-3">
+<h3 id="org2e3d05b"><span class="section-number-3">6.3</span> <span class="todo TODO">TODO</span> 单机 Redis 服务器的实现</h3>
+</div>
+</div>
+<div id="outline-container-org0c6c58b" class="outline-2">
+<h2 id="org0c6c58b"><span class="section-number-2">7</span> 多机功能的实现</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orgc0c3990" class="outline-3">
+<h3 id="orgc0c3990"><span class="section-number-3">7.1</span> <span class="todo TODO">TODO</span> redis 主从复制</h3>
+</div>
+<div id="outline-container-org9b62fbc" class="outline-3">
+<h3 id="org9b62fbc"><span class="section-number-3">7.2</span> <span class="todo TODO">TODO</span> redis sentinel</h3>
+</div>
+<div id="outline-container-orgedabf49" class="outline-3">
+<h3 id="orgedabf49"><span class="section-number-3">7.3</span> <span class="todo TODO">TODO</span> redis 集群</h3>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
