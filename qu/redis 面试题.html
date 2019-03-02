@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2019-03-02 Sat 14:40 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>redis 面试题</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">redis 面试题</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org465836e">1. Redis 有哪些数据结构？</a></li>
+<li><a href="#org1292548">2. 使用过 Redis 分布式锁么，它是什么回事？</a></li>
+<li><a href="#orgbfcbebc">3. Redis 里有 1 亿个 key，其中 10w 个 key 以某个固定前缀开头，将它们找出来</a></li>
+<li><a href="#org6c26c27">4. 使用过 Redis 做异步队列么，你是怎么用的？</a></li>
+<li><a href="#orgad4a6cf">5. 如果有大量的 key 需要设置同一时间过期，一般需要注意什么？</a></li>
+<li><a href="#org2be4edb">6. Redis如何做持久化的？</a></li>
+<li><a href="#org603198a">7. Pipeline 有什么好处，为什么要用 pipeline？</a></li>
+<li><a href="#orga2c992c">8. Redis 的同步机制了解么？</a></li>
+<li><a href="#org2c316ca">9. 是否使用过 Redis 集群，集群的原理是什么？</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org465836e" class="outline-2">
+<h2 id="org465836e"><span class="section-number-2">1</span> Redis 有哪些数据结构？</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+字符串 String、字典 Hash、列表 List、集合 Set、有序集合 SortedSet。<br>
+</p>
+
+<p>
+如果你是 Redis 中高级用户，还需要加上下面几种数据结构 HyperLogLog、Geo、Pub/Sub。<br>
+</p>
+
+<p>
+如果你说还玩过 Redis Module，像 BloomFilter，RedisSearch，Redis-ML<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1292548" class="outline-2">
+<h2 id="org1292548"><span class="section-number-2">2</span> 使用过 Redis 分布式锁么，它是什么回事？</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+使用命令：SETNX key value 和 EXPIRE key seconds<br>
+</p>
+
+<p>
+追问：如果在 setnx 之后执行 expire 之前进程意外 crash 或者要重启维护了，那会怎么样？<br>
+</p>
+
+<p>
+使用命令：SET key value [EX seconds] [PX milliseconds] [NX|XX]<br>
+</p>
+
+<p>
+例如：<br>
+</p>
+<pre class="example">
+SET test_key "hello" EX 60 NX
+SET test_key "hello" PX 60000 NX
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgbfcbebc" class="outline-2">
+<h2 id="orgbfcbebc"><span class="section-number-2">3</span> Redis 里有 1 亿个 key，其中 10w 个 key 以某个固定前缀开头，将它们找出来</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+使用命令：keys pattern<br>
+</p>
+
+<p>
+追问：如果这个 redis 正在给线上的业务提供服务，那使用 keys 指令会有什么问题？<br>
+</p>
+
+<p>
+这个时候你要回答 redis 关键的一个特性：redis 的单线程的。keys 指令会导致线程阻塞一段时间，线上服务会停顿，直到指令执行完毕，服务才能恢复。这个时候可以使用 scan 指令，scan 指令可以无阻塞的提取出指定模式的 key 列表，但是会有一定的重复概率，在客户端做一次去重就可以了，但是整体所花费的时间会比直接用 keys 指令长。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6c26c27" class="outline-2">
+<h2 id="org6c26c27"><span class="section-number-2">4</span> 使用过 Redis 做异步队列么，你是怎么用的？</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+一般使用 list 结构作为队列，rpush 生产消息，lpop 消费消息。当 lpop 没有消息的时候，要适当 sleep 一会再重试。<br>
+</p>
+
+<p>
+如果对方追问可不可以不用 sleep 呢？list 还有个指令叫 blpop，在没有消息的时候，它会阻塞住直到消息到来。<br>
+</p>
+
+<p>
+如果对方追问能不能生产一次消费多次呢？使用 pub/sub 主题订阅者模式，可以实现 1:N 的消息队列。<br>
+</p>
+
+<p>
+如果对方追问 pub/sub 有什么缺点？在消费者下线的情况下，生产的消息会丢失，得使用专业的消息队列如 rabbitmq 等。<br>
+</p>
+
+<p>
+如果对方追问 redis 如何实现延时队列？我估计现在你很想把面试官一棒打死如果你手上有一根棒球棍的话，怎么问的这么详细。但是你很克制，然后神态自若的回答道：使用 sortedset，拿时间戳作为 score，消息内容作为 key 调用 zadd 来生产消息，消费者用 zrangebyscore 指令获取 N 秒之前的数据轮询进行处理。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgad4a6cf" class="outline-2">
+<h2 id="orgad4a6cf"><span class="section-number-2">5</span> 如果有大量的 key 需要设置同一时间过期，一般需要注意什么？</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+如果大量的 key 过期时间设置的过于集中，到过期的那个时间点，redis 可能会出现短暂的卡顿现象。一般需要在时间上加一个随机值，使得过期时间分散一些。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2be4edb" class="outline-2">
+<h2 id="org2be4edb"><span class="section-number-2">6</span> Redis如何做持久化的？</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+bgsave 做镜像全量持久化，aof 做增量持久化。因为 bgsave 会耗费较长时间，不够实时，在停机的时候会导致大量丢失数据，所以需要 aof 来配合使用。在 redis 实例重启时，会使用 bgsave 持久化文件重新构建内存，再使用 aof 重放近期的操作指令来实现完整恢复重启之前的状态。<br>
+</p>
+
+<p>
+对方追问那如果突然机器掉电会怎样？取决于 aof 日志 sync 属性的配置，如果不要求性能，在每条写指令时都 sync 一下磁盘，就不会丢失数据。但是在高性能的要求下每次都 sync 是不现实的，一般都使用定时 sync，比如 1s1 次，这个时候最多就会丢失 1s 的数据。<br>
+</p>
+
+<p>
+对方追问 bgsave 的原理是什么？你给出两个词汇就可以了，fork 和 cow。fork 是指 redis 通过创建子进程来进行 bgsave 操作，cow 指的是 copy on write，子进程创建后，父子进程共享数据段，父进程继续提供读写服务，写脏的页面数据会逐渐和子进程分离开来。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org603198a" class="outline-2">
+<h2 id="org603198a"><span class="section-number-2">7</span> Pipeline 有什么好处，为什么要用 pipeline？</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+可以将多次 IO 往返的时间缩减为一次，前提是 pipeline 执行的指令之间没有因果相关性。使用 redis-benchmark 进行压测的时候可以发现影响 redis 的 QPS 峰值的一个重要因素是 pipeline 批次指令的数目。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga2c992c" class="outline-2">
+<h2 id="orga2c992c"><span class="section-number-2">8</span> Redis 的同步机制了解么？</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Redis 可以使用主从同步，从从同步。第一次同步时，主节点做一次 bgsave，并同时将后续修改操作记录到内存 buffer，待完成后将 rdb 文件全量同步到复制节点，复制节点接受完成后将 rdb 镜像加载到内存。加载完成后，再通知主节点将期间修改的操作记录同步到复制节点进行重放就完成了同步过程。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2c316ca" class="outline-2">
+<h2 id="org2c316ca"><span class="section-number-2">9</span> 是否使用过 Redis 集群，集群的原理是什么？</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+Redis Sentinal 着眼于高可用，在 master 宕机时会自动将 slave 提升为 master，继续提供服务。<br>
+</p>
+
+<p>
+Redis Cluster 着眼于扩展性，在单个 redis 内存不足时，使用 Cluster 进行分片存储。<br>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

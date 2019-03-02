@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2019-03-02 Sat 14:40 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>shell 常用命令</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">shell 常用命令</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org83baf57">1. tldr 查看指定命令的常用命令</a></li>
+<li><a href="#org35863b3">2. nslookup 查看域名解析是否正常</a></li>
+<li><a href="#org7479755">3. netstat 查看端口网络连接信息</a></li>
+<li><a href="#orga2dc84d">4. tcptraceroute 基于 TCP 的 traceroute</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org83baf57" class="outline-2">
+<h2 id="org83baf57"><span class="section-number-2">1</span> tldr 查看指定命令的常用命令</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+快速查看各种命令的常用命令<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ tldr tar
+
+tar
+
+Archiving utility.
+Often combined with a compression method, such as gzip or bzip.
+
+- Create an archive from files:
+    tar -cf target.tar file1 file2 file3
+
+- Create a gzipped archive:
+    tar -czf target.tar.gz file1 file2 file3
+
+- Extract an archive<span style="color: #5f8700;"> in</span> a target directory:
+    tar -xf source.tar -C directory
+
+- Extract a gzipped archive<span style="color: #5f8700;"> in</span> the current directory:
+    tar -xzf source.tar.gz
+
+- Extract a bzipped archive<span style="color: #5f8700;"> in</span> the current directory:
+    tar -xjf source.tar.bz2
+
+- Create a compressed archive, using archive suffix to determine the compression program:
+    tar -caf target.tar.xz file1 file2 file3
+
+- List the contents of a tar file:
+    tar -tvf source.tar
+
+- Extract files matching a pattern:
+    tar -xf source.tar --wildcards <span style="color: #00afaf;">"*.html"</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org35863b3" class="outline-2">
+<h2 id="org35863b3"><span class="section-number-2">2</span> nslookup 查看域名解析是否正常</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+查询DNS的记录，查看域名解析是否正常，在网络故障的时候用来诊断网络问题<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ nslookup www.langdebuqing.com
+Server:     8.8.8.8
+Address:    8.8.8.8#53
+
+Non-authoritative answer:
+Name:   www.langdebuqing.com
+Address: 149.28.67.225
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org7479755" class="outline-2">
+<h2 id="org7479755"><span class="section-number-2">3</span> netstat 查看端口网络连接信息</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+查看网络连接信息<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ netstat -anp | grep 1942   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#31471;&#21475; 1942 &#30340;&#32593;&#32476;&#36830;&#25509;&#20449;&#24687;</span>
+tcp6       0      0 :::1942                 :::*                    LISTEN      7677/python
+tcp6       0      0 149.28.67.225:1942      218.249.22.2:52013      ESTABLISHED 7677/python
+tcp6       0      0 149.28.67.225:1942      218.249.22.2:52023      ESTABLISHED 7677/python
+tcp6       0      0 149.28.67.225:1942      218.249.22.2:52007      ESTABLISHED 7677/python
+udp6       0      0 :::1942                 :::*                                7677/python
+$ netstat -atp               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475; tcp &#30340;&#32593;&#32476;&#36830;&#25509;&#20449;&#24687;</span>
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 localhost:smtp          0.0.0.0:*               LISTEN      1217/master
+tcp        0      0 0.0.0.0:bintec-admin    0.0.0.0:*               LISTEN      4638/sshd
+tcp        0      0 0.0.0.0:http            0.0.0.0:*               LISTEN      975/nginx: master p
+tcp        0      0 149.28.67.:bintec-admin 218.249.22.2:50573      ESTABLISHED 2013/sshd: root@pts
+tcp        0      0 149.28.67.:bintec-admin 218.249.22.2:50493      ESTABLISHED 1563/sshd: root@pts
+tcp        0     76 149.28.67.:bintec-admin 218.249.22.2:51960      ESTABLISHED 5943/sshd: root@pts
+tcp6       0      0 localhost:smtp          [::]:*                  LISTEN      1217/master
+tcp6       0      0 [::]:bintec-admin       [::]:*                  LISTEN      4638/sshd
+tcp6       0      0 [::]:1942               [::]:*                  LISTEN      7677/python
+$ netstat -aup               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475; udp &#30340;&#32593;&#32476;&#36830;&#25509;&#20449;&#24687;</span>
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+udp        0      0 0.0.0.0:46753           0.0.0.0:*                           7677/python
+udp        0      0 localhost:323           0.0.0.0:*                           492/chronyd
+udp        0      0 0.0.0.0:bootpc          0.0.0.0:*                           871/dhclient
+udp6       0      0 [::]:1942               [::]:*                              7677/python
+udp6       0      0 localhost:323           [::]:*                              492/chronyd
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orga2dc84d" class="outline-2">
+<h2 id="orga2dc84d"><span class="section-number-2">4</span> tcptraceroute 基于 TCP 的 traceroute</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+可用来检测 tcp 阻断<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">sudo tcptraceroute langdebuqing.com 2345  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24517;&#39035;&#20351;&#29992; sudo &#26435;&#38480;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
