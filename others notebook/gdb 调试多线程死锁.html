@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2019-03-26 Tue 13:22 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gdb 调试多线程死锁</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">gdb 调试多线程死锁</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4ca7d97">1. 死锁示例代码</a></li>
+<li><a href="#org0ccccc2">2. 编译调试</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4ca7d97" class="outline-2">
+<h2 id="org4ca7d97"><span class="section-number-2">1</span> 死锁示例代码</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;pthread.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;unistd.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span>
+
+<span style="color: #af8700;">void</span>* <span style="color: #0087ff;">alive_thread</span>(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">arg</span>)
+{
+    <span style="color: #5f8700;">while</span>(1)
+    {
+        usleep(1000*1000);
+    }
+}
+
+<span style="color: #af8700;">void</span>* <span style="color: #0087ff;">dead_thread</span>(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">arg</span>)
+{
+    <span style="color: #af8700;">pthread_mutex_t</span> <span style="color: #0087ff;">mutex</span>;
+    pthread_mutex_init(&amp;mutex, <span style="color: #00afaf;">NULL</span>);
+    usleep(1000*1000);
+    fprintf(stderr, <span style="color: #00afaf;">"timeout we will start dead lock\n"</span>);
+    pthread_mutex_lock(&amp;mutex);
+    pthread_mutex_lock(&amp;mutex);
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
+{
+    <span style="color: #af8700;">pthread_t</span> <span style="color: #0087ff;">alive_pid</span>;
+    pthread_create(&amp;alive_pid, <span style="color: #00afaf;">NULL</span>, alive_thread, <span style="color: #00afaf;">NULL</span>);
+    <span style="color: #af8700;">pthread_t</span> <span style="color: #0087ff;">dead_pid</span>;
+    pthread_create(&amp;dead_pid, <span style="color: #00afaf;">NULL</span>, dead_thread, <span style="color: #00afaf;">NULL</span>);
+    <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ret1</span> = <span style="color: #00afaf;">NULL</span>;
+    pthread_join(alive_pid, &amp;ret1);
+    <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ret2</span> = <span style="color: #00afaf;">NULL</span>;
+    pthread_join(dead_pid, &amp;ret2);
+
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0ccccc2" class="outline-2">
+<h2 id="org0ccccc2"><span class="section-number-2">2</span> 编译调试</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-bash">$ gcc main.c -o main -g -lpthread
+$ ./main
+timeout we will start dead lock
+</pre>
+</div>
+
+<p>
+先不要杀死该进程，打开另一个终端进行 gdb 调试<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">$ ps -ef | grep main | grep -v grep
+root     22895 22671  0 15:30 pts/0    00:00:00 ./main
+$ gdb main 22895
+...
+(gdb) info threads
+  Id   Target Id         Frame
+  3    Thread 0x7f03a291a700 (LWP 22896) <span style="color: #00afaf;">"main"</span> 0x00007f03a29da06d<span style="color: #5f8700;"> in</span> nanosleep () from /lib/x86_64-linux-gnu/libc.so.6
+  2    Thread 0x7f03a2119700 (LWP 22897) <span style="color: #00afaf;">"main"</span> 0x00007f03a2ce789c<span style="color: #5f8700;"> in</span> __lll_lock_wait () from /lib/x86_64-linux-gnu/libpthread.so.0
+* 1    Thread 0x7f03a310b700 (LWP 22895) <span style="color: #00afaf;">"main"</span> 0x00007f03a2ce2148<span style="color: #5f8700;"> in</span> pthread_join () from /lib/x86_64-linux-gnu/libpthread.so.0
+(gdb) thread 2
+[Switching to thread 2 (Thread 0x7f03a2119700 (LWP 22897))]
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">0  0x00007f03a2ce789c in __lll_lock_wait () from /lib/x86_64-linux-gnu/libpthread.so.0</span>
+(gdb) bt
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">0  0x00007f03a2ce789c in __lll_lock_wait () from /lib/x86_64-linux-gnu/libpthread.so.0</span>
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">1  0x00007f03a2ce3065 in _L_lock_858 () from /lib/x86_64-linux-gnu/libpthread.so.0</span>
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">2  0x00007f03a2ce2eba in pthread_mutex_lock () from /lib/x86_64-linux-gnu/libpthread.so.0</span>
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">3  0x000000000040084c in dead_thread ()</span>
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">4  0x00007f03a2ce0e9a in start_thread () from /lib/x86_64-linux-gnu/libpthread.so.0</span>
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">5  0x00007f03a2a0e36d in clone () from /lib/x86_64-linux-gnu/libc.so.6</span>
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">6  0x0000000000000000 in ?? ()</span>
+</pre>
+</div>
+
+<p>
+第一个线程运行到 pthread_join，显然是主线程<br>
+第二个线程运行到 __lll_lock_wait()，显然是 dead_thread() 函数中第二个 pthread_mutex_lock(&amp;mutex) 加锁时在等待锁。通过 thread 2 跳转到该线程，bt 查看堆栈，显然发生死锁<br>
+第三个线程运行到 nanosleep()，显然是 alive_thread() 函数中无限休眠<br>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2019-03-02 Sat 14:40 -->
+<!-- 2019-03-26 Tue 13:22 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>redis 3.0 源码阅读计划</title>
@@ -107,6 +107,7 @@
 <h3 id="org834b0dc"><span class="section-number-3">2.1</span> <span class="done DONE">DONE</span> sds</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
+文件：sds.c 和 sds.h<br>
 <b><b>数据结构</b></b><br>
 </p>
 <div class="org-src-container">
@@ -141,6 +142,48 @@
 
 <div id="outline-container-org29b57ed" class="outline-3">
 <h3 id="org29b57ed"><span class="section-number-3">2.2</span> <span class="done DONE">DONE</span> 双端链表</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+文件：adlist.c 和 adlist.h<br>
+</p>
+
+<p>
+<b><b>数据结构</b></b><br>
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">AL_START_HEAD</span> 0  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#34920;&#22836;&#21521;&#34920;&#23614;&#36827;&#34892;&#36845;&#20195;</span>
+<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">AL_START_TAIL</span> 1  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#34920;&#23614;&#21040;&#34920;&#22836;&#36827;&#34892;&#36845;&#20195;</span>
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">listNode</span> {
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">listNode</span> *<span style="color: #0087ff;">prev</span>;
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">listNode</span> *<span style="color: #0087ff;">next</span>;
+    <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">value</span>;
+} <span style="color: #af8700;">listNode</span>;
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">list</span> {
+    <span style="color: #af8700;">listNode</span> *<span style="color: #0087ff;">head</span>;
+    <span style="color: #af8700;">listNode</span> *<span style="color: #0087ff;">tail</span>;
+    <span style="color: #af8700;">void</span> *(*dup)(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ptr</span>);             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33410;&#28857;&#20540;&#22797;&#21046;&#20989;&#25968;</span>
+    <span style="color: #af8700;">void</span> (*free)(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ptr</span>);             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33410;&#28857;&#20540;&#37322;&#25918;&#20989;&#25968;</span>
+    <span style="color: #af8700;">int</span> (*match)(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ptr</span>, <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">key</span>);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33410;&#28857;&#20540;&#23545;&#27604;&#20989;&#25968;</span>
+    <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">len</span>;                   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38142;&#34920;&#25152;&#21253;&#21547;&#30340;&#33410;&#28857;&#25968;&#37327;</span>
+} <span style="color: #af8700;">list</span>;
+
+<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">listIter</span> {
+    <span style="color: #af8700;">listNode</span> *<span style="color: #0087ff;">next</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24403;&#21069;&#36845;&#20195;&#21040;&#30340;&#33410;&#28857;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">direction</span>;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36845;&#20195;&#30340;&#26041;&#21521;</span>
+} <span style="color: #af8700;">listIter</span>;
+</pre>
+</div>
+
+<p>
+<b><b>redis 双端链表特点</b></b><br>
+</p>
+<ul class="org-ul">
+<li>redis 的链表是无环链表。因为链表表头结点的前置结点和表尾结点的后置结点都指向 NULL<br></li>
+<li>通过为链表设置不同类型的特定函数（dup、free、match 函数），redis 的链表可以用于保存各种不同类型的值<br></li>
+</ul>
+</div>
 </div>
 
 <div id="outline-container-org3bd58c1" class="outline-3">

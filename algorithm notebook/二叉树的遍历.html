@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2019-03-02 Sat 14:40 -->
+<!-- 2019-03-26 Tue 13:22 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>二叉树的遍历</title>
@@ -34,11 +34,24 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb74a918">1. 代码目录结构</a></li>
-<li><a href="#org8d706e7">2. tree.h</a></li>
-<li><a href="#org3b29a21">3. tree.cpp</a></li>
-<li><a href="#orge28408f">4. queue.h</a></li>
-<li><a href="#orgfb08f3f">5. stack.h</a></li>
+<li><a href="#orge8a77cb">1. 测试代码</a></li>
+<li><a href="#org5517d44">2. 二叉树数据结构</a></li>
+<li><a href="#orge40d05b">3. 递归遍历</a></li>
+<li><a href="#org00b6e35">4. 非递归遍历</a>
+<ul>
+<li><a href="#org5cda9b4">4.1. 层序遍历（借助队列）</a></li>
+<li><a href="#org0c443a5">4.2. 先序遍历（借助栈）</a></li>
+<li><a href="#org5350c41">4.3. 中序遍历（借助栈）</a></li>
+<li><a href="#org96edb06">4.4. 后序遍历（借助栈）</a></li>
+</ul>
+</li>
+<li><a href="#org523fcf6">5. morris traversal（非递归、不借助栈）</a>
+<ul>
+<li><a href="#org1db4902">5.1. 中序遍历</a></li>
+<li><a href="#org11b0812">5.2. 先序遍历</a></li>
+<li><a href="#org99d5cf2">5.3. 后序遍历</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -46,9 +59,13 @@
 先序+中序、后序+中序、层序+中序 都可唯一确定一棵二叉树<br>
 </p>
 
-<div id="outline-container-orgb74a918" class="outline-2">
-<h2 id="orgb74a918"><span class="section-number-2">1</span> 代码目录结构</h2>
+<div id="outline-container-orge8a77cb" class="outline-2">
+<h2 id="orge8a77cb"><span class="section-number-2">1</span> 测试代码</h2>
 <div class="outline-text-2" id="text-1">
+<p>
+<a href="../images/bitree.tar.gz">bitree.tar.gz</a><br>
+</p>
+
 <pre class="example">
 ├── queue.h
 ├── stack.h
@@ -62,42 +79,26 @@
 </div>
 </div>
 
-<div id="outline-container-org8d706e7" class="outline-2">
-<h2 id="org8d706e7"><span class="section-number-2">2</span> tree.h</h2>
+<div id="outline-container-org5517d44" class="outline-2">
+<h2 id="org5517d44"><span class="section-number-2">2</span> 二叉树数据结构</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
-<pre class="src src-c"><span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> TREE_H
-<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TREE_H</span>
-<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
+<pre class="src src-c"><span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
 {
     <span style="color: #af8700;">int</span> <span style="color: #0087ff;">data</span>;
     <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">lchild</span>;
     <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> *<span style="color: #0087ff;">rchild</span>;
 }<span style="color: #af8700;">node</span>, *<span style="color: #af8700;">BiTree</span>;
-<span style="color: #d75f00;">#endif</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org3b29a21" class="outline-2">
-<h2 id="org3b29a21"><span class="section-number-2">3</span> tree.cpp</h2>
+<div id="outline-container-orge40d05b" class="outline-2">
+<h2 id="orge40d05b"><span class="section-number-2">3</span> 递归遍历</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
-<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
-<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"tree.h"</span>
-<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"stack.h"</span>
-<span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"queue.h"</span>
-
-<span style="color: #af8700;">void</span> <span style="color: #0087ff;">visit</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">t</span>)
-{
-    <span style="color: #5f8700;">if</span>(t)
-        printf(<span style="color: #00afaf;">"node is %d\n"</span>, t-&gt;data);
-    <span style="color: #5f8700;">else</span>
-        printf(<span style="color: #00afaf;">"node is null"</span>);
-}
-
-<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20808;&#24207;&#36941;&#21382;&#20108;&#21449;&#26641;</span>
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20808;&#24207;&#36941;&#21382;&#20108;&#21449;&#26641;</span>
 <span style="color: #af8700;">void</span> <span style="color: #0087ff;">PreOrder</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
 {
     <span style="color: #5f8700;">if</span>(T)
@@ -129,8 +130,20 @@
         visit(T);
     }
 }
+</pre>
+</div>
+</div>
+</div>
 
-<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#24038;&#21521;&#21491;&#23618;&#27425;&#36941;&#21382;&#20108;&#21449;&#26641;&#65288;&#38656;&#35201;&#20511;&#21161;&#19968;&#20010;&#38431;&#21015;&#65289;</span>
+<div id="outline-container-org00b6e35" class="outline-2">
+<h2 id="org00b6e35"><span class="section-number-2">4</span> 非递归遍历</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org5cda9b4" class="outline-3">
+<h3 id="org5cda9b4"><span class="section-number-3">4.1</span> 层序遍历（借助队列）</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#24038;&#21521;&#21491;&#23618;&#27425;&#36941;&#21382;&#20108;&#21449;&#26641;&#65288;&#38656;&#35201;&#20511;&#21161;&#19968;&#20010;&#38431;&#21015;&#65289;</span>
 <span style="color: #af8700;">void</span> <span style="color: #0087ff;">LevelOrder</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
 {
     <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>T)
@@ -149,8 +162,16 @@
             enqueue(Q, t-&gt;rchild);
     }
 }
+</pre>
+</div>
+</div>
+</div>
 
-<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#36882;&#24402;&#20808;&#24207;&#36941;&#21382;&#65288;&#20511;&#21161;&#26632;&#65289;</span>
+<div id="outline-container-org0c443a5" class="outline-3">
+<h3 id="org0c443a5"><span class="section-number-3">4.2</span> 先序遍历（借助栈）</h3>
+<div class="outline-text-3" id="text-4-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#36882;&#24402;&#20808;&#24207;&#36941;&#21382;&#65288;&#20511;&#21161;&#26632;&#65289;</span>
 <span style="color: #af8700;">void</span> <span style="color: #0087ff;">PreOrder2</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
 {
     <span style="color: #af8700;">stack</span> <span style="color: #0087ff;">S</span>;
@@ -171,8 +192,16 @@
         }
     }
 }
+</pre>
+</div>
+</div>
+</div>
 
-<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#36882;&#24402;&#20013;&#24207;&#36941;&#21382;&#65288;&#20511;&#21161;&#26632;&#65289;</span>
+<div id="outline-container-org5350c41" class="outline-3">
+<h3 id="org5350c41"><span class="section-number-3">4.3</span> 中序遍历（借助栈）</h3>
+<div class="outline-text-3" id="text-4-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#36882;&#24402;&#20013;&#24207;&#36941;&#21382;&#65288;&#20511;&#21161;&#26632;&#65289;</span>
 <span style="color: #af8700;">void</span> <span style="color: #0087ff;">InOrder2</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
 {
     <span style="color: #af8700;">stack</span> <span style="color: #0087ff;">S</span>;
@@ -193,8 +222,15 @@
         }
     }
 }
-
-<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#36882;&#24402;&#21518;&#24207;&#36941;&#21382;&#65288;&#20511;&#21161;&#26632;&#65289;</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org96edb06" class="outline-3">
+<h3 id="org96edb06"><span class="section-number-3">4.4</span> 后序遍历（借助栈）</h3>
+<div class="outline-text-3" id="text-4-4">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#36882;&#24402;&#21518;&#24207;&#36941;&#21382;&#65288;&#20511;&#21161;&#26632;&#65289;</span>
 <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#36882;&#24402;&#21518;&#24207;&#36941;&#21382;&#21644;&#20808;&#24207;&#12289;&#20013;&#24207;&#36941;&#21382;&#19981;&#21516;&#30340;&#26159;&#38656;&#35201;&#35760;&#24405;&#26368;&#36817;&#19968;&#27425;&#35775;&#38382;&#30340;&#32467;&#28857;</span>
 <span style="color: #af8700;">void</span> <span style="color: #0087ff;">PostOrder2</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
 {
@@ -229,158 +265,184 @@
         }
     }
 }
-
-<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">argc</span>, <span style="color: #af8700;">char</span>** <span style="color: #0087ff;">argv</span>)
-{
-    <span style="color: #af8700;">node</span> <span style="color: #0087ff;">a</span>, <span style="color: #0087ff;">b</span>, <span style="color: #0087ff;">c</span>, <span style="color: #0087ff;">d</span>, <span style="color: #0087ff;">e</span>;
-    a.data = 1;
-    b.data = 2;
-    c.data = 3;
-    d.data = 4;
-    e.data = 5;
-    a.lchild = &amp;b;
-    a.rchild = &amp;c;
-    b.lchild = &amp;d;
-    b.rchild = &amp;e;
-    c.lchild = <span style="color: #00afaf;">NULL</span>;
-    c.rchild = <span style="color: #00afaf;">NULL</span>;
-    d.lchild = <span style="color: #00afaf;">NULL</span>;
-    d.rchild = <span style="color: #00afaf;">NULL</span>;
-    e.lchild = <span style="color: #00afaf;">NULL</span>;
-    e.rchild = <span style="color: #00afaf;">NULL</span>;
-
-    PreOrder(&amp;a);
-    putchar(10);
-    InOrder(&amp;a);
-    putchar(10);
-    PostOrder(&amp;a);
-    putchar(10);
-
-    LevelOrder(&amp;a);
-    putchar(10);
-
-    PreOrder2(&amp;a);
-    putchar(10);
-    InOrder2(&amp;a);
-    putchar(10);
-    PostOrder2(&amp;a);
-
-    <span style="color: #5f8700;">return</span> 0;
-}
 </pre>
 </div>
 </div>
 </div>
-
-<div id="outline-container-orge28408f" class="outline-2">
-<h2 id="orge28408f"><span class="section-number-2">4</span> queue.h</h2>
-<div class="outline-text-2" id="text-4">
-<div class="org-src-container">
-<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"tree.h"</span>
-<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
-<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">elem_type</span> BiTree
-
-<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">queue</span>
-{
-    <span style="color: #af8700;">elem_type</span> <span style="color: #0087ff;">data</span>[N];
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">front</span>, <span style="color: #0087ff;">rear</span>;
-}<span style="color: #af8700;">queue</span>;
-
-<span style="color: #af8700;">void</span> <span style="color: #0087ff;">init_queue</span>(queue &amp;q)
-{
-    q.rear = q.front = 0;
-}
-
-<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">is_empty</span>(queue &amp;q)
-{
-    <span style="color: #5f8700;">if</span>(q.rear == q.front)
-        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
-    <span style="color: #5f8700;">else</span>
-        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
-}
-
-<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">enqueue</span>(queue &amp;q, elem_type &amp;x)
-{
-    <span style="color: #5f8700;">if</span>((q.rear+1) % N == q.front)
-        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
-    q.data[q.rear] = x;
-    q.rear = (q.rear+1) % N;
-    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
-}
-
-<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">dequeue</span>(queue &amp;q, elem_type &amp;x)
-{
-    <span style="color: #5f8700;">if</span>(q.rear == q.front)
-        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
-    x = q.data[q.front];
-    q.front = (q.front+1) % N;
-    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
-}
-
-<span style="color: #af8700;">int</span> <span style="color: #0087ff;">queue_length</span>(queue &amp;q)
-{
-    <span style="color: #5f8700;">return</span> (N+q.rear-q.front)%N;
-}
-</pre>
-</div>
-</div>
 </div>
 
-<div id="outline-container-orgfb08f3f" class="outline-2">
-<h2 id="orgfb08f3f"><span class="section-number-2">5</span> stack.h</h2>
+<div id="outline-container-org523fcf6" class="outline-2">
+<h2 id="org523fcf6"><span class="section-number-2">5</span> morris traversal（非递归、不借助栈）</h2>
 <div class="outline-text-2" id="text-5">
+<p>
+空间复杂度 O(1)<br>
+时间复杂度 O(n)<br>
+morris traversal 用到了线索二叉树的思想，在 morris 方法中不需要为每个节点额外分配指针指向其前驱（predecessor）和后继节点（successor），只需要利用叶子节点中的左右空指针指向某种顺序遍历下的前驱结点或后继结点就可以了。<br>
+</p>
+</div>
+<div id="outline-container-org1db4902" class="outline-3">
+<h3 id="org1db4902"><span class="section-number-3">5.1</span> 中序遍历</h3>
+<div class="outline-text-3" id="text-5-1">
+
+<div class="figure">
+<p><img src="../images/bitree1.jpg" alt="bitree1.jpg"><br>
+</p>
+</div>
 <div class="org-src-container">
-<pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"tree.h"</span>
-<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
-<span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">elem_type</span> BiTree
-<span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span>
+<pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">InOrder3</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
 {
-    <span style="color: #af8700;">elem_type</span> <span style="color: #0087ff;">data</span>[N];
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">top</span>;
-}<span style="color: #af8700;">stack</span>;
+    <span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">cur</span> = T, <span style="color: #0087ff;">prev</span> = <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #5f8700;">while</span> (cur)
+    {
+        <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>cur-&gt;lchild)       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">1. &#24038;&#23376;&#26641;&#20026; NULL&#65292;&#35775;&#38382;&#24403;&#21069;&#32467;&#28857;&#65292;&#36941;&#21382;&#21491;&#23376;&#26641;&#65307;&#25110;&#32773;&#25442;&#21477;&#35805;&#35828;&#65292;&#27493;&#39588; 2 &#25913;&#21160;&#20102;&#20108;&#21449;&#26641;&#65292;&#36890;&#36807;&#27493;&#39588; 1 &#26469;&#25226;&#24403;&#21069;&#32467;&#28857;&#22238;&#28335;&#21040;&#21518;&#32487;&#32467;&#28857;</span>
+        {
+            visit(cur);
+            cur = cur-&gt;rchild;
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312;&#24038;&#23376;&#26641;&#20013;&#25214;&#21040;&#24403;&#21069;&#32467;&#28857;&#30340;&#21069;&#39537;&#32467;&#28857;</span>
+            prev = cur-&gt;lchild;
+            <span style="color: #5f8700;">while</span> (prev-&gt;rchild &amp;&amp; prev-&gt;rchild != cur)
+                prev = prev-&gt;rchild;
 
-<span style="color: #af8700;">void</span> <span style="color: #0087ff;">init_stack</span>(stack &amp;s)
-{
-    s.top = -1;
-}
-
-<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">is_empty</span>(stack &amp;s)
-{
-    <span style="color: #5f8700;">if</span>(s.top == -1)
-        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
-    <span style="color: #5f8700;">else</span>
-        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
-}
-
-<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">push</span>(stack &amp;s, elem_type &amp;x)
-{
-    <span style="color: #5f8700;">if</span>(s.top == N-1)
-        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
-    s.data[++s.top] = x;
-    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
-}
-
-<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">pop</span>(stack &amp;s, elem_type &amp;x)
-{
-    <span style="color: #5f8700;">if</span>(s.top == -1)
-        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
-    x = s.data[s.top--];
-    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
-}
-
-<span style="color: #af8700;">bool</span> <span style="color: #0087ff;">get_top</span>(stack &amp;s, elem_type &amp;x)
-{
-    <span style="color: #5f8700;">if</span>(s.top == -1)
-        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">false</span>;
-    x = s.data[s.top];
-    <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">true</span>;
-}
-
-<span style="color: #af8700;">int</span> <span style="color: #0087ff;">stack_length</span>(stack &amp;s)
-{
-    <span style="color: #5f8700;">return</span> s.top+1;
+            <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>prev-&gt;rchild)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">2. &#25913;&#21160;&#20108;&#21449;&#26641;&#65306;&#20351;&#21069;&#39537;&#32467;&#28857;&#30340;&#21491;&#23401;&#23376;&#25351;&#21521;&#24403;&#21069;&#32467;&#28857;</span>
+            {
+                prev-&gt;rchild = cur;
+                cur = cur-&gt;lchild;
+            }
+            <span style="color: #5f8700;">else</span>                       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">3. &#24674;&#22797;&#20108;&#21449;&#26641;&#65306;&#20351;&#21069;&#39537;&#32467;&#28857;&#30340;&#21491;&#23401;&#23376;&#24674;&#22797;&#20026; NULL&#12290;&#27492;&#26102;&#24038;&#23376;&#26641;&#24050;&#32463;&#36941;&#21382;&#36807;&#20102;&#65292;&#25152;&#20197;&#38656;&#35201;&#24674;&#22797;&#24403;&#21069;&#32467;&#28857;&#30340;&#21069;&#39537;&#32467;&#28857;&#30340;&#21491;&#23401;&#23376;&#20026; NULL&#65292;&#24182;&#24320;&#22987;&#36941;&#21382;&#21491;&#23401;&#23376;</span>
+            {
+                prev-&gt;rchild = <span style="color: #00afaf;">NULL</span>;
+                visit(cur);
+                cur = cur-&gt;rchild;
+            }
+        }
+    }
 }
 </pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org11b0812" class="outline-3">
+<h3 id="org11b0812"><span class="section-number-3">5.2</span> 先序遍历</h3>
+<div class="outline-text-3" id="text-5-2">
+
+<div class="figure">
+<p><img src="../images/bitree2.jpg" alt="bitree2.jpg"><br>
+</p>
+</div>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">PreOrder3</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
+{
+    <span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">cur</span> = T, <span style="color: #0087ff;">prev</span> = <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #5f8700;">while</span> (cur)
+    {
+        <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>cur-&gt;lchild)
+        {
+            visit(cur);
+            cur = cur-&gt;rchild;
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            prev = cur-&gt;lchild;
+            <span style="color: #5f8700;">while</span> (prev-&gt;rchild &amp;&amp; prev-&gt;rchild != cur)
+                prev = prev-&gt;rchild;
+
+            <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>prev-&gt;rchild)
+            {
+                visit(cur);
+                prev-&gt;rchild = cur;
+                cur = cur-&gt;lchild;
+            }
+            <span style="color: #5f8700;">else</span>
+            {
+                prev-&gt;rchild = <span style="color: #00afaf;">NULL</span>;
+                cur = cur-&gt;rchild;
+            }
+        }
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org99d5cf2" class="outline-3">
+<h3 id="org99d5cf2"><span class="section-number-3">5.3</span> 后序遍历</h3>
+<div class="outline-text-3" id="text-5-3">
+
+<div class="figure">
+<p><img src="../images/bitree3.jpg" alt="bitree3.jpg"><br>
+</p>
+</div>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">reverse</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">from</span>, <span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">to</span>) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">reverse the tree nodes 'from' -&gt; 'to'.</span>
+{
+    <span style="color: #5f8700;">if</span> (from == to)
+        <span style="color: #5f8700;">return</span>;
+    <span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">x</span> = from, <span style="color: #0087ff;">y</span> = from-&gt;rchild, <span style="color: #0087ff;">z</span>;
+    <span style="color: #5f8700;">while</span> (<span style="color: #00afaf;">true</span>)
+    {
+        z = y-&gt;rchild;
+        y-&gt;rchild = x;
+        x = y;
+        y = z;
+        <span style="color: #5f8700;">if</span> (x == to)
+            <span style="color: #5f8700;">break</span>;
+    }
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">printReverse</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">from</span>, <span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">to</span>) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">print the reversed tree nodes 'from' -&gt; 'to'.</span>
+{
+    reverse(from, to);
+
+    <span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">p</span> = to;
+    <span style="color: #5f8700;">while</span> (<span style="color: #00afaf;">true</span>)
+    {
+        visit(p);
+        <span style="color: #5f8700;">if</span> (p == from)
+            <span style="color: #5f8700;">break</span>;
+        p = p-&gt;rchild;
+    }
+
+    reverse(to, from);
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">PostOrder3</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
+{
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span> <span style="color: #0087ff;">dump</span>;
+    dump.lchild = T;
+    <span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">cur</span> = &amp;dump, <span style="color: #0087ff;">prev</span> = <span style="color: #00afaf;">NULL</span>;
+    <span style="color: #5f8700;">while</span> (cur)
+    {
+        <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>cur-&gt;lchild)
+        {
+            cur = cur-&gt;rchild;
+        }
+        <span style="color: #5f8700;">else</span>
+        {
+            prev = cur-&gt;lchild;
+            <span style="color: #5f8700;">while</span> (prev-&gt;rchild &amp;&amp; prev-&gt;rchild != cur)
+                prev = prev-&gt;rchild;
+
+            <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>prev-&gt;rchild)
+            {
+                prev-&gt;rchild = cur;
+                cur = cur-&gt;lchild;
+            }
+            <span style="color: #5f8700;">else</span>
+            {
+                printReverse(cur-&gt;lchild, prev);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">call print</span>
+                prev-&gt;rchild = <span style="color: #00afaf;">NULL</span>;
+                cur = cur-&gt;rchild;
+            }
+        }
+    }
+}
+</pre>
+</div>
 </div>
 </div>
 </div>

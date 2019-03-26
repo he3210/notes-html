@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2019-03-26 Tue 13:22 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gdb 调试段错误</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">gdb 调试段错误</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6ad66b1">1. 段错误产生原因</a>
+<ul>
+<li><a href="#orge60a2e1">1.1. 访问不存在的内存地址</a></li>
+<li><a href="#org62314b5">1.2. 访问系统保护的内存地址</a></li>
+<li><a href="#orgbdb5c18">1.3. 访问只读的内存地址</a></li>
+<li><a href="#org6ac52e1">1.4. 栈溢出</a></li>
+</ul>
+</li>
+<li><a href="#org973367f">2. gdb 调试</a>
+<ul>
+<li><a href="#orga8a3311">2.1. 以栈溢出为例直接使用 gdb 调试</a></li>
+<li><a href="#orge9fe090">2.2. 使用 core 文件调试段错误</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6ad66b1" class="outline-2">
+<h2 id="org6ad66b1"><span class="section-number-2">1</span> 段错误产生原因</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+段错误是指非法访问内存产生的错误<br>
+</p>
+</div>
+
+<div id="outline-container-orge60a2e1" class="outline-3">
+<h3 id="orge60a2e1"><span class="section-number-3">1.1</span> 访问不存在的内存地址</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span> 
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdlib.h&gt;</span> 
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">main</span>() 
+{ 
+    <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">ptr</span> = <span style="color: #00afaf;">NULL</span>; 
+    *ptr = 0; 
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org62314b5" class="outline-3">
+<h3 id="org62314b5"><span class="section-number-3">1.2</span> 访问系统保护的内存地址</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span> 
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdlib.h&gt;</span> 
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">main</span>() 
+{ 
+    <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">ptr</span> = (<span style="color: #af8700;">int</span> *)0; 
+    *ptr = 100; 
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbdb5c18" class="outline-3">
+<h3 id="orgbdb5c18"><span class="section-number-3">1.3</span> 访问只读的内存地址</h3>
+<div class="outline-text-3" id="text-1-3">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span> 
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdlib.h&gt;</span> 
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;string.h&gt;</span> 
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">main</span>() 
+{ 
+    <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">ptr</span> = <span style="color: #00afaf;">"test"</span>; 
+    strcpy(ptr, <span style="color: #00afaf;">"TEST"</span>); 
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6ac52e1" class="outline-3">
+<h3 id="org6ac52e1"><span class="section-number-3">1.4</span> 栈溢出</h3>
+<div class="outline-text-3" id="text-1-4">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span> 
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdlib.h&gt;</span> 
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">main</span>() 
+{ 
+    main(); 
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org973367f" class="outline-2">
+<h2 id="org973367f"><span class="section-number-2">2</span> gdb 调试</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orga8a3311" class="outline-3">
+<h3 id="orga8a3311"><span class="section-number-3">2.1</span> 以栈溢出为例直接使用 gdb 调试</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-bash">$ gcc segfault.c -g -o segfault
+$ ./segfault
+Segmentation fault (core dumped)
+$ gdb segfault
+...
+(gdb) run                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992; run &#21629;&#20196;&#36816;&#34892;&#21518;&#65292;&#20250;&#25552;&#31034;&#27573;&#38169;&#35823;&#20986;&#29616;&#22312;&#25991;&#20214;&#20013;&#30340;&#20301;&#32622;&#65292;&#22914;&#19979;&#25152;&#31034;</span>
+Starting program: /home/he/Desktop/GDB/segfault
+
+Program received signal SIGSEGV, Segmentation fault.
+<span style="color: #0087ff;">main</span> () at segfault.c:5
+5       main();
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge9fe090" class="outline-3">
+<h3 id="orge9fe090"><span class="section-number-3">2.2</span> 使用 core 文件调试段错误</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-bash">$ gcc segfault.c -g -o segfault
+$ ulimit -c             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034; core &#25991;&#20214;&#30340;&#22823;&#23567;</span>
+$ ulimit -c unlimited   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226; core &#25991;&#20214;&#35774;&#20026;&#26368;&#22823;&#65292;&#21482;&#23545;&#26412;&#27425;&#26377;&#25928;</span>
+$ ./segfault            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36816;&#34892;&#31243;&#24207;&#29983;&#25104; core &#25991;&#20214;,&#35774;&#29983;&#25104;&#20102; core.7963</span>
+Segmentation fault (core dumped)
+$ gdb segfault core.7963
+...
+Core was generated by <span style="color: #00afaf;">'n./segfault'</span>.
+Program terminated with signal 11, Segmentation fault.
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">0  main () at test2.c:12</span>
+12      main();
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

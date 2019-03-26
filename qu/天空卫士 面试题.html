@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2019-03-26 Tue 13:22 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>天空卫士 面试题</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">天空卫士 面试题</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4391a53">1. 岗位描述</a></li>
+<li><a href="#orgf4d4bf0">2. 面试题</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4391a53" class="outline-2">
+<h2 id="org4391a53"><span class="section-number-2">1</span> 岗位描述</h2>
+<div class="outline-text-2" id="text-1">
+
+<div class="figure">
+<p><img src="../images/天空卫士.PNG" alt="天空卫士.PNG"><br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf4d4bf0" class="outline-2">
+<h2 id="orgf4d4bf0"><span class="section-number-2">2</span> 面试题</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>如何判断一个单链表有环，设置2个指针，一个快一个满<br></li>
+
+<li>二叉树先序遍历、中序遍历、后续遍历，根据2个确定一个<br></li>
+
+<li>线程互斥锁、条件锁的生产者消费者<br></li>
+
+<li>gdb 调试全面掌握<br></li>
+
+<li>排序<br></li>
+
+<li>父子进程之间的最优通信方式<br></li>
+
+<li>哈希<br></li>
+
+<li>pthread_self()  pthread_&#x2026;<br></li>
+
+<li>epoll ET LT<br></li>
+
+<li>父进程如何获取退出状态<br></li>
+
+<li>写个 Deamon<br></li>
+
+<li>EAGAIN EINTR send recv read write<br></li>
+
+<li>惊群<br></li>
+
+<li>errno 为全局变量，为什么多线程不用加锁<br>
+在支持线程的环境中，多个线程共享进程地址空间，每个线程都有属于它自己的局部 errno 以避免一个线程干扰另一个线程。<br>
+对于 errno 应当知道两条规则。<br>
+<ol class="org-ol">
+<li>如果没有出错，则其值不会被一个例程清除。因此，仅当函数的返回值指明出错时，才检验其值。<br></li>
+<li>任一函数都不会将 errno 值设置为 0，在 &lt;errno.h&gt; 中定义的所有常量都不为 0。<br></li>
+</ol></li>
+
+<li>__VA_ARGS__   是一个可变参数的宏，这个可宏是新的C99规范中新增的，目前似乎 gcc 和 VC6.0 之后的都支持（VC6.0 的编译器不支持）。宏前面加上 ## 的作用在于，当可变参数的个数为 0 时，这里的 ## 起到把前面多余的 "," 去掉的作用。<br></li>
+<li>__FILE__    宏在预编译时会替换成当前的源文件名<br></li>
+<li>__LINE__   宏在预编译时会替换成当前的行号<br></li>
+<li>__FUNCTION__   宏在预编译时会替换成当前的函数名称<br></li>
+
+<li>recv read 返回0<br></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
