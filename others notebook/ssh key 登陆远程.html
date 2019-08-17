@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2019-03-26 Tue 13:22 -->
+<!-- 2019-08-17 Sat 14:23 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ssh key 登陆远程</title>
@@ -38,6 +38,11 @@
 <li><a href="#org6172816">2. 公钥拷贝到远程</a></li>
 <li><a href="#org4948e1e">3. 修改本机的配置文件</a></li>
 <li><a href="#org4f48019">4. 使用</a></li>
+<li><a href="#org850ea56">5. 其它</a>
+<ul>
+<li><a href="#org384ad54">5.1. 去除 private_key 私钥密码</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -100,6 +105,24 @@ Host he
 <pre class="src src-shell">$ ssh he  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992;&#35813;&#21629;&#20196;&#21363;&#21487;&#30331;&#24405;&#65288;&#21482;&#26377;&#39318;&#27425;&#30331;&#38470;&#26102;&#38656;&#35201;&#36755;&#20837;&#23494;&#30721;&#65292;&#20197;&#21518;&#21017;&#19981;&#38656;&#35201;&#65289;</span>
 $ scp -r test he:/root/  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">scp &#21629;&#20196;&#20063;&#25903;&#25345; ssh key</span>
 </pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org850ea56" class="outline-2">
+<h2 id="org850ea56"><span class="section-number-2">5</span> 其它</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org384ad54" class="outline-3">
+<h3 id="org384ad54"><span class="section-number-3">5.1</span> 去除 private_key 私钥密码</h3>
+<div class="outline-text-3" id="text-5-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ ssh-keygen -f he.pem -p
+Enter old passphrase:
+Enter new passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved with the new passphrase.
+</pre>
+</div>
 </div>
 </div>
 </div>

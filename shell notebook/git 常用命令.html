@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2019-03-26 Tue 13:22 -->
+<!-- 2019-08-17 Sat 14:23 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>git 常用命令</title>
@@ -44,7 +44,8 @@
 <li><a href="#org815493b">8. 查看信息</a></li>
 <li><a href="#org5ee42b1">9. 远程同步</a></li>
 <li><a href="#org890549c">10. 撤销</a></li>
-<li><a href="#orge9b2203">11. 其他</a></li>
+<li><a href="#orgda9d39d">11. stash 栈</a></li>
+<li><a href="#orge9b2203">12. 其他</a></li>
 </ul>
 </div>
 </div>
@@ -78,7 +79,7 @@
 <div class="org-src-container">
 <pre class="src src-shell">$ git init                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#24403;&#21069;&#30446;&#24405;&#26032;&#24314;&#19968;&#20010;Git&#20195;&#30721;&#24211;</span>
 $ git init [project-name]        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;&#30446;&#24405;&#65292;&#23558;&#20854;&#21021;&#22987;&#21270;&#20026;Git&#20195;&#30721;&#24211;</span>
-$ git clone [url]                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#19979;&#36733;&#19968;&#20010;&#39033;&#30446;&#21644;&#23427;&#30340;&#25972;&#20010;&#20195;&#30721;&#21382;&#21490;</span>
+$ git clone [url] [save-path]    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26681;&#25454; url &#19979;&#36733;&#19968;&#20010;&#39033;&#30446;&#21644;&#23427;&#30340;&#25972;&#20010;&#20195;&#30721;&#21382;&#21490;&#12290;&#20445;&#23384;&#22312; save-path &#25991;&#20214;&#22841;&#19979;&#65292;&#25110;&#37325;&#21629;&#21517;&#20179;&#24211;&#25991;&#20214;&#22841;</span>
 </pre>
 </div>
 </div>
@@ -163,15 +164,16 @@ $ git branch --no-merged                              <span style="color: #8a8a8
 <h2 id="orgf49f6d1"><span class="section-number-2">7</span> 标签</h2>
 <div class="outline-text-2" id="text-7">
 <div class="org-src-container">
-<pre class="src src-shell">$ git tag                               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377;tag</span>
-$ git tag [tag]                         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;tag&#22312;&#24403;&#21069;commit</span>
-$ git tag [tag] [commit]                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;tag&#22312;&#25351;&#23450;commit</span>
-$ git tag -d [tag]                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#26412;&#22320;tag</span>
-$ git push origin :refs/tags/[tagName]  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#36828;&#31243;tag</span>
-$ git show [tag]                        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;tag&#20449;&#24687;</span>
-$ git push [remote] [tag]               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#25351;&#23450;tag</span>
-$ git push [remote] --tags              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#25152;&#26377;tag</span>
-$ git checkout -b [branch] [tag]        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;&#20998;&#25903;&#65292;&#25351;&#21521;&#26576;&#20010;tag</span>
+<pre class="src src-shell">$ git tag                               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377; tag</span>
+$ git tag [tag]                         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010; tag &#22312;&#24403;&#21069; commit</span>
+$ git tag [tag] [commit]                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010; tag &#22312;&#25351;&#23450; commit</span>
+$ git tag -d [tag]                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#26412;&#22320; tag</span>
+$ git push origin :refs/tags/[tagName]  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#36828;&#31243; tag</span>
+$ git show [tag]                        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475; tag &#20449;&#24687;</span>
+$ git tag -a online_2019_07_02_19_00 -m <span style="color: #00afaf;">"fix bug&#65306;&#20195;&#29702; ping &#19981;&#36890;"</span> HEAD  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#24403;&#21069; commit &#21019;&#24314;&#21517;&#20026; online_2019_07_02_19_00 &#30340;&#26631;&#31614;&#65292;-m &#26159;&#26631;&#31614;&#35828;&#26126;</span>
+$ git push [remote] [tag]               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#25351;&#23450; tag</span>
+$ git push [remote] --tags              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25552;&#20132;&#25152;&#26377; tag</span>
+$ git checkout -b [branch] [tag]        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;&#20998;&#25903;&#65292;&#25351;&#21521;&#26576;&#20010; tag</span>
 </pre>
 </div>
 </div>
@@ -183,20 +185,22 @@ $ git checkout -b [branch] [tag]        <span style="color: #8a8a8a;"># </span><
 <div class="org-src-container">
 <pre class="src src-shell">$ git status                                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26377;&#21464;&#26356;&#30340;&#25991;&#20214;</span>
 $ git log                                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#24403;&#21069;&#20998;&#25903;&#30340;&#29256;&#26412;&#21382;&#21490;</span>
-$ git log --stat                             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;commit&#21382;&#21490;&#65292;&#20197;&#21450;&#27599;&#27425;commit&#21457;&#29983;&#21464;&#26356;&#30340;&#25991;&#20214;</span>
+$ git log --stat                             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034; commit &#21382;&#21490;&#65292;&#20197;&#21450;&#27599;&#27425; commit &#21457;&#29983;&#21464;&#26356;&#30340;&#25991;&#20214;</span>
+$ git log --oneline                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21333;&#34892;&#26174;&#31034;&#27599;&#20010; commit</span>
+$ git log --graph --oneline                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26085;&#24535;&#22270;&#24418;&#21270;&#29256;&#26412;</span>
 $ git log -S [keyword]                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25628;&#32034;&#25552;&#20132;&#21382;&#21490;&#65292;&#26681;&#25454;&#20851;&#38190;&#35789;</span>
-$ git log [tag] HEAD --pretty=format:%s      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#20010;commit&#20043;&#21518;&#30340;&#25152;&#26377;&#21464;&#21160;&#65292;&#27599;&#20010;commit&#21344;&#25454;&#19968;&#34892;</span>
-$ git log [tag] HEAD --grep feature          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#20010;commit&#20043;&#21518;&#30340;&#25152;&#26377;&#21464;&#21160;&#65292;&#20854;"&#25552;&#20132;&#35828;&#26126;"&#24517;&#39035;&#31526;&#21512;&#25628;&#32034;&#26465;&#20214;</span>
+$ git log [tag] HEAD --pretty=format:%s      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#20010; commit &#20043;&#21518;&#30340;&#25152;&#26377;&#21464;&#21160;&#65292;&#27599;&#20010; commit &#21344;&#25454;&#19968;&#34892;</span>
+$ git log [tag] HEAD --grep feature          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#20010; commit &#20043;&#21518;&#30340;&#25152;&#26377;&#21464;&#21160;&#65292;&#20854;"&#25552;&#20132;&#35828;&#26126;"&#24517;&#39035;&#31526;&#21512;&#25628;&#32034;&#26465;&#20214;</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#20010;&#25991;&#20214;&#30340;&#29256;&#26412;&#21382;&#21490;&#65292;&#21253;&#25324;&#25991;&#20214;&#25913;&#21517;</span>
 $ git log --follow [file]
 $ git whatchanged [file]
-$ git log -p [file]                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#25351;&#23450;&#25991;&#20214;&#30456;&#20851;&#30340;&#27599;&#19968;&#27425;diff</span>
-$ git log -5 --pretty --oneline              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#36807;&#21435;5&#27425;&#25552;&#20132;</span>
+$ git log -p [file]                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#25351;&#23450;&#25991;&#20214;&#30456;&#20851;&#30340;&#27599;&#19968;&#27425; diff</span>
+$ git log -5 --pretty --oneline              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#36807;&#21435; 5 &#27425;&#25552;&#20132;</span>
 $ git shortlog -sn                           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#25152;&#26377;&#25552;&#20132;&#36807;&#30340;&#29992;&#25143;&#65292;&#25353;&#25552;&#20132;&#27425;&#25968;&#25490;&#24207;</span>
 $ git blame [file]                           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#25351;&#23450;&#25991;&#20214;&#26159;&#20160;&#20040;&#20154;&#22312;&#20160;&#20040;&#26102;&#38388;&#20462;&#25913;&#36807;</span>
 $ git diff                                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26242;&#23384;&#21306;&#21644;&#24037;&#20316;&#21306;&#30340;&#24046;&#24322;</span>
-$ git diff --cached [file]                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26242;&#23384;&#21306;&#21644;&#19978;&#19968;&#20010;commit&#30340;&#24046;&#24322;</span>
-$ git diff HEAD                              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#24037;&#20316;&#21306;&#19982;&#24403;&#21069;&#20998;&#25903;&#26368;&#26032;commit&#20043;&#38388;&#30340;&#24046;&#24322;</span>
+$ git diff --cached [file]                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26242;&#23384;&#21306;&#21644;&#19978;&#19968;&#20010; commit &#30340;&#24046;&#24322;</span>
+$ git diff HEAD                              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#24037;&#20316;&#21306;&#19982;&#24403;&#21069;&#20998;&#25903;&#26368;&#26032; commit &#20043;&#38388;&#30340;&#24046;&#24322;</span>
 $ git diff [first-branch]...[second-branch]  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#20004;&#27425;&#25552;&#20132;&#20043;&#38388;&#30340;&#24046;&#24322;</span>
 $ git diff --shortstat <span style="color: #00afaf;">"@{0 day ago}"</span>        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#20170;&#22825;&#20320;&#20889;&#20102;&#22810;&#23569;&#34892;&#20195;&#30721;</span>
 $ git show [commit]                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#26576;&#27425;&#25552;&#20132;&#30340;&#20803;&#25968;&#25454;&#21644;&#20869;&#23481;&#21464;&#21270;</span>
@@ -238,17 +242,30 @@ $ git reset [commit]              <span style="color: #8a8a8a;"># </span><span s
 $ git reset --hard [commit]       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#32622;&#24403;&#21069;&#20998;&#25903;&#30340;HEAD&#20026;&#25351;&#23450;commit&#65292;&#21516;&#26102;&#37325;&#32622;&#26242;&#23384;&#21306;&#21644;&#24037;&#20316;&#21306;&#65292;&#19982;&#25351;&#23450;commit&#19968;&#33268;</span>
 $ git reset --keep [commit]       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#32622;&#24403;&#21069;HEAD&#20026;&#25351;&#23450;commit&#65292;&#20294;&#20445;&#25345;&#26242;&#23384;&#21306;&#21644;&#24037;&#20316;&#21306;&#19981;&#21464;</span>
 $ git revert [commit]             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26032;&#24314;&#19968;&#20010;commit&#65292;&#29992;&#26469;&#25764;&#38144;&#25351;&#23450;commit&#12290;&#21518;&#32773;&#30340;&#25152;&#26377;&#21464;&#21270;&#37117;&#23558;&#34987;&#21069;&#32773;&#25269;&#28040;&#65292;&#24182;&#19988;&#24212;&#29992;&#21040;&#24403;&#21069;&#20998;&#25903;</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26242;&#26102;&#23558;&#26410;&#25552;&#20132;&#30340;&#21464;&#21270;&#31227;&#38500;&#65292;&#31245;&#21518;&#20877;&#31227;&#20837;</span>
-$ git stash
-$ git stash pop
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgda9d39d" class="outline-2">
+<h2 id="orgda9d39d"><span class="section-number-2">11</span> stash 栈</h2>
+<div class="outline-text-2" id="text-11">
+<div class="org-src-container">
+<pre class="src src-shell">$ git stash                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23558;&#24037;&#20316;&#21306;&#21644;&#26242;&#23384;&#21306;&#30340;&#20462;&#25913;&#20445;&#23384;&#21040; stash &#26632;&#20013;</span>
+$ git stash pop                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23558; stash &#26632;&#39030;&#20869;&#23481;&#21512;&#24182;&#21040;&#24403;&#21069;&#20998;&#25903;</span>
+$ git stash list                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986; stash &#26632;&#20013;&#20869;&#23481;</span>
+$ git stash pop stash@{1}         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23558; stash &#26632;&#20013; stash@{1} &#20803;&#32032;&#30340;&#20869;&#23481;&#21512;&#24182;&#21040;&#24403;&#21069;&#20998;&#25903;</span>
+$ git stash drop stash@{0}        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#26632;&#20013;&#20803;&#32032; stash@{0}</span>
+$ git stash show stash@{0}        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475; stash@{0} &#20013;&#25913;&#21160;&#30340;&#25991;&#20214;</span>
+$ git stash clear                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28165;&#31354;&#26632;&#20013;&#25152;&#26377;&#20803;&#32032;</span>
 </pre>
 </div>
 </div>
 </div>
 
 <div id="outline-container-orge9b2203" class="outline-2">
-<h2 id="orge9b2203"><span class="section-number-2">11</span> 其他</h2>
-<div class="outline-text-2" id="text-11">
+<h2 id="orge9b2203"><span class="section-number-2">12</span> 其他</h2>
+<div class="outline-text-2" id="text-12">
 <div class="org-src-container">
 <pre class="src src-shell">$ git archive  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#29983;&#25104;&#19968;&#20010;&#21487;&#20379;&#21457;&#24067;&#30340;&#21387;&#32553;&#21253;</span>
 </pre>

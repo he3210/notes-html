@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2019-08-17 Sat 14:23 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>doki 函数</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">doki 函数</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org38c6b8f">1. 根据uid 获取主播 show_id</a></li>
+<li><a href="#orgd00828b">2. 判断 uid 是否是新人</a></li>
+<li><a href="#org4c36f0f">3. 判断是否是新设备</a></li>
+<li><a href="#org76b277a">4. 获取指定直播间观看人数</a></li>
+<li><a href="#org5f5f2a7">5. 过滤用户信息</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org38c6b8f" class="outline-2">
+<h2 id="org38c6b8f"><span class="section-number-2">1</span> 根据uid 获取主播 show_id</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #0087ff;">show_id</span> = user_cacher.get_user_current_show_id(room_id)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd00828b" class="outline-2">
+<h2 id="orgd00828b"><span class="section-number-2">2</span> 判断 uid 是否是新人</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #0087ff;">is_new</span> = user_cacher.is_new_user(uid)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4c36f0f" class="outline-2">
+<h2 id="org4c36f0f"><span class="section-number-2">3</span> 判断是否是新设备</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #0087ff;">is_new</span> = user_cacher.is_new_device(udid)
+<span style="color: #0087ff;">is_new</span> = user_cacher.is_new_device_v2(udid)  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36890;&#36807;&#24067;&#38534;&#36807;&#28388;&#22120;&#21028;&#26029;&#26159;&#21542;&#20026;&#26032;&#35774;&#22791;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org76b277a" class="outline-2">
+<h2 id="org76b277a"><span class="section-number-2">4</span> 获取指定直播间观看人数</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #0087ff;">viewer_count</span>, <span style="color: #0087ff;">real_viewer_count</span> = show_cacher.get_show_viewer_count(current_show_id)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org5f5f2a7" class="outline-2">
+<h2 id="org5f5f2a7"><span class="section-number-2">5</span> 过滤用户信息</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #5f8700;">from</span> common.utils <span style="color: #5f8700;">import</span> simplify_item_info
+<span style="color: #0087ff;">user</span> = simplify_item_info(family_cacher.get_user_info(show[<span style="color: #00afaf;">"uid"</span>]), [<span style="color: #00afaf;">"uid"</span>, <span style="color: #00afaf;">"screen_name"</span>])
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

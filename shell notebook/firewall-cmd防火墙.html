@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2019-03-26 Tue 13:22 -->
+<!-- 2019-08-17 Sat 14:23 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>firewall-cmd 防火墙</title>
@@ -45,8 +45,9 @@
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">firewall-cmd --zone=public --add-port=8888/tcp --permanent  # &#24320;&#21551;&#31471;&#21475;</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">firewall-cmd --reload               # &#37325;&#21551;&#38450;&#28779;&#22681;</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">firewall-cmd --query-port=8888/tcp  # &#26597;&#30475; tcp 8888 &#31471;&#21475;&#26159;&#21542;&#24320;&#21551;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">firewall-cmd --reload                    # &#37325;&#21551;&#38450;&#28779;&#22681;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">firewall-cmd --query-port=8888/tcp       # &#26597;&#30475; tcp 8888 &#31471;&#21475;&#26159;&#21542;&#24320;&#21551;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">firewall-cmd --zone=public --list-ports  # &#26597;&#30475;&#25152;&#26377;&#25171;&#24320;&#30340;&#31471;&#21475;</span>
 </pre>
 </div>
 

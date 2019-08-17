@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2019-08-17 Sat 14:23 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GW 大作战</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">GW 大作战</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgbc1552f">1. 注意事项</a></li>
+<li><a href="#org7284d97">2. api</a>
+<ul>
+<li><a href="#orgdb90c68">2.1. 直播间浮动 icon2</a></li>
+<li><a href="#org9f928a6">2.2. 合力协作。耗时严重，函数返回值加 lru 缓存</a></li>
+<li><a href="#org548f75c">2.3. 排行榜</a></li>
+<li><a href="#orgea38397">2.4. 协同时间段内同步</a></li>
+</ul>
+</li>
+<li><a href="#org7519eee">3. websocket 消息</a>
+<ul>
+<li><a href="#org2369329">3.1. 协同时间开始前 10s 发送系统消息</a></li>
+<li><a href="#org0700127">3.2. 协同时间开始向直播间聊天区发送消息</a></li>
+<li><a href="#org4bb424e">3.3. 协同时间开始，向直播间非主播用户群发按钮消息，通知客户端展示送礼按钮</a></li>
+<li><a href="#orgcdcc981">3.4. 协同结束，推送消息关闭送礼按钮</a></li>
+<li><a href="#org7123ffe">3.5. 协同结束，发送红包</a></li>
+<li><a href="#orgb7159e4">3.6. 协同结束，群发弹幕</a></li>
+<li><a href="#org0775c35">3.7. 协同结束，发送背包礼物</a></li>
+<li><a href="#org8ed1515">3.8. 气泡</a></li>
+</ul>
+</li>
+<li><a href="#org04d34aa">4. <span class="todo TODO">TODO</span> </a></li>
+<li><a href="#org60b60ee">5. 线上问题</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbc1552f" class="outline-2">
+<h2 id="orgbc1552f"><span class="section-number-2">1</span> 注意事项</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>协同时间段内，直播间有个协同结束倒计时，且每隔 3s 和服务端同步一次<br></li>
+<li>活动期间主播开播后每隔 10min 会出现协同时间，协同时间 20s，每次送礼协同时间增加 7s<br></li>
+<li>活动最后一天的截止时间之后，不再进行积分计算，也就是不再计入榜单之内<br></li>
+<li>一次协同时间段内，每个用户的五月病礼物只能一个礼物有加成，其它五月病礼物没有加成<br></li>
+<li>本次直播送五月病礼物历史<br>
+<ol class="org-ol">
+<li>按送礼时间进行排序<br></li>
+<li>下发所有送五月病礼物的历史<br></li>
+<li>一个用户多次送五月病礼物，算一个历史<br></li>
+</ol></li>
+<li>当天最长的一次直播不满 30min，明天连续开播天数清零<br></li>
+<li>base_score = 五月病礼物总 gold<br></li>
+<li>reward_score = 五月病礼物总 gold * (连续开播奖励系数-1)<br></li>
+<li>开播不足 30min 时，下发的基础分数和奖励分数是否算上加成系数<br></li>
+<li>活动总榜 score = 总五月病礼物 gold * 连续开播系数。满 30min 算系数，不满不算<br></li>
+<li>协力榜单 score = 协同时间段内送礼人数 * 礼物单价 * 协同系数 1.4<br></li>
+<li>正常时间和协同时间交替出现，而不是协同时间包含在正常时间之内<br></li>
+<li>协同结束后，会发送：xxx为主播点亮烽火台，增加 xx 分，这个分是协同分（协同分 = 协同时间段送五月病礼物人数 * 礼物单价 * 协同系数 1.4）？<br></li>
+<li>发红包 20% 的人获得 gold，gold 总额为本次协同的10%。本次协同时间段内收礼总 gold 的 10%<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7284d97" class="outline-2">
+<h2 id="org7284d97"><span class="section-number-2">2</span> api</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgdb90c68" class="outline-3">
+<h3 id="orgdb90c68"><span class="section-number-3">2.1</span> 直播间浮动 icon2</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+现有接口：api.events_v2.floating_icon，新增下发字段：<br>
+</p>
+<ul class="org-ul">
+<li>连续开播天数<br></li>
+<li>加倍奖励<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9f928a6" class="outline-3">
+<h3 id="org9f928a6"><span class="section-number-3">2.2</span> 合力协作。耗时严重，函数返回值加 lru 缓存</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+点击浮动 icon 弹窗时调用该接口<br>
+</p>
+<ol class="org-ol">
+<li>连续开播天数<br></li>
+<li>基础分数 = 正常时间段内主播收礼数量 + 协同时间内送礼人数 * 加成倍数<br></li>
+<li>奖励分数 = 收礼 gold * 连续开播加成系数<br></li>
+<li>10min 倒计时<br></li>
+<li>本次直播连击历史<br></li>
+<li>本次开播持续时长  :: 开播 30min 后，奖励分数变绿色；开播不满 30min，奖励分数为红色<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org548f75c" class="outline-3">
+<h3 id="org548f75c"><span class="section-number-3">2.3</span> 排行榜</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+点击浮动 icon 弹窗时调用该接口<br>
+</p>
+<ol class="org-ol">
+<li>合力排行榜<br></li>
+<li>活动总榜<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgea38397" class="outline-3">
+<h3 id="orgea38397"><span class="section-number-3">2.4</span> 协同时间段内同步</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+下发内容：<br>
+</p>
+<ol class="org-ol">
+<li>是否处于协同时间段<br></li>
+<li>当前协同总时间<br></li>
+<li>当前剩余时间<br></li>
+<li>当前参与的协同人数<br></li>
+<li>在活动期间，在协同时间段内该用户是否送过五月病礼物<br></li>
+<li>下发五月病礼物相关信息<br></li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7519eee" class="outline-2">
+<h2 id="org7519eee"><span class="section-number-2">3</span> websocket 消息</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org2369329" class="outline-3">
+<h3 id="org2369329"><span class="section-number-3">3.1</span> 协同时间开始前 10s 发送系统消息</h3>
+<div class="outline-text-3" id="text-3-1">
+<ul class="org-ul">
+<li>文案："系统通知：10s后协同时间即将开始"<br></li>
+<li>MSG MSG fanout msg_type = "system" comment_type = "system"<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0700127" class="outline-3">
+<h3 id="org0700127"><span class="section-number-3">3.2</span> 协同时间开始向直播间聊天区发送消息</h3>
+<div class="outline-text-3" id="text-3-2">
+<dl class="org-dl">
+<dt>文案</dt><dd>待定<br></dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-org4bb424e" class="outline-3">
+<h3 id="org4bb424e"><span class="section-number-3">3.3</span> 协同时间开始，向直播间非主播用户群发按钮消息，通知客户端展示送礼按钮</h3>
+<div class="outline-text-3" id="text-3-3">
+<dl class="org-dl">
+<dt>文案</dt><dd>是否有文案<br></dd>
+<dt>(no term)</dt><dd>是否处于协同时间段<br></dd>
+<dt>(no term)</dt><dd>协同总时间<br></dd>
+<dt>(no term)</dt><dd>当前剩余协同时间<br></dd>
+<dt>(no term)</dt><dd>五月病礼物相关信息（gift_id，icon 等）是否由服务端下发<br></dd>
+<dt>(no term)</dt><dd>定义新的 COMMAND PARAM，fanout<br></dd>
+<dt>待定</dt><dd>在协同时间段内进入直播间也能看到按钮<br></dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-orgcdcc981" class="outline-3">
+<h3 id="orgcdcc981"><span class="section-number-3">3.4</span> 协同结束，推送消息关闭送礼按钮</h3>
+</div>
+<div id="outline-container-org7123ffe" class="outline-3">
+<h3 id="org7123ffe"><span class="section-number-3">3.5</span> 协同结束，发送红包</h3>
+<div class="outline-text-3" id="text-3-5">
+<dl class="org-dl">
+<dt>文案</dt><dd>是否带有文案<br></dd>
+<dt>红包数额</dt><dd>红包是直接发 gold 吗<br></dd>
+<dt>(no term)</dt><dd>红包已经有了。需要确定是哪个 COMMAND PARAM。single<br></dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-orgb7159e4" class="outline-3">
+<h3 id="orgb7159e4"><span class="section-number-3">3.6</span> 协同结束，群发弹幕</h3>
+<div class="outline-text-3" id="text-3-6">
+<dl class="org-dl">
+<dt>文案</dt><dd>xx为主播点亮烽火台，增加xx分<br></dd>
+<dt>(no term)</dt><dd>MNY MSG fanout，弹幕类型 mny_msg_type 应该是 0，也就是普通弹幕<br></dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-org0775c35" class="outline-3">
+<h3 id="org0775c35"><span class="section-number-3">3.7</span> 协同结束，发送背包礼物</h3>
+<div class="outline-text-3" id="text-3-7">
+<dl class="org-dl">
+<dt>文案</dt><dd>xx用户带队帮助主播点燃了烽火台，获得了小礼物奖励<br></dd>
+<dt>(no term)</dt><dd>背包礼物详情、礼物数量<br></dd>
+<dt>(no term)</dt><dd>fanout<br></dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-org8ed1515" class="outline-3">
+<h3 id="org8ed1515"><span class="section-number-3">3.8</span> 气泡</h3>
+</div>
+</div>
+
+<div id="outline-container-org04d34aa" class="outline-2">
+<h2 id="org04d34aa"><span class="section-number-2">4</span> <span class="todo TODO">TODO</span> </h2>
+<div class="outline-text-2" id="text-4">
+<ol class="org-ol">
+<li>通知&#x2013;push 测试<br></li>
+<li>实时计算协力榜<br></li>
+<li>官方直播间不再发 websocket 协同时间前 10s、协同时间开始消息<br>
+<ul class="org-ul">
+<li>测试官方 uid: u7818641549880507120001227<br></li>
+<li>生产环境 uid: u3772271542676819130001272 u6352461527058832110001318 u9317851526900454100001279<br></li>
+</ul></li>
+<li>活动时间可配置、礼物可配置<br>
+<ul class="org-ul">
+<li>活动开始时间<br></li>
+<li>活动结束时间<br></li>
+<li>活动礼物信息<br></li>
+</ul></li>
+<li>2 人以上协同没有下发红包<br></li>
+<li>10:30min push 消息<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org60b60ee" class="outline-2">
+<h2 id="org60b60ee"><span class="section-number-2">5</span> 线上问题</h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

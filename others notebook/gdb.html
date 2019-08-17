@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2019-03-26 Tue 13:22 -->
+<!-- 2019-08-17 Sat 14:23 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>gdb</title>
@@ -34,15 +34,53 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9083d6d">1. 常用命令</a></li>
-<li><a href="#org207bd4b">2. 信号</a></li>
+<li><a href="#org1f19aec">1. gdb 调试的几种方法</a></li>
+<li><a href="#org9083d6d">2. 常用命令</a></li>
+<li><a href="#org207bd4b">3. 信号</a></li>
+<li><a href="#org5b24852">4. gdbserver: 调试远程二进制可执行文件</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9083d6d" class="outline-2">
-<h2 id="org9083d6d"><span class="section-number-2">1</span> 常用命令</h2>
+<div id="outline-container-org1f19aec" class="outline-2">
+<h2 id="org1f19aec"><span class="section-number-2">1</span> gdb 调试的几种方法</h2>
 <div class="outline-text-2" id="text-1">
+<ol class="org-ol">
+<li><p>
+gdb binary_executable_file<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ gdb binary_executable_file
+(gdb) run arg1 arg2 &#8230; argN
+</pre>
+</div></li>
+
+<li><p>
+gdb -args binary_executable_file arg1 arg2 &#x2026; argN<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ gdb -args binary_executable_file arg1 arg2 ... argN
+(gdb) run
+</pre>
+</div></li>
+
+<li><p>
+gdb<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ gdb
+(gdb) file binary_executable_file
+<span style="color: #5f8700;">set</span> arg1 arg2 ... argN
+run
+</pre>
+</div></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org9083d6d" class="outline-2">
+<h2 id="org9083d6d"><span class="section-number-2">2</span> 常用命令</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 调用 gdb 编译需要在 cc 后面加 -g 参数再加-o；<br>
 在 gdb 中如果命令前缀可以唯一确定这条命令，不必写出全部命令，只需写出部分命令即可<br>
@@ -145,8 +183,8 @@ show environment [varname]         <span style="color: #8a8a8a;"># </span><span 
 </div>
 
 <div id="outline-container-org207bd4b" class="outline-2">
-<h2 id="org207bd4b"><span class="section-number-2">2</span> 信号</h2>
-<div class="outline-text-2" id="text-2">
+<h2 id="org207bd4b"><span class="section-number-2">3</span> 信号</h2>
+<div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li><code>signal SIGXXX</code> 　　产生 XXX 信号，如 SIGINT。一种速查 Linux 查询信号的方法： <code>$ kill -l</code><br></li>
 
@@ -166,6 +204,45 @@ show environment [varname]         <span style="color: #8a8a8a;"># </span><span 
 <p>
 gdb signal 命令和 shell 的 kill 命令不同，kill 命令发信号给被调试程序时，是由 GDB 截获的，而 signal 命令所发出一信号则是直接发给被调试程序的<br>
 </p>
+</div>
+</div>
+
+<div id="outline-container-org5b24852" class="outline-2">
+<h2 id="org5b24852"><span class="section-number-2">4</span> gdbserver: 调试远程二进制可执行文件</h2>
+<div class="outline-text-2" id="text-4">
+<ol class="org-ol">
+<li><p>
+远程通过 tcp 监听所有网卡的 1234 端口，调试 binary_executable_file<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ gdbserver 0.0.0.0:1234 binary_executable_file
+</pre>
+</div>
+<ul class="org-ul">
+<li>注意！一定要打开防火墙 tcp 1234 端口<br></li>
+<li>gdbserver 不能通过 &lt;C-c&gt; 和 &lt;C-\&gt; 杀死，可以在客户的 gdb 通过命令 quit 或快捷键 &lt;C-d&gt; 退出<br></li>
+</ul></li>
+<li><p>
+本地 gdb 连接 gdbserver 调试远程二进制可执行文件<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ gdb
+(gdb) target remote langdebuqing.com:1234
+</pre>
+</div></li>
+<li>本地 clion 远程调试<br>
+<ol class="org-ol">
+<li><p>
+clion 点击 Edit Configurations，配置 GDB Remote Debug<br>
+</p>
+
+<div class="figure">
+<p><img src="../images/gdb_gdbserver.png" alt="gdb_gdbserver.png" width="50%"><br>
+</p>
+</div></li>
+<li>clion 添加断点，点击 Run -&gt; Debug 'gdbserver_vultr'，连接 gdbserver 进行调试<br></li>
+</ol></li>
+</ol>
 </div>
 </div>
 </div>

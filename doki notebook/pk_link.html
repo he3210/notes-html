@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2019-08-17 Sat 14:23 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pk_link</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">pk_link</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge0ae7b0">1. 需求</a>
+<ul>
+<li><a href="#orga7ec6ca">1.1. 关于连胜</a></li>
+<li><a href="#org8237774">1.2. 5 分钟间歇时间，4.5 分钟 pk 时间，0.5 分钟惩罚时间</a></li>
+<li><a href="#org6cc58da">1.3. 榜单。需要维护每日连胜次数、活动连胜次数。日榜是根据结算的时间来确认是哪一天</a></li>
+<li><a href="#orgce4e13a">1.4. 关于邀请制同屏 PK</a></li>
+<li><a href="#org348ed82">1.5. 匹配逻辑</a></li>
+<li><a href="#orgd741f25">1.6. 状态同步</a></li>
+<li><a href="#org03aceda">1.7. 历史战绩</a></li>
+<li><a href="#org9c94326">1.8. 运营后台</a></li>
+<li><a href="#orgc490209">1.9. strike</a></li>
+<li><a href="#org0ba6492">1.10. 活动奖励下发</a></li>
+</ul>
+</li>
+<li><a href="#org263f535">2. 开发内容</a>
+<ul>
+<li><a href="#org623a2cf">2.1. 状态同步 schedulejob</a></li>
+<li><a href="#org61104f2">2.2. 运营后台：pk 同屏活动设置</a></li>
+<li><a href="#org775dacc">2.3. 日榜 PK 点数榜、日榜胜利次数榜奖励自动下发 schedulejob</a></li>
+<li><a href="#orgde91ce2">2.4. 4 个榜单</a></li>
+<li><a href="#orge72a5c7">2.5. 匹配算法</a></li>
+<li><a href="#orgc6272f2">2.6. 接口</a></li>
+</ul>
+</li>
+<li><a href="#orgcbd6c6f">3. 上线注意事项</a>
+<ul>
+<li><a href="#org63dbd1d">3.1. 表 miveshow.pk_link_history</a></li>
+</ul>
+</li>
+<li><a href="#org831c544">4. 上线模块</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge0ae7b0" class="outline-2">
+<h2 id="orge0ae7b0"><span class="section-number-2">1</span> 需求</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orga7ec6ca" class="outline-3">
+<h3 id="orga7ec6ca"><span class="section-number-3">1.1</span> 关于连胜</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>pk 同屏之前的连胜是仅在本次直播算。重新开播清零重新计算<br></li>
+<li>本次连胜是按照 event_name 和 uid 来算<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org8237774" class="outline-3">
+<h3 id="org8237774"><span class="section-number-3">1.2</span> 5 分钟间歇时间，4.5 分钟 pk 时间，0.5 分钟惩罚时间</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>无 hurry 模式<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org6cc58da" class="outline-3">
+<h3 id="org6cc58da"><span class="section-number-3">1.3</span> 榜单。需要维护每日连胜次数、活动连胜次数。日榜是根据结算的时间来确认是哪一天</h3>
+<div class="outline-text-3" id="text-1-3">
+<ol class="org-ol">
+<li>PK 点数榜<br>
+<ul class="org-ul">
+<li>PK 点数<br>
+<ul class="org-ul">
+<li>每日首胜 +5 分<br></li>
+<li>胜利 +5 分<br></li>
+<li>平局 +1 分<br></li>
+<li>连胜次数为 3 的倍数 +3 分<br></li>
+<li>收礼 &gt;= 10000  +50 分<br></li>
+<li>收礼 &gt;= 500    +11 分<br></li>
+<li>收礼 &gt;= 100    +2 分<br></li>
+<li>收礼 &gt;= 50     +1 分<br></li>
+</ul></li>
+</ul></li>
+<li>胜利次数榜<br>
+<ul class="org-ul">
+<li>根据胜利总次数进行排名<br></li>
+<li>无骑士榜<br></li>
+<li>两种方案，现采用第一种<br>
+<ul class="org-ul">
+<li>结算时加榜单<br></li>
+<li>增加接口，读取 pk_link_history 表，计算榜单<br></li>
+</ul></li>
+</ul></li>
+<li>日榜 PK 点数榜<br>
+<ul class="org-ul">
+<li>无骑士榜<br></li>
+</ul></li>
+<li>日榜胜利次数榜<br>
+<ul class="org-ul">
+<li>两种方案，现采用第一种<br>
+<ul class="org-ul">
+<li>结算时加榜单<br></li>
+<li>增加接口，读取 pk_link_history 表，计算榜单<br></li>
+</ul></li>
+</ul></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-orgce4e13a" class="outline-3">
+<h3 id="orgce4e13a"><span class="section-number-3">1.4</span> 关于邀请制同屏 PK</h3>
+<div class="outline-text-3" id="text-1-4">
+<ul class="org-ul">
+<li>不计入榜单。所有榜单需要重新统计。需要维护常规同屏 PK 的连胜次数<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org348ed82" class="outline-3">
+<h3 id="org348ed82"><span class="section-number-3">1.5</span> 匹配逻辑</h3>
+<div class="outline-text-3" id="text-1-5">
+<ul class="org-ul">
+<li>排除语音直播<br></li>
+<li>排除正在 pk 的主播<br></li>
+<li>活动开始时，主播自动匹配按钮默认为关闭，主播打开后会自动进行匹配<br>
+<ul class="org-ul">
+<li>区别于 family_battle，family_battle 有一个每日自动匹配开关<br></li>
+<li>pk_link_battle 每个活动一个开关，这次活动的开关不继承到下一个活动，且开关时默认关闭的。所以活动开始时进入匹配间歇阶段而不是活动开始直接匹配pk<br></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgd741f25" class="outline-3">
+<h3 id="orgd741f25"><span class="section-number-3">1.6</span> 状态同步</h3>
+<div class="outline-text-3" id="text-1-6">
+<ol class="org-ol">
+<li>状态同步黑名单<br>
+<ul class="org-ul">
+<li>黑名单读配置文件<br></li>
+</ul></li>
+<li>关闭匹配状态<br>
+<ul class="org-ul">
+<li>常规同屏 PK 连胜次数<br></li>
+<li>文案<br></li>
+<li>直播间弹窗 url<br></li>
+</ul></li>
+<li>匹配状态<br>
+<ul class="org-ul">
+<li>常规 PK 同屏连胜次数<br></li>
+<li>倒计时<br></li>
+<li>文案：匹配中<br></li>
+<li>按钮可点击<br></li>
+<li>直播间弹窗 url<br></li>
+</ul></li>
+<li>匹配完成状态<br>
+<ul class="org-ul">
+<li>文案：匹配成功<br></li>
+<li>倒计时：3s<br></li>
+<li>按钮仅展示，点击无反应<br></li>
+<li>直播间弹窗 url<br></li>
+</ul></li>
+<li>pk 状态<br>
+<ul class="org-ul">
+<li>不展示<br></li>
+</ul></li>
+<li>惩罚状态<br>
+<ul class="org-ul">
+<li>不展示<br></li>
+</ul></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org03aceda" class="outline-3">
+<h3 id="org03aceda"><span class="section-number-3">1.7</span> 历史战绩</h3>
+<div class="outline-text-3" id="text-1-7">
+<ul class="org-ul">
+<li>红蓝双方 user 信息<br></li>
+<li>胜负标志<br></li>
+<li>双方积分<br></li>
+<li>show 信息<br></li>
+<li>连胜纪录<br></li>
+<li>pk 历史是否包含邀请制同屏 pk?<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org9c94326" class="outline-3">
+<h3 id="org9c94326"><span class="section-number-3">1.8</span> 运营后台</h3>
+<div class="outline-text-3" id="text-1-8">
+<ul class="org-ul">
+<li>配置礼物时默认全部礼物<br></li>
+<li>同屏 PK 活动配置后台<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc490209" class="outline-3">
+<h3 id="orgc490209"><span class="section-number-3">1.9</span> strike</h3>
+<div class="outline-text-3" id="text-1-9">
+<ul class="org-ul">
+<li>被砍掉<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0ba6492" class="outline-3">
+<h3 id="org0ba6492"><span class="section-number-3">1.10</span> 活动奖励下发</h3>
+<div class="outline-text-3" id="text-1-10">
+<ul class="org-ul">
+<li>日榜前 3 名奖励自动下发<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org263f535" class="outline-2">
+<h2 id="org263f535"><span class="section-number-2">2</span> 开发内容</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org623a2cf" class="outline-3">
+<h3 id="org623a2cf"><span class="section-number-3">2.1</span> 状态同步 schedulejob</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>websocket 同步 not_join、matching、matched<br></li>
+<li>待定：matched 是否需要同步<br></li>
+<li>待定：icon 消失/展示如何控制<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org61104f2" class="outline-3">
+<h3 id="org61104f2"><span class="section-number-3">2.2</span> 运营后台：pk 同屏活动设置</h3>
+</div>
+<div id="outline-container-org775dacc" class="outline-3">
+<h3 id="org775dacc"><span class="section-number-3">2.3</span> 日榜 PK 点数榜、日榜胜利次数榜奖励自动下发 schedulejob</h3>
+<div class="outline-text-3" id="text-2-3">
+<ul class="org-ul">
+<li>当天 00:00:10 下发前 3 名 gold 奖励<br></li>
+<li>奖励从活动配置中读取<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgde91ce2" class="outline-3">
+<h3 id="orgde91ce2"><span class="section-number-3">2.4</span> 4 个榜单</h3>
+<div class="outline-text-3" id="text-2-4">
+<ul class="org-ul">
+<li>暂时采用结算时加榜单的方法<br></li>
+<li>日榜日期的划分需要注意时区！<br></li>
+<li>结算时加榜单、投降时加榜单<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orge72a5c7" class="outline-3">
+<h3 id="orge72a5c7"><span class="section-number-3">2.5</span> 匹配算法</h3>
+</div>
+<div id="outline-container-orgc6272f2" class="outline-3">
+<h3 id="orgc6272f2"><span class="section-number-3">2.6</span> 接口</h3>
+<div class="outline-text-3" id="text-2-6">
+<ul class="org-ul">
+<li>榜单 http 接口<br></li>
+<li>websocket 同步接口<br></li>
+<li>pk 历史<br></li>
+<li>关闭同屏 PK 按钮<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcbd6c6f" class="outline-2">
+<h2 id="orgcbd6c6f"><span class="section-number-2">3</span> 上线注意事项</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org63dbd1d" class="outline-3">
+<h3 id="org63dbd1d"><span class="section-number-3">3.1</span> 表 miveshow.pk_link_history</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">alter</span> <span style="color: #5f8700;">table</span> pk_link_history <span style="color: #5f8700;">add</span> <span style="color: #5f8700;">column</span> source_type tinyint <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> <span style="color: #5f8700;">default</span> <span style="color: #0087ff;">4</span> comment "0-&#36816;&#33829;&#36992;&#35831; 1-&#26681;&#25454;&#36827;&#20837;&#21305;&#37197;&#27744;&#26102;&#38388;&#22312;&#21305;&#37197;&#27744;&#21305;&#37197; 2-&#20027;&#25773;&#36992;&#35831; 3-&#26681;&#25454;&#27573;&#20301;&#22312;&#21305;&#37197;&#27744;&#21305;&#37197; 4-&#26087;&#25968;&#25454;&#65292;&#26469;&#28304;&#26410;&#35760;&#24405;" <span style="color: #5f8700;">after</span> <span style="color: #5f8700;">state</span>
+<span style="color: #5f8700;">alter</span> <span style="color: #5f8700;">table</span> <span style="color: #0087ff;">pk_link_history</span> <span style="color: #5f8700;">add</span> <span style="color: #5f8700;">column</span> event_name <span style="color: #af8700;">varchar</span>(64) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> <span style="color: #5f8700;">default</span> "" <span style="color: #5f8700;">after</span> source_type;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org831c544" class="outline-2">
+<h2 id="org831c544"><span class="section-number-2">4</span> 上线模块</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>schedulejob pk_link<br></li>
+<li>http<br></li>
+<li>admin<br></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

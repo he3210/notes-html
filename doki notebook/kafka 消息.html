@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2019-08-17 Sat 14:23 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kafka 消息</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">kafka 消息</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgaca240f">1. 送礼消息</a></li>
+<li><a href="#org668873c">2. 卡拉ok</a></li>
+<li><a href="#org9098f5f">3. 进房消息</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgaca240f" class="outline-2">
+<h2 id="orgaca240f"><span class="section-number-2">1</span> 送礼消息</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-js">[
+    {
+        <span style="color: #00afaf;">"topic"</span>: <span style="color: #00afaf;">"MIVESHOW_EXPERIENCE_TASK_0"</span>,
+        <span style="color: #00afaf;">"partition"</span>: 2,
+        <span style="color: #00afaf;">"data"</span>: {
+            <span style="color: #00afaf;">"retries"</span>: 0,
+            <span style="color: #00afaf;">"show_id"</span>: 8115590334888,
+            <span style="color: #00afaf;">"gift_count"</span>: 1,
+            <span style="color: #00afaf;">"uid"</span>: <span style="color: #00afaf;">"u2572271555577408120001317"</span>,
+            <span style="color: #00afaf;">"task_id"</span>: 2010,
+            <span style="color: #00afaf;">"start_combo"</span>: 1,
+            <span style="color: #00afaf;">"ctime"</span>: <span style="color: #00afaf;">"2019-06-05 14:46:45"</span>,
+            <span style="color: #00afaf;">"t_uid"</span>: <span style="color: #00afaf;">"u9250061480925911020001233"</span>,
+            <span style="color: #00afaf;">"combo_count"</span>: 1,
+            <span style="color: #00afaf;">"task_name"</span>: <span style="color: #00afaf;">"DailySendGiftTask"</span>,
+            <span style="color: #00afaf;">"room_state"</span>: <span style="color: #00afaf;">"0"</span>,
+            <span style="color: #00afaf;">"guest_uid"</span>: <span style="color: #00afaf;">""</span>,
+            <span style="color: #00afaf;">"gift_id"</span>: 260
+        },
+        <span style="color: #00afaf;">"offset"</span>: 101972
+    }
+]
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org668873c" class="outline-2">
+<h2 id="org668873c"><span class="section-number-2">2</span> 卡拉ok</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+主播唱歌结束后，会产生一个该消息<br>
+"uid" 字段为主播 uid<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-js">[
+    {
+        <span style="color: #00afaf;">"topic"</span>: <span style="color: #00afaf;">"MIVESHOW_EXPERIENCE_TASK_0"</span>,
+        <span style="color: #00afaf;">"partition"</span>: 1,
+        <span style="color: #00afaf;">"data"</span>: {
+            <span style="color: #00afaf;">"retries"</span>: 0,
+            <span style="color: #00afaf;">"song_id"</span>: 11159,
+            <span style="color: #00afaf;">"uid"</span>: <span style="color: #00afaf;">"u2572271555577408120001317"</span>,
+            <span style="color: #00afaf;">"task_id"</span>: 2070,
+            <span style="color: #00afaf;">"show_id"</span>: 8015597427888,
+            <span style="color: #00afaf;">"task_name"</span>: <span style="color: #00afaf;">"DailySongTask"</span>,
+            <span style="color: #00afaf;">"ctime"</span>: <span style="color: #00afaf;">"2019-06-05 14:31:38"</span>
+        },
+        <span style="color: #00afaf;">"offset"</span>: 241427
+    }
+]
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org9098f5f" class="outline-2">
+<h2 id="org9098f5f"><span class="section-number-2">3</span> 进房消息</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+"uid" 字段为进房者 uid<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-js">[
+    {
+        <span style="color: #00afaf;">"topic"</span>: <span style="color: #00afaf;">"MIVESHOW_EXPERIENCE_TASK_0"</span>,
+        <span style="color: #00afaf;">"partition"</span>: 2,
+        <span style="color: #00afaf;">"data"</span>: {
+            <span style="color: #00afaf;">"retries"</span>: 0,
+            <span style="color: #00afaf;">"show_id"</span>: 8115590334888,
+            <span style="color: #00afaf;">"uid"</span>: <span style="color: #00afaf;">"u2572271555577408120001317"</span>,
+            <span style="color: #00afaf;">"task_id"</span>: 2080,
+            <span style="color: #00afaf;">"room_id"</span>: <span style="color: #00afaf;">"u9250061480925911020001233"</span>,
+            <span style="color: #00afaf;">"task_name"</span>: <span style="color: #00afaf;">"JoinRoomTask"</span>,
+            <span style="color: #00afaf;">"ctime"</span>: <span style="color: #00afaf;">"2019-06-05 14:55:42"</span>
+        },
+        <span style="color: #00afaf;">"offset"</span>: 102054
+    }
+]
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
