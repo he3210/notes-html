@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2019-08-17 Sat 14:23 -->
+<!-- 2019-08-25 Sun 20:00 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>备忘笔记</title>
@@ -35,6 +35,20 @@
 <div id="text-table-of-contents">
 <ul>
 <li><a href="#org8e781fb">1. 笔记</a></li>
+<li><a href="#org8814861">2. 命令</a>
+<ul>
+<li><a href="#orgb692107">2.1. 从 cdn 下载</a></li>
+<li><a href="#orge6d6cdd">2.2. 上传 cdn</a></li>
+<li><a href="#org3b73c02">2.3. 筛选未执行成功的命令</a></li>
+</ul>
+</li>
+<li><a href="#orge577334">3. 平台改进</a>
+<ul>
+<li><a href="#orgb1d68cb">3.1. 提供一个 rpc 接口，用于获取全量直播</a></li>
+<li><a href="#org559a24f">3.2. 开关播投递一个 kafka 队列</a></li>
+<li><a href="#org998ab1b">3.3. schedule 服务频繁建立各种连接优化</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -52,6 +66,63 @@
 
 <li>我的 uid：u2572271555577408120001317<br></li>
 </ul>
+</div>
+</div>
+
+<div id="outline-container-org8814861" class="outline-2">
+<h2 id="org8814861"><span class="section-number-2">2</span> 命令</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgb692107" class="outline-3">
+<h3 id="orgb692107"><span class="section-number-3">2.1</span> 从 cdn 下载</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ rsync -avP -e <span style="color: #00afaf;">'ssh -i /home/zeus/cdn_keydir/all_storage_key -p 2022'</span> project@upload-project.sf.cdngp.net:/miveshow_test/littleswing3x.png ./
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge6d6cdd" class="outline-3">
+<h3 id="orge6d6cdd"><span class="section-number-3">2.2</span> 上传 cdn</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-shell">rsync -av -e <span style="color: #00afaf;">"ssh -i /home/zeus/cdn_keydir/all_storage_key -p 2022"</span> /glusterdata/doki/miveshow_test/littleswing3x.png project@upload-project.sf.cdngp.net:/miveshow_test/littleswing3x.png
+rsync -av -e <span style="color: #00afaf;">"ssh -i /home/zeus/cdn_keydir/all_storage_key -p 2022"</span> /glusterdata/doki/image/upload_image/46/c4c5697d7f1838086c0dead47fbc29.jpeg project@upload-project.sf.cdngp.net:/upload_image/46/
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3b73c02" class="outline-3">
+<h3 id="org3b73c02"><span class="section-number-3">2.3</span> 筛选未执行成功的命令</h3>
+<div class="outline-text-3" id="text-2-3">
+<div class="org-src-container">
+<pre class="src src-shell">grep <span style="color: #00afaf;">"szh_upload_cdn"</span> /var/log/zeus/miveshow_http.log.2019-08-20_08 | grep -v <span style="color: #00afaf;">"bytes"</span> | awk <span style="color: #00afaf;">'{OFS=" ";print $13, $14, $15, $16, $17, $18, $19, $20, $21, $22}'</span> | sed <span style="color: #00afaf;">'s/\\"/"/g'</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orge577334" class="outline-2">
+<h2 id="orge577334"><span class="section-number-2">3</span> 平台改进</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgb1d68cb" class="outline-3">
+<h3 id="orgb1d68cb"><span class="section-number-3">3.1</span> 提供一个 rpc 接口，用于获取全量直播</h3>
+<div class="outline-text-3" id="text-3-1">
+<ul class="org-ul">
+<li>方案一：开关播时，mysql shows 表中记录直播间信息。redis 保存 show 信息。<br></li>
+<li>方案二：每隔 1s 扫描一下 shows 表。保存全量直播信息到 redis<br></li>
+<li>对外提供一个 rpc 接口。<br></li>
+<li>现有服务是直接读 shows 表获取全量直播。有些 schedule 每隔 1s 获取一次。<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org559a24f" class="outline-3">
+<h3 id="org559a24f"><span class="section-number-3">3.2</span> 开关播投递一个 kafka 队列</h3>
+</div>
+<div id="outline-container-org998ab1b" class="outline-3">
+<h3 id="org998ab1b"><span class="section-number-3">3.3</span> schedule 服务频繁建立各种连接优化</h3>
 </div>
 </div>
 </div>

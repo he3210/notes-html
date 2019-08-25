@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2019-08-17 Sat 14:23 -->
+<!-- 2019-08-25 Sun 20:00 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>pk_link</title>
@@ -61,6 +61,7 @@
 <li><a href="#orgcbd6c6f">3. 上线注意事项</a>
 <ul>
 <li><a href="#org63dbd1d">3.1. 表 miveshow.pk_link_history</a></li>
+<li><a href="#orgc02541a">3.2. 表 miveshow_event.pk_link_match_history</a></li>
 </ul>
 </li>
 <li><a href="#org831c544">4. 上线模块</a></li>
@@ -297,6 +298,36 @@
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5f8700;">alter</span> <span style="color: #5f8700;">table</span> pk_link_history <span style="color: #5f8700;">add</span> <span style="color: #5f8700;">column</span> source_type tinyint <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> <span style="color: #5f8700;">default</span> <span style="color: #0087ff;">4</span> comment "0-&#36816;&#33829;&#36992;&#35831; 1-&#26681;&#25454;&#36827;&#20837;&#21305;&#37197;&#27744;&#26102;&#38388;&#22312;&#21305;&#37197;&#27744;&#21305;&#37197; 2-&#20027;&#25773;&#36992;&#35831; 3-&#26681;&#25454;&#27573;&#20301;&#22312;&#21305;&#37197;&#27744;&#21305;&#37197; 4-&#26087;&#25968;&#25454;&#65292;&#26469;&#28304;&#26410;&#35760;&#24405;" <span style="color: #5f8700;">after</span> <span style="color: #5f8700;">state</span>
 <span style="color: #5f8700;">alter</span> <span style="color: #5f8700;">table</span> <span style="color: #0087ff;">pk_link_history</span> <span style="color: #5f8700;">add</span> <span style="color: #5f8700;">column</span> event_name <span style="color: #af8700;">varchar</span>(64) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> <span style="color: #5f8700;">default</span> "" <span style="color: #5f8700;">after</span> source_type;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc02541a" class="outline-3">
+<h3 id="orgc02541a"><span class="section-number-3">3.2</span> 表 miveshow_event.pk_link_match_history</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `pk_link_match_history` (
+  `id` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> AUTO_INCREMENT,
+  `event_name` <span style="color: #af8700;">varchar</span>(40) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `link_id` bigint(20) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `red_uid` <span style="color: #af8700;">varchar</span>(40) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `red_show_id` bigint(20) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `red_cv` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span>,
+  `red_score` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `red_link_track_id` <span style="color: #af8700;">varchar</span>(64) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `blue_uid` <span style="color: #af8700;">varchar</span>(40) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `blue_show_id` bigint(20) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `blue_cv` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span>,
+  `blue_score` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `blue_link_track_id` <span style="color: #af8700;">varchar</span>(64) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `ctime` datetime <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> <span style="color: #5f8700;">ON</span> <span style="color: #5f8700;">UPDATE</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span>,
+  <span style="color: #5f8700;">PRIMARY</span> <span style="color: #5f8700;">KEY</span> (`id`),
+  <span style="color: #5f8700;">UNIQUE</span> <span style="color: #5f8700;">KEY</span> `uniq_link_id` (`link_id`),
+  <span style="color: #5f8700;">KEY</span> `idx_red_uid` (`red_uid`),
+  <span style="color: #5f8700;">KEY</span> `idx_blue_uid` (`blue_uid`),
+  <span style="color: #5f8700;">KEY</span> `idx_event_name` (`event_name`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8mb4
 </pre>
 </div>
 </div>

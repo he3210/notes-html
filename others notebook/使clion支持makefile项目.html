@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2019-08-25 Sun 20:00 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>使 clion 支持 makefile 项目</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">使 clion 支持 makefile 项目</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgabaa03d">1. 使用 compiledb 为 makefile 项目生成 Compilation Database</a></li>
+<li><a href="#orgdcf6144">2. clion 中安装 Makefile support 插件</a></li>
+<li><a href="#orge2ee42a">3. 使用 compile_commands.json 文件重新打开该项目</a></li>
+<li><a href="#org96eb58f">4. File Watchers</a></li>
+</ul>
+</div>
+</div>
+<p>
+参考：<a href="https://www.jetbrains.com/help/clion/managing-makefile-projects.html">Managing Makefile Projects</a><br>
+</p>
+<div id="outline-container-orgabaa03d" class="outline-2">
+<h2 id="orgabaa03d"><span class="section-number-2">1</span> 使用 compiledb 为 makefile 项目生成 Compilation Database</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ pip install compiledb
+$ cd ~/code/asyn_network
+$ compiledb -n make
+$ cat ./compile_commands.json
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="https://github.com/nickdiego/compiledb">compiledb</a> 是为 makefile 项目生成 Compilation Database 的工具<br></li>
+<li>asyn_network 是项目目录<br></li>
+<li><code>compiledb make</code> 是为项目 asyn_network 构建 Compilation Database 的命令。构建时会执行 make 命令，make 后面的参数都会传递给 makefile<br></li>
+<li><code>compiledb -n make</code> <code>-n</code> 参数表示构建 Compilation Database 时不执行 make 命令<br></li>
+<li>compile_commands.json 文件是构建后生成的 Compilation Database 文件<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdcf6144" class="outline-2">
+<h2 id="orgdcf6144"><span class="section-number-2">2</span> clion 中安装 Makefile support 插件</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Preferences -&gt; Plugins 中搜索 Makefile support 插件，安装<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge2ee42a" class="outline-2">
+<h2 id="orge2ee42a"><span class="section-number-2">3</span> 使用 compile_commands.json 文件重新打开该项目</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+选中 compile_commands.json，作为一个项目打开。打开后，项目中的代码跳转等功能就会恢复正常了。<br>
+当 makefile 发生变化时，需要重新创建 Compilation Database。<br>
+然后重新加载 Compilation Database，可以按 <code>Tools -&gt; Compilation Database -&gt; Reload Compilation Database</code><br>
+当然，也可以创建一个 File Watchers：每当 makefile 发生变化时自动生成 Compilation Database<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org96eb58f" class="outline-2">
+<h2 id="org96eb58f"><span class="section-number-2">4</span> File Watchers</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+首先安装插件 File Watchers<br>
+然后为 makefile 文件创建文件监视器。如下图：<br>
+</p>
+
+
+<div class="figure">
+<p><img src="../images/clion_makefile.png" alt="clion_makefile.png" width="60%"><br>
+</p>
+</div>
+
+<p>
+让该文件监视器在所有项目中可见，如下图：<br>
+</p>
+
+<div class="figure">
+<p><img src="../images/clion_makefile2.png" alt="clion_makefile2.png" width="40%"><br>
+</p>
+</div>
+
+<p>
+!!! makefile 的每个更改都会触发该 File Watcher：会生成并加载整个 Compilation Database。<br>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
