@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 11:51 -->
+<!-- 2020-01-15 Wed 12:03 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>年度积分</title>
@@ -42,14 +42,14 @@
 <li><a href="#orge91a809">1.1.2. 正在参加的活动</a>
 <ul>
 <li><a href="#orgfffddc6">1.1.2.1. banner 图片。怎么获取图片？不能使用表 banner 中的图片等东西。因为 banners 表中没有 event_name 字段</a></li>
-<li><a href="#org6e473e8">1.1.2.2. 拼接活动起止时间字段：开始时间-结束时间</a></li>
+<li><a href="#org353dbd5">1.1.2.2. 拼接活动起止时间字段：开始时间-结束时间</a></li>
 <li><a href="#orgc76eb8d">1.1.2.3. 当前排名</a></li>
 <li><a href="#org5ce6cd5">1.1.2.4. 活动的展示</a></li>
 </ul>
 </li>
 <li><a href="#org8fd314e">1.1.3. 历史战绩</a>
 <ul>
-<li><a href="#org6a9b5fc">1.1.3.1. 单个活动</a></li>
+<li><a href="#orgb89963e">1.1.3.1. 单个活动</a></li>
 <li><a href="#org3e2e278">1.1.3.2. 历史活动如何排序？按活动开始时间排序？按活动结束时间倒序</a></li>
 <li><a href="#org30b2c52">1.1.3.3. 是否有分页？</a></li>
 <li><a href="#orgb3522e1">1.1.3.4. 展示在历史战绩的活动有哪些？</a></li>
@@ -63,9 +63,9 @@
 <ul>
 <li><a href="#orga051044">1.2.1. 即将开始的活动</a>
 <ul>
-<li><a href="#org739c05c">1.2.1.1. banner 图</a></li>
+<li><a href="#orga613027">1.2.1.1. banner 图</a></li>
 <li><a href="#orgca42bf7">1.2.1.2. auto_register 字段</a></li>
-<li><a href="#org353dbd5">1.2.1.3. 拼接活动起止时间字段：开始时间-结束时间</a></li>
+<li><a href="#org65ca8c7">1.2.1.3. 拼接活动起止时间字段：开始时间-结束时间</a></li>
 <li><a href="#org54289b6">1.2.1.4. 家族积分奖励是什么？该活动 top1 计算得到的本活动年度积分</a></li>
 </ul>
 </li>
@@ -80,7 +80,7 @@
 <li><a href="#orgb6689f0">1.2.3. H5 年度单个系列榜单</a>
 <ul>
 <li><a href="#org31b837e">1.2.3.1. 主播在该系列排名、积分、用户信息。建议不要加“尚未参加活动”</a></li>
-<li><a href="#orgdb572af">1.2.3.2. 榜单</a></li>
+<li><a href="#org68d5263">1.2.3.2. 榜单</a></li>
 </ul>
 </li>
 </ul>
@@ -89,9 +89,9 @@
 </li>
 <li><a href="#org6abcce7">2. 开发内容</a>
 <ul>
-<li><a href="#org68d5263">2.1. <span class="done DONE">DONE</span> 榜单</a>
+<li><a href="#orgfcbe11e">2.1. <span class="done DONE">DONE</span> 榜单</a>
 <ul>
-<li><a href="#org69fae80">2.1.1. 是否需要传递 room_id</a></li>
+<li><a href="#org34cce5f">2.1.1. 是否需要传递 room_id</a></li>
 <li><a href="#orge7a8ce6">2.1.2. 要有分页</a></li>
 </ul>
 </li>
@@ -151,8 +151,8 @@
 <div id="outline-container-orgfffddc6" class="outline-5">
 <h5 id="orgfffddc6"><span class="section-number-5">1.1.2.1</span> banner 图片。怎么获取图片？不能使用表 banner 中的图片等东西。因为 banners 表中没有 event_name 字段</h5>
 </div>
-<div id="outline-container-org6e473e8" class="outline-5">
-<h5 id="org6e473e8"><span class="section-number-5">1.1.2.2</span> 拼接活动起止时间字段：开始时间-结束时间</h5>
+<div id="outline-container-org353dbd5" class="outline-5">
+<h5 id="org353dbd5"><span class="section-number-5">1.1.2.2</span> 拼接活动起止时间字段：开始时间-结束时间</h5>
 </div>
 <div id="outline-container-orgc76eb8d" class="outline-5">
 <h5 id="orgc76eb8d"><span class="section-number-5">1.1.2.3</span> 当前排名</h5>
@@ -171,12 +171,12 @@
 <h4 id="org8fd314e"><span class="section-number-4">1.1.3</span> 历史战绩</h4>
 <div class="outline-text-4" id="text-1-1-3">
 </div>
-<div id="outline-container-org6a9b5fc" class="outline-5">
-<h5 id="org6a9b5fc"><span class="section-number-5">1.1.3.1</span> 单个活动</h5>
+<div id="outline-container-orgb89963e" class="outline-5">
+<h5 id="orgb89963e"><span class="section-number-5">1.1.3.1</span> 单个活动</h5>
 <div class="outline-text-5" id="text-1-1-3-1">
 </div>
 <ol class="org-ol">
-<li><a id="org119654f"></a>banner 图<br></li>
+<li><a id="org739c05c"></a>banner 图<br></li>
 <li><a id="org4149904"></a>活动排名<br></li>
 <li><a id="orgdf0ca51"></a>top3 knight<br></li>
 </ol>
@@ -206,14 +206,14 @@
 <h4 id="orga051044"><span class="section-number-4">1.2.1</span> 即将开始的活动</h4>
 <div class="outline-text-4" id="text-1-2-1">
 </div>
-<div id="outline-container-org739c05c" class="outline-5">
-<h5 id="org739c05c"><span class="section-number-5">1.2.1.1</span> banner 图</h5>
+<div id="outline-container-orga613027" class="outline-5">
+<h5 id="orga613027"><span class="section-number-5">1.2.1.1</span> banner 图</h5>
 </div>
 <div id="outline-container-orgca42bf7" class="outline-5">
 <h5 id="orgca42bf7"><span class="section-number-5">1.2.1.2</span> auto_register 字段</h5>
 </div>
-<div id="outline-container-org353dbd5" class="outline-5">
-<h5 id="org353dbd5"><span class="section-number-5">1.2.1.3</span> 拼接活动起止时间字段：开始时间-结束时间</h5>
+<div id="outline-container-org65ca8c7" class="outline-5">
+<h5 id="org65ca8c7"><span class="section-number-5">1.2.1.3</span> 拼接活动起止时间字段：开始时间-结束时间</h5>
 </div>
 <div id="outline-container-org54289b6" class="outline-5">
 <h5 id="org54289b6"><span class="section-number-5">1.2.1.4</span> 家族积分奖励是什么？该活动 top1 计算得到的本活动年度积分</h5>
@@ -230,7 +230,7 @@
 <ol class="org-ol">
 <li><a id="org46d801c"></a>活动按 end_time 排序<br></li>
 <li><a id="org6dc504d"></a>顶部 top3 uesr 是该系列 top3<br></li>
-<li><a id="orgb89963e"></a>单个活动<br>
+<li><a id="org5d5df1e"></a>单个活动<br>
 <ol class="org-ol">
 <li><a id="orgad45f13"></a>正在进行中、已结束标志<br></li>
 <li><a id="org6ac074f"></a>家族积分奖励是什么？<br></li>
@@ -258,12 +258,12 @@
 <div id="outline-container-org31b837e" class="outline-5">
 <h5 id="org31b837e"><span class="section-number-5">1.2.3.1</span> 主播在该系列排名、积分、用户信息。建议不要加“尚未参加活动”</h5>
 </div>
-<div id="outline-container-orgdb572af" class="outline-5">
-<h5 id="orgdb572af"><span class="section-number-5">1.2.3.2</span> 榜单</h5>
+<div id="outline-container-org68d5263" class="outline-5">
+<h5 id="org68d5263"><span class="section-number-5">1.2.3.2</span> 榜单</h5>
 <div class="outline-text-5" id="text-1-2-3-2">
 </div>
 <ol class="org-ol">
-<li><a id="org5ecebb7"></a>是否需要传递 room_id<br></li>
+<li><a id="org69fae80"></a>是否需要传递 room_id<br></li>
 <li><a id="org635c168"></a>排名、积分、用户信息、没有骑士榜<br></li>
 <li><a id="org8fbac33"></a>分页<br></li>
 </ol>
@@ -276,12 +276,12 @@
 <h2 id="org6abcce7"><span class="section-number-2">2</span> 开发内容</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org68d5263" class="outline-3">
-<h3 id="org68d5263"><span class="section-number-3">2.1</span> <span class="done DONE">DONE</span> 榜单</h3>
+<div id="outline-container-orgfcbe11e" class="outline-3">
+<h3 id="orgfcbe11e"><span class="section-number-3">2.1</span> <span class="done DONE">DONE</span> 榜单</h3>
 <div class="outline-text-3" id="text-2-1">
 </div>
-<div id="outline-container-org69fae80" class="outline-4">
-<h4 id="org69fae80"><span class="section-number-4">2.1.1</span> 是否需要传递 room_id</h4>
+<div id="outline-container-org34cce5f" class="outline-4">
+<h4 id="org34cce5f"><span class="section-number-4">2.1.1</span> 是否需要传递 room_id</h4>
 </div>
 <div id="outline-container-orge7a8ce6" class="outline-4">
 <h4 id="orge7a8ce6"><span class="section-number-4">2.1.2</span> 要有分页</h4>
