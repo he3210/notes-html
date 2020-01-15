@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2020-01-15 Wed 11:51 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>年度积分</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">年度积分</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga319e5f">1. 需求</a>
+<ul>
+<li><a href="#org21658f1">1.1. 直播间入口</a>
+<ul>
+<li><a href="#orgbaf334b">1.1.1. 主播头像、昵称、年度积分总排名、年度总积分</a></li>
+<li><a href="#orge91a809">1.1.2. 正在参加的活动</a>
+<ul>
+<li><a href="#orgfffddc6">1.1.2.1. banner 图片。怎么获取图片？不能使用表 banner 中的图片等东西。因为 banners 表中没有 event_name 字段</a></li>
+<li><a href="#org6e473e8">1.1.2.2. 拼接活动起止时间字段：开始时间-结束时间</a></li>
+<li><a href="#orgc76eb8d">1.1.2.3. 当前排名</a></li>
+<li><a href="#org5ce6cd5">1.1.2.4. 活动的展示</a></li>
+</ul>
+</li>
+<li><a href="#org8fd314e">1.1.3. 历史战绩</a>
+<ul>
+<li><a href="#org6a9b5fc">1.1.3.1. 单个活动</a></li>
+<li><a href="#org3e2e278">1.1.3.2. 历史活动如何排序？按活动开始时间排序？按活动结束时间倒序</a></li>
+<li><a href="#org30b2c52">1.1.3.3. 是否有分页？</a></li>
+<li><a href="#orgb3522e1">1.1.3.4. 展示在历史战绩的活动有哪些？</a></li>
+</ul>
+</li>
+<li><a href="#org5767806">1.1.4. 该主播在某个活动的排名？</a></li>
+<li><a href="#orged90e39">1.1.5. 是否要有分页</a></li>
+</ul>
+</li>
+<li><a href="#org0f315de">1.2. H5 展示</a>
+<ul>
+<li><a href="#orga051044">1.2.1. 即将开始的活动</a>
+<ul>
+<li><a href="#org739c05c">1.2.1.1. banner 图</a></li>
+<li><a href="#orgca42bf7">1.2.1.2. auto_register 字段</a></li>
+<li><a href="#org353dbd5">1.2.1.3. 拼接活动起止时间字段：开始时间-结束时间</a></li>
+<li><a href="#org54289b6">1.2.1.4. 家族积分奖励是什么？该活动 top1 计算得到的本活动年度积分</a></li>
+</ul>
+</li>
+<li><a href="#org1e98471">1.2.2. 活动系列一览</a>
+<ul>
+<li><a href="#org73e2981">1.2.2.1. 单个系列</a></li>
+<li><a href="#orgbfa5808">1.2.2.2. 展示哪些活动系列</a></li>
+<li><a href="#org4ef06d0">1.2.2.3. 系列排序</a></li>
+<li><a href="#org2fa4b42">1.2.2.4. 系列名称、背景图片</a></li>
+</ul>
+</li>
+<li><a href="#orgb6689f0">1.2.3. H5 年度单个系列榜单</a>
+<ul>
+<li><a href="#org31b837e">1.2.3.1. 主播在该系列排名、积分、用户信息。建议不要加“尚未参加活动”</a></li>
+<li><a href="#orgdb572af">1.2.3.2. 榜单</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org6abcce7">2. 开发内容</a>
+<ul>
+<li><a href="#org68d5263">2.1. <span class="done DONE">DONE</span> 榜单</a>
+<ul>
+<li><a href="#org69fae80">2.1.1. 是否需要传递 room_id</a></li>
+<li><a href="#orge7a8ce6">2.1.2. 要有分页</a></li>
+</ul>
+</li>
+<li><a href="#orgeecd1da">2.2. <span class="todo DOING">DOING</span> h5 展示接口</a>
+<ul>
+<li><a href="#org729f830">2.2.1. 分页如何做</a></li>
+</ul>
+</li>
+<li><a href="#org2bb9fbb">2.3. <span class="todo DOING">DOING</span> 年度积分接口</a></li>
+<li><a href="#org8627a0a">2.4. <span class="done DONE">DONE</span> 2 个运营后台</a></li>
+<li><a href="#org5bc62e1">2.5. <span class="done DONE">DONE</span> 运营后台 2 个表的缓存，以及缓存更新</a></li>
+<li><a href="#org77c9cb6">2.6. <span class="todo DOING">DOING</span> 各种不同活动类型计算积分的算法，以及积分重算机制</a></li>
+<li><a href="#orgb14c402">2.7. <span class="done DONE">DONE</span> schedule 每个 1 小时刷一次正在进行的活动积分</a></li>
+<li><a href="#orgb7807a7">2.8. <span class="done DONE">DONE</span> 改造骑士榜</a></li>
+<li><a href="#orgf7ef73a">2.9. <span class="todo DOING">DOING</span> 维护所有主播系列排名信息、系列得分；维护主播在所有活动的活动排名</a></li>
+</ul>
+</li>
+<li><a href="#orgf903cf3">3. 上线注意事项 &amp;&amp; 注意事项</a>
+<ul>
+<li><a href="#orge586cb5">3.1. 建表</a></li>
+<li><a href="#org29268fc">3.2. series_to_event rules 运营配置</a></li>
+<li><a href="#orgff6a06c">3.3. 重新计算积分</a>
+<ul>
+<li><a href="#orgba4e58a">3.3.1. 吸金主播只获取了榜单前 200 名进行重新计算积分</a></li>
+<li><a href="#orgdeadcb4">3.3.2. common_rank 只获取了榜单前 200 名进行重新计算积分</a></li>
+</ul>
+</li>
+<li><a href="#orga854dc4">3.4. rank_to_score 和 score_to_score 可同时生效</a></li>
+<li><a href="#org9e8a6a0">3.5. 涉及服务</a>
+<ul>
+<li><a href="#orgc657f59">3.5.1. http</a></li>
+<li><a href="#org76c4ef5">3.5.2. admin</a></li>
+<li><a href="#orgbe12528">3.5.3. schedule-event</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga319e5f" class="outline-2">
+<h2 id="orga319e5f"><span class="section-number-2">1</span> 需求</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org21658f1" class="outline-3">
+<h3 id="org21658f1"><span class="section-number-3">1.1</span> 直播间入口</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-orgbaf334b" class="outline-4">
+<h4 id="orgbaf334b"><span class="section-number-4">1.1.1</span> 主播头像、昵称、年度积分总排名、年度总积分</h4>
+</div>
+<div id="outline-container-orge91a809" class="outline-4">
+<h4 id="orge91a809"><span class="section-number-4">1.1.2</span> 正在参加的活动</h4>
+<div class="outline-text-4" id="text-1-1-2">
+</div>
+<div id="outline-container-orgfffddc6" class="outline-5">
+<h5 id="orgfffddc6"><span class="section-number-5">1.1.2.1</span> banner 图片。怎么获取图片？不能使用表 banner 中的图片等东西。因为 banners 表中没有 event_name 字段</h5>
+</div>
+<div id="outline-container-org6e473e8" class="outline-5">
+<h5 id="org6e473e8"><span class="section-number-5">1.1.2.2</span> 拼接活动起止时间字段：开始时间-结束时间</h5>
+</div>
+<div id="outline-container-orgc76eb8d" class="outline-5">
+<h5 id="orgc76eb8d"><span class="section-number-5">1.1.2.3</span> 当前排名</h5>
+</div>
+<div id="outline-container-org5ce6cd5" class="outline-5">
+<h5 id="org5ce6cd5"><span class="section-number-5">1.1.2.4</span> 活动的展示</h5>
+<div class="outline-text-5" id="text-1-1-2-4">
+</div>
+<ol class="org-ol">
+<li><a id="org738d5cb"></a>方案一：仅当主播在榜单中才展示该活动，不管榜单中的积分是否是 0<br></li>
+<li><a id="org73e793b"></a>方案二：根据 auto_register 字段和榜单来判断是否展示<br></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org8fd314e" class="outline-4">
+<h4 id="org8fd314e"><span class="section-number-4">1.1.3</span> 历史战绩</h4>
+<div class="outline-text-4" id="text-1-1-3">
+</div>
+<div id="outline-container-org6a9b5fc" class="outline-5">
+<h5 id="org6a9b5fc"><span class="section-number-5">1.1.3.1</span> 单个活动</h5>
+<div class="outline-text-5" id="text-1-1-3-1">
+</div>
+<ol class="org-ol">
+<li><a id="org119654f"></a>banner 图<br></li>
+<li><a id="org4149904"></a>活动排名<br></li>
+<li><a id="orgdf0ca51"></a>top3 knight<br></li>
+</ol>
+</div>
+<div id="outline-container-org3e2e278" class="outline-5">
+<h5 id="org3e2e278"><span class="section-number-5">1.1.3.2</span> 历史活动如何排序？按活动开始时间排序？按活动结束时间倒序</h5>
+</div>
+<div id="outline-container-org30b2c52" class="outline-5">
+<h5 id="org30b2c52"><span class="section-number-5">1.1.3.3</span> 是否有分页？</h5>
+</div>
+<div id="outline-container-orgb3522e1" class="outline-5">
+<h5 id="orgb3522e1"><span class="section-number-5">1.1.3.4</span> 展示在历史战绩的活动有哪些？</h5>
+</div>
+</div>
+<div id="outline-container-org5767806" class="outline-4">
+<h4 id="org5767806"><span class="section-number-4">1.1.4</span> 该主播在某个活动的排名？</h4>
+</div>
+<div id="outline-container-orged90e39" class="outline-4">
+<h4 id="orged90e39"><span class="section-number-4">1.1.5</span> 是否要有分页</h4>
+</div>
+</div>
+<div id="outline-container-org0f315de" class="outline-3">
+<h3 id="org0f315de"><span class="section-number-3">1.2</span> H5 展示</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-orga051044" class="outline-4">
+<h4 id="orga051044"><span class="section-number-4">1.2.1</span> 即将开始的活动</h4>
+<div class="outline-text-4" id="text-1-2-1">
+</div>
+<div id="outline-container-org739c05c" class="outline-5">
+<h5 id="org739c05c"><span class="section-number-5">1.2.1.1</span> banner 图</h5>
+</div>
+<div id="outline-container-orgca42bf7" class="outline-5">
+<h5 id="orgca42bf7"><span class="section-number-5">1.2.1.2</span> auto_register 字段</h5>
+</div>
+<div id="outline-container-org353dbd5" class="outline-5">
+<h5 id="org353dbd5"><span class="section-number-5">1.2.1.3</span> 拼接活动起止时间字段：开始时间-结束时间</h5>
+</div>
+<div id="outline-container-org54289b6" class="outline-5">
+<h5 id="org54289b6"><span class="section-number-5">1.2.1.4</span> 家族积分奖励是什么？该活动 top1 计算得到的本活动年度积分</h5>
+</div>
+</div>
+<div id="outline-container-org1e98471" class="outline-4">
+<h4 id="org1e98471"><span class="section-number-4">1.2.2</span> 活动系列一览</h4>
+<div class="outline-text-4" id="text-1-2-2">
+</div>
+<div id="outline-container-org73e2981" class="outline-5">
+<h5 id="org73e2981"><span class="section-number-5">1.2.2.1</span> 单个系列</h5>
+<div class="outline-text-5" id="text-1-2-2-1">
+</div>
+<ol class="org-ol">
+<li><a id="org46d801c"></a>活动按 end_time 排序<br></li>
+<li><a id="org6dc504d"></a>顶部 top3 uesr 是该系列 top3<br></li>
+<li><a id="orgb89963e"></a>单个活动<br>
+<ol class="org-ol">
+<li><a id="orgad45f13"></a>正在进行中、已结束标志<br></li>
+<li><a id="org6ac074f"></a>家族积分奖励是什么？<br></li>
+<li><a id="org399df06"></a>该活动 top3 user<br></li>
+<li><a id="orga00edc0"></a>可点击吗？<br></li>
+</ol>
+</li>
+</ol>
+</div>
+<div id="outline-container-orgbfa5808" class="outline-5">
+<h5 id="orgbfa5808"><span class="section-number-5">1.2.2.2</span> 展示哪些活动系列</h5>
+</div>
+<div id="outline-container-org4ef06d0" class="outline-5">
+<h5 id="org4ef06d0"><span class="section-number-5">1.2.2.3</span> 系列排序</h5>
+</div>
+<div id="outline-container-org2fa4b42" class="outline-5">
+<h5 id="org2fa4b42"><span class="section-number-5">1.2.2.4</span> 系列名称、背景图片</h5>
+</div>
+</div>
+
+<div id="outline-container-orgb6689f0" class="outline-4">
+<h4 id="orgb6689f0"><span class="section-number-4">1.2.3</span> H5 年度单个系列榜单</h4>
+<div class="outline-text-4" id="text-1-2-3">
+</div>
+<div id="outline-container-org31b837e" class="outline-5">
+<h5 id="org31b837e"><span class="section-number-5">1.2.3.1</span> 主播在该系列排名、积分、用户信息。建议不要加“尚未参加活动”</h5>
+</div>
+<div id="outline-container-orgdb572af" class="outline-5">
+<h5 id="orgdb572af"><span class="section-number-5">1.2.3.2</span> 榜单</h5>
+<div class="outline-text-5" id="text-1-2-3-2">
+</div>
+<ol class="org-ol">
+<li><a id="org5ecebb7"></a>是否需要传递 room_id<br></li>
+<li><a id="org635c168"></a>排名、积分、用户信息、没有骑士榜<br></li>
+<li><a id="org8fbac33"></a>分页<br></li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6abcce7" class="outline-2">
+<h2 id="org6abcce7"><span class="section-number-2">2</span> 开发内容</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org68d5263" class="outline-3">
+<h3 id="org68d5263"><span class="section-number-3">2.1</span> <span class="done DONE">DONE</span> 榜单</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org69fae80" class="outline-4">
+<h4 id="org69fae80"><span class="section-number-4">2.1.1</span> 是否需要传递 room_id</h4>
+</div>
+<div id="outline-container-orge7a8ce6" class="outline-4">
+<h4 id="orge7a8ce6"><span class="section-number-4">2.1.2</span> 要有分页</h4>
+</div>
+</div>
+<div id="outline-container-orgeecd1da" class="outline-3">
+<h3 id="orgeecd1da"><span class="section-number-3">2.2</span> <span class="todo DOING">DOING</span> h5 展示接口</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-org729f830" class="outline-4">
+<h4 id="org729f830"><span class="section-number-4">2.2.1</span> 分页如何做</h4>
+</div>
+</div>
+<div id="outline-container-org2bb9fbb" class="outline-3">
+<h3 id="org2bb9fbb"><span class="section-number-3">2.3</span> <span class="todo DOING">DOING</span> 年度积分接口</h3>
+</div>
+<div id="outline-container-org8627a0a" class="outline-3">
+<h3 id="org8627a0a"><span class="section-number-3">2.4</span> <span class="done DONE">DONE</span> 2 个运营后台</h3>
+</div>
+<div id="outline-container-org5bc62e1" class="outline-3">
+<h3 id="org5bc62e1"><span class="section-number-3">2.5</span> <span class="done DONE">DONE</span> 运营后台 2 个表的缓存，以及缓存更新</h3>
+</div>
+<div id="outline-container-org77c9cb6" class="outline-3">
+<h3 id="org77c9cb6"><span class="section-number-3">2.6</span> <span class="todo DOING">DOING</span> 各种不同活动类型计算积分的算法，以及积分重算机制</h3>
+<div class="outline-text-3" id="text-2-6">
+<div class="org-src-container">
+<pre class="src src-js">{
+    <span style="color: #00afaf;">"rank_to_score"</span>: [10, 7, 5, 3, 2, 1],
+    <span style="color: #00afaf;">"score_to_score"</span>: [10000, 1000, 2]
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb14c402" class="outline-3">
+<h3 id="orgb14c402"><span class="section-number-3">2.7</span> <span class="done DONE">DONE</span> schedule 每个 1 小时刷一次正在进行的活动积分</h3>
+</div>
+<div id="outline-container-orgb7807a7" class="outline-3">
+<h3 id="orgb7807a7"><span class="section-number-3">2.8</span> <span class="done DONE">DONE</span> 改造骑士榜</h3>
+</div>
+<div id="outline-container-orgf7ef73a" class="outline-3">
+<h3 id="orgf7ef73a"><span class="section-number-3">2.9</span> <span class="todo DOING">DOING</span> 维护所有主播系列排名信息、系列得分；维护主播在所有活动的活动排名</h3>
+</div>
+</div>
+<div id="outline-container-orgf903cf3" class="outline-2">
+<h2 id="orgf903cf3"><span class="section-number-2">3</span> 上线注意事项 &amp;&amp; 注意事项</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orge586cb5" class="outline-3">
+<h3 id="orge586cb5"><span class="section-number-3">3.1</span> 建表</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `series_to_event` (
+  `id` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> AUTO_INCREMENT,
+  `series` <span style="color: #af8700;">varchar</span>(40) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#24180;&#24230;&#27036;&#21517;&#65292;&#31995;&#21015;&#27036;&#21517;'</span>,
+  `event_name` <span style="color: #af8700;">varchar</span>(40) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'name of event'</span>,
+  `board` tinyint(4) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span>,
+  `event_desc` <span style="color: #af8700;">varchar</span>(128) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#29992;&#20110;&#23637;&#31034;&#30340;&#27963;&#21160;&#21517;'</span>,
+  `sort` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span>,
+  `is_enabled` tinyint(4) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span>,
+  `rules` <span style="color: #af8700;">varchar</span>(4096) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'{}'</span>,
+  `pt` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span>,
+  `image` <span style="color: #af8700;">varchar</span>(1024) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">''</span>,
+  `open_url` <span style="color: #af8700;">varchar</span>(1024) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">''</span> COMMENT <span style="color: #00afaf;">'&#35813;&#27963;&#21160;&#27036;&#21333; url'</span>,
+  `topk` <span style="color: #af8700;">varchar</span>(256) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'[]'</span>,
+  `ctime` datetime <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> <span style="color: #5f8700;">ON</span> <span style="color: #5f8700;">UPDATE</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span>,
+  <span style="color: #5f8700;">PRIMARY</span> <span style="color: #5f8700;">KEY</span> (`id`),
+  <span style="color: #5f8700;">UNIQUE</span> <span style="color: #5f8700;">KEY</span> `uq_series_event_name_board` (`series`,`event_name`,`board`),
+  <span style="color: #5f8700;">KEY</span> `idx_name` (`series`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 <span style="color: #5f8700;">DEFAULT</span> CHARSET=utf8mb4;
+
+<span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `series_settings` (
+  `id` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> AUTO_INCREMENT,
+  `series` <span style="color: #af8700;">varchar</span>(40) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#24180;&#24230;&#27036;&#21517;&#65292;&#31995;&#21015;&#27036;&#21517;'</span>,
+  `series_title` <span style="color: #af8700;">varchar</span>(128) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> "" COMMENT <span style="color: #00afaf;">'&#31995;&#21015;&#26631;&#39064;'</span>,
+  `series_desc` <span style="color: #af8700;">varchar</span>(4096) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> "" COMMENT <span style="color: #00afaf;">'&#31995;&#21015;&#25551;&#36848;'</span>,
+  `<span style="color: #5f8700;">type</span>` tinyint(4) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'1-&#24180;&#24230; 2-&#31995;&#21015;'</span>,
+  `series_url` <span style="color: #af8700;">varchar</span>(1024) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> "" COMMENT <span style="color: #00afaf;">'&#35813;&#31995;&#21015;&#30340;url'</span>,
+  `sort` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span>,
+  `is_enabled` tinyint(4) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span>,
+  `topk` <span style="color: #af8700;">varchar</span>(256) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'[]'</span>,
+  `ctime` datetime <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+  `mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> <span style="color: #5f8700;">ON</span> <span style="color: #5f8700;">UPDATE</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span>,
+  <span style="color: #5f8700;">PRIMARY</span> <span style="color: #5f8700;">KEY</span> (`id`),
+  <span style="color: #5f8700;">UNIQUE</span> <span style="color: #5f8700;">KEY</span> `uq_series` (`series`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 <span style="color: #5f8700;">DEFAULT</span> CHARSET=utf8mb4;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org29268fc" class="outline-3">
+<h3 id="org29268fc"><span class="section-number-3">3.2</span> series_to_event rules 运营配置</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+<pre class="src src-js">{
+    <span style="color: #00afaf;">"rank_to_score"</span>: [10, 7, 5, 3, 2, 1],
+    <span style="color: #00afaf;">"score_to_score"</span>: [10, 2, 1],
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgff6a06c" class="outline-3">
+<h3 id="orgff6a06c"><span class="section-number-3">3.3</span> 重新计算积分</h3>
+<div class="outline-text-3" id="text-3-3">
+</div>
+<div id="outline-container-orgba4e58a" class="outline-4">
+<h4 id="orgba4e58a"><span class="section-number-4">3.3.1</span> 吸金主播只获取了榜单前 200 名进行重新计算积分</h4>
+</div>
+<div id="outline-container-orgdeadcb4" class="outline-4">
+<h4 id="orgdeadcb4"><span class="section-number-4">3.3.2</span> common_rank 只获取了榜单前 200 名进行重新计算积分</h4>
+</div>
+</div>
+<div id="outline-container-orga854dc4" class="outline-3">
+<h3 id="orga854dc4"><span class="section-number-3">3.4</span> rank_to_score 和 score_to_score 可同时生效</h3>
+</div>
+<div id="outline-container-org9e8a6a0" class="outline-3">
+<h3 id="org9e8a6a0"><span class="section-number-3">3.5</span> 涉及服务</h3>
+<div class="outline-text-3" id="text-3-5">
+</div>
+<div id="outline-container-orgc657f59" class="outline-4">
+<h4 id="orgc657f59"><span class="section-number-4">3.5.1</span> http</h4>
+</div>
+<div id="outline-container-org76c4ef5" class="outline-4">
+<h4 id="org76c4ef5"><span class="section-number-4">3.5.2</span> admin</h4>
+</div>
+<div id="outline-container-orgbe12528" class="outline-4">
+<h4 id="orgbe12528"><span class="section-number-4">3.5.3</span> schedule-event</h4>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

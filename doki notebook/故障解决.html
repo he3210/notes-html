@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2019-08-25 Sun 20:00 -->
+<!-- 2020-01-15 Wed 11:51 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>doki 故障解决笔记</title>
@@ -40,6 +40,7 @@
 <li><a href="#org2fed98a">4. 2019.05.27 统计开播时长、本次开播收礼、start_time（日本时间）</a></li>
 <li><a href="#org1ab8c47">5. 统计红方胜利次数、蓝方胜利次数、平局次数等</a></li>
 <li><a href="#orgf40cd8a">6. 2019-CM 活动家族对战获取用户应该补偿的积分</a></li>
+<li><a href="#orga1a873a">7. 根据主播等级把主播划分为新人榜和达人榜的吸金主播活动</a></li>
 </ul>
 </div>
 </div>
@@ -120,6 +121,28 @@ ctrl+c 杀死当前进程<br>
 (<span style="color: #5f8700;">select</span> t.uid, t.score1+t.score2+t.score3+t.score4 score <span style="color: #5f8700;">from</span> 
 (<span style="color: #5f8700;">select</span> uid, credits, <span style="color: #5f8700;">result</span>, is_kill, cv, if(credits &gt;= 10000, 50, if(credits &gt;= 500, 11, if(credits &gt;= 100, 2, if(credits &gt;= 50, 1, 0)))) score1, if(<span style="color: #5f8700;">result</span>=2, 5, if(<span style="color: #5f8700;">result</span>=3, 1, 0)) score2, if(cv=0, 0, if(<span style="color: #5f8700;">MOD</span>(cv,3)=0, 3, 0)) score3, if(is_kill=2, 3, 0) score4 <span style="color: #5f8700;">from</span> user_battle <span style="color: #5f8700;">where</span> id &gt; 800000 <span style="color: #5f8700;">and</span> mtime &gt; "2019-07-02 13:00:00" <span style="color: #5f8700;">and</span> mtime &lt; "2019-07-04 23:56:00") t) tt
 <span style="color: #5f8700;">group</span> <span style="color: #5f8700;">by</span> tt.uid <span style="color: #5f8700;">order</span> <span style="color: #5f8700;">by</span> score <span style="color: #5f8700;">desc</span>;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orga1a873a" class="outline-2">
+<h2 id="orga1a873a"><span class="section-number-2">7</span> 根据主播等级把主播划分为新人榜和达人榜的吸金主播活动</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+如果获取主播等级失败可能会把主播划分到新人榜<br>
+调整方法<br>
+首先提交处理一个工单：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">update</span> rich_anchor_contestants <span style="color: #5f8700;">set</span> board = 1 <span style="color: #5f8700;">where</span> id = 368254;
+</pre>
+</div>
+
+<p>
+然后删除缓存数据<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">redis-cli -h 10.0.110.251 -p 6360 -n 10 del events_v2_rich_anchor_contestant_niceFood_4_u2667541531297942100001275 events_v2_rich_anchor_rank_zet_niceFood_4_0 events_v2_rich_anchor_rank_zet_niceFood_4_1
 </pre>
 </div>
 </div>
