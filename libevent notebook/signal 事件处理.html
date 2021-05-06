@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>libevent 源码之 signal 事件处理</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,18 +34,18 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7f55fe3">1. signal 事件集成策略</a></li>
-<li><a href="#org9a6c190">2. 主要数据结构</a></li>
-<li><a href="#orgb418ae9">3. 内部信号读事件初始化</a></li>
-<li><a href="#org2cb6ae7">4. 信号事件的注册</a></li>
-<li><a href="#org75a4b6f">5. 注册信号</a></li>
-<li><a href="#orgfeff101">6. 信号发生后执行的代码</a></li>
+<li><a href="#orgaa993d8">1. signal 事件集成策略</a></li>
+<li><a href="#orgc76d51b">2. 主要数据结构</a></li>
+<li><a href="#org729f515">3. 内部信号读事件初始化</a></li>
+<li><a href="#org7705981">4. 信号事件的注册</a></li>
+<li><a href="#orgc2f4b0b">5. 注册信号</a></li>
+<li><a href="#org8197c28">6. 信号发生后执行的代码</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org7f55fe3" class="outline-2">
-<h2 id="org7f55fe3"><span class="section-number-2">1</span> signal 事件集成策略</h2>
+<div id="outline-container-orgaa993d8" class="outline-2">
+<h2 id="orgaa993d8"><span class="section-number-2">1</span> signal 事件集成策略</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 集成思想:<br>
@@ -64,8 +64,8 @@
 </div>
 </div>
 
-<div id="outline-container-org9a6c190" class="outline-2">
-<h2 id="org9a6c190"><span class="section-number-2">2</span> 主要数据结构</h2>
+<div id="outline-container-orgc76d51b" class="outline-2">
+<h2 id="orgc76d51b"><span class="section-number-2">2</span> 主要数据结构</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">event_base</span> {
@@ -108,8 +108,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgb418ae9" class="outline-2">
-<h2 id="orgb418ae9"><span class="section-number-2">3</span> 内部信号读事件初始化</h2>
+<div id="outline-container-org729f515" class="outline-2">
+<h2 id="org729f515"><span class="section-number-2">3</span> 内部信号读事件初始化</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 初始化步骤：<br>
@@ -141,7 +141,7 @@
             AF_UNIX, SOCK_STREAM, 0, base-&gt;sig.ev_signal_pair) == -1) {
 <span style="color: #d75f00;">#ifdef</span> WIN32
         <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Make this nonfatal on win32, where sometimes people</span>
-<span style="color: #8a8a8a;">           have localhost firewalled. </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;">           have localhost firewalled.</span><span style="color: #8a8a8a;"> */</span>
         event_sock_warn(-1, <span style="color: #00afaf;">"%s: socketpair"</span>, __func__);
 <span style="color: #d75f00;">#else</span>
         event_sock_err(1, -1, <span style="color: #00afaf;">"%s: socketpair"</span>, __func__);
@@ -192,8 +192,8 @@
 </div>
 </div>
 
-<div id="outline-container-org2cb6ae7" class="outline-2">
-<h2 id="org2cb6ae7"><span class="section-number-2">4</span> 信号事件的注册</h2>
+<div id="outline-container-org7705981" class="outline-2">
+<h2 id="org7705981"><span class="section-number-2">4</span> 信号事件的注册</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 调用顺序为：<br>
@@ -299,8 +299,8 @@ event_add 注册信号事件 &#x2013;&gt; event_add_internal &#x2013;&gt; evmap_
 </div>
 </div>
 
-<div id="outline-container-org75a4b6f" class="outline-2">
-<h2 id="org75a4b6f"><span class="section-number-2">5</span> 注册信号</h2>
+<div id="outline-container-orgc2f4b0b" class="outline-2">
+<h2 id="orgc2f4b0b"><span class="section-number-2">5</span> 注册信号</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 注册信号和注册信号事件的区别：<br>
@@ -338,7 +338,7 @@ event_add 注册信号事件 &#x2013;&gt; event_add_internal &#x2013;&gt; evmap_
 
     EVUTIL_ASSERT(evsignal &gt;= 0 &amp;&amp; evsignal &lt; NSIG);
 
-    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">catch signals if they happen quickly </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">catch signals if they happen quickly</span><span style="color: #8a8a8a;"> */</span>
     EVSIGBASE_LOCK();
     <span style="color: #5f8700;">if</span> (evsig_base != base &amp;&amp; evsig_base_n_signals_added) {
         event_warnx(<span style="color: #00afaf;">"Added a signal to event base %p with signals "</span>
@@ -400,7 +400,7 @@ event_add 注册信号事件 &#x2013;&gt; event_add_internal &#x2013;&gt; evmap_
         <span style="color: #af8700;">int</span> <span style="color: #0087ff;">new_max</span> = evsignal + 1;
         event_debug((<span style="color: #00afaf;">"%s: evsignal (%d) &gt;= sh_old_max (%d), resizing"</span>,
                 __func__, evsignal, sig-&gt;sh_old_max));
-        p = mm_realloc(sig-&gt;sh_old, <span style="color: #af8700;">new_max</span> * <span style="color: #5f8700;">sizeof</span>(*sig-&gt;sh_old));
+        p = mm_realloc(sig-&gt;sh_old, new_max * <span style="color: #5f8700;">sizeof</span>(*sig-&gt;sh_old));
         <span style="color: #5f8700;">if</span> (p == <span style="color: #00afaf;">NULL</span>) {
             event_warn(<span style="color: #00afaf;">"realloc"</span>);
             <span style="color: #5f8700;">return</span> (-1);
@@ -469,7 +469,7 @@ evsig_handler(<span style="color: #af8700;">int</span> <span style="color: #0087
     signal(sig, evsig_handler);
 <span style="color: #d75f00;">#endif</span>
 
-    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Wake up our notification mechanism </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Wake up our notification mechanism</span><span style="color: #8a8a8a;"> */</span>
     msg = sig;
     send(evsig_base_fd, (<span style="color: #af8700;">char</span>*)&amp;msg, 1, 0);
     errno = save_errno;
@@ -481,8 +481,8 @@ evsig_handler(<span style="color: #af8700;">int</span> <span style="color: #0087
 </div>
 </div>
 </div>
-<div id="outline-container-orgfeff101" class="outline-2">
-<h2 id="orgfeff101"><span class="section-number-2">6</span> 信号发生后执行的代码</h2>
+<div id="outline-container-org8197c28" class="outline-2">
+<h2 id="org8197c28"><span class="section-number-2">6</span> 信号发生后执行的代码</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 执行逻辑如下：<br>
@@ -519,7 +519,7 @@ evsig_handler(<span style="color: #af8700;">int</span> <span style="color: #0087
                 event_sock_err(1, fd, <span style="color: #00afaf;">"%s: recv"</span>, __func__);
             <span style="color: #5f8700;">break</span>;
         } <span style="color: #5f8700;">else</span> <span style="color: #5f8700;">if</span> (n == 0) {
-            <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">XXX warn? </span><span style="color: #8a8a8a;">*/</span>
+            <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">XXX warn?</span><span style="color: #8a8a8a;"> */</span>
             <span style="color: #5f8700;">break</span>;
         }
         <span style="color: #5f8700;">for</span> (i = 0; i &lt; n; ++i) {
@@ -565,7 +565,7 @@ evsig_handler(<span style="color: #af8700;">int</span> <span style="color: #0087
         ev, EV_SOCK_ARG(ev-&gt;ev_fd), (<span style="color: #af8700;">int</span>)res, ev-&gt;ev_callback));
 
 
-    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">We get different kinds of events, add them together </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">We get different kinds of events, add them together</span><span style="color: #8a8a8a;"> */</span>
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; event &#24050;&#32463;&#22788;&#20110;&#28608;&#27963;&#38431;&#21015;&#20013;&#20102;&#65292;&#20026;&#23427;&#28155;&#21152;&#26032;&#30340;&#28608;&#27963;&#31867;&#22411;&#65288;&#20363;&#22914;&#65306;&#19968;&#20010;&#20107;&#20214;&#22240;&#20026;&#35835;&#23601;&#32490;&#28608;&#27963;&#65292;&#21448;&#22240;&#20026;&#36229;&#26102;&#20102;&#32780;&#28608;&#27963;&#65289;&#65292;&#28982;&#21518;&#30452;&#25509;&#36820;&#22238;</span>
     <span style="color: #5f8700;">if</span> (ev-&gt;ev_flags &amp; EVLIST_ACTIVE) {
         ev-&gt;ev_res |= res;
@@ -609,7 +609,7 @@ evsig_handler(<span style="color: #af8700;">int</span> <span style="color: #0087
     <span style="color: #af8700;">short</span> <span style="color: #0087ff;">ncalls</span>;
     <span style="color: #af8700;">int</span> <span style="color: #0087ff;">should_break</span>;
 
-    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Allows deletes to work </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Allows deletes to work</span><span style="color: #8a8a8a;"> */</span>
     ncalls = ev-&gt;ev_ncalls;
     <span style="color: #5f8700;">if</span> (ncalls != 0)
         ev-&gt;ev_pncalls = &amp;ncalls;
@@ -646,8 +646,8 @@ evsig_handler(<span style="color: #af8700;">int</span> <span style="color: #0087
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

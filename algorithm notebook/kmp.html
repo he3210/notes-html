@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KMP</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,17 +34,17 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgba3510a">1. 问题描述</a></li>
-<li><a href="#orgb8b24ce">2. BF 解法</a></li>
-<li><a href="#orgdaa99a4">3. KMP 解法</a></li>
-<li><a href="#org05a503d">4. 优化</a></li>
-<li><a href="#orgb11e5d4">5. previous 数组</a></li>
+<li><a href="#org6b38b2c">1. 问题描述</a></li>
+<li><a href="#orgec09e85">2. BF 解法</a></li>
+<li><a href="#org19a02d3">3. KMP 解法</a></li>
+<li><a href="#org106c96d">4. 优化</a></li>
+<li><a href="#org173ddad">5. previous 数组</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgba3510a" class="outline-2">
-<h2 id="orgba3510a"><span class="section-number-2">1</span> 问题描述</h2>
+<div id="outline-container-org6b38b2c" class="outline-2">
+<h2 id="org6b38b2c"><span class="section-number-2">1</span> 问题描述</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 给定字符串 A 和其子串 B， 在 A 中查找 B，返回其下标<br>
@@ -52,8 +52,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgb8b24ce" class="outline-2">
-<h2 id="orgb8b24ce"><span class="section-number-2">2</span> BF 解法</h2>
+<div id="outline-container-orgec09e85" class="outline-2">
+<h2 id="orgec09e85"><span class="section-number-2">2</span> BF 解法</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;assert.h&gt;</span>
@@ -81,8 +81,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgdaa99a4" class="outline-2">
-<h2 id="orgdaa99a4"><span class="section-number-2">3</span> KMP 解法</h2>
+<div id="outline-container-org19a02d3" class="outline-2">
+<h2 id="org19a02d3"><span class="section-number-2">3</span> KMP 解法</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span>
@@ -146,8 +146,8 @@
 </div>
 </div>
 
-<div id="outline-container-org05a503d" class="outline-2">
-<h2 id="org05a503d"><span class="section-number-2">4</span> 优化</h2>
+<div id="outline-container-org106c96d" class="outline-2">
+<h2 id="org106c96d"><span class="section-number-2">4</span> 优化</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">getPrevious</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenPattern</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">previous</span>)
@@ -171,7 +171,7 @@
 <span style="color: #8a8a8a;">                   &#31532;&#19968;&#20010; "xy" &#21644;&#31532;&#20108;&#20010; "xy" &#30456;&#21516;&#65292;&#30001;&#20110;&#28304;&#20018;&#21644;&#31532;&#20108;&#20010; "xy" &#19981;&#21305;&#37197;&#65292;&#25152;&#20197;&#32943;&#23450;&#21644;&#31532;&#19968;&#20010; "xy" &#20063;&#19981;&#21305;&#37197;&#65288;&#20363;&#22914;&#65306;&#28304;&#20018;&#20026; xyxx&#65292;&#27169;&#24335;&#20018;&#20026; xyxy&#65289;</span>
 <span style="color: #8a8a8a;">                   &#25925;&#21521;&#21069;&#22238;&#28335;&#26102;&#65292;&#24212;&#36339;&#36807;&#31532;&#19968;&#20010; "xy"&#65292;&#20351;&#29992; previous[curPos] = previous[flagPos] &#35821;&#21477;</span>
 <span style="color: #8a8a8a;">                   &#36825;&#26679;&#29983;&#25104;&#30340; previous &#25968;&#32452;&#21487;&#20197;&#20351; KMP &#20989;&#25968;&#20013;&#23569;&#19968;&#20123;&#19981;&#24517;&#35201;&#30340;&#27604;&#36739;</span>
-<span style="color: #8a8a8a;">                 </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;">                 */</span>
                 previous[curPos] = previous[flagPos];
         }
         <span style="color: #5f8700;">else</span>
@@ -183,8 +183,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgb11e5d4" class="outline-2">
-<h2 id="orgb11e5d4"><span class="section-number-2">5</span> previous 数组</h2>
+<div id="outline-container-org173ddad" class="outline-2">
+<h2 id="org173ddad"><span class="section-number-2">5</span> previous 数组</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 对于模式串"xyxyyxxyx"，previous数组为<br>
@@ -310,8 +310,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

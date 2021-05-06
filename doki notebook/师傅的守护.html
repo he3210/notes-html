@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>&lrm;</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -33,77 +33,77 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org17adae7">1. 需求</a>
+<li><a href="#org73bf5e8">1. 需求</a>
 <ul>
-<li><a href="#org269caa8">1.1. 报名</a>
+<li><a href="#orgb1fffef">1.1. 报名</a>
 <ul>
-<li><a href="#orgc23ff25">1.1.1. 徒弟端</a>
+<li><a href="#org451ad01">1.1.1. 徒弟端</a>
 <ul>
-<li><a href="#org369b755">1.1.1.1. 师傅列表接口</a></li>
-<li><a href="#org6ddf87c">1.1.1.2. 申请拜师接口</a></li>
+<li><a href="#orge917bae">1.1.1.1. 师傅列表接口</a></li>
+<li><a href="#org5f31861">1.1.1.2. 申请拜师接口</a></li>
 </ul>
 </li>
-<li><a href="#org1ba52a6">1.1.2. 师傅端</a>
+<li><a href="#orgc9c6e26">1.1.2. 师傅端</a>
 <ul>
-<li><a href="#org27df042">1.1.2.1. 徒弟列表接口，用于展示申请拜师的徒弟列表</a></li>
-<li><a href="#org01419a5">1.1.2.2. 接受拜师申请</a></li>
-<li><a href="#org961be1b">1.1.2.3. 我的徒弟接口</a></li>
-<li><a href="#orgba166d3">1.1.2.4. 解除师徒关系接口</a></li>
+<li><a href="#org74dcd65">1.1.2.1. 徒弟列表接口，用于展示申请拜师的徒弟列表</a></li>
+<li><a href="#org880b694">1.1.2.2. 接受拜师申请</a></li>
+<li><a href="#orgdcf180f">1.1.2.3. 我的徒弟接口</a></li>
+<li><a href="#org6f2a922">1.1.2.4. 解除师徒关系接口</a></li>
 </ul>
 </li>
-<li><a href="#org29c7d6f">1.1.3. 申请逻辑</a></li>
+<li><a href="#orgb7342be">1.1.3. 申请逻辑</a></li>
 </ul>
 </li>
-<li><a href="#orga060aab">1.2. 加分规则？分榜总榜加分规则？直播间弹窗等展示的分数是哪个分数？</a></li>
-<li><a href="#org171c5f5">1.3. 直播间弹窗</a>
+<li><a href="#orga88a65a">1.2. 加分规则？分榜总榜加分规则？直播间弹窗等展示的分数是哪个分数？</a></li>
+<li><a href="#org52b3f51">1.3. 直播间弹窗</a>
 <ul>
-<li><a href="#orgc80c1bf">1.3.1. 徒弟端</a></li>
-<li><a href="#org06d8791">1.3.2. 师傅端</a></li>
+<li><a href="#org31a0e0f">1.3.1. 徒弟端</a></li>
+<li><a href="#org85b6bc0">1.3.2. 师傅端</a></li>
 </ul>
 </li>
-<li><a href="#orga428d95">1.4. 冲刺时刻浮动icon</a></li>
+<li><a href="#orgc86a78f">1.4. 冲刺时刻浮动icon</a></li>
 </ul>
 </li>
-<li><a href="#orga2fd503">2. 注意事项</a>
+<li><a href="#org8671ed6">2. 注意事项</a>
 <ul>
-<li><a href="#orgb45352e">2.1. 师傅拒绝徒弟，申请列表标志状态</a></li>
-<li><a href="#orgb801e3a">2.2. 师傅列表是否需要登陆</a></li>
-<li><a href="#org884dea2">2.3. 判断师傅徒弟接口</a></li>
-<li><a href="#org6d1abb3">2.4. 师傅可以解除师徒关系，徒弟不能解除师徒关系，需要提前向用户说明。否则很可能出现一大波想解除师徒关系的徒弟</a></li>
+<li><a href="#org12a193f">2.1. 师傅拒绝徒弟，申请列表标志状态</a></li>
+<li><a href="#org30fd5c6">2.2. 师傅列表是否需要登陆</a></li>
+<li><a href="#orge6dd553">2.3. 判断师傅徒弟接口</a></li>
+<li><a href="#org90f62bd">2.4. 师傅可以解除师徒关系，徒弟不能解除师徒关系，需要提前向用户说明。否则很可能出现一大波想解除师徒关系的徒弟</a></li>
 </ul>
 </li>
-<li><a href="#orgd4b9439">3. 开发排期</a>
+<li><a href="#orge5a02dd">3. 开发排期</a>
 <ul>
-<li><a href="#org09b5cce">3.1. http 接口  4d</a>
+<li><a href="#orgf04dc46">3.1. http 接口  4d</a>
 <ul>
-<li><a href="#orgb810d59">3.1.1. 判断师傅徒弟接口    1d</a></li>
-<li><a href="#org5f3c418">3.1.2. 师傅列表接口        1d</a></li>
-<li><a href="#orge1a44be">3.1.3. 申请接口            1d</a></li>
-<li><a href="#org337db6b">3.1.4. 申请列表接口        1d</a></li>
-<li><a href="#org42f35ce">3.1.5. 接受/拒绝拜师申请接口  1.5d</a></li>
-<li><a href="#org76c45fb">3.1.6. 我的徒弟接口        0.5d</a></li>
-<li><a href="#orgdd1baa3">3.1.7. 解除关系接口        1.5d</a></li>
-<li><a href="#orgfeffeff">3.1.8. 直播间弹窗接口      1d</a></li>
+<li><a href="#org264d846">3.1.1. 判断师傅徒弟接口    1d</a></li>
+<li><a href="#org38ad277">3.1.2. 师傅列表接口        1d</a></li>
+<li><a href="#org0434a2e">3.1.3. 申请接口            1d</a></li>
+<li><a href="#org6a98aae">3.1.4. 申请列表接口        1d</a></li>
+<li><a href="#org334d6fe">3.1.5. 接受/拒绝拜师申请接口  1.5d</a></li>
+<li><a href="#orga19d2b6">3.1.6. 我的徒弟接口        0.5d</a></li>
+<li><a href="#orga66a398">3.1.7. 解除关系接口        1.5d</a></li>
+<li><a href="#orga16aa04">3.1.8. 直播间弹窗接口      1d</a></li>
 </ul>
 </li>
-<li><a href="#orga53c32e">3.2. 加分模块 2.5d</a>
+<li><a href="#orgb9a13ff">3.2. 加分模块 2.5d</a>
 <ul>
-<li><a href="#orged98ae8">3.2.1. 正常加分。加日榜、总榜  2d</a></li>
+<li><a href="#org95ffd3d">3.2.1. 正常加分。加日榜、总榜  2d</a></li>
 </ul>
 </li>
-<li><a href="#org4647761">3.3. 浮动 icon 1.5d</a></li>
-<li><a href="#org417e213">3.4. buffer 时间  1d</a></li>
-<li><a href="#org6b2bb17">3.5. 总 9d  25号联调</a></li>
+<li><a href="#org2a57faf">3.3. 浮动 icon 1.5d</a></li>
+<li><a href="#orgd40d4ab">3.4. buffer 时间  1d</a></li>
+<li><a href="#org4409d1e">3.5. 总 9d  25号联调</a></li>
 </ul>
 </li>
-<li><a href="#org0ef267e">4. sql</a></li>
-<li><a href="#orgf2ee143">5. 运营配置</a></li>
-<li><a href="#org535603b">6. 重启模块</a></li>
-<li><a href="#org9c36f58">7. 上线</a></li>
-<li><a href="#orgcbda68c">8. 联调</a>
+<li><a href="#orgc1918a0">4. sql</a></li>
+<li><a href="#org67fb197">5. 运营配置</a></li>
+<li><a href="#org7f15fa0">6. 重启模块</a></li>
+<li><a href="#org6bfeae8">7. 上线</a></li>
+<li><a href="#org3364626">8. 联调</a>
 <ul>
-<li><a href="#orgce7f55c">8.1. 师傅列表带show信息</a></li>
-<li><a href="#org30fb1c1">8.2. 师傅列表未下发该师傅已申请字段</a></li>
+<li><a href="#org5f161e6">8.1. 师傅列表带show信息</a></li>
+<li><a href="#org53ec27e">8.2. 师傅列表未下发该师傅已申请字段</a></li>
 </ul>
 </li>
 </ul>
@@ -113,12 +113,12 @@
 +TITLE: 师傅的守护<br>
 </p>
 
-<div id="outline-container-org17adae7" class="outline-2">
-<h2 id="org17adae7"><span class="section-number-2">1</span> 需求</h2>
+<div id="outline-container-org73bf5e8" class="outline-2">
+<h2 id="org73bf5e8"><span class="section-number-2">1</span> 需求</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org269caa8" class="outline-3">
-<h3 id="org269caa8"><span class="section-number-3">1.1</span> 报名</h3>
+<div id="outline-container-orgb1fffef" class="outline-3">
+<h3 id="orgb1fffef"><span class="section-number-3">1.1</span> 报名</h3>
 <div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
 <li>根据主播等级 [1, 29), [30, ) 划分新人、师傅。其中师傅必须是最近 3 个月开播过的。<br></li>
@@ -132,18 +132,18 @@
 </pre>
 </div>
 </div>
-<div id="outline-container-orgc23ff25" class="outline-4">
-<h4 id="orgc23ff25"><span class="section-number-4">1.1.1</span> 徒弟端</h4>
+<div id="outline-container-org451ad01" class="outline-4">
+<h4 id="org451ad01"><span class="section-number-4">1.1.1</span> 徒弟端</h4>
 <div class="outline-text-4" id="text-1-1-1">
 </div>
-<div id="outline-container-org369b755" class="outline-5">
-<h5 id="org369b755"><span class="section-number-5">1.1.1.1</span> 师傅列表接口</h5>
+<div id="outline-container-orge917bae" class="outline-5">
+<h5 id="orge917bae"><span class="section-number-5">1.1.1.1</span> 师傅列表接口</h5>
 <div class="outline-text-5" id="text-1-1-1-1">
 </div>
 <ol class="org-ol">
-<li><a id="org96f048d"></a>徒弟已经有一个师傅了：徒弟已经发出申请，并且师傅通过时，返回什么？不必再返回师傅<br></li>
-<li><a id="org4eaab53"></a>分页。30 级以上的主播总共有 61 个，是否需要分页？不需要<br></li>
-<li><a id="org2faf951"></a>元数据<br>
+<li><a id="orgcea92fd"></a>徒弟已经有一个师傅了：徒弟已经发出申请，并且师傅通过时，返回什么？不必再返回师傅<br></li>
+<li><a id="org1900b66"></a>分页。30 级以上的主播总共有 61 个，是否需要分页？不需要<br></li>
+<li><a id="org02882e4"></a>元数据<br>
 <div class="outline-text-6" id="text-1-1-1-1-3">
 <ul class="org-ul">
 <li>师傅信息：头像、昵称、主播等级等<br></li>
@@ -153,11 +153,11 @@
 </ul>
 </div>
 </li>
-<li><a id="orge677e5c"></a>师傅们如何排序?按主播等级逆序<br></li>
+<li><a id="orgcc0ec29"></a>师傅们如何排序?按主播等级逆序<br></li>
 </ol>
 </div>
-<div id="outline-container-org6ddf87c" class="outline-5">
-<h5 id="org6ddf87c"><span class="section-number-5">1.1.1.2</span> 申请拜师接口</h5>
+<div id="outline-container-org5f31861" class="outline-5">
+<h5 id="org5f31861"><span class="section-number-5">1.1.1.2</span> 申请拜师接口</h5>
 <div class="outline-text-5" id="text-1-1-1-2">
 <ul class="org-ul">
 <li>拜师宣言<br></li>
@@ -170,19 +170,19 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org1ba52a6" class="outline-4">
-<h4 id="org1ba52a6"><span class="section-number-4">1.1.2</span> 师傅端</h4>
+<div id="outline-container-orgc9c6e26" class="outline-4">
+<h4 id="orgc9c6e26"><span class="section-number-4">1.1.2</span> 师傅端</h4>
 <div class="outline-text-4" id="text-1-1-2">
 </div>
-<div id="outline-container-org27df042" class="outline-5">
-<h5 id="org27df042"><span class="section-number-5">1.1.2.1</span> 徒弟列表接口，用于展示申请拜师的徒弟列表</h5>
+<div id="outline-container-org74dcd65" class="outline-5">
+<h5 id="org74dcd65"><span class="section-number-5">1.1.2.1</span> 徒弟列表接口，用于展示申请拜师的徒弟列表</h5>
 <div class="outline-text-5" id="text-1-1-2-1">
 </div>
 <ol class="org-ol">
-<li><a id="org2e27c13"></a>师傅已收满徒弟，如何返回数据？依然返回申请列表<br></li>
-<li><a id="org9e521ae"></a>收徒成功时，客户端打对勾<br></li>
-<li><a id="org2706a86"></a>活动开始，不返回数据<br></li>
-<li><a id="org4f87a1d"></a>元数据<br>
+<li><a id="org4050b3e"></a>师傅已收满徒弟，如何返回数据？依然返回申请列表<br></li>
+<li><a id="org6ef2ea5"></a>收徒成功时，客户端打对勾<br></li>
+<li><a id="org9d07903"></a>活动开始，不返回数据<br></li>
+<li><a id="org866dc81"></a>元数据<br>
 <div class="outline-text-6" id="text-1-1-2-1-4">
 <ul class="org-ul">
 <li>徒弟信息：头像、昵称、主播等级等<br></li>
@@ -192,45 +192,45 @@
 </ul>
 </div>
 </li>
-<li><a id="org6513c45"></a>不用分页<br></li>
+<li><a id="org1012045"></a>不用分页<br></li>
 </ol>
 </div>
-<div id="outline-container-org01419a5" class="outline-5">
-<h5 id="org01419a5"><span class="section-number-5">1.1.2.2</span> 接受拜师申请</h5>
+<div id="outline-container-org880b694" class="outline-5">
+<h5 id="org880b694"><span class="section-number-5">1.1.2.2</span> 接受拜师申请</h5>
 <div class="outline-text-5" id="text-1-1-2-2">
 </div>
 <ol class="org-ol">
-<li><a id="orgcfab58b"></a>从申请列表中删除相应申请记录<br></li>
-<li><a id="org3cbbb64"></a>返回状态：收徒成功；收徒失败，名额已达上限；收徒失败，他已拜师<br></li>
+<li><a id="org5a84c73"></a>从申请列表中删除相应申请记录<br></li>
+<li><a id="orgadedf62"></a>返回状态：收徒成功；收徒失败，名额已达上限；收徒失败，他已拜师<br></li>
 </ol>
 </div>
-<div id="outline-container-org961be1b" class="outline-5">
-<h5 id="org961be1b"><span class="section-number-5">1.1.2.3</span> 我的徒弟接口</h5>
+<div id="outline-container-orgdcf180f" class="outline-5">
+<h5 id="orgdcf180f"><span class="section-number-5">1.1.2.3</span> 我的徒弟接口</h5>
 <div class="outline-text-5" id="text-1-1-2-3">
 </div>
 <ol class="org-ol">
-<li><a id="org461ae75"></a>元数据<br>
+<li><a id="orgad3309d"></a>元数据<br>
 <div class="outline-text-6" id="text-1-1-2-3-1">
 <ul class="org-ul">
 <li>徒弟信息：昵称、头像、主播等级等<br></li>
 </ul>
 </div>
 </li>
-<li><a id="org97a83e7"></a>如何排序？按师徒招收时间，最新的排上面<br></li>
+<li><a id="orgef7efea"></a>如何排序？按师徒招收时间，最新的排上面<br></li>
 </ol>
 </div>
-<div id="outline-container-orgba166d3" class="outline-5">
-<h5 id="orgba166d3"><span class="section-number-5">1.1.2.4</span> 解除师徒关系接口</h5>
+<div id="outline-container-org6f2a922" class="outline-5">
+<h5 id="org6f2a922"><span class="section-number-5">1.1.2.4</span> 解除师徒关系接口</h5>
 <div class="outline-text-5" id="text-1-1-2-4">
 </div>
 <ol class="org-ol">
-<li><a id="orgabd4b92"></a>返回状态：解除成功；解除失败<br></li>
-<li><a id="org9fb3360"></a>向徒弟发送私信。私信中是解除通知，点击进入h5申请拜师页面。需要和客户端确认是否支持<br></li>
+<li><a id="org3f782ba"></a>返回状态：解除成功；解除失败<br></li>
+<li><a id="orgb258b23"></a>向徒弟发送私信。私信中是解除通知，点击进入h5申请拜师页面。需要和客户端确认是否支持<br></li>
 </ol>
 </div>
 </div>
-<div id="outline-container-org29c7d6f" class="outline-4">
-<h4 id="org29c7d6f"><span class="section-number-4">1.1.3</span> 申请逻辑</h4>
+<div id="outline-container-orgb7342be" class="outline-4">
+<h4 id="orgb7342be"><span class="section-number-4">1.1.3</span> 申请逻辑</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <ul class="org-ul">
 <li>拜师申请保留时长？24小时<br></li>
@@ -241,8 +241,8 @@
 </div>
 </div>
 </div>
-<div id="outline-container-orga060aab" class="outline-3">
-<h3 id="orga060aab"><span class="section-number-3">1.2</span> 加分规则？分榜总榜加分规则？直播间弹窗等展示的分数是哪个分数？</h3>
+<div id="outline-container-orga88a65a" class="outline-3">
+<h3 id="orga88a65a"><span class="section-number-3">1.2</span> 加分规则？分榜总榜加分规则？直播间弹窗等展示的分数是哪个分数？</h3>
 <div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
 <li>师傅每日收礼 10% 计入徒弟榜单中，每日上限 10000<br></li>
@@ -256,12 +256,12 @@
 </div>
 </div>
 
-<div id="outline-container-org171c5f5" class="outline-3">
-<h3 id="org171c5f5"><span class="section-number-3">1.3</span> 直播间弹窗</h3>
+<div id="outline-container-org52b3f51" class="outline-3">
+<h3 id="org52b3f51"><span class="section-number-3">1.3</span> 直播间弹窗</h3>
 <div class="outline-text-3" id="text-1-3">
 </div>
-<div id="outline-container-orgc80c1bf" class="outline-4">
-<h4 id="orgc80c1bf"><span class="section-number-4">1.3.1</span> 徒弟端</h4>
+<div id="outline-container-org31a0e0f" class="outline-4">
+<h4 id="org31a0e0f"><span class="section-number-4">1.3.1</span> 徒弟端</h4>
 <div class="outline-text-4" id="text-1-3-1">
 <ul class="org-ul">
 <li>个人分数、师傅贡献分<br></li>
@@ -269,8 +269,8 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-org06d8791" class="outline-4">
-<h4 id="org06d8791"><span class="section-number-4">1.3.2</span> 师傅端</h4>
+<div id="outline-container-org85b6bc0" class="outline-4">
+<h4 id="org85b6bc0"><span class="section-number-4">1.3.2</span> 师傅端</h4>
 <div class="outline-text-4" id="text-1-3-2">
 <ul class="org-ul">
 <li>展示 5 名徒弟，分数是展示徒弟的分数还是师傅的贡献分？<br></li>
@@ -278,8 +278,8 @@
 </div>
 </div>
 </div>
-<div id="outline-container-orga428d95" class="outline-3">
-<h3 id="orga428d95"><span class="section-number-3">1.4</span> 冲刺时刻浮动icon</h3>
+<div id="outline-container-orgc86a78f" class="outline-3">
+<h3 id="orgc86a78f"><span class="section-number-3">1.4</span> 冲刺时刻浮动icon</h3>
 <div class="outline-text-3" id="text-1-4">
 <ul class="org-ul">
 <li>xxx 冲刺中<br></li>
@@ -290,80 +290,80 @@
 </div>
 </div>
 </div>
-<div id="outline-container-orga2fd503" class="outline-2">
-<h2 id="orga2fd503"><span class="section-number-2">2</span> 注意事项</h2>
+<div id="outline-container-org8671ed6" class="outline-2">
+<h2 id="org8671ed6"><span class="section-number-2">2</span> 注意事项</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgb45352e" class="outline-3">
-<h3 id="orgb45352e"><span class="section-number-3">2.1</span> 师傅拒绝徒弟，申请列表标志状态</h3>
+<div id="outline-container-org12a193f" class="outline-3">
+<h3 id="org12a193f"><span class="section-number-3">2.1</span> 师傅拒绝徒弟，申请列表标志状态</h3>
 </div>
-<div id="outline-container-orgb801e3a" class="outline-3">
-<h3 id="orgb801e3a"><span class="section-number-3">2.2</span> 师傅列表是否需要登陆</h3>
+<div id="outline-container-org30fd5c6" class="outline-3">
+<h3 id="org30fd5c6"><span class="section-number-3">2.2</span> 师傅列表是否需要登陆</h3>
 </div>
-<div id="outline-container-org884dea2" class="outline-3">
-<h3 id="org884dea2"><span class="section-number-3">2.3</span> 判断师傅徒弟接口</h3>
+<div id="outline-container-orge6dd553" class="outline-3">
+<h3 id="orge6dd553"><span class="section-number-3">2.3</span> 判断师傅徒弟接口</h3>
 </div>
-<div id="outline-container-org6d1abb3" class="outline-3">
-<h3 id="org6d1abb3"><span class="section-number-3">2.4</span> 师傅可以解除师徒关系，徒弟不能解除师徒关系，需要提前向用户说明。否则很可能出现一大波想解除师徒关系的徒弟</h3>
+<div id="outline-container-org90f62bd" class="outline-3">
+<h3 id="org90f62bd"><span class="section-number-3">2.4</span> 师傅可以解除师徒关系，徒弟不能解除师徒关系，需要提前向用户说明。否则很可能出现一大波想解除师徒关系的徒弟</h3>
 </div>
 </div>
-<div id="outline-container-orgd4b9439" class="outline-2">
-<h2 id="orgd4b9439"><span class="section-number-2">3</span> 开发排期</h2>
+<div id="outline-container-orge5a02dd" class="outline-2">
+<h2 id="orge5a02dd"><span class="section-number-2">3</span> 开发排期</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org09b5cce" class="outline-3">
-<h3 id="org09b5cce"><span class="section-number-3">3.1</span> http 接口  4d</h3>
+<div id="outline-container-orgf04dc46" class="outline-3">
+<h3 id="orgf04dc46"><span class="section-number-3">3.1</span> http 接口  4d</h3>
 <div class="outline-text-3" id="text-3-1">
 </div>
-<div id="outline-container-orgb810d59" class="outline-4">
-<h4 id="orgb810d59"><span class="section-number-4">3.1.1</span> 判断师傅徒弟接口    1d</h4>
+<div id="outline-container-org264d846" class="outline-4">
+<h4 id="org264d846"><span class="section-number-4">3.1.1</span> 判断师傅徒弟接口    1d</h4>
 </div>
-<div id="outline-container-org5f3c418" class="outline-4">
-<h4 id="org5f3c418"><span class="section-number-4">3.1.2</span> 师傅列表接口        1d</h4>
+<div id="outline-container-org38ad277" class="outline-4">
+<h4 id="org38ad277"><span class="section-number-4">3.1.2</span> 师傅列表接口        1d</h4>
 </div>
-<div id="outline-container-orge1a44be" class="outline-4">
-<h4 id="orge1a44be"><span class="section-number-4">3.1.3</span> 申请接口            1d</h4>
+<div id="outline-container-org0434a2e" class="outline-4">
+<h4 id="org0434a2e"><span class="section-number-4">3.1.3</span> 申请接口            1d</h4>
 </div>
-<div id="outline-container-org337db6b" class="outline-4">
-<h4 id="org337db6b"><span class="section-number-4">3.1.4</span> 申请列表接口        1d</h4>
+<div id="outline-container-org6a98aae" class="outline-4">
+<h4 id="org6a98aae"><span class="section-number-4">3.1.4</span> 申请列表接口        1d</h4>
 </div>
-<div id="outline-container-org42f35ce" class="outline-4">
-<h4 id="org42f35ce"><span class="section-number-4">3.1.5</span> 接受/拒绝拜师申请接口  1.5d</h4>
+<div id="outline-container-org334d6fe" class="outline-4">
+<h4 id="org334d6fe"><span class="section-number-4">3.1.5</span> 接受/拒绝拜师申请接口  1.5d</h4>
 </div>
-<div id="outline-container-org76c45fb" class="outline-4">
-<h4 id="org76c45fb"><span class="section-number-4">3.1.6</span> 我的徒弟接口        0.5d</h4>
+<div id="outline-container-orga19d2b6" class="outline-4">
+<h4 id="orga19d2b6"><span class="section-number-4">3.1.6</span> 我的徒弟接口        0.5d</h4>
 </div>
-<div id="outline-container-orgdd1baa3" class="outline-4">
-<h4 id="orgdd1baa3"><span class="section-number-4">3.1.7</span> 解除关系接口        1.5d</h4>
+<div id="outline-container-orga66a398" class="outline-4">
+<h4 id="orga66a398"><span class="section-number-4">3.1.7</span> 解除关系接口        1.5d</h4>
 </div>
-<div id="outline-container-orgfeffeff" class="outline-4">
-<h4 id="orgfeffeff"><span class="section-number-4">3.1.8</span> 直播间弹窗接口      1d</h4>
+<div id="outline-container-orga16aa04" class="outline-4">
+<h4 id="orga16aa04"><span class="section-number-4">3.1.8</span> 直播间弹窗接口      1d</h4>
 </div>
 </div>
 
-<div id="outline-container-orga53c32e" class="outline-3">
-<h3 id="orga53c32e"><span class="section-number-3">3.2</span> 加分模块 2.5d</h3>
+<div id="outline-container-orgb9a13ff" class="outline-3">
+<h3 id="orgb9a13ff"><span class="section-number-3">3.2</span> 加分模块 2.5d</h3>
 <div class="outline-text-3" id="text-3-2">
 </div>
-<div id="outline-container-orged98ae8" class="outline-4">
-<h4 id="orged98ae8"><span class="section-number-4">3.2.1</span> 正常加分。加日榜、总榜  2d</h4>
+<div id="outline-container-org95ffd3d" class="outline-4">
+<h4 id="org95ffd3d"><span class="section-number-4">3.2.1</span> 正常加分。加日榜、总榜  2d</h4>
 </div>
 </div>
 
-<div id="outline-container-org4647761" class="outline-3">
-<h3 id="org4647761"><span class="section-number-3">3.3</span> 浮动 icon 1.5d</h3>
+<div id="outline-container-org2a57faf" class="outline-3">
+<h3 id="org2a57faf"><span class="section-number-3">3.3</span> 浮动 icon 1.5d</h3>
 </div>
 
-<div id="outline-container-org417e213" class="outline-3">
-<h3 id="org417e213"><span class="section-number-3">3.4</span> buffer 时间  1d</h3>
+<div id="outline-container-orgd40d4ab" class="outline-3">
+<h3 id="orgd40d4ab"><span class="section-number-3">3.4</span> buffer 时间  1d</h3>
 </div>
 
-<div id="outline-container-org6b2bb17" class="outline-3">
-<h3 id="org6b2bb17"><span class="section-number-3">3.5</span> 总 9d  25号联调</h3>
+<div id="outline-container-org4409d1e" class="outline-3">
+<h3 id="org4409d1e"><span class="section-number-3">3.5</span> 总 9d  25号联调</h3>
 </div>
 </div>
-<div id="outline-container-org0ef267e" class="outline-2">
-<h2 id="org0ef267e"><span class="section-number-2">4</span> sql</h2>
+<div id="outline-container-orgc1918a0" class="outline-2">
+<h2 id="orgc1918a0"><span class="section-number-2">4</span> sql</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `mg_master` (
@@ -397,8 +397,8 @@
 </div>
 </div>
 </div>
-<div id="outline-container-orgf2ee143" class="outline-2">
-<h2 id="orgf2ee143"><span class="section-number-2">5</span> 运营配置</h2>
+<div id="outline-container-org67fb197" class="outline-2">
+<h2 id="org67fb197"><span class="section-number-2">5</span> 运营配置</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-js">{
@@ -419,8 +419,8 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org535603b" class="outline-2">
-<h2 id="org535603b"><span class="section-number-2">6</span> 重启模块</h2>
+<div id="outline-container-org7f15fa0" class="outline-2">
+<h2 id="org7f15fa0"><span class="section-number-2">6</span> 重启模块</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>http<br></li>
@@ -432,8 +432,8 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-org9c36f58" class="outline-2">
-<h2 id="org9c36f58"><span class="section-number-2">7</span> 上线</h2>
+<div id="outline-container-org6bfeae8" class="outline-2">
+<h2 id="org6bfeae8"><span class="section-number-2">7</span> 上线</h2>
 <div class="outline-text-2" id="text-7">
 <ul class="org-ul">
 <li>建师傅表、徒弟表<br></li>
@@ -442,15 +442,15 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-orgcbda68c" class="outline-2">
-<h2 id="orgcbda68c"><span class="section-number-2">8</span> 联调</h2>
+<div id="outline-container-org3364626" class="outline-2">
+<h2 id="org3364626"><span class="section-number-2">8</span> 联调</h2>
 <div class="outline-text-2" id="text-8">
 </div>
-<div id="outline-container-orgce7f55c" class="outline-3">
-<h3 id="orgce7f55c"><span class="section-number-3">8.1</span> 师傅列表带show信息</h3>
+<div id="outline-container-org5f161e6" class="outline-3">
+<h3 id="org5f161e6"><span class="section-number-3">8.1</span> 师傅列表带show信息</h3>
 </div>
-<div id="outline-container-org30fb1c1" class="outline-3">
-<h3 id="org30fb1c1"><span class="section-number-3">8.2</span> 师傅列表未下发该师傅已申请字段</h3>
+<div id="outline-container-org53ec27e" class="outline-3">
+<h3 id="org53ec27e"><span class="section-number-3">8.2</span> 师傅列表未下发该师傅已申请字段</h3>
 </div>
 </div>
 </div>
@@ -462,8 +462,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:26 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>golang json</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">golang json</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org29a2023">1. Marshal 将 struct 编码成 json 字符串</a></li>
+<li><a href="#orgef7cd44">2. interface{}</a></li>
+<li><a href="#org8b3d99d">3. Unmarshal 将 json 字符串解码成 struct</a></li>
+<li><a href="#org2d97623">4. json.RawMessage</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org29a2023" class="outline-2">
+<h2 id="org29a2023"><span class="section-number-2">1</span> Marshal 将 struct 编码成 json 字符串</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">package</span> main
+
+<span style="color: #5f8700;">import</span> (
+    <span style="color: #00afaf;">"encoding/json"</span>
+    <span style="color: #00afaf;">"fmt"</span>
+)
+
+<span style="color: #5f8700;">type</span> <span style="color: #af8700;">Stu</span> <span style="color: #5f8700;">struct</span> {
+    Name  <span style="color: #af8700;">string</span> <span style="color: #00afaf;">`json:"name"`</span>
+    Age   <span style="color: #af8700;">int</span>
+    HIgh  <span style="color: #af8700;">bool</span>
+    sex   <span style="color: #af8700;">string</span>
+    Class *<span style="color: #af8700;">Class</span> <span style="color: #00afaf;">`json:"class"`</span>
+}
+
+<span style="color: #5f8700;">type</span> <span style="color: #af8700;">Class</span> <span style="color: #5f8700;">struct</span> {
+    Name  <span style="color: #af8700;">string</span>
+    Grade <span style="color: #af8700;">int</span>
+}
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">main</span>() {
+    <span style="color: #0087ff;">stu</span> := <span style="color: #af8700;">Stu</span>{
+        <span style="color: #00afaf;">Name</span>: <span style="color: #00afaf;">"&#24352;&#19977;"</span>,
+        <span style="color: #00afaf;">Age</span>:  18,
+        <span style="color: #00afaf;">HIgh</span>: <span style="color: #00afaf;">true</span>,
+        <span style="color: #00afaf;">sex</span>:  <span style="color: #00afaf;">"&#30007;"</span>,
+    }
+
+    <span style="color: #0087ff;">cla</span> := <span style="color: #5f8700;">new</span>(<span style="color: #af8700;">Class</span>)
+    cla.Name = <span style="color: #00afaf;">"1&#29677;"</span>
+    cla.Grade = 3
+    stu.Class=cla
+
+    <span style="color: #0087ff;">jsonStu</span>, <span style="color: #0087ff;">err</span> := json.<span style="color: #0087ff;">Marshal</span>(stu)
+    <span style="color: #5f8700;">if</span> err != <span style="color: #00afaf;">nil</span> {
+        fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #00afaf;">"&#29983;&#25104;json&#23383;&#31526;&#20018;&#38169;&#35823;"</span>)
+    }
+
+    fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #0087ff;">string</span>(jsonStu))
+}
+</pre>
+</div>
+
+<p>
+结果<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">{<span style="color: #00afaf;">"name"</span>:<span style="color: #00afaf;">"&#24352;&#19977;"</span>,<span style="color: #00afaf;">"Age"</span>:18,<span style="color: #00afaf;">"HIgh"</span>:true,<span style="color: #00afaf;">"class"</span>:{<span style="color: #00afaf;">"Name"</span>:<span style="color: #00afaf;">"1&#29677;"</span>,<span style="color: #00afaf;">"Grade"</span>:3}}
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><code>sex 不可导出</code> ，无法转成 json。因为只要是可导出成员（变量首字母大写），都可以转成 json<br></li>
+<li><code>json标签</code> ，如 Name 的标签 <code>json:"name"</code> ，那么转化成的 json key 就用该标签 <code>name</code> ，否则取变量名作为 key，如 <code>Age</code> <code>HIgh</code> 。<br></li>
+<li><code>bool 类型可以转换为 json 串</code> 。Channel， complex 以及函数不能被编码 json 字符串。当然，循环的数据结构也不行，它会导致 marshal 陷入死循环。<br></li>
+<li><code>指针变量，编码时自动转换为它所指向的值</code> ，如 cla 变量。<br>
+（当然，不传指针，Stu struct 的成员 Class 如果换成 Class struct 类型，效果也是一模一样的。只不过指针更快，且能节省内存空间。）<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgef7cd44" class="outline-2">
+<h2 id="orgef7cd44"><span class="section-number-2">2</span> interface{}</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">type</span> <span style="color: #af8700;">Stu</span> <span style="color: #5f8700;">struct</span> {
+    Name  <span style="color: #5f8700;">interface</span>{} <span style="color: #00afaf;">`json:"name"`</span>
+    Age   <span style="color: #5f8700;">interface</span>{}
+    HIgh  <span style="color: #5f8700;">interface</span>{}
+    sex   <span style="color: #5f8700;">interface</span>{}
+    Class <span style="color: #5f8700;">interface</span>{} <span style="color: #00afaf;">`json:"class"`</span>
+}
+
+<span style="color: #5f8700;">type</span> <span style="color: #af8700;">Class</span> <span style="color: #5f8700;">struct</span> {
+    Name  <span style="color: #af8700;">string</span>
+    Grade <span style="color: #af8700;">int</span>
+}
+</pre>
+</div>
+<ul class="org-ul">
+<li>使用上述代码替换上个例子中的 Stu 和 Class，得到的结果一摸一样<br></li>
+<li><code>任何其他类型的数据都可以赋值给 interface{} 类型</code> 因为 interface{} 类型其实是个空接口，即没有方法的接口。go 的每一种类型都实现了该接口<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8b3d99d" class="outline-2">
+<h2 id="org8b3d99d"><span class="section-number-2">3</span> Unmarshal 将 json 字符串解码成 struct</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">package</span> main
+
+<span style="color: #5f8700;">import</span> (
+    <span style="color: #00afaf;">"encoding/json"</span>
+    <span style="color: #00afaf;">"fmt"</span>
+)
+
+<span style="color: #5f8700;">type</span> <span style="color: #af8700;">StuRead</span> <span style="color: #5f8700;">struct</span> {
+    Name  <span style="color: #5f8700;">interface</span>{} <span style="color: #00afaf;">`json:"name"`</span>
+    Age   <span style="color: #5f8700;">interface</span>{}
+    HIgh  <span style="color: #5f8700;">interface</span>{}
+    sex   <span style="color: #5f8700;">interface</span>{}
+    Class <span style="color: #5f8700;">interface</span>{} <span style="color: #00afaf;">`json:"class"`</span>
+    Test  <span style="color: #5f8700;">interface</span>{}
+}
+
+<span style="color: #5f8700;">type</span> <span style="color: #af8700;">Class</span> <span style="color: #5f8700;">struct</span> {
+    Name  <span style="color: #af8700;">string</span>
+    Grade <span style="color: #af8700;">int</span>
+}
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">main</span>() {
+    <span style="color: #0087ff;">data</span>:=<span style="color: #00afaf;">"{\"NAme\":\"&#26446;&#22235;\",\"name\":\"&#24352;&#19977;\",\"age\":11,\"AgE\":18,\"high\":true,\"sex\":\"&#30007;\",\"CLASS\":{\"naME\":\"1&#29677;\",\"GradE\":3}}"</span>
+    <span style="color: #0087ff;">str</span>:=[]<span style="color: #0087ff;">byte</span>(data)
+
+    <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">1.Unmarshal&#30340;&#31532;&#19968;&#20010;&#21442;&#25968;&#26159;json&#23383;&#31526;&#20018;&#65292;&#31532;&#20108;&#20010;&#21442;&#25968;&#26159;&#25509;&#21463;json&#35299;&#26512;&#30340;&#25968;&#25454;&#32467;&#26500;&#12290;</span>
+    <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#31532;&#20108;&#20010;&#21442;&#25968;&#24517;&#39035;&#26159;&#25351;&#38024;&#65292;&#21542;&#21017;&#26080;&#27861;&#25509;&#25910;&#35299;&#26512;&#30340;&#25968;&#25454;&#65292;&#22914;stu&#20173;&#20026;&#31354;&#23545;&#35937;StuRead{}</span>
+    <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">2.&#21487;&#20197;&#30452;&#25509;stu:=new(StuRead),&#27492;&#26102;&#30340;stu&#33258;&#36523;&#23601;&#26159;&#25351;&#38024;</span>
+    <span style="color: #0087ff;">stu</span>:=<span style="color: #af8700;">StuRead</span>{}
+    <span style="color: #0087ff;">err</span>:=json.<span style="color: #0087ff;">Unmarshal</span>(str,&amp;stu)
+
+    <span style="color: #5f8700;">if</span> err != <span style="color: #00afaf;">nil</span>{
+        fmt.<span style="color: #0087ff;">Println</span>(err)
+    }
+
+    fmt.<span style="color: #0087ff;">Println</span>(stu)
+}
+</pre>
+</div>
+
+<p>
+结果<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">{&#24352;&#19977; 18 true  map[naME:1&#29677; GradE:3] }
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>json 字符串中的 " 引号，需用 \ 进行转义<br></li>
+<li>sex 为不可导出成员，依然不能被解码<br></li>
+<li>data 中 key 字段不区分大小写，结构体成员的值会取最后一个匹配的 key<br></li>
+<li><code>Class 被解码为 map[string]interface{}</code> 可以将 Class 变量声明为 json.RawMessage 类型，参考下个例子<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2d97623" class="outline-2">
+<h2 id="org2d97623"><span class="section-number-2">4</span> json.RawMessage</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">package</span> main
+
+<span style="color: #5f8700;">import</span> (
+    <span style="color: #00afaf;">"encoding/json"</span>
+    <span style="color: #00afaf;">"fmt"</span>
+    <span style="color: #00afaf;">"reflect"</span>
+)
+
+<span style="color: #5f8700;">type</span> <span style="color: #af8700;">StuRead</span> <span style="color: #5f8700;">struct</span> {
+    Name  <span style="color: #5f8700;">interface</span>{}
+    Age   <span style="color: #5f8700;">interface</span>{}
+    HIgh  <span style="color: #5f8700;">interface</span>{}
+    Class <span style="color: #af8700;">json.RawMessage</span> <span style="color: #00afaf;">`json:"class"`</span> <span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#27880;&#24847;&#36825;&#37324;</span>
+}
+
+<span style="color: #5f8700;">type</span> <span style="color: #af8700;">Class</span> <span style="color: #5f8700;">struct</span> {
+    Name  <span style="color: #af8700;">string</span>
+    Grade <span style="color: #af8700;">int</span>
+}
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">main</span>() {
+    <span style="color: #0087ff;">data</span> := <span style="color: #00afaf;">"{\"name\":\"&#24352;&#19977;\",\"Age\":18,\"high\":true,\"sex\":\"&#30007;\",\"CLASS\":{\"naME\":\"1&#29677;\",\"GradE\":3}}"</span>
+    <span style="color: #0087ff;">str</span> := []<span style="color: #0087ff;">byte</span>(data)
+    <span style="color: #0087ff;">stu</span> := <span style="color: #af8700;">StuRead</span>{}
+    _ = json.<span style="color: #0087ff;">Unmarshal</span>(str, &amp;stu)
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20108;&#27425;&#35299;&#26512;</span>
+    <span style="color: #0087ff;">cla</span> := <span style="color: #5f8700;">new</span>(<span style="color: #af8700;">Class</span>)
+    json.<span style="color: #0087ff;">Unmarshal</span>(stu.Class, cla)
+
+    fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #00afaf;">"stu:"</span>, stu)
+    fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #00afaf;">"string(stu.Class):"</span>, <span style="color: #0087ff;">string</span>(stu.Class))
+    fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #00afaf;">"class:"</span>, cla)
+    fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #00afaf;">"type:"</span>, reflect.<span style="color: #0087ff;">TypeOf</span>(stu.Class))
+}
+</pre>
+</div>
+
+<p>
+结果<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">stu: {&#24352;&#19977; 18 true [123 34 110 97 77 69 34 58 34 49 231 143 173 34 44 34 71 114 97 100 69 34 58 51 125]}
+<span style="color: #0087ff;">string</span>(stu.Class): {<span style="color: #00afaf;">"naME"</span>:<span style="color: #00afaf;">"1&#29677;"</span>,<span style="color: #00afaf;">"GradE"</span>:3}
+class: &amp;{1&#29677; 3}
+<span style="color: #5f8700;">type</span>: json.RawMessage
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>被声明为 json.RawMessage 类型的变量在 json 解析时，变量值仍保留 json 的原值，即未被自动解析为 map[string]interface{} 类型<br></li>
+<li>在第一次 json 解析时，变量 Class 的类型是 json.RawMessage。此时，我们可以对该变量进行二次 json 解析<br></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

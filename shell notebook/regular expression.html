@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>正则表达式（RE：regular expression）</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,18 +34,18 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9b7783f">1. 正则表达式和通配符的区别</a></li>
-<li><a href="#org924bcca">2. character set</a></li>
-<li><a href="#org41ee39d">3. anchor</a></li>
-<li><a href="#org6b24f5e">4. modifier</a></li>
-<li><a href="#orgca64de5">5. 重视边界（boundary）字符的重要性</a></li>
-<li><a href="#orgffc211d">6. eval</a></li>
+<li><a href="#orgbbfab4a">1. 正则表达式和通配符的区别</a></li>
+<li><a href="#org83bf62c">2. character set</a></li>
+<li><a href="#org54069b8">3. anchor</a></li>
+<li><a href="#org1198900">4. modifier</a></li>
+<li><a href="#orgee041be">5. 重视边界（boundary）字符的重要性</a></li>
+<li><a href="#orgd2baa6a">6. eval</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9b7783f" class="outline-2">
-<h2 id="org9b7783f"><span class="section-number-2">1</span> 正则表达式和通配符的区别</h2>
+<div id="outline-container-orgbbfab4a" class="outline-2">
+<h2 id="orgbbfab4a"><span class="section-number-2">1</span> 正则表达式和通配符的区别</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li>在一个 command line 中 <code>$ command_name options arguments</code> ，wildcard 只作用于 command line 中 argument 的 path 上；<br></li>
@@ -73,8 +73,8 @@ shell command line 上，字符分为 meta 与 literal 这两种不同的字符�
 </div>
 </div>
 
-<div id="outline-container-org924bcca" class="outline-2">
-<h2 id="org924bcca"><span class="section-number-2">2</span> character set</h2>
+<div id="outline-container-org83bf62c" class="outline-2">
+<h2 id="org83bf62c"><span class="section-number-2">2</span> character set</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 字符集合(character set): 就是将多个连续的字符作为一个集合<br>
@@ -90,8 +90,8 @@ shell command line 上，字符分为 meta 与 literal 这两种不同的字符�
 </div>
 </div>
 
-<div id="outline-container-org41ee39d" class="outline-2">
-<h2 id="org41ee39d"><span class="section-number-2">3</span> anchor</h2>
+<div id="outline-container-org54069b8" class="outline-2">
+<h2 id="org54069b8"><span class="section-number-2">3</span> anchor</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 锚点(anchor): 用以标识 Regular Expression 在句子中的位置<br>
@@ -105,8 +105,8 @@ shell command line 上，字符分为 meta 与 literal 这两种不同的字符�
 </div>
 </div>
 
-<div id="outline-container-org6b24f5e" class="outline-2">
-<h2 id="org6b24f5e"><span class="section-number-2">4</span> modifier</h2>
+<div id="outline-container-org1198900" class="outline-2">
+<h2 id="org1198900"><span class="section-number-2">4</span> modifier</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 修饰符(modifier)：独立表示时本身不具意义，专门用以修饰前一个 character set 出现的次数<br>
@@ -121,8 +121,8 @@ shell command line 上，字符分为 meta 与 literal 这两种不同的字符�
 </ul>
 </div>
 </div>
-<div id="outline-container-orgca64de5" class="outline-2">
-<h2 id="orgca64de5"><span class="section-number-2">5</span> 重视边界（boundary）字符的重要性</h2>
+<div id="outline-container-orgee041be" class="outline-2">
+<h2 id="orgee041be"><span class="section-number-2">5</span> 重视边界（boundary）字符的重要性</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 对于字符串 "abbbbbbbbbbbbbc"<br>
@@ -132,8 +132,8 @@ shell command line 上，字符分为 meta 与 literal 这两种不同的字符�
 </p>
 </div>
 </div>
-<div id="outline-container-orgffc211d" class="outline-2">
-<h2 id="orgffc211d"><span class="section-number-2">6</span> eval</h2>
+<div id="outline-container-orgd2baa6a" class="outline-2">
+<h2 id="orgd2baa6a"><span class="section-number-2">6</span> eval</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 简单来讲，eval 就是在 command line 进行替换重组后再来一次替换重组<br>
@@ -162,8 +162,8 @@ abc
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

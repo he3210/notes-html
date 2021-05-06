@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>项目接口及参数下发</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,29 +34,29 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0f1acee">1. sql 创建后台接口配置表</a></li>
-<li><a href="#org3b1df60">2. 后台接口配置</a></li>
-<li><a href="#org707aeb2">3. 后台接口配置描述</a>
+<li><a href="#org1fa0f23">1. sql 创建后台接口配置表</a></li>
+<li><a href="#orgbbd257b">2. 后台接口配置</a></li>
+<li><a href="#org0f373cd">3. 后台接口配置描述</a>
 <ul>
-<li><a href="#orga5de545">3.1. static_params 表示静态参数</a></li>
-<li><a href="#orgd35af7e">3.2. dynamic_params 动态参数。key 对应的 value 为动态参数的类型</a></li>
+<li><a href="#orgdc85fd0">3.1. static_params 表示静态参数</a></li>
+<li><a href="#org0a9c84f">3.2. dynamic_params 动态参数。key 对应的 value 为动态参数的类型</a></li>
 </ul>
 </li>
-<li><a href="#org7b1d42c">4. 对外接口</a>
+<li><a href="#orgea19c12">4. 对外接口</a>
 <ul>
-<li><a href="#org0a8da40">4.1. 接口描述</a></li>
-<li><a href="#orgb85434b">4.2. 请求参数</a></li>
-<li><a href="#org9574606">4.3. 请求示例</a></li>
-<li><a href="#org40f09e9">4.4. 返回示例</a></li>
+<li><a href="#orgf582efe">4.1. 接口描述</a></li>
+<li><a href="#org31b8415">4.2. 请求参数</a></li>
+<li><a href="#org6eef297">4.3. 请求示例</a></li>
+<li><a href="#org9db95de">4.4. 返回示例</a></li>
 </ul>
 </li>
-<li><a href="#orgec44fd5">5. 注意事项</a></li>
+<li><a href="#org1665c94">5. 注意事项</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0f1acee" class="outline-2">
-<h2 id="org0f1acee"><span class="section-number-2">1</span> sql 创建后台接口配置表</h2>
+<div id="outline-container-org1fa0f23" class="outline-2">
+<h2 id="org1fa0f23"><span class="section-number-2">1</span> sql 创建后台接口配置表</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `api_params` (
@@ -76,8 +76,8 @@
 </div>
 </div>
 
-<div id="outline-container-org3b1df60" class="outline-2">
-<h2 id="org3b1df60"><span class="section-number-2">2</span> 后台接口配置</h2>
+<div id="outline-container-orgbbd257b" class="outline-2">
+<h2 id="orgbbd257b"><span class="section-number-2">2</span> 后台接口配置</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-js">{
@@ -112,20 +112,20 @@
 </div>
 </div>
 
-<div id="outline-container-org707aeb2" class="outline-2">
-<h2 id="org707aeb2"><span class="section-number-2">3</span> 后台接口配置描述</h2>
+<div id="outline-container-org0f373cd" class="outline-2">
+<h2 id="org0f373cd"><span class="section-number-2">3</span> 后台接口配置描述</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orga5de545" class="outline-3">
-<h3 id="orga5de545"><span class="section-number-3">3.1</span> static_params 表示静态参数</h3>
+<div id="outline-container-orgdc85fd0" class="outline-3">
+<h3 id="orgdc85fd0"><span class="section-number-3">3.1</span> static_params 表示静态参数</h3>
 <div class="outline-text-3" id="text-3-1">
 <ul class="org-ul">
 <li>"-" 表示由接口调用者填充<br></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd35af7e" class="outline-3">
-<h3 id="orgd35af7e"><span class="section-number-3">3.2</span> dynamic_params 动态参数。key 对应的 value 为动态参数的类型</h3>
+<div id="outline-container-org0a9c84f" class="outline-3">
+<h3 id="org0a9c84f"><span class="section-number-3">3.2</span> dynamic_params 动态参数。key 对应的 value 为动态参数的类型</h3>
 <div class="outline-text-3" id="text-3-2">
 <ul class="org-ul">
 <li>cur_timestamp 表示获取当前时间戳。所以 end_time 的最终值为 cur_timestamp-60<br></li>
@@ -139,12 +139,12 @@
 </div>
 </div>
 
-<div id="outline-container-org7b1d42c" class="outline-2">
-<h2 id="org7b1d42c"><span class="section-number-2">4</span> 对外接口</h2>
+<div id="outline-container-orgea19c12" class="outline-2">
+<h2 id="orgea19c12"><span class="section-number-2">4</span> 对外接口</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org0a8da40" class="outline-3">
-<h3 id="org0a8da40"><span class="section-number-3">4.1</span> 接口描述</h3>
+<div id="outline-container-orgf582efe" class="outline-3">
+<h3 id="orgf582efe"><span class="section-number-3">4.1</span> 接口描述</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 /api/common/get_api_list<br>
@@ -153,8 +153,8 @@ GET<br>
 </div>
 </div>
 
-<div id="outline-container-orgb85434b" class="outline-3">
-<h3 id="orgb85434b"><span class="section-number-3">4.2</span> 请求参数</h3>
+<div id="outline-container-org31b8415" class="outline-3">
+<h3 id="org31b8415"><span class="section-number-3">4.2</span> 请求参数</h3>
 <div class="outline-text-3" id="text-4-2">
 <ul class="org-ul">
 <li>key API列表的唯一标识<br></li>
@@ -162,8 +162,8 @@ GET<br>
 </div>
 </div>
 
-<div id="outline-container-org9574606" class="outline-3">
-<h3 id="org9574606"><span class="section-number-3">4.3</span> 请求示例</h3>
+<div id="outline-container-org6eef297" class="outline-3">
+<h3 id="org6eef297"><span class="section-number-3">4.3</span> 请求示例</h3>
 <div class="outline-text-3" id="text-4-3">
 <div class="org-src-container">
 <pre class="src src-shell">$ curl <span style="color: #00afaf;">"http://jp.test_api.dokidokilive.com/api/common/get_api_list/?key=yc2019"</span>
@@ -172,8 +172,8 @@ GET<br>
 </div>
 </div>
 
-<div id="outline-container-org40f09e9" class="outline-3">
-<h3 id="org40f09e9"><span class="section-number-3">4.4</span> 返回示例</h3>
+<div id="outline-container-org9db95de" class="outline-3">
+<h3 id="org9db95de"><span class="section-number-3">4.4</span> 返回示例</h3>
 <div class="outline-text-3" id="text-4-4">
 <div class="org-src-container">
 <pre class="src src-js">{
@@ -204,8 +204,8 @@ GET<br>
 </div>
 </div>
 
-<div id="outline-container-orgec44fd5" class="outline-2">
-<h2 id="orgec44fd5"><span class="section-number-2">5</span> 注意事项</h2>
+<div id="outline-container-org1665c94" class="outline-2">
+<h2 id="org1665c94"><span class="section-number-2">5</span> 注意事项</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>接口调用者需要且仅关注需要自己填充的参数。例如 t_uid<br></li>
@@ -222,8 +222,8 @@ GET<br>
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

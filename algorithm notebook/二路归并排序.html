@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>二路归并排序</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,21 +34,21 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb3224b4">1. 二路归并排序思想</a></li>
-<li><a href="#orgfea16ab">2. 借助一个辅助数组的递归实现</a></li>
-<li><a href="#org91d6b70">3. 不借助辅助数组的递归实现（原地归并排序）</a></li>
-<li><a href="#orgf97186b">4. 算法题</a>
+<li><a href="#org8429597">1. 二路归并排序思想</a></li>
+<li><a href="#org2054fd9">2. 借助一个辅助数组的递归实现</a></li>
+<li><a href="#orgbf737b7">3. 不借助辅助数组的递归实现（原地归并排序）</a></li>
+<li><a href="#org17652a4">4. 算法题</a>
 <ul>
-<li><a href="#orgc5cb5d3">4.1. 合并二个排好序的链表</a></li>
-<li><a href="#orgf9491ea">4.2. 合并两个排好序的数组</a></li>
+<li><a href="#org14783b9">4.1. 合并二个排好序的链表</a></li>
+<li><a href="#org9843747">4.2. 合并两个排好序的数组</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb3224b4" class="outline-2">
-<h2 id="orgb3224b4"><span class="section-number-2">1</span> 二路归并排序思想</h2>
+<div id="outline-container-org8429597" class="outline-2">
+<h2 id="org8429597"><span class="section-number-2">1</span> 二路归并排序思想</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 递归的二路归并排序算法是基于分治的，其过程如下：<br>
@@ -58,8 +58,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgfea16ab" class="outline-2">
-<h2 id="orgfea16ab"><span class="section-number-2">2</span> 借助一个辅助数组的递归实现</h2>
+<div id="outline-container-org2054fd9" class="outline-2">
+<h2 id="org2054fd9"><span class="section-number-2">2</span> 借助一个辅助数组的递归实现</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
@@ -98,8 +98,8 @@
 </div>
 </div>
 
-<div id="outline-container-org91d6b70" class="outline-2">
-<h2 id="org91d6b70"><span class="section-number-2">3</span> 不借助辅助数组的递归实现（原地归并排序）</h2>
+<div id="outline-container-orgbf737b7" class="outline-2">
+<h2 id="orgbf737b7"><span class="section-number-2">3</span> 不借助辅助数组的递归实现（原地归并排序）</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36870;&#24207;</span>
@@ -157,12 +157,12 @@
 </div>
 </div>
 
-<div id="outline-container-orgf97186b" class="outline-2">
-<h2 id="orgf97186b"><span class="section-number-2">4</span> 算法题</h2>
+<div id="outline-container-org17652a4" class="outline-2">
+<h2 id="org17652a4"><span class="section-number-2">4</span> 算法题</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgc5cb5d3" class="outline-3">
-<h3 id="orgc5cb5d3"><span class="section-number-3">4.1</span> 合并二个排好序的链表</h3>
+<div id="outline-container-org14783b9" class="outline-3">
+<h3 id="org14783b9"><span class="section-number-3">4.1</span> 合并二个排好序的链表</h3>
 <div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
@@ -219,8 +219,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgf9491ea" class="outline-3">
-<h3 id="orgf9491ea"><span class="section-number-3">4.2</span> 合并两个排好序的数组</h3>
+<div id="outline-container-org9843747" class="outline-3">
+<h3 id="org9843747"><span class="section-number-3">4.2</span> 合并两个排好序的数组</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 问题描述：已知两个 int 型有序数组 A 和 B，数组 A 的末尾有足够空间容纳 B，写一个函数将 B 合并到 A<br>
@@ -257,8 +257,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

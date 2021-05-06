@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker 实例 —— 使用 Jekyll 框架搭建博客</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,21 +34,21 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6e25555">1. 目录结构</a></li>
-<li><a href="#org7c8c4f2">2. 文件 ./jekyll/Dockerfile</a></li>
-<li><a href="#orgc4d0d5c">3. 文件 ./apache/Dockerfile</a></li>
-<li><a href="#orgcd2ee27">4. 下载 james_blog 网站</a></li>
-<li><a href="#orgf99da35">5. 构建镜像</a></li>
-<li><a href="#orgee20664">6. 启动 Jekyll 网站</a></li>
-<li><a href="#org6f754d4">7. 最后 &amp; 总结</a></li>
-<li><a href="#orgc661373">8. 备份 Jekyll 卷</a></li>
-<li><a href="#org7fd1054">9. 拓展</a></li>
+<li><a href="#org396c6b9">1. 目录结构</a></li>
+<li><a href="#org6335ac4">2. 文件 ./jekyll/Dockerfile</a></li>
+<li><a href="#orga5b29b1">3. 文件 ./apache/Dockerfile</a></li>
+<li><a href="#org3263302">4. 下载 james_blog 网站</a></li>
+<li><a href="#org01e8458">5. 构建镜像</a></li>
+<li><a href="#org86a275e">6. 启动 Jekyll 网站</a></li>
+<li><a href="#org5dcf6a9">7. 最后 &amp; 总结</a></li>
+<li><a href="#orga33acfd">8. 备份 Jekyll 卷</a></li>
+<li><a href="#org97f613e">9. 拓展</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6e25555" class="outline-2">
-<h2 id="org6e25555"><span class="section-number-2">1</span> 目录结构</h2>
+<div id="outline-container-org396c6b9" class="outline-2">
+<h2 id="org396c6b9"><span class="section-number-2">1</span> 目录结构</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ tree -N /Users/he/test/
@@ -66,10 +66,10 @@
 </div>
 </div>
 
-<div id="outline-container-org7c8c4f2" class="outline-2">
-<h2 id="org7c8c4f2"><span class="section-number-2">2</span> 文件 ./jekyll/Dockerfile</h2>
+<div id="outline-container-org6335ac4" class="outline-2">
+<h2 id="org6335ac4"><span class="section-number-2">2</span> 文件 ./jekyll/Dockerfile</h2>
 <div class="outline-text-2" id="text-2">
-<pre class="example">
+<pre class="example" id="orgcb8ee81">
 FROM ubuntu:16.04
 MAINTAINER he3210 shi_zhonghe@163.com
 ENV REFRESHED_AT 2018-01-01
@@ -94,10 +94,10 @@ ENTRYPOINT 指令指定自动构建的命令，该命令会将工作目录 <code
 </div>
 </div>
 
-<div id="outline-container-orgc4d0d5c" class="outline-2">
-<h2 id="orgc4d0d5c"><span class="section-number-2">3</span> 文件 ./apache/Dockerfile</h2>
+<div id="outline-container-orga5b29b1" class="outline-2">
+<h2 id="orga5b29b1"><span class="section-number-2">3</span> 文件 ./apache/Dockerfile</h2>
 <div class="outline-text-2" id="text-3">
-<pre class="example">
+<pre class="example" id="orgc0f1786">
 FROM ubuntu:16.04
 MAINTAINER he3210 shi_zhonghe@163.com
 ENV REFRESHED_AT 2018-01-01
@@ -132,8 +132,8 @@ ENTRYPOINT 和 CMD 指令在容器启动时默认运行 Apache<br>
 </div>
 </div>
 
-<div id="outline-container-orgcd2ee27" class="outline-2">
-<h2 id="orgcd2ee27"><span class="section-number-2">4</span> 下载 james_blog 网站</h2>
+<div id="outline-container-org3263302" class="outline-2">
+<h2 id="org3263302"><span class="section-number-2">4</span> 下载 james_blog 网站</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-shell">$ git clone https://github.com/jamtur01/james_blog.git
@@ -146,8 +146,8 @@ ENTRYPOINT 和 CMD 指令在容器启动时默认运行 Apache<br>
 </div>
 </div>
 
-<div id="outline-container-orgf99da35" class="outline-2">
-<h2 id="orgf99da35"><span class="section-number-2">5</span> 构建镜像</h2>
+<div id="outline-container-org01e8458" class="outline-2">
+<h2 id="org01e8458"><span class="section-number-2">5</span> 构建镜像</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ cd jekyll
@@ -159,8 +159,8 @@ $ docker build -t he3210/apache .
 </div>
 </div>
 
-<div id="outline-container-orgee20664" class="outline-2">
-<h2 id="orgee20664"><span class="section-number-2">6</span> 启动 Jekyll 网站</h2>
+<div id="outline-container-org86a275e" class="outline-2">
+<h2 id="org86a275e"><span class="section-number-2">6</span> 启动 Jekyll 网站</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker run -v /Users/he/test/james_blog:/data/ --name he_blog he3210/jekyll
@@ -185,8 +185,8 @@ $ docker build -t he3210/apache .
 </div>
 </div>
 
-<div id="outline-container-org6f754d4" class="outline-2">
-<h2 id="org6f754d4"><span class="section-number-2">7</span> 最后 &amp; 总结</h2>
+<div id="outline-container-org5dcf6a9" class="outline-2">
+<h2 id="org5dcf6a9"><span class="section-number-2">7</span> 最后 &amp; 总结</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 查看下 Apache 在宿主机上的端口，在本地浏览器访问博客<br>
@@ -195,8 +195,8 @@ $ docker build -t he3210/apache .
 </div>
 </div>
 
-<div id="outline-container-orgc661373" class="outline-2">
-<h2 id="orgc661373"><span class="section-number-2">8</span> 备份 Jekyll 卷</h2>
+<div id="outline-container-orga33acfd" class="outline-2">
+<h2 id="orga33acfd"><span class="section-number-2">8</span> 备份 Jekyll 卷</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 备份 he_blog 容器中的 <code>/var/www/html</code> 卷到宿主机的当前目录<br>
@@ -212,8 +212,8 @@ $ docker build -t he3210/apache .
 </div>
 </div>
 
-<div id="outline-container-org7fd1054" class="outline-2">
-<h2 id="org7fd1054"><span class="section-number-2">9</span> 拓展</h2>
+<div id="outline-container-org97f613e" class="outline-2">
+<h2 id="org97f613e"><span class="section-number-2">9</span> 拓展</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 web 集群：                运行多个 Apache 容器，在这些容器前加一个负载均衡器。<br>
@@ -231,8 +231,8 @@ web 集群：                运行多个 Apache 容器，在这些容器前加�
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

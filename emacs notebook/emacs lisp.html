@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>emacs lisp</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,23 +34,23 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4265516">1. 检测 emacs 是在终端下启动还是 GUI 下启动</a>
+<li><a href="#org2a1d514">1. 检测 emacs 是在终端下启动还是 GUI 下启动</a>
 <ul>
-<li><a href="#org7926a71">1.1. 例：mac emacs 和系统共享剪切板</a></li>
+<li><a href="#org989cb0d">1.1. 例：mac emacs 和系统共享剪切板</a></li>
 </ul>
 </li>
-<li><a href="#orgbd2e00b">2. save-excursion</a>
+<li><a href="#orgf93955d">2. save-excursion</a>
 <ul>
-<li><a href="#org338d419">2.1. 例：对齐当前选中的内容或整个 buffer</a></li>
-<li><a href="#orge81da6b">2.2. 例：导出笔记</a></li>
+<li><a href="#org1f499ae">2.1. 例：对齐当前选中的内容或整个 buffer</a></li>
+<li><a href="#org9236e94">2.2. 例：导出笔记</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4265516" class="outline-2">
-<h2 id="org4265516"><span class="section-number-2">1</span> 检测 emacs 是在终端下启动还是 GUI 下启动</h2>
+<div id="outline-container-org2a1d514" class="outline-2">
+<h2 id="org2a1d514"><span class="section-number-2">1</span> 检测 emacs 是在终端下启动还是 GUI 下启动</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 我一般在终端下使用 emacs，有些配置需要区分 emacs 运行在终端下还是在 GUI 模式下，以便加载不通的配置<br>
@@ -65,8 +65,8 @@
 </ul>
 </div>
 
-<div id="outline-container-org7926a71" class="outline-3">
-<h3 id="org7926a71"><span class="section-number-3">1.1</span> 例：mac emacs 和系统共享剪切板</h3>
+<div id="outline-container-org989cb0d" class="outline-3">
+<h3 id="org989cb0d"><span class="section-number-3">1.1</span> 例：mac emacs 和系统共享剪切板</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 问题：mac GUI 模式下已支持该功能。但是终端模式下并不能和系统共享剪切板<br>
@@ -94,15 +94,15 @@
 </div>
 </div>
 
-<div id="outline-container-orgbd2e00b" class="outline-2">
-<h2 id="orgbd2e00b"><span class="section-number-2">2</span> save-excursion</h2>
+<div id="outline-container-orgf93955d" class="outline-2">
+<h2 id="orgf93955d"><span class="section-number-2">2</span> save-excursion</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 该函数用于保存当前 buffer 和当前光标位置，执行完其包含的代码段后恢复 buffer 和光标位置<br>
 </p>
 </div>
-<div id="outline-container-org338d419" class="outline-3">
-<h3 id="org338d419"><span class="section-number-3">2.1</span> 例：对齐当前选中的内容或整个 buffer</h3>
+<div id="outline-container-org1f499ae" class="outline-3">
+<h3 id="org1f499ae"><span class="section-number-3">2.1</span> 例：对齐当前选中的内容或整个 buffer</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 快捷键 <code>C-M-\</code> 默认是调用 indent-region 函数，现将其改为调用函数 indent-region-or-buffer。该函数会判断如果在选中状态，则对齐选中的内容；否则对齐整个 buffer<br>
@@ -134,11 +134,11 @@
 </div>
 </div>
 
-<div id="outline-container-orge81da6b" class="outline-3">
-<h3 id="orge81da6b"><span class="section-number-3">2.2</span> 例：导出笔记</h3>
+<div id="outline-container-org9236e94" class="outline-3">
+<h3 id="org9236e94"><span class="section-number-3">2.2</span> 例：导出笔记</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
-<a href="./搭建我的笔记系统.html#orgb0f3023">修复导出笔记前后光标位置改变的问题</a><br>
+<a href="./搭建我的笔记系统.html#orgf5e556f">修复导出笔记前后光标位置改变的问题</a><br>
 </p>
 </div>
 </div>
@@ -152,8 +152,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

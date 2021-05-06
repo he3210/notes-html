@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>libevent 源码之 common-timeout</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,19 +34,19 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3950fff">1. 为什么要用 common-timeout 呢？</a></li>
-<li><a href="#org5c3a42d">2. common-timeout 原理</a></li>
-<li><a href="#orgd0cec10">3. 基本数据结构</a></li>
+<li><a href="#orge00e620">1. 为什么要用 common-timeout 呢？</a></li>
+<li><a href="#orgfbe0225">2. common-timeout 原理</a></li>
+<li><a href="#org98c5690">3. 基本数据结构</a></li>
 <li><a href="#common-timeout 标志">4. common-timeout 标志</a></li>
-<li><a href="#org69f703b">5. 初始化一个 common-timeout 超时时长</a></li>
-<li><a href="#org9df74ae">6. common-timeout 超时事件回调函数</a></li>
-<li><a href="#org799c71d">7. 注册事件到 common-timeout 队列</a></li>
+<li><a href="#org4d09eb3">5. 初始化一个 common-timeout 超时时长</a></li>
+<li><a href="#orgb00d735">6. common-timeout 超时事件回调函数</a></li>
+<li><a href="#org9d64751">7. 注册事件到 common-timeout 队列</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3950fff" class="outline-2">
-<h2 id="org3950fff"><span class="section-number-2">1</span> 为什么要用 common-timeout 呢？</h2>
+<div id="outline-container-orge00e620" class="outline-2">
+<h2 id="orge00e620"><span class="section-number-2">1</span> 为什么要用 common-timeout 呢？</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 小根堆插入和删除操作事件复杂度都是 <code>O(logN)</code> ，但如果把大量具有相同超时时长的 event 放到小根堆上，效率会下降很多。<br>
@@ -64,8 +64,8 @@
 </div>
 </div>
 
-<div id="outline-container-org5c3a42d" class="outline-2">
-<h2 id="org5c3a42d"><span class="section-number-2">2</span> common-timeout 原理</h2>
+<div id="outline-container-orgfbe0225" class="outline-2">
+<h2 id="orgfbe0225"><span class="section-number-2">2</span> common-timeout 原理</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 对于具有相同的超时时长的超时事件，可以把它们按照超时时间升序地放到一个 <b>common-timeout 队列</b> 中。<br>
@@ -88,8 +88,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgd0cec10" class="outline-2">
-<h2 id="orgd0cec10"><span class="section-number-2">3</span> 基本数据结构</h2>
+<div id="outline-container-org98c5690" class="outline-2">
+<h2 id="org98c5690"><span class="section-number-2">3</span> 基本数据结构</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span> {
@@ -122,7 +122,7 @@
 </p>
 
 
-<div class="figure">
+<div id="org1db2ada" class="figure">
 <p><img src="../images/common-timeout 存储结构.png" alt="common-timeout 存储结构.png"><br>
 </p>
 </div>
@@ -135,8 +135,8 @@
 </div>
 </div>
 
-<div id="outline-container-org9e33c5f" class="outline-2">
-<h2 id="common-timeout 标志"><a id="org9e33c5f"></a><span class="section-number-2">4</span> common-timeout 标志</h2>
+<div id="outline-container-common-timeout 标志" class="outline-2">
+<h2 id="common-timeout 标志"><span class="section-number-2">4</span> common-timeout 标志</h2>
 <div class="outline-text-2" id="text-common-timeout 标志">
 <p>
 在 libevent 中使用 struct timeval 结构体来存储超时时间（或者超时时长），结构体如下：<br>
@@ -144,8 +144,8 @@
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #5f8700;">struct</span> <span style="color: #af8700;">timeval</span>
 {
-    <span style="color: #af8700;">__time_t</span> <span style="color: #0087ff;">tv_sec</span>;        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Seconds. </span><span style="color: #8a8a8a;">*/</span>
-    <span style="color: #af8700;">__suseconds_t</span> <span style="color: #0087ff;">tv_usec</span>;  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Microseconds. </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #af8700;">__time_t</span> <span style="color: #0087ff;">tv_sec</span>;        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Seconds.</span><span style="color: #8a8a8a;"> */</span>
+    <span style="color: #af8700;">__suseconds_t</span> <span style="color: #0087ff;">tv_usec</span>;  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Microseconds.</span><span style="color: #8a8a8a;"> */</span>
 };
 </pre>
 </div>
@@ -196,8 +196,8 @@ timeval.tv_usec 的单位是微秒，最大值为 999999，再大就进位到秒
 </div>
 </div>
 
-<div id="outline-container-org69f703b" class="outline-2">
-<h2 id="org69f703b"><span class="section-number-2">5</span> 初始化一个 common-timeout 超时时长</h2>
+<div id="outline-container-org4d09eb3" class="outline-2">
+<h2 id="org4d09eb3"><span class="section-number-2">5</span> 初始化一个 common-timeout 超时时长</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>如果该超时时长有对应的 common-timeout 队列，为其加上 common-timeout 标志直接返回；否则，为其分配应有的空间并初始化<br></li>
@@ -254,7 +254,7 @@ timeval.tv_usec 的单位是微秒，最大值为 999999，再大就进位到秒
             base-&gt;n_common_timeouts*2;   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21021;&#22987;&#20540;&#20026; 16 &#20010; common_timeout_list&#65292;&#20043;&#21518;&#27599;&#27425;&#25193;&#22823;&#20026;&#21407;&#20808;&#30340; 2 &#20493;</span>
         <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_list</span> **<span style="color: #0087ff;">newqueues</span> =
             mm_realloc(base-&gt;common_timeout_queues,
-            <span style="color: #af8700;">n</span>*<span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_queue</span> *));
+            n*<span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">common_timeout_queue</span> *));
         <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>newqueues) {
             event_warn(<span style="color: #00afaf;">"%s: realloc"</span>,__func__);
             <span style="color: #5f8700;">goto</span> <span style="color: #00afaf;">done</span>;
@@ -295,8 +295,8 @@ timeval.tv_usec 的单位是微秒，最大值为 999999，再大就进位到秒
 </div>
 </div>
 
-<div id="outline-container-org9df74ae" class="outline-2">
-<h2 id="org9df74ae"><span class="section-number-2">6</span> common-timeout 超时事件回调函数</h2>
+<div id="outline-container-orgb00d735" class="outline-2">
+<h2 id="orgb00d735"><span class="section-number-2">6</span> common-timeout 超时事件回调函数</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>如果队首元素超时，取出队首元素，直接放入激活队列。然后继续检查队首元素是否超时；<br></li>
@@ -343,8 +343,8 @@ timeval.tv_usec 的单位是微秒，最大值为 999999，再大就进位到秒
 </div>
 </div>
 </div>
-<div id="outline-container-org799c71d" class="outline-2">
-<h2 id="org799c71d"><span class="section-number-2">7</span> 注册事件到 common-timeout 队列</h2>
+<div id="outline-container-org9d64751" class="outline-2">
+<h2 id="org9d64751"><span class="section-number-2">7</span> 注册事件到 common-timeout 队列</h2>
 <div class="outline-text-2" id="text-7">
 <ul class="org-ul">
 <li>参数 tv 带有 common-timeout 标志，会把超时事件插入到相应的 common-timeout 队列<br></li>
@@ -372,7 +372,7 @@ timeval.tv_usec 的单位是微秒，最大值为 999999，再大就进位到秒
     <span style="color: #5f8700;">if</span> (tv != <span style="color: #00afaf;">NULL</span> &amp;&amp; <span style="color: #d70000;">!</span>(ev-&gt;ev_flags &amp; EVLIST_TIMEOUT)) {
         <span style="color: #5f8700;">if</span> (min_heap_reserve(&amp;base-&gt;timeheap,
             1 + min_heap_size(&amp;base-&gt;timeheap)) == -1)
-            <span style="color: #5f8700;">return</span> (-1);  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">ENOMEM == errno </span><span style="color: #8a8a8a;">*/</span>
+            <span style="color: #5f8700;">return</span> (-1);  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">ENOMEM == errno</span><span style="color: #8a8a8a;"> */</span>
     }
 
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20027;&#39064;&#19981;&#30456;&#20851;&#20195;&#30721;</span>
@@ -472,8 +472,8 @@ timeval.tv_usec 的单位是微秒，最大值为 999999，再大就进位到秒
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

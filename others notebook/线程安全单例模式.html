@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>线程安全单例模式</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,14 +34,14 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0b4dca8">1. 饿汉模式</a></li>
-<li><a href="#org6cccee3">2. 懒汉模式</a></li>
+<li><a href="#orgf9e85dd">1. 饿汉模式</a></li>
+<li><a href="#orgc480483">2. 懒汉模式</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0b4dca8" class="outline-2">
-<h2 id="org0b4dca8"><span class="section-number-2">1</span> 饿汉模式</h2>
+<div id="outline-container-orgf9e85dd" class="outline-2">
+<h2 id="orgf9e85dd"><span class="section-number-2">1</span> 饿汉模式</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 饿汉模式：即无论是否调用该类的实例，在程序开始时就会产生一个该类的实例，并在以后仅返回此实例。<br>
@@ -66,7 +66,7 @@
         <span style="color: #0087ff;">Singleton</span>() { cout &lt;&lt; <span style="color: #00afaf;">"Singleton()"</span> &lt;&lt; endl; };
         ~<span style="color: #0087ff;">Singleton</span>() { cout &lt;&lt; <span style="color: #00afaf;">"~Singleton()"</span> &lt;&lt; endl; };
 
-        <span style="color: #5f8700;">class</span> <span style="color: #af8700;">Garbo</span>     <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Garbo &#24847;&#20026;&#22403;&#22334;&#24037;&#20154;&#65292;&#20219;&#21153;&#26159;&#22312; Singleton &#23454;&#20363;&#29983;&#21629;&#21608;&#26399;&#32467;&#26463;&#21518;&#22238;&#25910;&#35813;&#23454;&#20363; */</span>
+        <span style="color: #5f8700;">class</span> <span style="color: #af8700;">Garbo</span>     <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Garbo &#24847;&#20026;&#22403;&#22334;&#24037;&#20154;&#65292;&#20219;&#21153;&#26159;&#22312; Singleton &#23454;&#20363;&#29983;&#21629;&#21608;&#26399;&#32467;&#26463;&#21518;&#22238;&#25910;&#35813;&#23454;&#20363;</span><span style="color: #8a8a8a;"> */</span>
         {
             <span style="color: #5f8700;">public</span>:
                 ~<span style="color: #0087ff;">Garbo</span>()
@@ -79,9 +79,9 @@
 };
 
 <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#22312;&#21021;&#22987;&#21270;&#34920;&#36798;&#24335;&#21069;&#21152;&#19978;&#31867;&#22411;&#21517;&#65292;&#23601;&#33021;&#20174;&#22806;&#37096;&#21021;&#22987;&#21270;&#31169;&#26377;&#30340;&#38745;&#24577;&#25104;&#21592;</span>
-<span style="color: #8a8a8a;"> * &#25512;&#27979;&#65306;&#21487;&#33021;&#21152;&#19978;&#31867;&#22411;&#21517;&#20043;&#21518;&#65292;&#23601;&#33021;&#20174;&#22806;&#37096;&#21021;&#22987;&#21270;&#31169;&#26377;&#30340;&#38745;&#24577;&#25104;&#21592;&#20102; */</span>
-<span style="color: #00afaf;">Singleton</span>::<span style="color: #af8700;">Garbo</span> <span style="color: #00afaf;">Singleton</span>::<span style="color: #0087ff;">garbo</span>;      <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#19968;&#23450;&#35201;&#21021;&#22987;&#21270;&#65292;&#21542;&#21017;&#31243;&#24207;&#32467;&#26463;&#26102;&#19981;&#20250;&#35843;&#29992; ~Garbo() */</span>
-<span style="color: #af8700;">Singleton</span> *<span style="color: #00afaf;">Singleton</span>::<span style="color: #0087ff;">m_pInstance</span> = <span style="color: #5f8700;">new</span> <span style="color: #af8700;">Singleton</span>;  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#21487;&#33021;&#22240;&#20026;&#22495;&#20316;&#29992;&#31526;&#65292;new &#30456;&#24403;&#20110;&#22312;&#31867;&#20869;&#35843;&#29992;&#65292;&#25152;&#20197;&#33021;&#35843;&#29992;&#31169;&#26377;&#25104;&#21592; */</span>
+<span style="color: #8a8a8a;"> * &#25512;&#27979;&#65306;&#21487;&#33021;&#21152;&#19978;&#31867;&#22411;&#21517;&#20043;&#21518;&#65292;&#23601;&#33021;&#20174;&#22806;&#37096;&#21021;&#22987;&#21270;&#31169;&#26377;&#30340;&#38745;&#24577;&#25104;&#21592;&#20102;</span><span style="color: #8a8a8a;"> */</span>
+<span style="color: #00afaf;">Singleton</span>::<span style="color: #af8700;">Garbo</span> <span style="color: #00afaf;">Singleton</span>::<span style="color: #0087ff;">garbo</span>;      <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#19968;&#23450;&#35201;&#21021;&#22987;&#21270;&#65292;&#21542;&#21017;&#31243;&#24207;&#32467;&#26463;&#26102;&#19981;&#20250;&#35843;&#29992; ~Garbo()</span><span style="color: #8a8a8a;"> */</span>
+<span style="color: #af8700;">Singleton</span> *<span style="color: #00afaf;">Singleton</span>::<span style="color: #0087ff;">m_pInstance</span> = <span style="color: #5f8700;">new</span> <span style="color: #af8700;">Singleton</span>;  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#21487;&#33021;&#22240;&#20026;&#22495;&#20316;&#29992;&#31526;&#65292;new &#30456;&#24403;&#20110;&#22312;&#31867;&#20869;&#35843;&#29992;&#65292;&#25152;&#20197;&#33021;&#35843;&#29992;&#31169;&#26377;&#25104;&#21592;</span><span style="color: #8a8a8a;"> */</span>
 
 <span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
 {
@@ -107,8 +107,8 @@ $ ./Singleton
 </div>
 </div>
 
-<div id="outline-container-org6cccee3" class="outline-2">
-<h2 id="org6cccee3"><span class="section-number-2">2</span> 懒汉模式</h2>
+<div id="outline-container-orgc480483" class="outline-2">
+<h2 id="orgc480483"><span class="section-number-2">2</span> 懒汉模式</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 懒汉模式：即第一次调用该类实例的时候才产生一个新的该类实例，并在以后仅返回此实例。<br>
@@ -154,8 +154,8 @@ $ ./Singleton
         };
         <span style="color: #5f8700;">static</span> <span style="color: #af8700;">Garbo</span> <span style="color: #0087ff;">garbo</span>;
 };
-<span style="color: #00afaf;">Singleton</span>::<span style="color: #af8700;">Garbo</span> <span style="color: #00afaf;">Singleton</span>::<span style="color: #0087ff;">garbo</span>;          <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#38745;&#24577;&#31867;&#25104;&#21592;&#21021;&#22987;&#21270; */</span>
-<span style="color: #af8700;">Singleton</span> *<span style="color: #00afaf;">Singleton</span>::<span style="color: #0087ff;">m_pInstance</span> = <span style="color: #00afaf;">NULL</span>;   <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#38745;&#24577;&#31867;&#25104;&#21592;&#21021;&#22987;&#21270; */</span>
+<span style="color: #00afaf;">Singleton</span>::<span style="color: #af8700;">Garbo</span> <span style="color: #00afaf;">Singleton</span>::<span style="color: #0087ff;">garbo</span>;          <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#38745;&#24577;&#31867;&#25104;&#21592;&#21021;&#22987;&#21270;</span><span style="color: #8a8a8a;"> */</span>
+<span style="color: #af8700;">Singleton</span> *<span style="color: #00afaf;">Singleton</span>::<span style="color: #0087ff;">m_pInstance</span> = <span style="color: #00afaf;">NULL</span>;   <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#38745;&#24577;&#31867;&#25104;&#21592;&#21021;&#22987;&#21270;</span><span style="color: #8a8a8a;"> */</span>
 <span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
 {
     pthread_mutex_init(&amp;mutex, <span style="color: #00afaf;">NULL</span>);
@@ -190,8 +190,8 @@ $ ./Singleton
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

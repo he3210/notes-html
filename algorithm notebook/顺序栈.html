@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>顺序栈</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,20 +34,20 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org936a4d4">1. 存储结构</a></li>
-<li><a href="#org42ed2a7">2. 栈的操作</a></li>
-<li><a href="#org5980d99">3. 判断链表字符串是否中心对称</a>
+<li><a href="#org48e00cc">1. 存储结构</a></li>
+<li><a href="#orga676218">2. 栈的操作</a></li>
+<li><a href="#orgac27e3a">3. 判断链表字符串是否中心对称</a>
 <ul>
-<li><a href="#org7e0ce8e">3.1. 问题</a></li>
-<li><a href="#org10a1377">3.2. 代码</a></li>
+<li><a href="#org1529d8b">3.1. 问题</a></li>
+<li><a href="#orgd7c223b">3.2. 代码</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org936a4d4" class="outline-2">
-<h2 id="org936a4d4"><span class="section-number-2">1</span> 存储结构</h2>
+<div id="outline-container-org48e00cc" class="outline-2">
+<h2 id="org48e00cc"><span class="section-number-2">1</span> 存储结构</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
@@ -68,8 +68,8 @@
 </div>
 </div>
 
-<div id="outline-container-org42ed2a7" class="outline-2">
-<h2 id="org42ed2a7"><span class="section-number-2">2</span> 栈的操作</h2>
+<div id="outline-container-orga676218" class="outline-2">
+<h2 id="orga676218"><span class="section-number-2">2</span> 栈的操作</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">elem_type</span> <span style="color: #af8700;">int</span>
@@ -119,12 +119,12 @@
 </div>
 </div>
 
-<div id="outline-container-org5980d99" class="outline-2">
-<h2 id="org5980d99"><span class="section-number-2">3</span> 判断链表字符串是否中心对称</h2>
+<div id="outline-container-orgac27e3a" class="outline-2">
+<h2 id="orgac27e3a"><span class="section-number-2">3</span> 判断链表字符串是否中心对称</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org7e0ce8e" class="outline-3">
-<h3 id="org7e0ce8e"><span class="section-number-3">3.1</span> 问题</h3>
+<div id="outline-container-org1529d8b" class="outline-3">
+<h3 id="org1529d8b"><span class="section-number-3">3.1</span> 问题</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 设单链表无表头，第一个结点指针为 h，结点结构由 data 和 next 两个域构成。<br>
@@ -135,8 +135,8 @@
 </div>
 </div>
 
-<div id="outline-container-org10a1377" class="outline-3">
-<h3 id="org10a1377"><span class="section-number-3">3.2</span> 代码</h3>
+<div id="outline-container-orgd7c223b" class="outline-3">
+<h3 id="orgd7c223b"><span class="section-number-3">3.2</span> 代码</h3>
 <div class="outline-text-3" id="text-3-2">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">bool</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">h</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
@@ -177,8 +177,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

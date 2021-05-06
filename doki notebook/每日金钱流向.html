@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:27 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&lrm;</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga432c73">1. sql</a></li>
+<li><a href="#org84e89b6">2. 昨日观众收普通礼物、主播收普通礼物收入</a></li>
+<li><a href="#org0122638">3. 昨日送出的抽奖券、主播收到的抽奖券</a></li>
+<li><a href="#orga42457d">4. 剩余抽奖券：</a></li>
+<li><a href="#org7e71156">5. 昨日购买的钥匙</a></li>
+<li><a href="#orgc6cdc0e">6. 后台下发、红包、今日充值额外奖励gold数、今日剩余gold数。</a></li>
+<li><a href="#org4a5c117">7. jpy 兑换 credits</a></li>
+<li><a href="#org7549c9e">8. doki coins 兑换 credits</a></li>
+</ul>
+</div>
+</div>
+<p>
++TITLE: 每日金钱流向<br>
+</p>
+
+<div id="outline-container-orga432c73" class="outline-2">
+<h2 id="orga432c73"><span class="section-number-2">1</span> sql</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `daily_money_monitor` (
+`id` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> AUTO_INCREMENT,
+`<span style="color: #af8700;">date</span>` datetime <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26085;&#26399;'</span>,
+`normal_gift_send` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#22825;&#35266;&#20247;&#36865;&#20986;&#30340;&#26222;&#36890;&#31036;&#29289; gold&#65288;&#38500;&#25277;&#22870;&#21048;&#12289;&#23453;&#31665;&#38053;&#21273;&#65289;'</span>,
+`normal_gift_received` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#22825;&#20027;&#25773;&#25910;&#21040;&#30340;&#26222;&#36890;&#31036;&#29289; gold&#65288;&#38500;&#25277;&#22870;&#21048;&#12289;&#23453;&#31665;&#38053;&#21273;&#65289;'</span>,
+`lottery_ticket_send` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#36865;&#20986;&#30340;&#25277;&#22870;&#21048; gold&#65288;&#19968;&#20010; 20 gold&#65289;'</span>,
+`lottery_ticket_received` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#20027;&#25773;&#25910;&#21040;&#30340;&#25277;&#22870;&#21048; gold&#65288;&#19968;&#20010; 2 gold&#65289;'</span>,
+`lottery_ticket_left` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#24635;&#30340;&#21097;&#20313;&#30340;&#25277;&#22870;&#21048; gold&#65288;&#19968;&#20010; 18 gold&#65289;'</span>,
+`copper_key_buy` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#36141;&#20080;&#30340;&#38108;&#38053;&#21273; gold&#65288;&#19968;&#20010; 100 gold&#65289;'</span>,
+`silver_key_buy` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#36141;&#20080;&#30340;&#38134;&#38053;&#21273; gold&#65288;&#19968;&#20010; 300 gold&#65289;'</span>,
+`gold_key_buy` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#36141;&#20080;&#30340;&#37329;&#38053;&#21273; gold&#65288;&#19968;&#20010; 1000 gold&#65289;'</span>,
+`copper_key_open` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#25171;&#24320;&#30340;&#38108;&#23453;&#31665;&#24471;&#21040;&#30340;&#31036;&#29289; gold'</span>,
+`silver_key_open` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#25171;&#24320;&#30340;&#38134;&#23453;&#31665;&#24471;&#21040;&#30340;&#31036;&#29289; gold'</span>,
+`gold_key_open` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#25171;&#24320;&#30340;&#37329;&#23453;&#31665;&#24471;&#21040;&#30340;&#31036;&#29289; gold'</span>,
+`copper_key_left` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#24635;&#30340;&#21097;&#20313;&#30340;&#38108;&#38053;&#21273; gold&#65288;&#38108;&#38053;&#21273;100gold&#65292;&#38134;&#38053;&#21273;300gold&#65292;&#37329;&#38053;&#21273;1000gold&#65289;'</span>,
+`silver_key_left` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#24635;&#30340;&#21097;&#20313;&#30340;&#38108;&#38053;&#21273; gold&#65288;&#38108;&#38053;&#21273;100gold&#65292;&#38134;&#38053;&#21273;300gold&#65292;&#37329;&#38053;&#21273;1000gold&#65289;'</span>,
+`gold_key_left` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#24635;&#30340;&#21097;&#20313;&#30340;&#38108;&#38053;&#21273; gold&#65288;&#38108;&#38053;&#21273;100gold&#65292;&#38134;&#38053;&#21273;300gold&#65292;&#37329;&#38053;&#21273;1000gold&#65289;'</span>,
+`barrage_send` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#36141;&#20080;&#24377;&#24149;&#33457;&#36153;&#30340;&#24635; gold'</span>,
+`bag_gift_send` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#35266;&#20247;&#36865;&#20986;&#30340;&#32972;&#21253;&#31036;&#29289; gold'</span>,
+`bag_gift_received` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#20027;&#25773;&#25910;&#21040;&#30340;&#32972;&#21253;&#31036;&#29289; gold&#65288;&#20165;&#32972;&#21253;&#20013;&#30340;&#21487;&#36865;&#20986;&#30340;&#31036;&#29289;&#65289;'</span>,
+`bag_gift_left` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#24635;&#30340;&#21097;&#20313;&#30340;&#32972;&#21253;&#31036;&#29289; gold&#65288;&#20165;&#32972;&#21253;&#20013;&#30340;&#21487;&#36865;&#20986;&#30340;&#31036;&#29289;&#65289;'</span>,
+
+`anchor_exchange_received` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#20027;&#25773;&#27700;&#26230;&#20817;&#25442; gold&#65292;&#20027;&#25773; gold &#25910;&#20837;'</span>,
+`anchor_exchange_income` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26152;&#26085;&#20027;&#25773;&#27700;&#26230;&#20817;&#25442; gold&#65292;&#24179;&#21488; gold &#25910;&#20837;'</span>,
+`ctime` datetime <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+`mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> <span style="color: #5f8700;">ON</span> <span style="color: #5f8700;">UPDATE</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span>,
+<span style="color: #5f8700;">PRIMARY</span> <span style="color: #5f8700;">KEY</span> (`id`),
+<span style="color: #5f8700;">KEY</span> `idx_date` (`<span style="color: #af8700;">date</span>`)
+) ENGINE = InnoDB <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8mb4 COMMENT <span style="color: #00afaf;">'&#27599;&#26085;gold&#27969;&#30417;&#25511;'</span>;
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">alter</span> <span style="color: #5f8700;">table</span> `user_extra_property_history` <span style="color: #5f8700;">add</span> index `idx_ctime` (`ctime`);
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org84e89b6" class="outline-2">
+<h2 id="org84e89b6"><span class="section-number-2">2</span> 昨日观众收普通礼物、主播收普通礼物收入</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">select</span> <span style="color: #5f8700;">SUM</span>(credits) credits, <span style="color: #5f8700;">SUM</span>(received_credits) received_credits <span style="color: #5f8700;">from</span> user_credits_history <span style="color: #5f8700;">where</span> ctime &gt;= "2020-10-15 15:00:00" <span style="color: #5f8700;">and</span> ctime &lt; "2020-10-16 15:00:00" <span style="color: #5f8700;">and</span> gift_id <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">in</span> ();
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org0122638" class="outline-2">
+<h2 id="org0122638"><span class="section-number-2">3</span> 昨日送出的抽奖券、主播收到的抽奖券</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">select</span> <span style="color: #5f8700;">SUM</span>(credits) credits, <span style="color: #5f8700;">SUM</span>(received_credits) received_credits <span style="color: #5f8700;">from</span> user_credits_history <span style="color: #5f8700;">where</span> ctime &gt;= "2020-10-15 15:00:00" <span style="color: #5f8700;">and</span> ctime &lt; "2020-10-16 15:00:00" <span style="color: #5f8700;">and</span> gift_id = 389;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga42457d" class="outline-2">
+<h2 id="orga42457d"><span class="section-number-2">4</span> 剩余抽奖券：</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">select</span> id, uid, left_times, total_times, lottery_type <span style="color: #5f8700;">from</span> user_lottery_times <span style="color: #5f8700;">where</span> lottery_name = "flipped_wheel";
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7e71156" class="outline-2">
+<h2 id="org7e71156"><span class="section-number-2">5</span> 昨日购买的钥匙</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+type 0-购买钥匙  1-消耗钥匙，开启宝箱<br>
+ctime 为 jp 时间<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">select</span> <span style="color: #5f8700;">type</span>, change_info, extra_info <span style="color: #5f8700;">from</span> user_extra_property_history <span style="color: #5f8700;">where</span> ctime &gt;= "2020-10-18 00:00:00" <span style="color: #5f8700;">and</span> ctime &lt; "2020-10-19 00:00:00";
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgc6cdc0e" class="outline-2">
+<h2 id="orgc6cdc0e"><span class="section-number-2">6</span> 后台下发、红包、今日充值额外奖励gold数、今日剩余gold数。</h2>
+</div>
+
+<div id="outline-container-org4a5c117" class="outline-2">
+<h2 id="org4a5c117"><span class="section-number-2">7</span> jpy 兑换 credits</h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">select</span> <span style="color: #5f8700;">SUM</span>(paid_jpy) paid_jpy, <span style="color: #5f8700;">SUM</span>(paid_crystal) paid_crystal, <span style="color: #5f8700;">SUM</span>(received_number) received_credits <span style="color: #5f8700;">from</span> user_withdraw_orders <span style="color: #5f8700;">where</span> target = 1 <span style="color: #5f8700;">and</span> <span style="color: #5f8700;">state</span> = 1 <span style="color: #5f8700;">and</span> ctime &gt;= "2020-11-03 15:00:00" <span style="color: #5f8700;">and</span> ctime &lt; "2020-11-04 15:00:00";
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7549c9e" class="outline-2">
+<h2 id="org7549c9e"><span class="section-number-2">8</span> doki coins 兑换 credits</h2>
+<div class="outline-text-2" id="text-8">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">select</span> * <span style="color: #5f8700;">from</span> user_deposit_orders <span style="color: #5f8700;">where</span> uid = "u3684831580894394120001295" <span style="color: #5f8700;">and</span> <span style="color: #5f8700;">source</span> = 9 <span style="color: #5f8700;">order</span> <span style="color: #5f8700;">by</span> id <span style="color: #5f8700;">desc</span>;
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:26 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&lrm;</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org24e07a9">1. 需求</a>
+<ul>
+<li><a href="#org8d1851b">1.1. 工会赛</a>
+<ul>
+<li><a href="#org9743b4b">1.1.1. 选拔赛</a></li>
+<li><a href="#org46efb1b">1.1.2. 决赛</a></li>
+<li><a href="#org201a9de">1.1.3. 其它问题</a></li>
+</ul>
+</li>
+<li><a href="#org2ff8a92">1.2. 分区主播赛</a>
+<ul>
+<li><a href="#org76b1ace">1.2.1. 选拔赛（11.23～11.27）</a></li>
+<li><a href="#org08a6fa8">1.2.2. 决赛1（11.28）（共40 名）</a></li>
+<li><a href="#org831e9e6">1.2.3. 决赛2（11.29）</a></li>
+<li><a href="#orgb21919d">1.2.4. 决赛3（11.30）</a></li>
+<li><a href="#org5f4a7cb">1.2.5. 其它问题</a></li>
+</ul>
+</li>
+<li><a href="#org8c1341e">1.3. 巅峰赛</a></li>
+<li><a href="#org0ab95ed">1.4. 集福卡</a></li>
+<li><a href="#orga3cbc47">1.5. 对对碰藏宝图</a>
+<ul>
+<li><a href="#org85d9e6b">1.5.1. 用户端使用放大镜</a></li>
+<li><a href="#orgb312ae2">1.5.2. 主播端翻牌子</a></li>
+<li><a href="#orgd4e8a14">1.5.3. 兑换藏宝图</a></li>
+<li><a href="#orgc3842be">1.5.4. 其它问题</a></li>
+</ul>
+</li>
+<li><a href="#org71ae4d3">1.6. 其它问题</a></li>
+</ul>
+</li>
+<li><a href="#org344fede">2. 开发内容</a>
+<ul>
+<li><a href="#org77dd83f">2.1. 工会赛</a>
+<ul>
+<li><a href="#org30d280d">2.1.1. 选拔赛</a></li>
+<li><a href="#org5ed3ce2">2.1.2. 决赛</a></li>
+<li><a href="#org01145bb">2.1.3. 其它开发内容</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgf8ea5c0">3. 配置</a>
+<ul>
+<li><a href="#orge24a5b9">3.1. 晋级赛配置 api_params</a></li>
+<li><a href="#org080ed38">3.2. 配置 web_event</a></li>
+<li><a href="#org034c479">3.3. 系统配置</a></li>
+<li><a href="#org2042ea9">3.4. 小时榜支持多榜单时，积分榜也要支持多榜单</a></li>
+<li><a href="#org76846f7">3.5. 吸金工会</a></li>
+<li><a href="#org4091a9b">3.6. 吸金主播活动配置</a></li>
+<li><a href="#org4a9c68e">3.7. 新增藏宝图类型活动</a></li>
+<li><a href="#org36b6902">3.8. 工会晋级赛</a></li>
+<li><a href="#org1a2dd40">3.9. 分区主播晋级赛</a></li>
+</ul>
+</li>
+<li><a href="#orgce0019b">4. 开发内容</a>
+<ul>
+<li><a href="#orgbb45254">4.1. http 接口 5d</a>
+<ul>
+<li><a href="#org12ef69a">4.1.1. <span class="done DONE">DONE</span> 晋级赛接口调整</a></li>
+<li><a href="#org630ee50">4.1.2. <span class="done DONE">DONE</span> common_rank 主播榜支持传递榜单名</a></li>
+<li><a href="#org1366f61">4.1.3. <span class="done DONE">DONE</span> 吸金主播骑士榜支持上个小时骑士榜</a></li>
+<li><a href="#org26f58e1">4.1.4. <span class="done DONE">DONE</span> 直播间弹窗 tab 页接口</a></li>
+<li><a href="#orgf13db5a">4.1.5. 工会小时榜、总榜接口</a></li>
+<li><a href="#org22778c0">4.1.6. 工会积分榜接口</a></li>
+<li><a href="#org0f86cba">4.1.7. 工会骑士榜接口</a></li>
+<li><a href="#org61cf036">4.1.8. 工会赛直播间弹窗</a></li>
+<li><a href="#org385d10d">4.1.9. 吸金主播晋级名单</a></li>
+</ul>
+</li>
+<li><a href="#orgf084db6">4.2. <span class="done DONE">DONE</span> websocket 接口 1.5d</a>
+<ul>
+<li><a href="#org9757664">4.2.1. webview icon</a></li>
+</ul>
+</li>
+<li><a href="#org000183e">4.3. 定时任务</a>
+<ul>
+<li><a href="#orgd5ee51c">4.3.1. 定时更新积分榜</a></li>
+<li><a href="#orga10596e">4.3.2. <span class="done DONE">DONE</span> 工会晋级赛</a></li>
+<li><a href="#orgfd41627">4.3.3. <span class="done DONE">DONE</span> 积分榜晋级收礼榜</a></li>
+<li><a href="#org8c8a8ee">4.3.4. <span class="done DONE">DONE</span> 小时榜支持多榜单</a></li>
+</ul>
+</li>
+<li><a href="#org5850c25">4.4. 接 kafka 队列 2.5d</a>
+<ul>
+<li><a href="#org7b46a70">4.4.1. <span class="done DONE">DONE</span> 直播时长队列。把上小时直播满 40min 的主播放入一个集合。统计工会成员开播时长</a></li>
+<li><a href="#org588292c">4.4.2. <span class="done DONE">DONE</span> 开播队列。注册模块</a></li>
+<li><a href="#orgbc26668">4.4.3. <span class="done DONE">DONE</span> 加分模块。</a></li>
+</ul>
+</li>
+<li><a href="#org0db3d30">4.5. <span class="todo TODO">TODO</span> 其它</a></li>
+<li><a href="#org30c6ef0">4.6. <span class="done DONE">DONE</span> 藏宝图活动</a></li>
+</ul>
+</li>
+<li><a href="#orga659594">5. 上线模块</a></li>
+<li><a href="#org5c6a7e1">6. 后续开发内容</a>
+<ul>
+<li><a href="#org5278a18">6.1. 小时榜改造。新增字段 hour_type</a></li>
+<li><a href="#org2177687">6.2. <span class="done DONE">DONE</span> tabs 接口支持巅峰赛</a></li>
+<li><a href="#orgcdcbc3a">6.3. 小时榜结算</a></li>
+<li><a href="#org4e84e7f">6.4. <span class="done DONE">DONE</span> icon 同步支持巅峰赛</a></li>
+<li><a href="#org47cd374">6.5. <span class="done DONE">DONE</span> 晋级赛</a></li>
+<li><a href="#org911511d">6.6. 设置名人堂数据</a></li>
+<li><a href="#org8ec61e0">6.7. 配置</a>
+<ul>
+<li><a href="#orgfb395e0">6.7.1. 巅峰赛 6 个活动配置</a></li>
+<li><a href="#org9dc87b1">6.7.2. 3 项晋级赛配置 anniversary2020</a></li>
+<li><a href="#org82127d9">6.7.3. 系统设置。不用配置了。</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
++TITLE: 2020 年度活动<br>
+</p>
+
+<div id="outline-container-org24e07a9" class="outline-2">
+<h2 id="org24e07a9"><span class="section-number-2">1</span> 需求</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org8d1851b" class="outline-3">
+<h3 id="org8d1851b"><span class="section-number-3">1.1</span> 工会赛</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org9743b4b" class="outline-4">
+<h4 id="org9743b4b"><span class="section-number-4">1.1.1</span> 选拔赛</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<ul class="org-ul">
+<li>积分榜是当前阶段总榜吗？类似年度积分<br></li>
+<li>人多力量大 buff，加成本小时。http 接口中，buff 标志如何表示？buff 强化标志如何表示？人数<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org46efb1b" class="outline-4">
+<h4 id="org46efb1b"><span class="section-number-4">1.1.2</span> 决赛</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<ul class="org-ul">
+<li>工会晋级赛。总榜 100% 继承分数。新工会、资深工会总榜前 n 名晋级到决赛？<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org201a9de" class="outline-4">
+<h4 id="org201a9de"><span class="section-number-4">1.1.3</span> 其它问题</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<ul class="org-ul">
+<li>主播活动期间退出工会、或退出工会后又再加入另外的工会问题<br></li>
+<li>工会直播人数确定要加吗？上个小时加，本小时不加<br></li>
+<li>加成有啥用呢？<br></li>
+<li>抢分赛是什么？<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2ff8a92" class="outline-3">
+<h3 id="org2ff8a92"><span class="section-number-3">1.2</span> 分区主播赛</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org76b1ace" class="outline-4">
+<h4 id="org76b1ace"><span class="section-number-4">1.2.1</span> 选拔赛（11.23～11.27）</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<ul class="org-ul">
+<li>小时榜分为男女榜<br></li>
+<li>榜单分为：男榜、新人男榜、女榜、新人女榜。男榜为男生总榜吗？不是<br></li>
+<li>榜单中：前 40 名可以晋级、今日淘汰 3 人类似信息暂不支持<br></li>
+<li>选拔赛是小时榜吗？不是<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org08a6fa8" class="outline-4">
+<h4 id="org08a6fa8"><span class="section-number-4">1.2.2</span> 决赛1（11.28）（共40 名）</h4>
+</div>
+<div id="outline-container-org831e9e6" class="outline-4">
+<h4 id="org831e9e6"><span class="section-number-4">1.2.3</span> 决赛2（11.29）</h4>
+</div>
+<div id="outline-container-orgb21919d" class="outline-4">
+<h4 id="orgb21919d"><span class="section-number-4">1.2.4</span> 决赛3（11.30）</h4>
+</div>
+<div id="outline-container-org5f4a7cb" class="outline-4">
+<h4 id="org5f4a7cb"><span class="section-number-4">1.2.5</span> 其它问题</h4>
+<div class="outline-text-4" id="text-1-2-5">
+<ul class="org-ul">
+<li>选拔赛无小时榜，决赛有小时榜，且小时榜第一名在下个小时有 buff<br></li>
+<li>每天有开赛时间段吗？无<br></li>
+<li>决赛日榜小时榜结合，需要校验是否可行<br></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org8c1341e" class="outline-3">
+<h3 id="org8c1341e"><span class="section-number-3">1.3</span> 巅峰赛</h3>
+</div>
+
+<div id="outline-container-org0ab95ed" class="outline-3">
+<h3 id="org0ab95ed"><span class="section-number-3">1.4</span> 集福卡</h3>
+<div class="outline-text-3" id="text-1-4">
+<ul class="org-ul">
+<li>充值兑换卡片，集齐一套福卡可以兑换宝箱，宝箱开出放大镜等物品<br></li>
+<li>在哪些阶段会存在集福卡 tab 页？所有阶段<br></li>
+<li>集福卡 tab 会在主播端展示吗？不会<br></li>
+<li>开宝箱规则是什么？仅有福卡<br></li>
+<li>兑换卡片按钮干嘛的？充值得到次数，该按钮消耗次数随机得福卡<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga3cbc47" class="outline-3">
+<h3 id="orga3cbc47"><span class="section-number-3">1.5</span> 对对碰藏宝图</h3>
+<div class="outline-text-3" id="text-1-5">
+</div>
+<div id="outline-container-org85d9e6b" class="outline-4">
+<h4 id="org85d9e6b"><span class="section-number-4">1.5.1</span> 用户端使用放大镜</h4>
+<div class="outline-text-4" id="text-1-5-1">
+<ul class="org-ul">
+<li>鉴定后直播间发消息<br></li>
+<li>透视卡牌后，被透视的卡牌也是保持 3 min 吗？该透视卡牌是相对所有观众吗？多个观众一起透视呢？待和前端对<br></li>
+<li>主播端消掉2 个相同得牌子之后，使用放大镜的用户端问题？需要和前端对<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgb312ae2" class="outline-4">
+<h4 id="orgb312ae2"><span class="section-number-4">1.5.2</span> 主播端翻牌子</h4>
+<div class="outline-text-4" id="text-1-5-2">
+<ul class="org-ul">
+<li>搜集直播间礼物获得翻牌机会规则？每满400得1次翻牌机会<br></li>
+<li>翻开后，如果没有消掉 2 张相同的卡牌，则该卡牌保持翻开状态10s（前端做）；否则，一直保持翻开状态<br></li>
+<li>翻开金银铜卡牌需要的翻牌次数不同<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgd4e8a14" class="outline-4">
+<h4 id="orgd4e8a14"><span class="section-number-4">1.5.3</span> 兑换藏宝图</h4>
+<div class="outline-text-4" id="text-1-5-3">
+<ul class="org-ul">
+<li>藏宝图碎片数量如何展示？展示在图片下<br></li>
+<li>兑换藏宝图后，会得到什么？会触发什么动作？背包物品、gold、官方账号给主播送礼。触发直播间评论<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc3842be" class="outline-4">
+<h4 id="orgc3842be"><span class="section-number-4">1.5.4</span> 其它问题</h4>
+<div class="outline-text-4" id="text-1-5-4">
+<ul class="org-ul">
+<li>3 种藏宝图碎片，2 种放大镜。放大镜、超级放大镜为什么不整合成一种放大镜呢？改为 3 种<br></li>
+<li>藏宝图页面有 3 个 tab<br>
+<ul class="org-ul">
+<li>用户端展示：搜集放大镜、勘破藏宝图<br></li>
+<li>主播端展示：翻转次数界面、勘破藏宝图（和用户端有区别）、兑换藏宝图<br></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org71ae4d3" class="outline-3">
+<h3 id="org71ae4d3"><span class="section-number-3">1.6</span> 其它问题</h3>
+<div class="outline-text-3" id="text-1-6">
+<ul class="org-ul">
+<li>webview icon 每日排名改为本阶段排名？以及直播间弹窗本日排名、本日分数改为本阶段排名、本阶段分数？不改<br></li>
+<li>工会战直播间弹窗数据内容？<br></li>
+<li>主播同时参加工会赛、分区主播赛等，webview icon 如何展示？浮动icon 会配置吗？<br></li>
+<li>各种直播间消息、弹幕都有哪些？<br></li>
+<li>新人活动影响该活动吗？<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org344fede" class="outline-2">
+<h2 id="org344fede"><span class="section-number-2">2</span> 开发内容</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org77dd83f" class="outline-3">
+<h3 id="org77dd83f"><span class="section-number-3">2.1</span> 工会赛</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org30d280d" class="outline-4">
+<h4 id="org30d280d"><span class="section-number-4">2.1.1</span> 选拔赛</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<ul class="org-ul">
+<li><b><b>接收开播队列</b></b> 开播，判断是否是新工会，即把该主播放入该工会的骑士榜；把该工会放入主榜<br></li>
+<li><b><b>人多力量大 buff 接收开播时长队列</b></b> 统计上个小时开播时长 &gt; 40min 的人数<br></li>
+<li><b><b>http接口</b></b><br>
+<ul class="org-ul">
+<li>小时榜、总榜<br>
+<ul class="org-ul">
+<li>重要字段：工会直播人数<br></li>
+<li>传入参数：event_name、board、本小时上小时如何表示？<br></li>
+</ul></li>
+<li>骑士榜<br></li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5ed3ce2" class="outline-4">
+<h4 id="org5ed3ce2"><span class="section-number-4">2.1.2</span> 决赛</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<ul class="org-ul">
+<li>人多力量大 buff。<br></li>
+<li><b><b>buff 强化</b></b> 。上小时top3，本小时加成 30min，强化小时榜<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org01145bb" class="outline-4">
+<h4 id="org01145bb"><span class="section-number-4">2.1.3</span> 其它开发内容</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<ul class="org-ul">
+<li><b><b>工会晋级赛</b></b><br></li>
+<li><b><b>webview icon 部分</b></b><br></li>
+<li><b><b>直播间弹窗 http 接口？</b></b><br></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf8ea5c0" class="outline-2">
+<h2 id="orgf8ea5c0"><span class="section-number-2">3</span> 配置</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orge24a5b9" class="outline-3">
+<h3 id="orge24a5b9"><span class="section-number-3">3.1</span> 晋级赛配置 api_params</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+本次新增 promote_type 字段<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-js">[
+  {
+    <span style="color: #00afaf;">"origin_event"</span>: <span style="color: #00afaf;">"2020_guild_1_senior"</span>,
+    <span style="color: #00afaf;">"promote_type"</span>: <span style="color: #00afaf;">"unionPK"</span>,
+    <span style="color: #00afaf;">"static_others"</span>: {
+      <span style="color: #00afaf;">"event_name"</span>: <span style="color: #00afaf;">"unionPk2"</span>,
+      <span style="color: #00afaf;">"start_time"</span>: 0,
+      <span style="color: #00afaf;">"end_time"</span>: 0,
+      <span style="color: #00afaf;">"status"</span>: 0
+    },
+    <span style="color: #00afaf;">"dynamic_others"</span>: {
+      <span style="color: #00afaf;">"start_time"</span>: <span style="color: #00afaf;">"event_start"</span>,
+      <span style="color: #00afaf;">"end_time"</span>: <span style="color: #00afaf;">"event_end"</span>,
+      <span style="color: #00afaf;">"status"</span>: <span style="color: #00afaf;">"event_status"</span>
+    }
+  },
+  {
+    <span style="color: #00afaf;">"origin_event"</span>: <span style="color: #00afaf;">"2020_section_1_new"</span>,
+    <span style="color: #00afaf;">"promote_type"</span>: <span style="color: #00afaf;">"sectionPk"</span>,
+    <span style="color: #00afaf;">"static_others"</span>: {
+      <span style="color: #00afaf;">"event_name"</span>: <span style="color: #00afaf;">"sectionPk1"</span>,
+      <span style="color: #00afaf;">"start_time"</span>: 0,
+      <span style="color: #00afaf;">"end_time"</span>: 0,
+      <span style="color: #00afaf;">"status"</span>: 0
+    },
+    <span style="color: #00afaf;">"dynamic_others"</span>: {
+      <span style="color: #00afaf;">"start_time"</span>: <span style="color: #00afaf;">"event_start"</span>,
+      <span style="color: #00afaf;">"end_time"</span>: <span style="color: #00afaf;">"event_end"</span>,
+      <span style="color: #00afaf;">"status"</span>: <span style="color: #00afaf;">"event_status"</span>
+    }
+  },
+  {
+    <span style="color: #00afaf;">"origin_event"</span>: <span style="color: #00afaf;">"2020_section_2_new"</span>,
+    <span style="color: #00afaf;">"promote_type"</span>: <span style="color: #00afaf;">"sectionPk"</span>,
+    <span style="color: #00afaf;">"static_others"</span>: {
+      <span style="color: #00afaf;">"event_name"</span>: <span style="color: #00afaf;">"sectionPk2"</span>,
+      <span style="color: #00afaf;">"start_time"</span>: 0,
+      <span style="color: #00afaf;">"end_time"</span>: 0,
+      <span style="color: #00afaf;">"status"</span>: 0
+    },
+    <span style="color: #00afaf;">"dynamic_others"</span>: {
+      <span style="color: #00afaf;">"start_time"</span>: <span style="color: #00afaf;">"event_start"</span>,
+      <span style="color: #00afaf;">"end_time"</span>: <span style="color: #00afaf;">"event_end"</span>,
+      <span style="color: #00afaf;">"status"</span>: <span style="color: #00afaf;">"event_status"</span>
+    }
+  },
+  {
+    <span style="color: #00afaf;">"origin_event"</span>: <span style="color: #00afaf;">"2020_section_3_new"</span>,
+    <span style="color: #00afaf;">"promote_type"</span>: <span style="color: #00afaf;">"sectionPk"</span>,
+    <span style="color: #00afaf;">"static_others"</span>: {
+      <span style="color: #00afaf;">"event_name"</span>: <span style="color: #00afaf;">"sectionPk3"</span>,
+      <span style="color: #00afaf;">"start_time"</span>: 0,
+      <span style="color: #00afaf;">"end_time"</span>: 0,
+      <span style="color: #00afaf;">"status"</span>: 0
+    },
+    <span style="color: #00afaf;">"dynamic_others"</span>: {
+      <span style="color: #00afaf;">"start_time"</span>: <span style="color: #00afaf;">"event_start"</span>,
+      <span style="color: #00afaf;">"end_time"</span>: <span style="color: #00afaf;">"event_end"</span>,
+      <span style="color: #00afaf;">"status"</span>: <span style="color: #00afaf;">"event_status"</span>
+    }
+  },
+  {
+    <span style="color: #00afaf;">"origin_event"</span>: <span style="color: #00afaf;">"2020_section_4_new"</span>,
+    <span style="color: #00afaf;">"promote_type"</span>: <span style="color: #00afaf;">"sectionPk"</span>,
+    <span style="color: #00afaf;">"static_others"</span>: {
+      <span style="color: #00afaf;">"event_name"</span>: <span style="color: #00afaf;">"sectionPk3"</span>,
+      <span style="color: #00afaf;">"start_time"</span>: 0,
+      <span style="color: #00afaf;">"end_time"</span>: 0,
+      <span style="color: #00afaf;">"status"</span>: 0
+    },
+    <span style="color: #00afaf;">"dynamic_others"</span>: {
+      <span style="color: #00afaf;">"start_time"</span>: <span style="color: #00afaf;">"event_start"</span>,
+      <span style="color: #00afaf;">"end_time"</span>: <span style="color: #00afaf;">"event_end"</span>,
+      <span style="color: #00afaf;">"status"</span>: <span style="color: #00afaf;">"event_status"</span>
+    }
+  }
+]
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org080ed38" class="outline-3">
+<h3 id="org080ed38"><span class="section-number-3">3.2</span> 配置 web_event</h3>
+</div>
+<div id="outline-container-org034c479" class="outline-3">
+<h3 id="org034c479"><span class="section-number-3">3.3</span> 系统配置</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+rank_name_to_event_name_  新增 common_rank 榜单名称到 event_name 等信息的映射<br>
+需要添加 4 个配置：<br>
+</p>
+<ul class="org-ul">
+<li>2020_section_2_new_0<br></li>
+<li>2020_section_2_new_1<br></li>
+<li>2020_section_2_senior_0<br></li>
+<li>2020_section_2_senior_1<br></li>
+<li>2020_section_3_new_0<br></li>
+<li>2020_section_3_new_1<br></li>
+<li>2020_section_3_senior_0<br></li>
+<li>2020_section_3_senior_1<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2042ea9" class="outline-3">
+<h3 id="org2042ea9"><span class="section-number-3">3.4</span> 小时榜支持多榜单时，积分榜也要支持多榜单</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+summary_board_name 支持 list 类型<br>
+需要配置 4 个活动：2020_section_2_new、2020_section_2_senior、2020_section_3_new、2020_section_3_senior<br>
+在 2020_section_2_new 活动设置中，男榜积分榜为 2020_section_2_new_0，女榜积分榜为 2020_section_2_new_1<br>
+配置为 "summary_board_name": ["2020_section_2_new_0", "2020_section_2_new_1"]<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org76846f7" class="outline-3">
+<h3 id="org76846f7"><span class="section-number-3">3.5</span> 吸金工会</h3>
+<div class="outline-text-3" id="text-3-5">
+<div class="org-src-container">
+<pre class="src src-js">{
+    <span style="color: #00afaf;">"hourly"</span>: 1,
+    <span style="color: #00afaf;">"auto_register"</span>: 1,
+    <span style="color: #00afaf;">"need_knights_board"</span>: 0,
+    <span style="color: #00afaf;">"need_guild_knights_board"</span>: 1,
+    <span style="color: #00afaf;">"gifts_setting"</span>: {},
+    <span style="color: #00afaf;">"board_setting"</span>: {
+        <span style="color: #00afaf;">"valid_list"</span>: [0, 1],
+        <span style="color: #00afaf;">"guild_ctime_divides"</span>: [<span style="color: #00afaf;">"2020-01-01 00:00:00"</span>]
+    },
+    <span style="color: #00afaf;">"treasure_map_event_name"</span>: <span style="color: #00afaf;">"anniversary2020"</span>,
+    <span style="color: #00afaf;">"summary_board_name"</span>: <span style="color: #00afaf;">""</span>
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4091a9b" class="outline-3">
+<h3 id="org4091a9b"><span class="section-number-3">3.6</span> 吸金主播活动配置</h3>
+<div class="outline-text-3" id="text-3-6">
+<div class="org-src-container">
+<pre class="src src-js">{
+    <span style="color: #00afaf;">"notice"</span>: [<span style="color: #00afaf;">"&#21069; 40 &#21517;&#26187;&#32423;"</span>, <span style="color: #00afaf;">"&#21069; 30 &#21517;&#26187;&#32423;"</span>],
+    <span style="color: #00afaf;">"treasure_map_event_name"</span>: <span style="color: #00afaf;">"anniversary2020"</span>
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org4a9c68e" class="outline-3">
+<h3 id="org4a9c68e"><span class="section-number-3">3.7</span> 新增藏宝图类型活动</h3>
+<div class="outline-text-3" id="text-3-7">
+<div class="org-src-container">
+<pre class="src src-js">{
+    <span style="color: #00afaf;">"gifts_setting"</span>: {}
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org36b6902" class="outline-3">
+<h3 id="org36b6902"><span class="section-number-3">3.8</span> 工会晋级赛</h3>
+<div class="outline-text-3" id="text-3-8">
+<div class="org-src-container">
+<pre class="src src-js">[
+  {
+      <span style="color: #00afaf;">"promote_type"</span>: <span style="color: #00afaf;">"guild_base_hourly"</span>,
+      <span style="color: #00afaf;">"from_event"</span>: <span style="color: #00afaf;">"2020_guild_1_new"</span>,
+      <span style="color: #00afaf;">"from_board"</span>: 0,
+      <span style="color: #00afaf;">"to_event"</span>: <span style="color: #00afaf;">"2020_guild_2_new"</span>,
+      <span style="color: #00afaf;">"to_board"</span>: 0,
+      <span style="color: #00afaf;">"count"</span>: 20
+  },
+  {
+      <span style="color: #00afaf;">"promote_type"</span>: <span style="color: #00afaf;">"guild_base_hourly"</span>,
+      <span style="color: #00afaf;">"from_event"</span>: <span style="color: #00afaf;">"2020_guild_1_senior"</span>,
+      <span style="color: #00afaf;">"from_board"</span>: 0,
+      <span style="color: #00afaf;">"to_event"</span>: <span style="color: #00afaf;">"2020_guild_2_senior"</span>,
+      <span style="color: #00afaf;">"count"</span>: 20
+  }
+]
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a2dd40" class="outline-3">
+<h3 id="org1a2dd40"><span class="section-number-3">3.9</span> 分区主播晋级赛</h3>
+<div class="outline-text-3" id="text-3-9">
+<div class="org-src-container">
+<pre class="src src-js">[
+    {
+        <span style="color: #00afaf;">"from_event"</span>: <span style="color: #00afaf;">"2020_section_1_new"</span>,
+        <span style="color: #00afaf;">"from_board_list"</span>: [0, 1],
+        <span style="color: #00afaf;">"to_event"</span>: <span style="color: #00afaf;">"2020_section_2_new"</span>,
+        <span style="color: #00afaf;">"to_board_list"</span>: [0, 1],
+        <span style="color: #00afaf;">"count"</span>: [8, 10],
+        <span style="color: #00afaf;">"inherit_buff"</span>: [1, 1]
+    },
+    {
+        <span style="color: #00afaf;">"from_event"</span>: <span style="color: #00afaf;">"2020_section_1_senior"</span>,
+        <span style="color: #00afaf;">"from_board_list"</span>: [0, 1],
+        <span style="color: #00afaf;">"to_event"</span>: <span style="color: #00afaf;">"2020_section_2_senior"</span>,
+        <span style="color: #00afaf;">"to_board_list"</span>: [0, 1],
+        <span style="color: #00afaf;">"count"</span>: [15, 20],
+        <span style="color: #00afaf;">"inherit_buff"</span>: [1, 1]
+    },
+    {
+        <span style="color: #00afaf;">"from_event"</span>: <span style="color: #00afaf;">"2020_section_2_new"</span>,
+        <span style="color: #00afaf;">"from_board"</span>: 
+    }
+]
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgce0019b" class="outline-2">
+<h2 id="orgce0019b"><span class="section-number-2">4</span> 开发内容</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgbb45254" class="outline-3">
+<h3 id="orgbb45254"><span class="section-number-3">4.1</span> http 接口 5d</h3>
+<div class="outline-text-3" id="text-4-1">
+</div>
+<div id="outline-container-org12ef69a" class="outline-4">
+<h4 id="org12ef69a"><span class="section-number-4">4.1.1</span> <span class="done DONE">DONE</span> 晋级赛接口调整</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+api_params 表中 params 字段支持 promote_type 自定义类型参数<br>
+晋级赛接口返回除了 undefined、master、resurrection，还会返回自定义类型所对应的活动列表<br>
+</p>
+</div>
+</div>
+<div id="outline-container-org630ee50" class="outline-4">
+<h4 id="org630ee50"><span class="section-number-4">4.1.2</span> <span class="done DONE">DONE</span> common_rank 主播榜支持传递榜单名</h4>
+</div>
+<div id="outline-container-org1366f61" class="outline-4">
+<h4 id="org1366f61"><span class="section-number-4">4.1.3</span> <span class="done DONE">DONE</span> 吸金主播骑士榜支持上个小时骑士榜</h4>
+</div>
+<div id="outline-container-org26f58e1" class="outline-4">
+<h4 id="org26f58e1"><span class="section-number-4">4.1.4</span> <span class="done DONE">DONE</span> 直播间弹窗 tab 页接口</h4>
+</div>
+<div id="outline-container-orgf13db5a" class="outline-4">
+<h4 id="orgf13db5a"><span class="section-number-4">4.1.5</span> 工会小时榜、总榜接口</h4>
+<div class="outline-text-4" id="text-4-1-5">
+<ul class="org-ul">
+<li>返回字段：上小时满 5<br></li>
+<li>传入参数：event_name、board、type:1-总榜 0-本小时榜 -1-上小时榜<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org22778c0" class="outline-4">
+<h4 id="org22778c0"><span class="section-number-4">4.1.6</span> 工会积分榜接口</h4>
+<div class="outline-text-4" id="text-4-1-6">
+<ul class="org-ul">
+<li>传入参数：event_name<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0f86cba" class="outline-4">
+<h4 id="org0f86cba"><span class="section-number-4">4.1.7</span> 工会骑士榜接口</h4>
+<div class="outline-text-4" id="text-4-1-7">
+<ul class="org-ul">
+<li>传入参数：event_name、board、guild_id<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org61cf036" class="outline-4">
+<h4 id="org61cf036"><span class="section-number-4">4.1.8</span> 工会赛直播间弹窗</h4>
+</div>
+<div id="outline-container-org385d10d" class="outline-4">
+<h4 id="org385d10d"><span class="section-number-4">4.1.9</span> 吸金主播晋级名单</h4>
+</div>
+</div>
+
+<div id="outline-container-orgf084db6" class="outline-3">
+<h3 id="orgf084db6"><span class="section-number-3">4.2</span> <span class="done DONE">DONE</span> websocket 接口 1.5d</h3>
+<div class="outline-text-3" id="text-4-2">
+</div>
+<div id="outline-container-org9757664" class="outline-4">
+<h4 id="org9757664"><span class="section-number-4">4.2.1</span> webview icon</h4>
+</div>
+</div>
+
+<div id="outline-container-org000183e" class="outline-3">
+<h3 id="org000183e"><span class="section-number-3">4.3</span> 定时任务</h3>
+<div class="outline-text-3" id="text-4-3">
+</div>
+<div id="outline-container-orgd5ee51c" class="outline-4">
+<h4 id="orgd5ee51c"><span class="section-number-4">4.3.1</span> 定时更新积分榜</h4>
+<div class="outline-text-4" id="text-4-3-1">
+<p>
+取上小时工会成员有效开播数量，对上个小时小时榜分数加成，加成后完成后，更新积分榜。频率 1h 一次*<br>
+</p>
+</div>
+</div>
+<div id="outline-container-orga10596e" class="outline-4">
+<h4 id="orga10596e"><span class="section-number-4">4.3.2</span> <span class="done DONE">DONE</span> 工会晋级赛</h4>
+<div class="outline-text-4" id="text-4-3-2">
+<p>
+工会选拔赛赛 =&gt; 工会决赛。根据积分榜名次晋级，晋级后分数为总榜分数<br>
+</p>
+</div>
+</div>
+<div id="outline-container-orgfd41627" class="outline-4">
+<h4 id="orgfd41627"><span class="section-number-4">4.3.3</span> <span class="done DONE">DONE</span> 积分榜晋级收礼榜</h4>
+</div>
+<div id="outline-container-org8c8a8ee" class="outline-4">
+<h4 id="org8c8a8ee"><span class="section-number-4">4.3.4</span> <span class="done DONE">DONE</span> 小时榜支持多榜单</h4>
+</div>
+</div>
+<div id="outline-container-org5850c25" class="outline-3">
+<h3 id="org5850c25"><span class="section-number-3">4.4</span> 接 kafka 队列 2.5d</h3>
+<div class="outline-text-3" id="text-4-4">
+</div>
+<div id="outline-container-org7b46a70" class="outline-4">
+<h4 id="org7b46a70"><span class="section-number-4">4.4.1</span> <span class="done DONE">DONE</span> 直播时长队列。把上小时直播满 40min 的主播放入一个集合。统计工会成员开播时长</h4>
+</div>
+<div id="outline-container-org588292c" class="outline-4">
+<h4 id="org588292c"><span class="section-number-4">4.4.2</span> <span class="done DONE">DONE</span> 开播队列。注册模块</h4>
+</div>
+<div id="outline-container-orgbc26668" class="outline-4">
+<h4 id="orgbc26668"><span class="section-number-4">4.4.3</span> <span class="done DONE">DONE</span> 加分模块。</h4>
+<div class="outline-text-4" id="text-4-4-3">
+<p>
+1.找到该主播所在的工会，在主榜中找到工会所属榜单<br>
+2.拿不到，注册；拿到了，给工会总榜、骑士榜加分<br>
+3.获取小时榜主榜、小时榜骑士榜，如果拿不到，注册主播和工会到榜单中<br>
+4.计算上个小时 top3 buff，然后工会小时榜主榜加分、工会小时榜骑士榜加分<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0db3d30" class="outline-3">
+<h3 id="org0db3d30"><span class="section-number-3">4.5</span> <span class="todo TODO">TODO</span> 其它</h3>
+<div class="outline-text-3" id="text-4-5">
+<ul class="org-ul">
+<li>充值时加机会<br></li>
+<li>榜单中添加晋级信息 "notice"<br></li>
+<li>调整小时榜结算了定时任务。<br></li>
+<li>设置名人堂数据<br></li>
+<li>multiboard_promote 晋级赛支持继承分数<br></li>
+<li>分区主播赛积分榜晋级时，要等积分榜结算后晋级<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org30c6ef0" class="outline-3">
+<h3 id="org30c6ef0"><span class="section-number-3">4.6</span> <span class="done DONE">DONE</span> 藏宝图活动</h3>
+<div class="outline-text-3" id="text-4-6">
+<p>
+统计主播个人收礼数，用于主播翻牌机会<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga659594" class="outline-2">
+<h2 id="orga659594"><span class="section-number-2">5</span> 上线模块</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>admin<br></li>
+<li>http<br></li>
+<li>events<br></li>
+<li>schedule<br></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org5c6a7e1" class="outline-2">
+<h2 id="org5c6a7e1"><span class="section-number-2">6</span> 后续开发内容</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org5278a18" class="outline-3">
+<h3 id="org5278a18"><span class="section-number-3">6.1</span> 小时榜改造。新增字段 hour_type</h3>
+<div class="outline-text-3" id="text-6-1">
+<ul class="org-ul">
+<li>1/2 小时榜<br></li>
+<li>1/4 小时榜<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org2177687" class="outline-3">
+<h3 id="org2177687"><span class="section-number-3">6.2</span> <span class="done DONE">DONE</span> tabs 接口支持巅峰赛</h3>
+</div>
+<div id="outline-container-orgcdcbc3a" class="outline-3">
+<h3 id="orgcdcbc3a"><span class="section-number-3">6.3</span> 小时榜结算</h3>
+</div>
+<div id="outline-container-org4e84e7f" class="outline-3">
+<h3 id="org4e84e7f"><span class="section-number-3">6.4</span> <span class="done DONE">DONE</span> icon 同步支持巅峰赛</h3>
+</div>
+<div id="outline-container-org47cd374" class="outline-3">
+<h3 id="org47cd374"><span class="section-number-3">6.5</span> <span class="done DONE">DONE</span> 晋级赛</h3>
+<div class="outline-text-3" id="text-6-5">
+<ul class="org-ul">
+<li>分区主播赛晋级到巅峰赛需要继承收礼榜分数吗？<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org911511d" class="outline-3">
+<h3 id="org911511d"><span class="section-number-3">6.6</span> 设置名人堂数据</h3>
+</div>
+<div id="outline-container-org8ec61e0" class="outline-3">
+<h3 id="org8ec61e0"><span class="section-number-3">6.7</span> 配置</h3>
+<div class="outline-text-3" id="text-6-7">
+</div>
+<div id="outline-container-orgfb395e0" class="outline-4">
+<h4 id="orgfb395e0"><span class="section-number-4">6.7.1</span> 巅峰赛 6 个活动配置</h4>
+<div class="outline-text-4" id="text-6-7-1">
+<ul class="org-ul">
+<li>2020_final_1_king、2020_final_2_king、2020_final_3_king<br></li>
+<li>2020_final_1_diamond、2020_final_2_diamond、2020_final_3_diamond<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org9dc87b1" class="outline-4">
+<h4 id="org9dc87b1"><span class="section-number-4">6.7.2</span> 3 项晋级赛配置 anniversary2020</h4>
+</div>
+<div id="outline-container-org82127d9" class="outline-4">
+<h4 id="org82127d9"><span class="section-number-4">6.7.3</span> 系统设置。不用配置了。</h4>
+<div class="outline-text-4" id="text-6-7-3">
+<p>
+rank_name_to_event_name_<br>
+需要添加配置:<br>
+</p>
+<ul class="org-ul">
+<li>2020_final_1_king<br></li>
+<li>2020_final_2_king<br></li>
+<li>2020_final_3_king<br></li>
+<li>2020_final_1_diamond<br></li>
+<li>2020_final_2_diamond<br></li>
+<li>2020_final_3_diamond<br></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

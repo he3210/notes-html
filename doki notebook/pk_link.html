@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>pk_link</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,85 +34,85 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge0ae7b0">1. 需求</a>
+<li><a href="#orga28e997">1. 需求</a>
 <ul>
-<li><a href="#orga7ec6ca">1.1. 关于连胜</a></li>
-<li><a href="#org8237774">1.2. 5 分钟间歇时间，4.5 分钟 pk 时间，0.5 分钟惩罚时间</a></li>
-<li><a href="#org6cc58da">1.3. 榜单。需要维护每日连胜次数、活动连胜次数。日榜是根据结算的时间来确认是哪一天</a></li>
-<li><a href="#orgce4e13a">1.4. 关于邀请制同屏 PK</a></li>
-<li><a href="#org348ed82">1.5. 匹配逻辑</a></li>
-<li><a href="#orgd741f25">1.6. 状态同步</a></li>
-<li><a href="#org03aceda">1.7. 历史战绩</a></li>
-<li><a href="#org9c94326">1.8. 运营后台</a></li>
-<li><a href="#orgc490209">1.9. strike</a></li>
-<li><a href="#org0ba6492">1.10. 活动奖励下发</a></li>
+<li><a href="#org06fda37">1.1. 关于连胜</a></li>
+<li><a href="#org4e93f9e">1.2. 5 分钟间歇时间，4.5 分钟 pk 时间，0.5 分钟惩罚时间</a></li>
+<li><a href="#org6fcf1be">1.3. 榜单。需要维护每日连胜次数、活动连胜次数。日榜是根据结算的时间来确认是哪一天</a></li>
+<li><a href="#orgd395ce7">1.4. 关于邀请制同屏 PK</a></li>
+<li><a href="#orgb873df6">1.5. 匹配逻辑</a></li>
+<li><a href="#orgc670be9">1.6. 状态同步</a></li>
+<li><a href="#orgd0ee7e0">1.7. 历史战绩</a></li>
+<li><a href="#orgffb6045">1.8. 运营后台</a></li>
+<li><a href="#orgfcce5db">1.9. strike</a></li>
+<li><a href="#orgb0e079f">1.10. 活动奖励下发</a></li>
 </ul>
 </li>
-<li><a href="#org263f535">2. 开发内容</a>
+<li><a href="#org12b99dc">2. 开发内容</a>
 <ul>
-<li><a href="#org623a2cf">2.1. <span class="todo TODO">TODO</span> 状态同步 schedulejob</a></li>
-<li><a href="#org61104f2">2.2. <span class="done DONE">DONE</span> 运营后台：pk 同屏活动设置</a></li>
-<li><a href="#org775dacc">2.3. <span class="done DONE">DONE</span> 日榜 PK 点数榜、日榜胜利次数榜奖励自动下发 schedulejob</a></li>
-<li><a href="#orgde91ce2">2.4. <span class="done DONE">DONE</span> 4 个榜单</a></li>
-<li><a href="#orge72a5c7">2.5. <span class="done DONE">DONE</span> 匹配算法</a></li>
-<li><a href="#orgc6272f2">2.6. <span class="todo DOING">DOING</span> 接口</a>
+<li><a href="#org9d2f14f">2.1. <span class="todo TODO">TODO</span> 状态同步 schedulejob</a></li>
+<li><a href="#org574eb7f">2.2. <span class="done DONE">DONE</span> 运营后台：pk 同屏活动设置</a></li>
+<li><a href="#org88a3bee">2.3. <span class="done DONE">DONE</span> 日榜 PK 点数榜、日榜胜利次数榜奖励自动下发 schedulejob</a></li>
+<li><a href="#orge0d17d3">2.4. <span class="done DONE">DONE</span> 4 个榜单</a></li>
+<li><a href="#orge3d1b6d">2.5. <span class="done DONE">DONE</span> 匹配算法</a></li>
+<li><a href="#org1c40083">2.6. <span class="todo DOING">DOING</span> 接口</a>
 <ul>
-<li><a href="#orgea00009">2.6.1. <span class="done DONE">DONE</span> 榜单 http 接口</a></li>
-<li><a href="#org5704340">2.6.2. <span class="todo TODO">TODO</span> websocket 同步接口</a></li>
-<li><a href="#orgdae99be">2.6.3. <span class="done DONE">DONE</span> pk 历史</a></li>
-<li><a href="#orgf6f18c3">2.6.4. <span class="done DONE">DONE</span> 关闭同屏 PK 按钮</a></li>
+<li><a href="#orgffb8716">2.6.1. <span class="done DONE">DONE</span> 榜单 http 接口</a></li>
+<li><a href="#org9f0878d">2.6.2. <span class="todo TODO">TODO</span> websocket 同步接口</a></li>
+<li><a href="#org8a4ab1b">2.6.3. <span class="done DONE">DONE</span> pk 历史</a></li>
+<li><a href="#org72e29b6">2.6.4. <span class="done DONE">DONE</span> 关闭同屏 PK 按钮</a></li>
 </ul>
 </li>
-<li><a href="#org4fe8a72">2.7. <span class="done DONE">DONE</span> 区分几种 PK 同屏来源、区分 PK 同屏活动名，并持久化到 mysql</a></li>
-<li><a href="#orgaec0f41">2.8. <span class="done DONE">DONE</span> 维护活动连胜次数，并持久化到 pk_link_history</a></li>
-<li><a href="#org990c868">2.9. <span class="todo TODO">TODO</span> 需要和客户端讨论红蓝双方 track_id 的上传</a></li>
+<li><a href="#org8feb733">2.7. <span class="done DONE">DONE</span> 区分几种 PK 同屏来源、区分 PK 同屏活动名，并持久化到 mysql</a></li>
+<li><a href="#org4342758">2.8. <span class="done DONE">DONE</span> 维护活动连胜次数，并持久化到 pk_link_history</a></li>
+<li><a href="#org62ecc78">2.9. <span class="todo TODO">TODO</span> 需要和客户端讨论红蓝双方 track_id 的上传</a></li>
 </ul>
 </li>
-<li><a href="#org57673fa">3. 注意事项 &amp;&amp; 上线注意事项</a>
+<li><a href="#orgc49d5e7">3. 注意事项 &amp;&amp; 上线注意事项</a>
 <ul>
-<li><a href="#org63dbd1d">3.1. 表 miveshow.pk_link_history</a></li>
-<li><a href="#orgc02541a">3.2. 表 miveshow_event.pk_link_match_history</a></li>
-<li><a href="#orga4847e2">3.3. 表 miveshow.pk_link_history 加索引</a></li>
-<li><a href="#org86f0c0a">3.4. 枚举值</a></li>
-<li><a href="#orgb18eee3">3.5. 删除 pk_link_history 表中没有 track_id 的遗留数据</a></li>
-<li><a href="#org23de793">3.6. redis 中 pk_link_info_ 未设置过期值。清理生产环境中的 pk_link_info_</a></li>
-<li><a href="#org0216e6d">3.7. 日榜日期的划分需要注意时区</a></li>
-<li><a href="#org33521ce">3.8. 关于客户端心跳异常断掉，导致断掉的一方投降。会影响主播双方连胜数，和主播 PK 历史。</a></li>
-<li><a href="#orgc6eaa48">3.9. event_settings 表为 type 加一个索引</a></li>
+<li><a href="#org22c0ff4">3.1. 表 miveshow.pk_link_history</a></li>
+<li><a href="#org0334d55">3.2. 表 miveshow_event.pk_link_match_history</a></li>
+<li><a href="#org995626c">3.3. 表 miveshow.pk_link_history 加索引</a></li>
+<li><a href="#orgdfcac24">3.4. 枚举值</a></li>
+<li><a href="#org3ae8317">3.5. 删除 pk_link_history 表中没有 track_id 的遗留数据</a></li>
+<li><a href="#orgb833992">3.6. redis 中 pk_link_info_ 未设置过期值。清理生产环境中的 pk_link_info_</a></li>
+<li><a href="#org2803356">3.7. 日榜日期的划分需要注意时区</a></li>
+<li><a href="#org239fd6a">3.8. 关于客户端心跳异常断掉，导致断掉的一方投降。会影响主播双方连胜数，和主播 PK 历史。</a></li>
+<li><a href="#orgb48bc21">3.9. event_settings 表为 type 加一个索引</a></li>
 </ul>
 </li>
-<li><a href="#org831c544">4. 上线模块</a></li>
-<li><a href="#org08b5443">5. 优化</a>
+<li><a href="#orgff7912a">4. 上线模块</a></li>
+<li><a href="#org3e1be3c">5. 优化</a>
 <ul>
-<li><a href="#orgc6d7ec2">5.1. <span class="done DONE">DONE</span> mysql io</a>
+<li><a href="#orgfdd6571">5.1. <span class="done DONE">DONE</span> mysql io</a>
 <ul>
-<li><a href="#org7a8afe5">5.1.1. end_pk</a></li>
-<li><a href="#orgb576a09">5.1.2. end_link</a></li>
-<li><a href="#orgee76613">5.1.3. surrender_pk</a></li>
+<li><a href="#org740cdb7">5.1.1. end_pk</a></li>
+<li><a href="#org4d6bf0e">5.1.2. end_link</a></li>
+<li><a href="#org5f07f0c">5.1.3. surrender_pk</a></li>
 </ul>
 </li>
-<li><a href="#org63635dc">5.2. <span class="todo DOING">DOING</span> redis io</a>
+<li><a href="#org6921430">5.2. <span class="todo DOING">DOING</span> redis io</a>
 <ul>
-<li><a href="#orgcbe4019">5.2.1. <span class="done DONE">DONE</span> schedule_end_pk 不再获取 settings 表中 pk_link_settings 配置</a></li>
-<li><a href="#org471045e">5.2.2. <span class="todo TODO">TODO</span> settle_pk_link 和 surrender_pk 本直播间的连胜次数通过 incrby 获取，不再单独调用一次 get 命令了</a></li>
+<li><a href="#orgf16ef01">5.2.1. <span class="done DONE">DONE</span> schedule_end_pk 不再获取 settings 表中 pk_link_settings 配置</a></li>
+<li><a href="#orgc752df1">5.2.2. <span class="todo TODO">TODO</span> settle_pk_link 和 surrender_pk 本直播间的连胜次数通过 incrby 获取，不再单独调用一次 get 命令了</a></li>
 </ul>
 </li>
-<li><a href="#org69e656f">5.3. <span class="done DONE">DONE</span> redis pk_link_info_ 设置过期时间</a></li>
-<li><a href="#orgdad3efb">5.4. <span class="todo TODO">TODO</span> pk 同屏加分操作可在结算时再同步到 mysql 中</a></li>
-<li><a href="#orgc55f93c">5.5. pk 同屏。状态同步、track_id 上传需要和客户端对一下</a></li>
-<li><a href="#orga6c6dad">5.6. 年度积分需求</a></li>
+<li><a href="#orga18ca8f">5.3. <span class="done DONE">DONE</span> redis pk_link_info_ 设置过期时间</a></li>
+<li><a href="#orgb16b836">5.4. <span class="todo TODO">TODO</span> pk 同屏加分操作可在结算时再同步到 mysql 中</a></li>
+<li><a href="#orge0c5eb8">5.5. pk 同屏。状态同步、track_id 上传需要和客户端对一下</a></li>
+<li><a href="#orgd38da72">5.6. 年度积分需求</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge0ae7b0" class="outline-2">
-<h2 id="orge0ae7b0"><span class="section-number-2">1</span> 需求</h2>
+<div id="outline-container-orga28e997" class="outline-2">
+<h2 id="orga28e997"><span class="section-number-2">1</span> 需求</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orga7ec6ca" class="outline-3">
-<h3 id="orga7ec6ca"><span class="section-number-3">1.1</span> 关于连胜</h3>
+<div id="outline-container-org06fda37" class="outline-3">
+<h3 id="org06fda37"><span class="section-number-3">1.1</span> 关于连胜</h3>
 <div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
 <li>pk 同屏之前的连胜是仅在本次直播算。重新开播清零重新计算。平局时双方的连胜均清零<br></li>
@@ -120,16 +120,16 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-org8237774" class="outline-3">
-<h3 id="org8237774"><span class="section-number-3">1.2</span> 5 分钟间歇时间，4.5 分钟 pk 时间，0.5 分钟惩罚时间</h3>
+<div id="outline-container-org4e93f9e" class="outline-3">
+<h3 id="org4e93f9e"><span class="section-number-3">1.2</span> 5 分钟间歇时间，4.5 分钟 pk 时间，0.5 分钟惩罚时间</h3>
 <div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
 <li>无 hurry 模式<br></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org6cc58da" class="outline-3">
-<h3 id="org6cc58da"><span class="section-number-3">1.3</span> 榜单。需要维护每日连胜次数、活动连胜次数。日榜是根据结算的时间来确认是哪一天</h3>
+<div id="outline-container-org6fcf1be" class="outline-3">
+<h3 id="org6fcf1be"><span class="section-number-3">1.3</span> 榜单。需要维护每日连胜次数、活动连胜次数。日榜是根据结算的时间来确认是哪一天</h3>
 <div class="outline-text-3" id="text-1-3">
 <ol class="org-ol">
 <li>PK 点数榜<br>
@@ -171,16 +171,16 @@
 </ol>
 </div>
 </div>
-<div id="outline-container-orgce4e13a" class="outline-3">
-<h3 id="orgce4e13a"><span class="section-number-3">1.4</span> 关于邀请制同屏 PK</h3>
+<div id="outline-container-orgd395ce7" class="outline-3">
+<h3 id="orgd395ce7"><span class="section-number-3">1.4</span> 关于邀请制同屏 PK</h3>
 <div class="outline-text-3" id="text-1-4">
 <ul class="org-ul">
 <li>不计入榜单。所有榜单需要重新统计。需要维护常规同屏 PK 的连胜次数<br></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org348ed82" class="outline-3">
-<h3 id="org348ed82"><span class="section-number-3">1.5</span> 匹配逻辑</h3>
+<div id="outline-container-orgb873df6" class="outline-3">
+<h3 id="orgb873df6"><span class="section-number-3">1.5</span> 匹配逻辑</h3>
 <div class="outline-text-3" id="text-1-5">
 <ul class="org-ul">
 <li>排除语音直播<br></li>
@@ -193,8 +193,8 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd741f25" class="outline-3">
-<h3 id="orgd741f25"><span class="section-number-3">1.6</span> 状态同步</h3>
+<div id="outline-container-orgc670be9" class="outline-3">
+<h3 id="orgc670be9"><span class="section-number-3">1.6</span> 状态同步</h3>
 <div class="outline-text-3" id="text-1-6">
 <ol class="org-ol">
 <li>状态同步黑名单<br>
@@ -233,8 +233,8 @@
 </ol>
 </div>
 </div>
-<div id="outline-container-org03aceda" class="outline-3">
-<h3 id="org03aceda"><span class="section-number-3">1.7</span> 历史战绩</h3>
+<div id="outline-container-orgd0ee7e0" class="outline-3">
+<h3 id="orgd0ee7e0"><span class="section-number-3">1.7</span> 历史战绩</h3>
 <div class="outline-text-3" id="text-1-7">
 <ul class="org-ul">
 <li>红蓝双方 user 信息<br></li>
@@ -246,8 +246,8 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-org9c94326" class="outline-3">
-<h3 id="org9c94326"><span class="section-number-3">1.8</span> 运营后台</h3>
+<div id="outline-container-orgffb6045" class="outline-3">
+<h3 id="orgffb6045"><span class="section-number-3">1.8</span> 运营后台</h3>
 <div class="outline-text-3" id="text-1-8">
 <ul class="org-ul">
 <li>配置礼物时默认全部礼物<br></li>
@@ -255,16 +255,16 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc490209" class="outline-3">
-<h3 id="orgc490209"><span class="section-number-3">1.9</span> strike</h3>
+<div id="outline-container-orgfcce5db" class="outline-3">
+<h3 id="orgfcce5db"><span class="section-number-3">1.9</span> strike</h3>
 <div class="outline-text-3" id="text-1-9">
 <ul class="org-ul">
 <li>被砍掉<br></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org0ba6492" class="outline-3">
-<h3 id="org0ba6492"><span class="section-number-3">1.10</span> 活动奖励下发</h3>
+<div id="outline-container-orgb0e079f" class="outline-3">
+<h3 id="orgb0e079f"><span class="section-number-3">1.10</span> 活动奖励下发</h3>
 <div class="outline-text-3" id="text-1-10">
 <ul class="org-ul">
 <li>日榜前 3 名奖励自动下发<br></li>
@@ -274,12 +274,12 @@
 </div>
 
 
-<div id="outline-container-org263f535" class="outline-2">
-<h2 id="org263f535"><span class="section-number-2">2</span> 开发内容</h2>
+<div id="outline-container-org12b99dc" class="outline-2">
+<h2 id="org12b99dc"><span class="section-number-2">2</span> 开发内容</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org623a2cf" class="outline-3">
-<h3 id="org623a2cf"><span class="section-number-3">2.1</span> <span class="todo TODO">TODO</span> 状态同步 schedulejob</h3>
+<div id="outline-container-org9d2f14f" class="outline-3">
+<h3 id="org9d2f14f"><span class="section-number-3">2.1</span> <span class="todo TODO">TODO</span> 状态同步 schedulejob</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>websocket 同步 not_join、matching、matched 等状态。event_name 等信息<br></li>
@@ -288,11 +288,11 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-org61104f2" class="outline-3">
-<h3 id="org61104f2"><span class="section-number-3">2.2</span> <span class="done DONE">DONE</span> 运营后台：pk 同屏活动设置</h3>
+<div id="outline-container-org574eb7f" class="outline-3">
+<h3 id="org574eb7f"><span class="section-number-3">2.2</span> <span class="done DONE">DONE</span> 运营后台：pk 同屏活动设置</h3>
 </div>
-<div id="outline-container-org775dacc" class="outline-3">
-<h3 id="org775dacc"><span class="section-number-3">2.3</span> <span class="done DONE">DONE</span> 日榜 PK 点数榜、日榜胜利次数榜奖励自动下发 schedulejob</h3>
+<div id="outline-container-org88a3bee" class="outline-3">
+<h3 id="org88a3bee"><span class="section-number-3">2.3</span> <span class="done DONE">DONE</span> 日榜 PK 点数榜、日榜胜利次数榜奖励自动下发 schedulejob</h3>
 <div class="outline-text-3" id="text-2-3">
 <ul class="org-ul">
 <li>当天 00:00:10 下发前 3 名 gold 奖励<br></li>
@@ -300,8 +300,8 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-orgde91ce2" class="outline-3">
-<h3 id="orgde91ce2"><span class="section-number-3">2.4</span> <span class="done DONE">DONE</span> 4 个榜单</h3>
+<div id="outline-container-orge0d17d3" class="outline-3">
+<h3 id="orge0d17d3"><span class="section-number-3">2.4</span> <span class="done DONE">DONE</span> 4 个榜单</h3>
 <div class="outline-text-3" id="text-2-4">
 <ul class="org-ul">
 <li>暂时采用结算时加榜单的方法<br></li>
@@ -310,45 +310,45 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-orge72a5c7" class="outline-3">
-<h3 id="orge72a5c7"><span class="section-number-3">2.5</span> <span class="done DONE">DONE</span> 匹配算法</h3>
+<div id="outline-container-orge3d1b6d" class="outline-3">
+<h3 id="orge3d1b6d"><span class="section-number-3">2.5</span> <span class="done DONE">DONE</span> 匹配算法</h3>
 </div>
-<div id="outline-container-orgc6272f2" class="outline-3">
-<h3 id="orgc6272f2"><span class="section-number-3">2.6</span> <span class="todo DOING">DOING</span> 接口</h3>
+<div id="outline-container-org1c40083" class="outline-3">
+<h3 id="org1c40083"><span class="section-number-3">2.6</span> <span class="todo DOING">DOING</span> 接口</h3>
 <div class="outline-text-3" id="text-2-6">
 </div>
-<div id="outline-container-orgea00009" class="outline-4">
-<h4 id="orgea00009"><span class="section-number-4">2.6.1</span> <span class="done DONE">DONE</span> 榜单 http 接口</h4>
+<div id="outline-container-orgffb8716" class="outline-4">
+<h4 id="orgffb8716"><span class="section-number-4">2.6.1</span> <span class="done DONE">DONE</span> 榜单 http 接口</h4>
 </div>
-<div id="outline-container-org5704340" class="outline-4">
-<h4 id="org5704340"><span class="section-number-4">2.6.2</span> <span class="todo TODO">TODO</span> websocket 同步接口</h4>
+<div id="outline-container-org9f0878d" class="outline-4">
+<h4 id="org9f0878d"><span class="section-number-4">2.6.2</span> <span class="todo TODO">TODO</span> websocket 同步接口</h4>
 </div>
-<div id="outline-container-orgdae99be" class="outline-4">
-<h4 id="orgdae99be"><span class="section-number-4">2.6.3</span> <span class="done DONE">DONE</span> pk 历史</h4>
+<div id="outline-container-org8a4ab1b" class="outline-4">
+<h4 id="org8a4ab1b"><span class="section-number-4">2.6.3</span> <span class="done DONE">DONE</span> pk 历史</h4>
 </div>
-<div id="outline-container-orgf6f18c3" class="outline-4">
-<h4 id="orgf6f18c3"><span class="section-number-4">2.6.4</span> <span class="done DONE">DONE</span> 关闭同屏 PK 按钮</h4>
-</div>
-</div>
-
-<div id="outline-container-org4fe8a72" class="outline-3">
-<h3 id="org4fe8a72"><span class="section-number-3">2.7</span> <span class="done DONE">DONE</span> 区分几种 PK 同屏来源、区分 PK 同屏活动名，并持久化到 mysql</h3>
-</div>
-<div id="outline-container-orgaec0f41" class="outline-3">
-<h3 id="orgaec0f41"><span class="section-number-3">2.8</span> <span class="done DONE">DONE</span> 维护活动连胜次数，并持久化到 pk_link_history</h3>
-</div>
-<div id="outline-container-org990c868" class="outline-3">
-<h3 id="org990c868"><span class="section-number-3">2.9</span> <span class="todo TODO">TODO</span> 需要和客户端讨论红蓝双方 track_id 的上传</h3>
+<div id="outline-container-org72e29b6" class="outline-4">
+<h4 id="org72e29b6"><span class="section-number-4">2.6.4</span> <span class="done DONE">DONE</span> 关闭同屏 PK 按钮</h4>
 </div>
 </div>
 
+<div id="outline-container-org8feb733" class="outline-3">
+<h3 id="org8feb733"><span class="section-number-3">2.7</span> <span class="done DONE">DONE</span> 区分几种 PK 同屏来源、区分 PK 同屏活动名，并持久化到 mysql</h3>
+</div>
+<div id="outline-container-org4342758" class="outline-3">
+<h3 id="org4342758"><span class="section-number-3">2.8</span> <span class="done DONE">DONE</span> 维护活动连胜次数，并持久化到 pk_link_history</h3>
+</div>
+<div id="outline-container-org62ecc78" class="outline-3">
+<h3 id="org62ecc78"><span class="section-number-3">2.9</span> <span class="todo TODO">TODO</span> 需要和客户端讨论红蓝双方 track_id 的上传</h3>
+</div>
+</div>
 
-<div id="outline-container-org57673fa" class="outline-2">
-<h2 id="org57673fa"><span class="section-number-2">3</span> 注意事项 &amp;&amp; 上线注意事项</h2>
+
+<div id="outline-container-orgc49d5e7" class="outline-2">
+<h2 id="orgc49d5e7"><span class="section-number-2">3</span> 注意事项 &amp;&amp; 上线注意事项</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org63dbd1d" class="outline-3">
-<h3 id="org63dbd1d"><span class="section-number-3">3.1</span> 表 miveshow.pk_link_history</h3>
+<div id="outline-container-org22c0ff4" class="outline-3">
+<h3 id="org22c0ff4"><span class="section-number-3">3.1</span> 表 miveshow.pk_link_history</h3>
 <div class="outline-text-3" id="text-3-1">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5f8700;">alter</span> <span style="color: #5f8700;">table</span> pk_link_history <span style="color: #5f8700;">add</span> <span style="color: #5f8700;">column</span> source_type tinyint <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> <span style="color: #5f8700;">default</span> <span style="color: #0087ff;">4</span> comment "0-&#36816;&#33829;&#36992;&#35831; 1-&#26681;&#25454;&#36827;&#20837;&#21305;&#37197;&#27744;&#26102;&#38388;&#22312;&#21305;&#37197;&#27744;&#21305;&#37197; 2-&#20027;&#25773;&#36992;&#35831; 3-&#26681;&#25454;&#27573;&#20301;&#22312;&#21305;&#37197;&#27744;&#21305;&#37197; 4-&#26087;&#25968;&#25454;&#65292;&#26469;&#28304;&#26410;&#35760;&#24405;" <span style="color: #5f8700;">after</span> <span style="color: #5f8700;">state</span>
@@ -359,8 +359,8 @@
 </div>
 </div>
 </div>
-<div id="outline-container-orgc02541a" class="outline-3">
-<h3 id="orgc02541a"><span class="section-number-3">3.2</span> 表 miveshow_event.pk_link_match_history</h3>
+<div id="outline-container-org0334d55" class="outline-3">
+<h3 id="org0334d55"><span class="section-number-3">3.2</span> 表 miveshow_event.pk_link_match_history</h3>
 <div class="outline-text-3" id="text-3-2">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `pk_link_match_history` (
@@ -390,8 +390,8 @@
 </div>
 </div>
 
-<div id="outline-container-orga4847e2" class="outline-3">
-<h3 id="orga4847e2"><span class="section-number-3">3.3</span> 表 miveshow.pk_link_history 加索引</h3>
+<div id="outline-container-org995626c" class="outline-3">
+<h3 id="org995626c"><span class="section-number-3">3.3</span> 表 miveshow.pk_link_history 加索引</h3>
 <div class="outline-text-3" id="text-3-3">
 <ul class="org-ul">
 <li>为 result 加索引<br></li>
@@ -399,8 +399,8 @@
 </ul>
 </div>
 </div>
-<div id="outline-container-org86f0c0a" class="outline-3">
-<h3 id="org86f0c0a"><span class="section-number-3">3.4</span> 枚举值</h3>
+<div id="outline-container-orgdfcac24" class="outline-3">
+<h3 id="orgdfcac24"><span class="section-number-3">3.4</span> 枚举值</h3>
 <div class="outline-text-3" id="text-3-4">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #5f8700;">class</span> <span style="color: #af8700;">PKLinkResult</span>(<span style="color: #5f8700;">object</span>):
@@ -427,26 +427,26 @@
 </div>
 </div>
 </div>
-<div id="outline-container-orgb18eee3" class="outline-3">
-<h3 id="orgb18eee3"><span class="section-number-3">3.5</span> 删除 pk_link_history 表中没有 track_id 的遗留数据</h3>
+<div id="outline-container-org3ae8317" class="outline-3">
+<h3 id="org3ae8317"><span class="section-number-3">3.5</span> 删除 pk_link_history 表中没有 track_id 的遗留数据</h3>
 </div>
-<div id="outline-container-org23de793" class="outline-3">
-<h3 id="org23de793"><span class="section-number-3">3.6</span> redis 中 pk_link_info_ 未设置过期值。清理生产环境中的 pk_link_info_</h3>
+<div id="outline-container-orgb833992" class="outline-3">
+<h3 id="orgb833992"><span class="section-number-3">3.6</span> redis 中 pk_link_info_ 未设置过期值。清理生产环境中的 pk_link_info_</h3>
 </div>
-<div id="outline-container-org0216e6d" class="outline-3">
-<h3 id="org0216e6d"><span class="section-number-3">3.7</span> 日榜日期的划分需要注意时区</h3>
+<div id="outline-container-org2803356" class="outline-3">
+<h3 id="org2803356"><span class="section-number-3">3.7</span> 日榜日期的划分需要注意时区</h3>
 </div>
-<div id="outline-container-org33521ce" class="outline-3">
-<h3 id="org33521ce"><span class="section-number-3">3.8</span> 关于客户端心跳异常断掉，导致断掉的一方投降。会影响主播双方连胜数，和主播 PK 历史。</h3>
-</div>
-
-<div id="outline-container-orgc6eaa48" class="outline-3">
-<h3 id="orgc6eaa48"><span class="section-number-3">3.9</span> event_settings 表为 type 加一个索引</h3>
-</div>
+<div id="outline-container-org239fd6a" class="outline-3">
+<h3 id="org239fd6a"><span class="section-number-3">3.8</span> 关于客户端心跳异常断掉，导致断掉的一方投降。会影响主播双方连胜数，和主播 PK 历史。</h3>
 </div>
 
-<div id="outline-container-org831c544" class="outline-2">
-<h2 id="org831c544"><span class="section-number-2">4</span> 上线模块</h2>
+<div id="outline-container-orgb48bc21" class="outline-3">
+<h3 id="orgb48bc21"><span class="section-number-3">3.9</span> event_settings 表为 type 加一个索引</h3>
+</div>
+</div>
+
+<div id="outline-container-orgff7912a" class="outline-2">
+<h2 id="orgff7912a"><span class="section-number-2">4</span> 上线模块</h2>
 <div class="outline-text-2" id="text-4">
 <ul class="org-ul">
 <li>schedulejob pk_link<br></li>
@@ -456,46 +456,46 @@
 </div>
 
 
-<div id="outline-container-org08b5443" class="outline-2">
-<h2 id="org08b5443"><span class="section-number-2">5</span> 优化</h2>
+<div id="outline-container-org3e1be3c" class="outline-2">
+<h2 id="org3e1be3c"><span class="section-number-2">5</span> 优化</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-orgc6d7ec2" class="outline-3">
-<h3 id="orgc6d7ec2"><span class="section-number-3">5.1</span> <span class="done DONE">DONE</span> mysql io</h3>
+<div id="outline-container-orgfdd6571" class="outline-3">
+<h3 id="orgfdd6571"><span class="section-number-3">5.1</span> <span class="done DONE">DONE</span> mysql io</h3>
 <div class="outline-text-3" id="text-5-1">
 </div>
-<div id="outline-container-org7a8afe5" class="outline-4">
-<h4 id="org7a8afe5"><span class="section-number-4">5.1.1</span> end_pk</h4>
+<div id="outline-container-org740cdb7" class="outline-4">
+<h4 id="org740cdb7"><span class="section-number-4">5.1.1</span> end_pk</h4>
 </div>
-<div id="outline-container-orgb576a09" class="outline-4">
-<h4 id="orgb576a09"><span class="section-number-4">5.1.2</span> end_link</h4>
+<div id="outline-container-org4d6bf0e" class="outline-4">
+<h4 id="org4d6bf0e"><span class="section-number-4">5.1.2</span> end_link</h4>
 </div>
-<div id="outline-container-orgee76613" class="outline-4">
-<h4 id="orgee76613"><span class="section-number-4">5.1.3</span> surrender_pk</h4>
+<div id="outline-container-org5f07f0c" class="outline-4">
+<h4 id="org5f07f0c"><span class="section-number-4">5.1.3</span> surrender_pk</h4>
 </div>
 </div>
-<div id="outline-container-org63635dc" class="outline-3">
-<h3 id="org63635dc"><span class="section-number-3">5.2</span> <span class="todo DOING">DOING</span> redis io</h3>
+<div id="outline-container-org6921430" class="outline-3">
+<h3 id="org6921430"><span class="section-number-3">5.2</span> <span class="todo DOING">DOING</span> redis io</h3>
 <div class="outline-text-3" id="text-5-2">
 </div>
-<div id="outline-container-orgcbe4019" class="outline-4">
-<h4 id="orgcbe4019"><span class="section-number-4">5.2.1</span> <span class="done DONE">DONE</span> schedule_end_pk 不再获取 settings 表中 pk_link_settings 配置</h4>
+<div id="outline-container-orgf16ef01" class="outline-4">
+<h4 id="orgf16ef01"><span class="section-number-4">5.2.1</span> <span class="done DONE">DONE</span> schedule_end_pk 不再获取 settings 表中 pk_link_settings 配置</h4>
 </div>
-<div id="outline-container-org471045e" class="outline-4">
-<h4 id="org471045e"><span class="section-number-4">5.2.2</span> <span class="todo TODO">TODO</span> settle_pk_link 和 surrender_pk 本直播间的连胜次数通过 incrby 获取，不再单独调用一次 get 命令了</h4>
+<div id="outline-container-orgc752df1" class="outline-4">
+<h4 id="orgc752df1"><span class="section-number-4">5.2.2</span> <span class="todo TODO">TODO</span> settle_pk_link 和 surrender_pk 本直播间的连胜次数通过 incrby 获取，不再单独调用一次 get 命令了</h4>
 </div>
 </div>
-<div id="outline-container-org69e656f" class="outline-3">
-<h3 id="org69e656f"><span class="section-number-3">5.3</span> <span class="done DONE">DONE</span> redis pk_link_info_ 设置过期时间</h3>
+<div id="outline-container-orga18ca8f" class="outline-3">
+<h3 id="orga18ca8f"><span class="section-number-3">5.3</span> <span class="done DONE">DONE</span> redis pk_link_info_ 设置过期时间</h3>
 </div>
-<div id="outline-container-orgdad3efb" class="outline-3">
-<h3 id="orgdad3efb"><span class="section-number-3">5.4</span> <span class="todo TODO">TODO</span> pk 同屏加分操作可在结算时再同步到 mysql 中</h3>
+<div id="outline-container-orgb16b836" class="outline-3">
+<h3 id="orgb16b836"><span class="section-number-3">5.4</span> <span class="todo TODO">TODO</span> pk 同屏加分操作可在结算时再同步到 mysql 中</h3>
 </div>
-<div id="outline-container-orgc55f93c" class="outline-3">
-<h3 id="orgc55f93c"><span class="section-number-3">5.5</span> pk 同屏。状态同步、track_id 上传需要和客户端对一下</h3>
+<div id="outline-container-orge0c5eb8" class="outline-3">
+<h3 id="orge0c5eb8"><span class="section-number-3">5.5</span> pk 同屏。状态同步、track_id 上传需要和客户端对一下</h3>
 </div>
-<div id="outline-container-orga6c6dad" class="outline-3">
-<h3 id="orga6c6dad"><span class="section-number-3">5.6</span> 年度积分需求</h3>
+<div id="outline-container-orgd38da72" class="outline-3">
+<h3 id="orgd38da72"><span class="section-number-3">5.6</span> 年度积分需求</h3>
 </div>
 </div>
 </div>
@@ -507,8 +507,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

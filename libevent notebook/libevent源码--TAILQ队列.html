@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>libevent源码&#x2013;TAILQ队列</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,19 +34,19 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb635168">1. TAILQ 队列结构图</a></li>
-<li><a href="#org3c4310a">2. TAILQ 队列源码</a></li>
-<li><a href="#org2ec46f5">3. 注意</a></li>
-<li><a href="#org215a6a2">4. TAILQ 队列的使用</a></li>
+<li><a href="#org20fa62e">1. TAILQ 队列结构图</a></li>
+<li><a href="#org120ec18">2. TAILQ 队列源码</a></li>
+<li><a href="#org33f264e">3. 注意</a></li>
+<li><a href="#orgf6d5ef9">4. TAILQ 队列的使用</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb635168" class="outline-2">
-<h2 id="orgb635168"><span class="section-number-2">1</span> TAILQ 队列结构图</h2>
+<div id="outline-container-org20fa62e" class="outline-2">
+<h2 id="org20fa62e"><span class="section-number-2">1</span> TAILQ 队列结构图</h2>
 <div class="outline-text-2" id="text-1">
 
-<div class="figure">
+<div id="orgb22e562" class="figure">
 <p><img src="../images/TAILQ队列结构.png" alt="TAILQ队列结构.png" width="80%"><br>
 </p>
 </div>
@@ -67,15 +67,15 @@
 </div>
 </div>
 
-<div id="outline-container-org3c4310a" class="outline-2">
-<h2 id="org3c4310a"><span class="section-number-2">2</span> TAILQ 队列源码</h2>
+<div id="outline-container-org120ec18" class="outline-2">
+<h2 id="org120ec18"><span class="section-number-2">2</span> TAILQ 队列源码</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#20041;&#38431;&#21015;&#30340;&#22836;&#32467;&#28857;&#32467;&#26500;&#20307;&#30340;&#23439;</span>
 <span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TAILQ_HEAD</span>(<span style="color: #0087ff;">name</span>, <span style="color: #0087ff;">type</span>)                      \
 <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">name</span> {                               \
-    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">type</span> *<span style="color: #0087ff;">tqh_first</span>; <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">first element </span><span style="color: #8a8a8a;">*/</span> <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#25351;&#21521;&#38431;&#21015;&#30340;&#31532;&#19968;&#20010;&#20803;&#32032; </span><span style="color: #8a8a8a;">*/</span>      \
-    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">type</span> **<span style="color: #0087ff;">tqh_last</span>; <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">addr of last next element </span><span style="color: #8a8a8a;">*/</span>  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#25351;&#21521;&#38431;&#21015;&#26368;&#21518;&#19968;&#20010;&#20803;&#32032;&#30340; tqe_next &#30340;&#22320;&#22336; </span><span style="color: #8a8a8a;">*/</span>       \
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">type</span> *<span style="color: #0087ff;">tqh_first</span>; <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">first element</span><span style="color: #8a8a8a;"> */</span> <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#25351;&#21521;&#38431;&#21015;&#30340;&#31532;&#19968;&#20010;&#20803;&#32032;</span><span style="color: #8a8a8a;"> */</span>      \
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">type</span> **<span style="color: #0087ff;">tqh_last</span>; <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">addr of last next element</span><span style="color: #8a8a8a;"> */</span>  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#25351;&#21521;&#38431;&#21015;&#26368;&#21518;&#19968;&#20010;&#20803;&#32032;&#30340; tqe_next &#30340;&#22320;&#22336;</span><span style="color: #8a8a8a;"> */</span>       \
 }
 
 <span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TAILQ_HEAD_INITIALIZER</span>(<span style="color: #0087ff;">head</span>)                    \
@@ -84,13 +84,13 @@
 <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36825;&#20010;&#32467;&#26500;&#20307;&#26159;&#38431;&#21015;&#20013;&#20803;&#32032;&#30340;&#19968;&#20010;&#25351;&#38024;&#23383;&#27573;&#65292;&#23427;&#25351;&#21521;&#19979;&#38754;&#36825;&#20010;&#21311;&#21517;&#32467;&#26500;&#20307;&#65292;&#35813;&#32467;&#26500;&#20307;&#20445;&#23384;&#30528; 2 &#20010;&#25351;&#38024;</span>
 <span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TAILQ_ENTRY</span>(<span style="color: #0087ff;">type</span>)                       \
 <span style="color: #5f8700;">struct</span> {                                \
-    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">type</span> *<span style="color: #0087ff;">tqe_next</span>;  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">next element </span><span style="color: #8a8a8a;">*/</span>  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#25351;&#21521;&#19979;&#19968;&#20010;&#20803;&#32032; </span><span style="color: #8a8a8a;">*/</span>            \
-    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">type</span> **<span style="color: #0087ff;">tqe_prev</span>; <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">address of previous next element </span><span style="color: #8a8a8a;">*/</span>  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#25351;&#21521;&#19978;&#19968;&#20010;&#20803;&#32032;&#30340; tqe_next &#30340;&#22320;&#22336; </span><span style="color: #8a8a8a;">*/</span>  \
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">type</span> *<span style="color: #0087ff;">tqe_next</span>;  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">next element</span><span style="color: #8a8a8a;"> */</span>  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#25351;&#21521;&#19979;&#19968;&#20010;&#20803;&#32032;</span><span style="color: #8a8a8a;"> */</span>            \
+    <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">type</span> **<span style="color: #0087ff;">tqe_prev</span>; <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">address of previous next element</span><span style="color: #8a8a8a;"> */</span>  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#25351;&#21521;&#19978;&#19968;&#20010;&#20803;&#32032;&#30340; tqe_next &#30340;&#22320;&#22336;</span><span style="color: #8a8a8a;"> */</span>  \
 }
 
 <span style="color: #8a8a8a;">/*</span>
 <span style="color: #8a8a8a;"> * tail queue access methods</span>
-<span style="color: #8a8a8a;"> </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;"> */</span>
 <span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TAILQ_FIRST</span>(<span style="color: #0087ff;">head</span>)       ((head)-&gt;tqh_first)
 <span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TAILQ_END</span>(<span style="color: #0087ff;">head</span>)         <span style="color: #00afaf;">NULL</span>
 <span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TAILQ_NEXT</span>(<span style="color: #0087ff;">elm</span>, <span style="color: #0087ff;">field</span>)      ((elm)-&gt;field.tqe_next)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33719;&#21462;&#38431;&#21015;&#30340;&#19979;&#19968;&#20010;&#20803;&#32032;&#30340;&#25351;&#38024;</span>
@@ -100,7 +100,7 @@
 <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">(*(((struct headname *)((head)-&gt;tqh_last))-&gt;tqh_last)) &#34920;&#31034;&#25351;&#21521;&#26368;&#21518;&#19968;&#20010;&#20803;&#32032;&#30340;&#25351;&#38024;&#65292;&#31867;&#22411;&#20026; struct type *</span>
 <span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TAILQ_LAST</span>(<span style="color: #0087ff;">head</span>, <span style="color: #0087ff;">headname</span>)                  \
     (*(((<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">headname</span> *)((head)-&gt;tqh_last))-&gt;tqh_last))
-<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">XXX </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">XXX</span><span style="color: #8a8a8a;"> */</span>
 <span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TAILQ_PREV</span>(<span style="color: #0087ff;">elm</span>, <span style="color: #0087ff;">headname</span>, <span style="color: #0087ff;">field</span>)                \
     (*(((<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">headname</span> *)((elm)-&gt;field.tqe_prev))-&gt;tqh_last))
 <span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TAILQ_EMPTY</span>(<span style="color: #0087ff;">head</span>)                       \
@@ -119,7 +119,7 @@
 
 <span style="color: #8a8a8a;">/*</span>
 <span style="color: #8a8a8a;"> * Tail queue functions.</span>
-<span style="color: #8a8a8a;"> </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;"> */</span>
 <span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">TAILQ_INIT</span>(<span style="color: #0087ff;">head</span>) <span style="color: #5f8700;">do</span> {                       \
     (head)-&gt;tqh_first = <span style="color: #00afaf;">NULL</span>;                   \
     (head)-&gt;tqh_last = &amp;(head)-&gt;tqh_first;              \
@@ -190,8 +190,8 @@
 </div>
 </div>
 
-<div id="outline-container-org2ec46f5" class="outline-2">
-<h2 id="org2ec46f5"><span class="section-number-2">3</span> 注意</h2>
+<div id="outline-container-org33f264e" class="outline-2">
+<h2 id="org33f264e"><span class="section-number-2">3</span> 注意</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 为什么宏 TAILQ_LAST 和 TAILQ_PREV 中将 (head)-&gt;tqh_last) 转换为 TAILQ_HEAD 而不是转换为 TAILQ_ENTRY?<br>
@@ -201,8 +201,8 @@
 </div>
 </div>
 
-<div id="outline-container-org215a6a2" class="outline-2">
-<h2 id="org215a6a2"><span class="section-number-2">4</span> TAILQ 队列的使用</h2>
+<div id="outline-container-orgf6d5ef9" class="outline-2">
+<h2 id="orgf6d5ef9"><span class="section-number-2">4</span> TAILQ 队列的使用</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
@@ -297,8 +297,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

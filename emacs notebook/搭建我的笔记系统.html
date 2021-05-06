@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>搭建我的笔记系统</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,13 +34,13 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb1199de">1. 为什么选用 org-mode 构建？</a></li>
-<li><a href="#orgc9153e0">2. 笔记系统最终目录结构</a></li>
-<li><a href="#orge9c0800">3. org-mode 导出成网站的基本配置</a></li>
-<li><a href="#orgdc76417">4. 后续优化1 —— 代码块右侧显示代码类型</a></li>
-<li><a href="#orgb0f3023">5. 后续优化2 —— 生产环境测试环境分离</a></li>
-<li><a href="#org826f6b4">6. 后续优化3 —— 目录聚焦当前大纲</a></li>
-<li><a href="#org4141bc2">7. 后续优化4 —— 添加 google 搜索</a></li>
+<li><a href="#orgcc9c057">1. 为什么选用 org-mode 构建？</a></li>
+<li><a href="#orgee30ae5">2. 笔记系统最终目录结构</a></li>
+<li><a href="#orgdc4c94c">3. org-mode 导出成网站的基本配置</a></li>
+<li><a href="#org35ae885">4. 后续优化1 —— 代码块右侧显示代码类型</a></li>
+<li><a href="#orgf5e556f">5. 后续优化2 —— 生产环境测试环境分离</a></li>
+<li><a href="#orgdb829a5">6. 后续优化3 —— 目录聚焦当前大纲</a></li>
+<li><a href="#org4ecad8a">7. 后续优化4 —— 添加 google 搜索</a></li>
 </ul>
 </div>
 </div>
@@ -75,8 +75,8 @@
 </tbody>
 </table>
 
-<div id="outline-container-orgb1199de" class="outline-2">
-<h2 id="orgb1199de"><span class="section-number-2">1</span> 为什么选用 org-mode 构建？</h2>
+<div id="outline-container-orgcc9c057" class="outline-2">
+<h2 id="orgcc9c057"><span class="section-number-2">1</span> 为什么选用 org-mode 构建？</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 之前一直使用 evernote + gitbook 等工具记笔记。然而每个都有各自很大的缺点<br>
@@ -112,8 +112,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgc9153e0" class="outline-2">
-<h2 id="orgc9153e0"><span class="section-number-2">2</span> 笔记系统最终目录结构</h2>
+<div id="outline-container-orgee30ae5" class="outline-2">
+<h2 id="orgee30ae5"><span class="section-number-2">2</span> 笔记系统最终目录结构</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ tree -N -I <span style="color: #00afaf;">"algorithm|libevent|test"</span> notes
@@ -148,8 +148,8 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
 </div>
 </div>
 
-<div id="outline-container-orge9c0800" class="outline-2">
-<h2 id="orge9c0800"><span class="section-number-2">3</span> org-mode 导出成网站的基本配置</h2>
+<div id="outline-container-orgdc4c94c" class="outline-2">
+<h2 id="orgdc4c94c"><span class="section-number-2">3</span> org-mode 导出成网站的基本配置</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 我的 emacs org-mode 的配置文件是 <code>init-org.el</code> ，向该文件添加如下配置<br>
@@ -254,8 +254,8 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
 </p>
 </div>
 </div>
-<div id="outline-container-orgdc76417" class="outline-2">
-<h2 id="orgdc76417"><span class="section-number-2">4</span> 后续优化1 —— 代码块右侧显示代码类型</h2>
+<div id="outline-container-org35ae885" class="outline-2">
+<h2 id="org35ae885"><span class="section-number-2">4</span> 后续优化1 —— 代码块右侧显示代码类型</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 如果代码块是 shell 脚本，代码块右上角显示 shell；如果是 python 代码，右上角显示 python；&#x2026;<br>
@@ -308,8 +308,8 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
 </div>
 </div>
 </div>
-<div id="outline-container-orgb0f3023" class="outline-2">
-<h2 id="orgb0f3023"><span class="section-number-2">5</span> 后续优化2 —— 生产环境测试环境分离</h2>
+<div id="outline-container-orgf5e556f" class="outline-2">
+<h2 id="orgf5e556f"><span class="section-number-2">5</span> 后续优化2 —— 生产环境测试环境分离</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 需要做到<br>
@@ -359,7 +359,7 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
       (export-my-notes-internal t)
       )
     )
-  (<span style="color: #5f8700;">incf</span> *call-export-my-notes-count*)  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#33258;&#22686; 1</span>
+  (incf *call-export-my-notes-count*)  <span style="color: #8a8a8a;">;; </span><span style="color: #8a8a8a;">&#33258;&#22686; 1</span>
   )
 
 (<span style="color: #5f8700;">defun</span> <span style="color: #0087ff;">export-my-notes</span>()
@@ -376,7 +376,7 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
       (export-my-notes-internal t)
       )
     )
-  (<span style="color: #5f8700;">incf</span> *call-export-my-notes-count*)
+  (incf *call-export-my-notes-count*)
   )
 </pre>
 </div>
@@ -392,8 +392,8 @@ notes                            <span style="color: #8a8a8a;"># </span><span st
 </div>
 </div>
 
-<div id="outline-container-org826f6b4" class="outline-2">
-<h2 id="org826f6b4"><span class="section-number-2">6</span> 后续优化3 —— 目录聚焦当前大纲</h2>
+<div id="outline-container-orgdb829a5" class="outline-2">
+<h2 id="orgdb829a5"><span class="section-number-2">6</span> 后续优化3 —— 目录聚焦当前大纲</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li>效果一：目录显示当前屏幕位置处的大纲，使用 jquery 来实现<br></li>
@@ -413,7 +413,7 @@ postamble.html 中添加 2 行<br>
 main.js 内容为：<br>
 </p>
 <div class="org-src-container">
-<pre class="src src-js"><span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#30446;&#24405;&#26174;&#31034;&#24403;&#21069;&#23631;&#24149;&#20301;&#32622;&#22788;&#30340;&#22823;&#32434; */</span>
+<pre class="src src-js"><span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#30446;&#24405;&#26174;&#31034;&#24403;&#21069;&#23631;&#24149;&#20301;&#32622;&#22788;&#30340;&#22823;&#32434;</span><span style="color: #8a8a8a;"> */</span>
 window.ego_toc = $(<span style="color: #00afaf;">'#text-table-of-contents ul li'</span>);
 <span style="color: #5f8700;">if</span>(0 != window.ego_toc.length){
     window.ego_toc_h = $(<span style="color: #00afaf;">'#table-of-contents h2'</span>);
@@ -457,7 +457,7 @@ window.ego_toc = $(<span style="color: #00afaf;">'#text-table-of-contents ul li'
         }
     });}
 
-<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#28857;&#20987;&#30446;&#24405;&#26174;&#31034;&#20840;&#37096;&#30446;&#24405;&#65292;&#20877;&#27425;&#28857;&#20987;&#38544;&#34255; */</span>
+<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#28857;&#20987;&#30446;&#24405;&#26174;&#31034;&#20840;&#37096;&#30446;&#24405;&#65292;&#20877;&#27425;&#28857;&#20987;&#38544;&#34255;</span><span style="color: #8a8a8a;"> */</span>
 document.addEventListener(<span style="color: #00afaf;">'DOMContentLoaded'</span>,<span style="color: #5f8700;">function</span>() {
     document.getElementById(<span style="color: #00afaf;">"table-of-contents"</span>).onclick = <span style="color: #5f8700;">function</span>() {
         <span style="color: #5f8700;">var</span> <span style="color: #0087ff;">elem</span> = document.getElementById(<span style="color: #00afaf;">"text-table-of-contents"</span>);
@@ -468,8 +468,8 @@ document.addEventListener(<span style="color: #00afaf;">'DOMContentLoaded'</span
 </div>
 </div>
 </div>
-<div id="outline-container-org4141bc2" class="outline-2">
-<h2 id="org4141bc2"><span class="section-number-2">7</span> 后续优化4 —— 添加 google 搜索</h2>
+<div id="outline-container-org4ecad8a" class="outline-2">
+<h2 id="org4ecad8a"><span class="section-number-2">7</span> 后续优化4 —— 添加 google 搜索</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 实现思路：向 google 发送 http get 请求，搜索 <code>www.langdebuqing.com</code> 网站中的内容。<br>
@@ -496,8 +496,8 @@ document.addEventListener(<span style="color: #00afaf;">'DOMContentLoaded'</span
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

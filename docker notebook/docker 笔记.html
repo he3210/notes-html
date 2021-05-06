@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker 笔记</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,15 +34,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orga130844">1. docker mac 上安装</a></li>
-<li><a href="#org1cade5f">2. docker centos7</a></li>
-<li><a href="#orgbeb5cad">3. docker volume</a></li>
+<li><a href="#org26b679a">1. docker mac 上安装</a></li>
+<li><a href="#orgbc28e29">2. docker centos7</a></li>
+<li><a href="#org78ecff2">3. docker volume</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga130844" class="outline-2">
-<h2 id="orga130844"><span class="section-number-2">1</span> docker mac 上安装</h2>
+<div id="outline-container-org26b679a" class="outline-2">
+<h2 id="org26b679a"><span class="section-number-2">1</span> docker mac 上安装</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ brew install docker    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">mac &#23433;&#35013; docker</span>
@@ -52,8 +52,8 @@ $ docker info            <span style="color: #8a8a8a;"># </span><span style="col
 </div>
 </div>
 
-<div id="outline-container-org1cade5f" class="outline-2">
-<h2 id="org1cade5f"><span class="section-number-2">2</span> docker centos7</h2>
+<div id="outline-container-orgbc28e29" class="outline-2">
+<h2 id="orgbc28e29"><span class="section-number-2">2</span> docker centos7</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ yum install docker              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23433;&#35013;</span>
@@ -64,8 +64,8 @@ $ systemctl enable docker.service <span style="color: #8a8a8a;"># </span><span s
 </div>
 </div>
 
-<div id="outline-container-orgbeb5cad" class="outline-2">
-<h2 id="orgbeb5cad"><span class="section-number-2">3</span> docker volume</h2>
+<div id="outline-container-org78ecff2" class="outline-2">
+<h2 id="org78ecff2"><span class="section-number-2">3</span> docker volume</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-shell">$ docker volume ls                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21015;&#20986;&#25152;&#26377; volume</span>
@@ -85,8 +85,8 @@ $ docker run -d -p 80 --name website -v my_vol:/var/www/html/website:ro he3210/n
 </ul>
 
 <p>
-<a href="./dockerfile 语法笔记.html#org0667b54">Dockerfile 中使用关键字 VOLUME 创建匿名卷</a><br>
-<a href="./docker 笔记 —— 容器.html#org4ca1ef1">使用命令 <code>docker run -v</code> 创建数据卷</a><br>
+<a href="./dockerfile 语法笔记.html#org21e1fd8">Dockerfile 中使用关键字 VOLUME 创建匿名卷</a><br>
+<a href="./docker 笔记 —— 容器.html#org2e9ee90">使用命令 <code>docker run -v</code> 创建数据卷</a><br>
 数据卷的进阶使用的话可以用命令 <code>docker run --mount</code><br>
 </p>
 </div>
@@ -100,8 +100,8 @@ $ docker run -d -p 80 --name website -v my_vol:/var/www/html/website:ro he3210/n
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

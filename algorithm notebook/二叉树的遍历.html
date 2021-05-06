@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>二叉树的遍历</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,22 +34,22 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge8a77cb">1. 测试代码</a></li>
-<li><a href="#org5517d44">2. 二叉树数据结构</a></li>
-<li><a href="#orge40d05b">3. 递归遍历</a></li>
-<li><a href="#org00b6e35">4. 非递归遍历</a>
+<li><a href="#org37cd334">1. 测试代码</a></li>
+<li><a href="#orgceccd27">2. 二叉树数据结构</a></li>
+<li><a href="#org756cc83">3. 递归遍历</a></li>
+<li><a href="#org84d54b3">4. 非递归遍历</a>
 <ul>
-<li><a href="#org5cda9b4">4.1. 层序遍历（借助队列）</a></li>
-<li><a href="#org0c443a5">4.2. 先序遍历（借助栈）</a></li>
-<li><a href="#org5350c41">4.3. 中序遍历（借助栈）</a></li>
-<li><a href="#org96edb06">4.4. 后序遍历（借助栈）</a></li>
+<li><a href="#org6e90445">4.1. 层序遍历（借助队列）</a></li>
+<li><a href="#orgee492c9">4.2. 先序遍历（借助栈）</a></li>
+<li><a href="#orgd8ac6f0">4.3. 中序遍历（借助栈）</a></li>
+<li><a href="#org068aff0">4.4. 后序遍历（借助栈）</a></li>
 </ul>
 </li>
-<li><a href="#org523fcf6">5. morris traversal（非递归、不借助栈）</a>
+<li><a href="#org3f0ece7">5. morris traversal（非递归、不借助栈）</a>
 <ul>
-<li><a href="#org1db4902">5.1. 中序遍历</a></li>
-<li><a href="#org11b0812">5.2. 先序遍历</a></li>
-<li><a href="#org99d5cf2">5.3. 后序遍历</a></li>
+<li><a href="#orgd9fbc94">5.1. 中序遍历</a></li>
+<li><a href="#org223d74b">5.2. 先序遍历</a></li>
+<li><a href="#org85a6f50">5.3. 后序遍历</a></li>
 </ul>
 </li>
 </ul>
@@ -59,14 +59,14 @@
 先序+中序、后序+中序、层序+中序 都可唯一确定一棵二叉树<br>
 </p>
 
-<div id="outline-container-orge8a77cb" class="outline-2">
-<h2 id="orge8a77cb"><span class="section-number-2">1</span> 测试代码</h2>
+<div id="outline-container-org37cd334" class="outline-2">
+<h2 id="org37cd334"><span class="section-number-2">1</span> 测试代码</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 <a href="../images/bitree.tar.gz">bitree.tar.gz</a><br>
 </p>
 
-<pre class="example">
+<pre class="example" id="org66f8aee">
 ├── queue.h
 ├── stack.h
 ├── tree.cpp
@@ -79,8 +79,8 @@
 </div>
 </div>
 
-<div id="outline-container-org5517d44" class="outline-2">
-<h2 id="org5517d44"><span class="section-number-2">2</span> 二叉树数据结构</h2>
+<div id="outline-container-orgceccd27" class="outline-2">
+<h2 id="orgceccd27"><span class="section-number-2">2</span> 二叉树数据结构</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
@@ -94,8 +94,8 @@
 </div>
 </div>
 
-<div id="outline-container-orge40d05b" class="outline-2">
-<h2 id="orge40d05b"><span class="section-number-2">3</span> 递归遍历</h2>
+<div id="outline-container-org756cc83" class="outline-2">
+<h2 id="org756cc83"><span class="section-number-2">3</span> 递归遍历</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20808;&#24207;&#36941;&#21382;&#20108;&#21449;&#26641;</span>
@@ -135,12 +135,12 @@
 </div>
 </div>
 
-<div id="outline-container-org00b6e35" class="outline-2">
-<h2 id="org00b6e35"><span class="section-number-2">4</span> 非递归遍历</h2>
+<div id="outline-container-org84d54b3" class="outline-2">
+<h2 id="org84d54b3"><span class="section-number-2">4</span> 非递归遍历</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org5cda9b4" class="outline-3">
-<h3 id="org5cda9b4"><span class="section-number-3">4.1</span> 层序遍历（借助队列）</h3>
+<div id="outline-container-org6e90445" class="outline-3">
+<h3 id="org6e90445"><span class="section-number-3">4.1</span> 层序遍历（借助队列）</h3>
 <div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20174;&#24038;&#21521;&#21491;&#23618;&#27425;&#36941;&#21382;&#20108;&#21449;&#26641;&#65288;&#38656;&#35201;&#20511;&#21161;&#19968;&#20010;&#38431;&#21015;&#65289;</span>
@@ -167,8 +167,8 @@
 </div>
 </div>
 
-<div id="outline-container-org0c443a5" class="outline-3">
-<h3 id="org0c443a5"><span class="section-number-3">4.2</span> 先序遍历（借助栈）</h3>
+<div id="outline-container-orgee492c9" class="outline-3">
+<h3 id="orgee492c9"><span class="section-number-3">4.2</span> 先序遍历（借助栈）</h3>
 <div class="outline-text-3" id="text-4-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#36882;&#24402;&#20808;&#24207;&#36941;&#21382;&#65288;&#20511;&#21161;&#26632;&#65289;</span>
@@ -197,8 +197,8 @@
 </div>
 </div>
 
-<div id="outline-container-org5350c41" class="outline-3">
-<h3 id="org5350c41"><span class="section-number-3">4.3</span> 中序遍历（借助栈）</h3>
+<div id="outline-container-orgd8ac6f0" class="outline-3">
+<h3 id="orgd8ac6f0"><span class="section-number-3">4.3</span> 中序遍历（借助栈）</h3>
 <div class="outline-text-3" id="text-4-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#36882;&#24402;&#20013;&#24207;&#36941;&#21382;&#65288;&#20511;&#21161;&#26632;&#65289;</span>
@@ -226,8 +226,8 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org96edb06" class="outline-3">
-<h3 id="org96edb06"><span class="section-number-3">4.4</span> 后序遍历（借助栈）</h3>
+<div id="outline-container-org068aff0" class="outline-3">
+<h3 id="org068aff0"><span class="section-number-3">4.4</span> 后序遍历（借助栈）</h3>
 <div class="outline-text-3" id="text-4-4">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#36882;&#24402;&#21518;&#24207;&#36941;&#21382;&#65288;&#20511;&#21161;&#26632;&#65289;</span>
@@ -271,8 +271,8 @@
 </div>
 </div>
 
-<div id="outline-container-org523fcf6" class="outline-2">
-<h2 id="org523fcf6"><span class="section-number-2">5</span> morris traversal（非递归、不借助栈）</h2>
+<div id="outline-container-org3f0ece7" class="outline-2">
+<h2 id="org3f0ece7"><span class="section-number-2">5</span> morris traversal（非递归、不借助栈）</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 空间复杂度 O(1)<br>
@@ -280,11 +280,11 @@
 morris traversal 用到了线索二叉树的思想，在 morris 方法中不需要为每个节点额外分配指针指向其前驱（predecessor）和后继节点（successor），只需要利用叶子节点中的左右空指针指向某种顺序遍历下的前驱结点或后继结点就可以了。<br>
 </p>
 </div>
-<div id="outline-container-org1db4902" class="outline-3">
-<h3 id="org1db4902"><span class="section-number-3">5.1</span> 中序遍历</h3>
+<div id="outline-container-orgd9fbc94" class="outline-3">
+<h3 id="orgd9fbc94"><span class="section-number-3">5.1</span> 中序遍历</h3>
 <div class="outline-text-3" id="text-5-1">
 
-<div class="figure">
+<div id="org227a039" class="figure">
 <p><img src="../images/bitree1.jpg" alt="bitree1.jpg"><br>
 </p>
 </div>
@@ -325,11 +325,11 @@ morris traversal 用到了线索二叉树的思想，在 morris 方法中不需�
 </div>
 </div>
 
-<div id="outline-container-org11b0812" class="outline-3">
-<h3 id="org11b0812"><span class="section-number-3">5.2</span> 先序遍历</h3>
+<div id="outline-container-org223d74b" class="outline-3">
+<h3 id="org223d74b"><span class="section-number-3">5.2</span> 先序遍历</h3>
 <div class="outline-text-3" id="text-5-2">
 
-<div class="figure">
+<div id="org1c2c5e6" class="figure">
 <p><img src="../images/bitree2.jpg" alt="bitree2.jpg"><br>
 </p>
 </div>
@@ -369,11 +369,11 @@ morris traversal 用到了线索二叉树的思想，在 morris 方法中不需�
 </div>
 </div>
 
-<div id="outline-container-org99d5cf2" class="outline-3">
-<h3 id="org99d5cf2"><span class="section-number-3">5.3</span> 后序遍历</h3>
+<div id="outline-container-org85a6f50" class="outline-3">
+<h3 id="org85a6f50"><span class="section-number-3">5.3</span> 后序遍历</h3>
 <div class="outline-text-3" id="text-5-3">
 
-<div class="figure">
+<div id="orgab2a077" class="figure">
 <p><img src="../images/bitree3.jpg" alt="bitree3.jpg"><br>
 </p>
 </div>
@@ -455,8 +455,8 @@ morris traversal 用到了线索二叉树的思想，在 morris 方法中不需�
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

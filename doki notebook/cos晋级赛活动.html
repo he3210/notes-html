@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:26 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&lrm;</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgccbcd5d">1. 活动名</a>
+<ul>
+<li><a href="#org799afb0">1.1. 第一阶段 吸金主播活动</a></li>
+<li><a href="#org9b81a14">1.2. 第二阶段</a></li>
+<li><a href="#orgb8962a7">1.3. 第二阶段之后，还有总榜。总榜继承第一、二阶段，第二阶段结束之后还有一天时间，这一天，加分加到总榜</a></li>
+</ul>
+</li>
+<li><a href="#orgc4dff27">2. 第一阶段 <i>api/events_v2/cosplay/rank</i></a></li>
+<li><a href="#orgfb75cd0">3. 第二阶段 <i>api/events_v2/cosplay/rank</i></a></li>
+<li><a href="#orgbdab74d">4. 第三阶段 复用吸金主播</a></li>
+<li><a href="#org273358c">5. 注意事项</a></li>
+<li><a href="#org4173041">6. 活动配置</a></li>
+</ul>
+</div>
+</div>
+<p>
++TITLE: cos晋级赛活动<br>
+</p>
+
+<div id="outline-container-orgccbcd5d" class="outline-2">
+<h2 id="orgccbcd5d"><span class="section-number-2">1</span> 活动名</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>cosplay1 代表第一期 cosplay 活动<br></li>
+</ul>
+</div>
+
+<div id="outline-container-org799afb0" class="outline-3">
+<h3 id="org799afb0"><span class="section-number-3">1.1</span> 第一阶段 吸金主播活动</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+cosplay1_1  0  1<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9b81a14" class="outline-3">
+<h3 id="org9b81a14"><span class="section-number-3">1.2</span> 第二阶段</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+cosplay1_2_camera  0  1<br>
+cosplay1_2_shoes   0  1<br>
+cosplay1_2_clothes 0  1<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb8962a7" class="outline-3">
+<h3 id="orgb8962a7"><span class="section-number-3">1.3</span> 第二阶段之后，还有总榜。总榜继承第一、二阶段，第二阶段结束之后还有一天时间，这一天，加分加到总榜</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+cosplay1_total  0  1<br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc4dff27" class="outline-2">
+<h2 id="orgc4dff27"><span class="section-number-2">2</span> 第一阶段 <i>api/events_v2/cosplay/rank</i></h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>主播收礼榜需要支持 relation 字段<br></li>
+<li>新增字段 total，代表当前榜单人数<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfb75cd0" class="outline-2">
+<h2 id="orgfb75cd0"><span class="section-number-2">3</span> 第二阶段 <i>api/events_v2/cosplay/rank</i></h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>从活动设置中读取 score_use_round，如果是就用完成任务次数代替 score<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbdab74d" class="outline-2">
+<h2 id="orgbdab74d"><span class="section-number-2">4</span> 第三阶段 复用吸金主播</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>从活动设置中读取 star_event_name，作为 cos 值，骑士总榜需要支持一下<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org273358c" class="outline-2">
+<h2 id="org273358c"><span class="section-number-2">5</span> 注意事项</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>这三个任务赛 cosplay1_2_1, cosplay1_2_2, cosplay1_2_3 结束后，要结束任务赛，调用三次 settle_the_task 函数<br></li>
+<li>上新一期代码时，在代码中搜索 "cosplay，需要修改代码中写死的期数<br></li>
+<li>替换写死后的代码后，重启服务 http、schedule-event2<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org4173041" class="outline-2">
+<h2 id="org4173041"><span class="section-number-2">6</span> 活动配置</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li>新增活动rules配置：register_all_times 表示报名时间段和活动时间段均可报名<br></li>
+<li>"round_score": [40, 70]<br></li>
+<li>task_rewards<br></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-js"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27963;&#21160;&#35774;&#32622;&#20013;&#38656;&#35201;&#26032;&#22686; 2 &#39033;&#37197;&#32622;&#65306;round_score&#12289;task_rewards</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">round_score&#65306;&#23436;&#25104;&#20219;&#21153;&#38656;&#35201;&#25628;&#38598;&#30340;&#31036;&#29289;&#20010;&#25968;</span>
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">cosplay1_2_1&#12289;cosplay1_2_2&#12289;cosplay1_2_3 &#36825; 3 &#20010;&#27963;&#21160;&#65292;&#38656;&#35201;&#37197;&#32622;&#22870;&#21169;&#30340;&#33719;&#24471;&#26465;&#20214;&#21644;&#22870;&#21169;&#65292;&#22914;&#19979;&#65306;</span>
+{
+  <span style="color: #00afaf;">"round_score"</span>: [40, 70],       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">board 0 &#30340;&#20027;&#25773;&#38656;&#35201;&#25628;&#38598; 40 &#20010;&#65292;board 1&#30340; &#20027;&#25773;&#38656;&#35201;&#25628;&#38598; 70 &#20010;&#25165;&#31639;&#23436;&#25104;&#20219;&#21153;</span>
+  <span style="color: #00afaf;">"task_rewards"</span>: [
+    [                            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">board 0&#65292;&#20063;&#23601;&#26159;&#26032;&#20154;&#27036;&#20027;&#25773;&#30340;&#22870;&#21169;&#35774;&#32622;</span>
+      {
+        <span style="color: #00afaf;">"cond"</span>: {},              <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33719;&#24471;&#22870;&#21169;&#30340;&#26465;&#20214;&#65292;&#20026; {} &#20195;&#34920;&#21482;&#35201;&#23436;&#25104;&#20219;&#21153;&#23601;&#21487;&#33719;&#24471;&#22870;&#21169;</span>
+        <span style="color: #00afaf;">"rewards"</span>: [             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22870;&#21169;&#21015;&#34920;&#65288;&#36798;&#25104; cond &#26465;&#20214;&#21363;&#21487;&#33719;&#24471;&#35813;&#21015;&#34920;&#25152;&#26377;&#22870;&#21169;&#65289;</span>
+          {
+            <span style="color: #00afaf;">"item_id"</span>: 123,      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">item_id &#20026;&#32972;&#21253;&#31036;&#29289; id</span>
+            <span style="color: #00afaf;">"count"</span>: 1
+          },
+          {
+            <span style="color: #00afaf;">"extra_permission_id"</span>: 456,  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24509;&#31456;id</span>
+            <span style="color: #00afaf;">"count"</span>: 1
+          }
+        ]
+      },
+      {
+        <span style="color: #00afaf;">"cond"</span>: {                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23436;&#25104;&#20219;&#21153;&#65292;&#19988;&#26159;&#31532;&#19968;&#21517;&#65292;&#25165;&#21487;&#33719;&#24471;&#22870;&#21169;</span>
+          <span style="color: #00afaf;">"rank"</span>: [1]
+        },
+        <span style="color: #00afaf;">"rewards"</span>: [
+          {
+            <span style="color: #00afaf;">"item_id"</span>: 111,
+            <span style="color: #00afaf;">"count"</span>: 1
+          },
+          {
+            <span style="color: #00afaf;">"cos_rate"</span>: 1,       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">cos &#20998;&#25968;&#21152;&#25104;&#22870;&#21169;&#65292;count &#20026;&#21152;&#25104;&#30340;&#27604;&#29575;</span>
+            <span style="color: #00afaf;">"count"</span>: 20
+          }
+        ]
+      },
+      {                          <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21487;&#20197;&#22312;&#36825;&#37324;&#35774;&#32622;&#20854;&#23427;&#21517;&#27425;&#30340;&#22870;&#21169;</span>
+
+      },
+      {
+
+      }
+    ],
+    [                            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">board 1&#65292;&#36798;&#20154;&#27036;&#20027;&#25773;&#30340;&#22870;&#21169;&#35774;&#32622;</span>
+      {
+        <span style="color: #00afaf;">"cond"</span>: {},
+        <span style="color: #00afaf;">"rewards"</span>: [
+          {
+            <span style="color: #00afaf;">"item_id"</span>: 123,
+            <span style="color: #00afaf;">"count"</span>: 1
+          },
+          {
+            <span style="color: #00afaf;">"extra_permission_id"</span>: 456,
+            <span style="color: #00afaf;">"count"</span>: 1
+          }
+        ]
+      },
+      {
+        <span style="color: #00afaf;">"cond"</span>: {
+          <span style="color: #00afaf;">"rank"</span>: [1]
+        },
+        <span style="color: #00afaf;">"rewards"</span>: [
+          {
+            <span style="color: #00afaf;">"item_id"</span>: 111,
+            <span style="color: #00afaf;">"count"</span>: 1
+          },
+          {
+            <span style="color: #00afaf;">"cos_rate"</span>: 1,
+            <span style="color: #00afaf;">"count"</span>: 20
+          }
+        ]
+      }
+    ]
+  ]
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

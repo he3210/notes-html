@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>mac 安装 gdb 踩坑</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,15 +34,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc4fa504">1. 参考</a></li>
-<li><a href="#orgfa053cf">2. 安装 gdb 并为其签名</a></li>
-<li><a href="#orge35c951">3. 解决错误</a></li>
+<li><a href="#org431a540">1. 参考</a></li>
+<li><a href="#orgcadbedb">2. 安装 gdb 并为其签名</a></li>
+<li><a href="#orgbfcba8e">3. 解决错误</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc4fa504" class="outline-2">
-<h2 id="orgc4fa504"><span class="section-number-2">1</span> 参考</h2>
+<div id="outline-container-org431a540" class="outline-2">
+<h2 id="org431a540"><span class="section-number-2">1</span> 参考</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><a href="https://sourceware.org/gdb/wiki/BuildingOnDarwin">https://sourceware.org/gdb/wiki/BuildingOnDarwin</a><br></li>
@@ -52,8 +52,8 @@
 </div>
 
 
-<div id="outline-container-orgfa053cf" class="outline-2">
-<h2 id="orgfa053cf"><span class="section-number-2">2</span> 安装 gdb 并为其签名</h2>
+<div id="outline-container-orgcadbedb" class="outline-2">
+<h2 id="orgcadbedb"><span class="section-number-2">2</span> 安装 gdb 并为其签名</h2>
 <div class="outline-text-2" id="text-2">
 <ol class="org-ol">
 <li><p>
@@ -114,8 +114,8 @@ During startup program terminated with signal SIGTRAP, Trace/breakpoint trap.
 </div>
 </div>
 
-<div id="outline-container-orge35c951" class="outline-2">
-<h2 id="orge35c951"><span class="section-number-2">3</span> 解决错误</h2>
+<div id="outline-container-orgbfcba8e" class="outline-2">
+<h2 id="orgbfcba8e"><span class="section-number-2">3</span> 解决错误</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 需要更换 gdb v8.1 到 gdb v8.0.1，用如下代码替换上述步骤1<br>
@@ -136,8 +136,8 @@ $ brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/c3128a5c
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

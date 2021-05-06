@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AF_INET 域与 AF_UNIX 域 socket 通信原理区别</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,20 +34,20 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2dea8b2">1. AF_INET 域 socket 通信过程</a></li>
-<li><a href="#orgdfe968e">2. AF_UNIX 域 socket 通信过程</a></li>
-<li><a href="#orgc540762">3. 相同点</a></li>
-<li><a href="#orgec400fc">4. 不同点</a></li>
-<li><a href="#org23856e7">5. 使用场景</a></li>
+<li><a href="#org2afcc83">1. AF_INET 域 socket 通信过程</a></li>
+<li><a href="#org3d25a9c">2. AF_UNIX 域 socket 通信过程</a></li>
+<li><a href="#orgd3211c3">3. 相同点</a></li>
+<li><a href="#org1a4b524">4. 不同点</a></li>
+<li><a href="#org54f6f43">5. 使用场景</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2dea8b2" class="outline-2">
-<h2 id="org2dea8b2"><span class="section-number-2">1</span> AF_INET 域 socket 通信过程</h2>
+<div id="outline-container-org2afcc83" class="outline-2">
+<h2 id="org2afcc83"><span class="section-number-2">1</span> AF_INET 域 socket 通信过程</h2>
 <div class="outline-text-2" id="text-1">
 
-<div class="figure">
+<div id="org5527244" class="figure">
 <p><img src="../images/AF_INET域socket通信过程.png" alt="AF_INET域socket通信过程.png" width="45%"><br>
 </p>
 </div>
@@ -60,11 +60,11 @@
 </div>
 </div>
 
-<div id="outline-container-orgdfe968e" class="outline-2">
-<h2 id="orgdfe968e"><span class="section-number-2">2</span> AF_UNIX 域 socket 通信过程</h2>
+<div id="outline-container-org3d25a9c" class="outline-2">
+<h2 id="org3d25a9c"><span class="section-number-2">2</span> AF_UNIX 域 socket 通信过程</h2>
 <div class="outline-text-2" id="text-2">
 
-<div class="figure">
+<div id="orgbcd3f5a" class="figure">
 <p><img src="../images/AF_UNIX域socket通信过程.png" alt="AF_UNIX域socket通信过程.png" width="45%"><br>
 </p>
 </div>
@@ -75,8 +75,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgc540762" class="outline-2">
-<h2 id="orgc540762"><span class="section-number-2">3</span> 相同点</h2>
+<div id="outline-container-orgd3211c3" class="outline-2">
+<h2 id="orgd3211c3"><span class="section-number-2">3</span> 相同点</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 操作系统提供的接口 socket(), bind(), connect(), accept(), send(), recv()，以及用来对其进行多路复用事件检测的 select(), poll(), epoll() 都是完全相同的。收发数据的过程中，上层应用感知不到底层的差别。<br>
@@ -84,8 +84,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgec400fc" class="outline-2">
-<h2 id="orgec400fc"><span class="section-number-2">4</span> 不同点</h2>
+<div id="outline-container-org1a4b524" class="outline-2">
+<h2 id="org1a4b524"><span class="section-number-2">4</span> 不同点</h2>
 <div class="outline-text-2" id="text-4">
 <ol class="org-ol">
 <li>建立 socket 传递的地址域，及 bind() 的地址结构稍有区别：<br>
@@ -100,8 +100,8 @@
 </div>
 </div>
 
-<div id="outline-container-org23856e7" class="outline-2">
-<h2 id="org23856e7"><span class="section-number-2">5</span> 使用场景</h2>
+<div id="outline-container-org54f6f43" class="outline-2">
+<h2 id="org54f6f43"><span class="section-number-2">5</span> 使用场景</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 AF_UNIX 由于其对系统 cpu 的较少消耗，不受限于网卡带宽，及高效的传递速率，本机通信则首选 AF_UNIX 域。<br>
@@ -118,8 +118,8 @@ AF_UNIX 由于其对系统 cpu 的较少消耗，不受限于网卡带宽，及�
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

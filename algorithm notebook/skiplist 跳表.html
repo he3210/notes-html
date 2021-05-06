@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>skiplist 跳表</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,23 +34,23 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc11bed1">1. 介绍</a>
+<li><a href="#orgfb3cd85">1. 介绍</a>
 <ul>
-<li><a href="#org752083f">1.1. 查找</a></li>
-<li><a href="#orgdbc9c57">1.2. 插入</a></li>
-<li><a href="#orgc828156">1.3. 删除</a></li>
+<li><a href="#orgc677ba6">1.1. 查找</a></li>
+<li><a href="#orgc05b6ff">1.2. 插入</a></li>
+<li><a href="#org1c4056d">1.3. 删除</a></li>
 </ul>
 </li>
-<li><a href="#org2b91dd1">2. main.c</a></li>
-<li><a href="#orgbf5910e">3. skiplist.h</a></li>
-<li><a href="#org180a139">4. skiplist.c</a></li>
-<li><a href="#orga1f8bae">5. 结果</a></li>
+<li><a href="#org74ee920">2. main.c</a></li>
+<li><a href="#org87f8ebb">3. skiplist.h</a></li>
+<li><a href="#orgbfdd073">4. skiplist.c</a></li>
+<li><a href="#org59dd87a">5. 结果</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc11bed1" class="outline-2">
-<h2 id="orgc11bed1"><span class="section-number-2">1</span> 介绍</h2>
+<div id="outline-container-orgfb3cd85" class="outline-2">
+<h2 id="orgfb3cd85"><span class="section-number-2">1</span> 介绍</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 跳表（skiplist）是一个非常优秀的数据结构，实现简单，插入、删除、查找的复杂度均为 O(logN)。LevelDB 的核心数据结构是用跳表实现的，redis 的 sorted set 数据结构也是有跳表实现的。<br>
@@ -59,8 +59,8 @@
 </p>
 </div>
 
-<div id="outline-container-org752083f" class="outline-3">
-<h3 id="org752083f"><span class="section-number-3">1.1</span> 查找</h3>
+<div id="outline-container-orgc677ba6" class="outline-3">
+<h3 id="orgc677ba6"><span class="section-number-3">1.1</span> 查找</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 下图就是一个跳表结构，红色箭头为查找 30 的过程：20 ==&gt;30<br>
@@ -69,8 +69,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgdbc9c57" class="outline-3">
-<h3 id="orgdbc9c57"><span class="section-number-3">1.2</span> 插入</h3>
+<div id="outline-container-orgc05b6ff" class="outline-3">
+<h3 id="orgc05b6ff"><span class="section-number-3">1.2</span> 插入</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 下图是插入示意图，红色箭头表示查找插入位置的过程，绿色箭头表示指针的移动<br>
@@ -81,8 +81,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgc828156" class="outline-3">
-<h3 id="orgc828156"><span class="section-number-3">1.3</span> 删除</h3>
+<div id="outline-container-org1c4056d" class="outline-3">
+<h3 id="org1c4056d"><span class="section-number-3">1.3</span> 删除</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 下图是删除操作图，删除节点要注意的是：删除节点之后，可能需要降层：因为当前跳表最高层的节点数量可能变成 0 了<br>
@@ -96,8 +96,8 @@
 </div>
 </div>
 
-<div id="outline-container-org2b91dd1" class="outline-2">
-<h2 id="org2b91dd1"><span class="section-number-2">2</span> main.c</h2>
+<div id="outline-container-org74ee920" class="outline-2">
+<h2 id="org74ee920"><span class="section-number-2">2</span> main.c</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
@@ -135,8 +135,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgbf5910e" class="outline-2">
-<h2 id="orgbf5910e"><span class="section-number-2">3</span> skiplist.h</h2>
+<div id="outline-container-org87f8ebb" class="outline-2">
+<h2 id="org87f8ebb"><span class="section-number-2">3</span> skiplist.h</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> __SKIPLIST_H
@@ -179,8 +179,8 @@
 </div>
 </div>
 
-<div id="outline-container-org180a139" class="outline-2">
-<h2 id="org180a139"><span class="section-number-2">4</span> skiplist.c</h2>
+<div id="outline-container-orgbfdd073" class="outline-2">
+<h2 id="orgbfdd073"><span class="section-number-2">4</span> skiplist.c</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"skiplist.h"</span>
@@ -194,7 +194,7 @@
     <span style="color: #5f8700;">return</span> sn;
 }
 
-<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#21019;&#24314;&#19968;&#20010;&#36339;&#34920;&#65292; &#36820;&#22238; skiplist &#25351;&#38024; </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#21019;&#24314;&#19968;&#20010;&#36339;&#34920;&#65292; &#36820;&#22238; skiplist &#25351;&#38024;</span><span style="color: #8a8a8a;"> */</span>
 <span style="color: #af8700;">skiplist</span> *<span style="color: #0087ff;">slCreate</span>(<span style="color: #af8700;">void</span>)
 {
     <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span>;
@@ -232,7 +232,7 @@
     free(sl);
 }
 
-<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#38543;&#26426;&#24471;&#21040;&#19968;&#20010; level&#65292;&#35813; level &#34920;&#31034;&#25226;&#26576;&#19968;&#33410;&#28857;&#21010;&#20998;&#21040;&#35813;&#23618; level </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#38543;&#26426;&#24471;&#21040;&#19968;&#20010; level&#65292;&#35813; level &#34920;&#31034;&#25226;&#26576;&#19968;&#33410;&#28857;&#21010;&#20998;&#21040;&#35813;&#23618; level</span><span style="color: #8a8a8a;"> */</span>
 <span style="color: #af8700;">int</span> <span style="color: #0087ff;">slRandomLevel</span>(<span style="color: #af8700;">void</span>)
 {
     <span style="color: #af8700;">int</span> <span style="color: #0087ff;">level</span> = 1;
@@ -246,7 +246,7 @@
 <span style="color: #8a8a8a;"> * @retur: &#26032;&#33410;&#28857;</span>
 <span style="color: #8a8a8a;"> * &#26032;&#33410;&#28857;&#30340;&#25968;&#25454;&#20445;&#23384;&#19968;&#20221;&#65292;&#24182;&#27809;&#26377;&#22312;&#22810;&#20010; level &#20013;&#25554;&#20837;&#21516;&#19968;&#33410;&#28857;&#30340;&#25968;&#25454;</span>
 <span style="color: #8a8a8a;"> * &#21482;&#26159;&#20462;&#25913;&#20102;&#25351;&#38024;&#65292;&#36923;&#36753;&#19978;&#25554;&#20837;&#32610;&#20102;</span>
-<span style="color: #8a8a8a;"> * </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;"> *</span><span style="color: #8a8a8a;"> */</span>
 <span style="color: #af8700;">skiplistNode</span> *<span style="color: #0087ff;">slInsert</span>(<span style="color: #af8700;">skiplist</span> *<span style="color: #0087ff;">sl</span>, <span style="color: #af8700;">double</span> <span style="color: #0087ff;">score</span>)
 {
     <span style="color: #af8700;">skiplistNode</span> *<span style="color: #0087ff;">update</span>[SKIPLIST_MAXLEVEL];    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20445;&#23384;&#26032;&#33410;&#28857;&#22312;&#21508;&#23618;&#24212;&#25554;&#20837;&#30340;&#20301;&#32622;</span>
@@ -376,8 +376,8 @@
 </div>
 </div>
 
-<div id="outline-container-orga1f8bae" class="outline-2">
-<h2 id="orga1f8bae"><span class="section-number-2">5</span> 结果</h2>
+<div id="outline-container-org59dd87a" class="outline-2">
+<h2 id="org59dd87a"><span class="section-number-2">5</span> 结果</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ gcc main.c skiplist.c -o main
@@ -450,8 +450,8 @@ LEVEL[7]: NULL
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>K 路归并排序</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,9 +34,9 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org933df68">1. 堆</a></li>
-<li><a href="#org551c0f1">2. 胜者树</a></li>
-<li><a href="#org23dfd3d">3. 败者树</a></li>
+<li><a href="#org9bcb109">1. 堆</a></li>
+<li><a href="#orgab83bb4">2. 胜者树</a></li>
+<li><a href="#org0735f78">3. 败者树</a></li>
 </ul>
 </div>
 </div>
@@ -49,15 +49,15 @@
 以 b 序列 [10, 9, 20, 6, 12] 为例，分别使用堆、胜者树、败者树进行建堆或建树<br>
 </p>
 
-<div id="outline-container-org933df68" class="outline-2">
-<h2 id="org933df68"><span class="section-number-2">1</span> 堆</h2>
+<div id="outline-container-org9bcb109" class="outline-2">
+<h2 id="org9bcb109"><span class="section-number-2">1</span> 堆</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 对序列 b 建小根堆如下<br>
 </p>
 
 
-<div class="figure">
+<div id="org461b043" class="figure">
 <p><img src="../images/K 路归并排序 建堆.png" alt="K 路归并排序 建堆.png" width="30%"><br>
 </p>
 </div>
@@ -77,15 +77,15 @@
 </div>
 </div>
 
-<div id="outline-container-org551c0f1" class="outline-2">
-<h2 id="org551c0f1"><span class="section-number-2">2</span> 胜者树</h2>
+<div id="outline-container-orgab83bb4" class="outline-2">
+<h2 id="orgab83bb4"><span class="section-number-2">2</span> 胜者树</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 对序列 b 构建胜者树如下<br>
 </p>
 
 
-<div class="figure">
+<div id="orgd495d73" class="figure">
 <p><img src="../images/K 路归并排序 胜者树.png" alt="K 路归并排序 胜者树.png" width="35%"><br>
 </p>
 </div>
@@ -96,15 +96,15 @@
 </div>
 </div>
 
-<div id="outline-container-org23dfd3d" class="outline-2">
-<h2 id="org23dfd3d"><span class="section-number-2">3</span> 败者树</h2>
+<div id="outline-container-org0735f78" class="outline-2">
+<h2 id="org0735f78"><span class="section-number-2">3</span> 败者树</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 对序列 b 构建败者树如下<br>
 </p>
 
 
-<div class="figure">
+<div id="orge4ab000" class="figure">
 <p><img src="../images/K 路归并排序 败者树.png" alt="K 路归并排序 败者树.png" width="40%"><br>
 </p>
 </div>
@@ -119,7 +119,7 @@
 </p>
 
 
-<div class="figure">
+<div id="orgfb7aeb2" class="figure">
 <p><img src="../images/五路归并排序-败者树.png" alt="五路归并排序-败者树.png" width="40%"><br>
 </p>
 </div>
@@ -266,8 +266,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

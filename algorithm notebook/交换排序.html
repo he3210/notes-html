@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>交换排序</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,25 +34,25 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb8cb2a0">1. 冒泡排序</a></li>
-<li><a href="#orgdac8ee7">2. 快排</a>
+<li><a href="#org23218a8">1. 冒泡排序</a></li>
+<li><a href="#org8ac5b07">2. 快排</a>
 <ul>
-<li><a href="#org2060987">2.1. 两个下标分别从首、尾向中间扫描</a></li>
-<li><a href="#org0c41976">2.2. 两个指针一前一后向后扫描</a></li>
+<li><a href="#org9c5252f">2.1. 两个下标分别从首、尾向中间扫描</a></li>
+<li><a href="#orga964529">2.2. 两个指针一前一后向后扫描</a></li>
 </ul>
 </li>
-<li><a href="#orgec844d7">3. 相关算法</a>
+<li><a href="#orgb483959">3. 相关算法</a>
 <ul>
-<li><a href="#orgcfc1be6">3.1. 荷兰国旗问题</a></li>
-<li><a href="#org6213944">3.2. 找到最小 k 个数</a></li>
+<li><a href="#orgd17d686">3.1. 荷兰国旗问题</a></li>
+<li><a href="#orgba361b7">3.2. 找到最小 k 个数</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb8cb2a0" class="outline-2">
-<h2 id="orgb8cb2a0"><span class="section-number-2">1</span> 冒泡排序</h2>
+<div id="outline-container-org23218a8" class="outline-2">
+<h2 id="org23218a8"><span class="section-number-2">1</span> 冒泡排序</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 基本思想：假设待排序表长为 n，从前向后（从后向前）两两比较相邻元素的值，若为逆序（即 A[i-1] &gt; A[i]），则交换它们，直到序列比较完，这是一趟冒泡排序。一次冒泡排序确定一个元素的位置，这样最多 n-1 躺冒泡就能把所有元素排好序<br>
@@ -108,12 +108,12 @@
 </div>
 </div>
 
-<div id="outline-container-orgdac8ee7" class="outline-2">
-<h2 id="orgdac8ee7"><span class="section-number-2">2</span> 快排</h2>
+<div id="outline-container-org8ac5b07" class="outline-2">
+<h2 id="org8ac5b07"><span class="section-number-2">2</span> 快排</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org2060987" class="outline-3">
-<h3 id="org2060987"><span class="section-number-3">2.1</span> 两个下标分别从首、尾向中间扫描</h3>
+<div id="outline-container-org9c5252f" class="outline-3">
+<h3 id="org9c5252f"><span class="section-number-3">2.1</span> 两个下标分别从首、尾向中间扫描</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 基本思想：假设待排序表长为n，从前向后（从后向前）两两比较相邻元素的值，若为逆序（即 A[i-1] &gt; A[i]），则交换它们，直到序列比较完，这是一趟冒泡排序。一次冒泡排序确定一个元素的位置，这样最多 n-1 躺冒泡就能把所有元素排好序<br>
@@ -148,8 +148,8 @@
 </div>
 </div>
 
-<div id="outline-container-org0c41976" class="outline-3">
-<h3 id="org0c41976"><span class="section-number-3">2.2</span> 两个指针一前一后向后扫描</h3>
+<div id="outline-container-orga964529" class="outline-3">
+<h3 id="orga964529"><span class="section-number-3">2.2</span> 两个指针一前一后向后扫描</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 基本思想：设置两个下标 i、j，在子序列 {A[0], A[1], &#x2026;, A[j]} 中，使下标 i 左边的元素比基准值小，右边的元素比基准值大，j 不断向后扫描，扫描结束即确定基准值的最终位置<br>
@@ -198,12 +198,12 @@
 </div>
 </div>
 
-<div id="outline-container-orgec844d7" class="outline-2">
-<h2 id="orgec844d7"><span class="section-number-2">3</span> 相关算法</h2>
+<div id="outline-container-orgb483959" class="outline-2">
+<h2 id="orgb483959"><span class="section-number-2">3</span> 相关算法</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgcfc1be6" class="outline-3">
-<h3 id="orgcfc1be6"><span class="section-number-3">3.1</span> 荷兰国旗问题</h3>
+<div id="outline-container-orgd17d686" class="outline-3">
+<h3 id="orgd17d686"><span class="section-number-3">3.1</span> 荷兰国旗问题</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 问题描述：<br>
@@ -239,8 +239,8 @@
 </div>
 </div>
 
-<div id="outline-container-org6213944" class="outline-3">
-<h3 id="org6213944"><span class="section-number-3">3.2</span> 找到最小 k 个数</h3>
+<div id="outline-container-orgba361b7" class="outline-3">
+<h3 id="orgba361b7"><span class="section-number-3">3.2</span> 找到最小 k 个数</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 描述：输入 n 个整数，输出其中最小的 k 个<br>
@@ -288,8 +288,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>redis 3.0 源码阅读计划</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,60 +34,60 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbee1ec2">1. 介绍</a></li>
-<li><a href="#org7a965d0">2. 底层数据结构实现</a>
+<li><a href="#org6f581a6">1. 介绍</a></li>
+<li><a href="#org7f272df">2. 底层数据结构实现</a>
 <ul>
-<li><a href="#org834b0dc">2.1. <span class="done DONE">DONE</span> sds</a></li>
-<li><a href="#org29b57ed">2.2. <span class="done DONE">DONE</span> 双端链表</a></li>
-<li><a href="#org3bd58c1">2.3. <span class="done DONE">DONE</span> 字典</a></li>
-<li><a href="#org6b70cea">2.4. <span class="done DONE">DONE</span> skiplist</a></li>
-<li><a href="#orgd850dae">2.5. <span class="todo DELAY">DELAY</span> hyperloglog</a></li>
+<li><a href="#orgc5a066d">2.1. <span class="done DONE">DONE</span> sds</a></li>
+<li><a href="#orgdda02f7">2.2. <span class="done DONE">DONE</span> 双端链表</a></li>
+<li><a href="#orgc08964b">2.3. <span class="done DONE">DONE</span> 字典</a></li>
+<li><a href="#org6d10959">2.4. <span class="done DONE">DONE</span> skiplist</a></li>
+<li><a href="#orgadec658">2.5. <span class="todo DELAY">DELAY</span> hyperloglog</a></li>
 </ul>
 </li>
-<li><a href="#org1670fee">3. 内存编码数据结构实现</a>
+<li><a href="#org49f933e">3. 内存编码数据结构实现</a>
 <ul>
-<li><a href="#orgdc3f68a">3.1. <span class="done DONE">DONE</span> inset 数据结构</a></li>
-<li><a href="#org17f762e">3.2. <span class="done DONE">DONE</span> ziplist 数据结构</a></li>
+<li><a href="#org68e6197">3.1. <span class="done DONE">DONE</span> inset 数据结构</a></li>
+<li><a href="#org0b25813">3.2. <span class="done DONE">DONE</span> ziplist 数据结构</a></li>
 </ul>
 </li>
-<li><a href="#org5ddd0ff">4. redis 数据类型实现</a>
+<li><a href="#org65d162c">4. redis 数据类型实现</a>
 <ul>
-<li><a href="#org2ebe9ef">4.1. <span class="done DONE">DONE</span> list 键</a></li>
-<li><a href="#org7094a40">4.2. <span class="done DONE">DONE</span> hash 键</a></li>
-<li><a href="#orga4a2a57">4.3. <span class="done DONE">DONE</span> set 键</a></li>
-<li><a href="#org6cfd058">4.4. <span class="todo DOING">DOING</span> zset 键</a></li>
-<li><a href="#orgfc27162">4.5. <span class="todo DELAY">DELAY</span> hyperloglog 键</a></li>
+<li><a href="#orge063671">4.1. <span class="done DONE">DONE</span> list 键</a></li>
+<li><a href="#org9f27da8">4.2. <span class="done DONE">DONE</span> hash 键</a></li>
+<li><a href="#org25443d2">4.3. <span class="done DONE">DONE</span> set 键</a></li>
+<li><a href="#org146ec05">4.4. <span class="todo DOING">DOING</span> zset 键</a></li>
+<li><a href="#org5e0c46b">4.5. <span class="todo DELAY">DELAY</span> hyperloglog 键</a></li>
 </ul>
 </li>
-<li><a href="#org081bb12">5. 数据库的实现</a>
+<li><a href="#orgce2c1a4">5. 数据库的实现</a>
 <ul>
-<li><a href="#orgb2717e4">5.1. <span class="done DONE">DONE</span> Redis 数据库实现</a></li>
-<li><a href="#org021a32f">5.2. <span class="done DONE">DONE</span> Redis 数据库通知功能实现</a></li>
-<li><a href="#org7f5ccbe">5.3. <span class="done DONE">DONE</span> 发布与订阅功能的实现</a></li>
-<li><a href="#orga483e3f">5.4. <span class="done DONE">DONE</span> RDB 持久化</a></li>
-<li><a href="#orgdcca766">5.5. <span class="done DONE">DONE</span> AOF 持久化</a></li>
+<li><a href="#org13b637c">5.1. <span class="done DONE">DONE</span> Redis 数据库实现</a></li>
+<li><a href="#orgb355213">5.2. <span class="done DONE">DONE</span> Redis 数据库通知功能实现</a></li>
+<li><a href="#org9ea27a7">5.3. <span class="done DONE">DONE</span> 发布与订阅功能的实现</a></li>
+<li><a href="#orga45d305">5.4. <span class="done DONE">DONE</span> RDB 持久化</a></li>
+<li><a href="#org8c19d42">5.5. <span class="done DONE">DONE</span> AOF 持久化</a></li>
 </ul>
 </li>
-<li><a href="#org848c726">6. 客户端和服务器的实现</a>
+<li><a href="#orge9a4a4b">6. 客户端和服务器的实现</a>
 <ul>
-<li><a href="#org2ec2b31">6.1. <span class="done DONE">DONE</span> 事件处理器实现</a></li>
-<li><a href="#org9a43103">6.2. <span class="done DONE">DONE</span> Redis 客户端</a></li>
-<li><a href="#org2e3d05b">6.3. <span class="todo DOING">DOING</span> 单机 Redis 服务器的实现</a></li>
+<li><a href="#org09cf6dc">6.1. <span class="done DONE">DONE</span> 事件处理器实现</a></li>
+<li><a href="#org32e5a46">6.2. <span class="done DONE">DONE</span> Redis 客户端</a></li>
+<li><a href="#orgc368d48">6.3. <span class="todo DOING">DOING</span> 单机 Redis 服务器的实现</a></li>
 </ul>
 </li>
-<li><a href="#org0c6c58b">7. 多机功能的实现</a>
+<li><a href="#org0db343c">7. 多机功能的实现</a>
 <ul>
-<li><a href="#orgc0c3990">7.1. <span class="todo TODO">TODO</span> redis 主从复制</a></li>
-<li><a href="#org9b62fbc">7.2. <span class="todo TODO">TODO</span> redis sentinel</a></li>
-<li><a href="#orgedabf49">7.3. <span class="todo TODO">TODO</span> redis 集群</a></li>
+<li><a href="#org4d5bb73">7.1. <span class="todo TODO">TODO</span> redis 主从复制</a></li>
+<li><a href="#org9fdecd2">7.2. <span class="todo TODO">TODO</span> redis sentinel</a></li>
+<li><a href="#orga471f36">7.3. <span class="todo TODO">TODO</span> redis 集群</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbee1ec2" class="outline-2">
-<h2 id="orgbee1ec2"><span class="section-number-2">1</span> 介绍</h2>
+<div id="outline-container-org6f581a6" class="outline-2">
+<h2 id="org6f581a6"><span class="section-number-2">1</span> 介绍</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 第 2 部分和第 3 部分为 reids 底层数据结构的实现<br>
@@ -99,12 +99,12 @@
 </div>
 </div>
 
-<div id="outline-container-org7a965d0" class="outline-2">
-<h2 id="org7a965d0"><span class="section-number-2">2</span> 底层数据结构实现</h2>
+<div id="outline-container-org7f272df" class="outline-2">
+<h2 id="org7f272df"><span class="section-number-2">2</span> 底层数据结构实现</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org834b0dc" class="outline-3">
-<h3 id="org834b0dc"><span class="section-number-3">2.1</span> <span class="done DONE">DONE</span> sds</h3>
+<div id="outline-container-orgc5a066d" class="outline-3">
+<h3 id="orgc5a066d"><span class="section-number-3">2.1</span> <span class="done DONE">DONE</span> sds</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 文件：sds.c 和 sds.h<br>
@@ -140,8 +140,8 @@
 </div>
 </div>
 
-<div id="outline-container-org29b57ed" class="outline-3">
-<h3 id="org29b57ed"><span class="section-number-3">2.2</span> <span class="done DONE">DONE</span> 双端链表</h3>
+<div id="outline-container-orgdda02f7" class="outline-3">
+<h3 id="orgdda02f7"><span class="section-number-3">2.2</span> <span class="done DONE">DONE</span> 双端链表</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 文件：adlist.c 和 adlist.h<br>
@@ -163,9 +163,9 @@
 <span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">list</span> {
     <span style="color: #af8700;">listNode</span> *<span style="color: #0087ff;">head</span>;
     <span style="color: #af8700;">listNode</span> *<span style="color: #0087ff;">tail</span>;
-    <span style="color: #af8700;">void</span> *(*dup)(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ptr</span>);             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33410;&#28857;&#20540;&#22797;&#21046;&#20989;&#25968;</span>
-    <span style="color: #af8700;">void</span> (*free)(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ptr</span>);             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33410;&#28857;&#20540;&#37322;&#25918;&#20989;&#25968;</span>
-    <span style="color: #af8700;">int</span> (*match)(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ptr</span>, <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">key</span>);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33410;&#28857;&#20540;&#23545;&#27604;&#20989;&#25968;</span>
+    <span style="color: #af8700;">void</span> *(*<span style="color: #0087ff;">dup</span>)(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ptr</span>);             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33410;&#28857;&#20540;&#22797;&#21046;&#20989;&#25968;</span>
+    <span style="color: #af8700;">void</span> (*<span style="color: #0087ff;">free</span>)(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ptr</span>);             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33410;&#28857;&#20540;&#37322;&#25918;&#20989;&#25968;</span>
+    <span style="color: #af8700;">int</span> (*<span style="color: #0087ff;">match</span>)(<span style="color: #af8700;">void</span> *<span style="color: #0087ff;">ptr</span>, <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">key</span>);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33410;&#28857;&#20540;&#23545;&#27604;&#20989;&#25968;</span>
     <span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">len</span>;                   <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38142;&#34920;&#25152;&#21253;&#21547;&#30340;&#33410;&#28857;&#25968;&#37327;</span>
 } <span style="color: #af8700;">list</span>;
 
@@ -186,8 +186,8 @@
 </div>
 </div>
 
-<div id="outline-container-org3bd58c1" class="outline-3">
-<h3 id="org3bd58c1"><span class="section-number-3">2.3</span> <span class="done DONE">DONE</span> 字典</h3>
+<div id="outline-container-orgc08964b" class="outline-3">
+<h3 id="orgc08964b"><span class="section-number-3">2.3</span> <span class="done DONE">DONE</span> 字典</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 关于 rdb 持久化或 aof 持久化时，哈希表的负载因子：<br>
@@ -235,25 +235,25 @@
 </div>
 </div>
 
-<div id="outline-container-org6b70cea" class="outline-3">
-<h3 id="org6b70cea"><span class="section-number-3">2.4</span> <span class="done DONE">DONE</span> skiplist</h3>
+<div id="outline-container-org6d10959" class="outline-3">
+<h3 id="org6d10959"><span class="section-number-3">2.4</span> <span class="done DONE">DONE</span> skiplist</h3>
 </div>
 
-<div id="outline-container-orgd850dae" class="outline-3">
-<h3 id="orgd850dae"><span class="section-number-3">2.5</span> <span class="todo DELAY">DELAY</span> hyperloglog</h3>
+<div id="outline-container-orgadec658" class="outline-3">
+<h3 id="orgadec658"><span class="section-number-3">2.5</span> <span class="todo DELAY">DELAY</span> hyperloglog</h3>
 </div>
 </div>
 
-<div id="outline-container-org1670fee" class="outline-2">
-<h2 id="org1670fee"><span class="section-number-2">3</span> 内存编码数据结构实现</h2>
+<div id="outline-container-org49f933e" class="outline-2">
+<h2 id="org49f933e"><span class="section-number-2">3</span> 内存编码数据结构实现</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgdc3f68a" class="outline-3">
-<h3 id="orgdc3f68a"><span class="section-number-3">3.1</span> <span class="done DONE">DONE</span> inset 数据结构</h3>
+<div id="outline-container-org68e6197" class="outline-3">
+<h3 id="org68e6197"><span class="section-number-3">3.1</span> <span class="done DONE">DONE</span> inset 数据结构</h3>
 </div>
 
-<div id="outline-container-org17f762e" class="outline-3">
-<h3 id="org17f762e"><span class="section-number-3">3.2</span> <span class="done DONE">DONE</span> ziplist 数据结构</h3>
+<div id="outline-container-org0b25813" class="outline-3">
+<h3 id="org0b25813"><span class="section-number-3">3.2</span> <span class="done DONE">DONE</span> ziplist 数据结构</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 文件 ziplist.c<br>
@@ -274,12 +274,12 @@
 </div>
 </div>
 
-<div id="outline-container-org5ddd0ff" class="outline-2">
-<h2 id="org5ddd0ff"><span class="section-number-2">4</span> redis 数据类型实现</h2>
+<div id="outline-container-org65d162c" class="outline-2">
+<h2 id="org65d162c"><span class="section-number-2">4</span> redis 数据类型实现</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org2ebe9ef" class="outline-3">
-<h3 id="org2ebe9ef"><span class="section-number-3">4.1</span> <span class="done DONE">DONE</span> list 键</h3>
+<div id="outline-container-orge063671" class="outline-3">
+<h3 id="orge063671"><span class="section-number-3">4.1</span> <span class="done DONE">DONE</span> list 键</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 文件：t_list.c<br>
@@ -350,8 +350,8 @@
 </div>
 </div>
 
-<div id="outline-container-org7094a40" class="outline-3">
-<h3 id="org7094a40"><span class="section-number-3">4.2</span> <span class="done DONE">DONE</span> hash 键</h3>
+<div id="outline-container-org9f27da8" class="outline-3">
+<h3 id="org9f27da8"><span class="section-number-3">4.2</span> <span class="done DONE">DONE</span> hash 键</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 文件：t_hash.c<br>
@@ -372,7 +372,7 @@
 <p>
 关于 scan 类命令要注意的事项<br>
 </p>
-<pre class="example">
+<pre class="example" id="org0db1206">
 scan cursor [match pattern] [count n]
 hscan key cursor [match pattern] [count n]
 sscan key cursor [match pattern] [count n]
@@ -407,8 +407,8 @@ zscan key cursor [match pattern] [count n]
 </div>
 </div>
 
-<div id="outline-container-orga4a2a57" class="outline-3">
-<h3 id="orga4a2a57"><span class="section-number-3">4.3</span> <span class="done DONE">DONE</span> set 键</h3>
+<div id="outline-container-org25443d2" class="outline-3">
+<h3 id="org25443d2"><span class="section-number-3">4.3</span> <span class="done DONE">DONE</span> set 键</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 文件：t_set.c<br>
@@ -428,8 +428,8 @@ set 底层使用两种编码方式：intset 和 dict<br>
 </div>
 </div>
 
-<div id="outline-container-org6cfd058" class="outline-3">
-<h3 id="org6cfd058"><span class="section-number-3">4.4</span> <span class="todo DOING">DOING</span> zset 键</h3>
+<div id="outline-container-org146ec05" class="outline-3">
+<h3 id="org146ec05"><span class="section-number-3">4.4</span> <span class="todo DOING">DOING</span> zset 键</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 文件：t_zset.c 中除 zsl 开头的函数之外的所有函数<br>
@@ -460,17 +460,17 @@ zset 底层使用两种编码方式：ziplist 和 skiplist + dict。<br>
 </div>
 </div>
 
-<div id="outline-container-orgfc27162" class="outline-3">
-<h3 id="orgfc27162"><span class="section-number-3">4.5</span> <span class="todo DELAY">DELAY</span> hyperloglog 键</h3>
+<div id="outline-container-org5e0c46b" class="outline-3">
+<h3 id="org5e0c46b"><span class="section-number-3">4.5</span> <span class="todo DELAY">DELAY</span> hyperloglog 键</h3>
 </div>
 </div>
 
-<div id="outline-container-org081bb12" class="outline-2">
-<h2 id="org081bb12"><span class="section-number-2">5</span> 数据库的实现</h2>
+<div id="outline-container-orgce2c1a4" class="outline-2">
+<h2 id="orgce2c1a4"><span class="section-number-2">5</span> 数据库的实现</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-orgb2717e4" class="outline-3">
-<h3 id="orgb2717e4"><span class="section-number-3">5.1</span> <span class="done DONE">DONE</span> Redis 数据库实现</h3>
+<div id="outline-container-org13b637c" class="outline-3">
+<h3 id="org13b637c"><span class="section-number-3">5.1</span> <span class="done DONE">DONE</span> Redis 数据库实现</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 文件：redis.h 文件中的 redisDb 结构， 以及 db.c 文件<br>
@@ -499,8 +499,8 @@ redis 数据库中使用 redisDb.expires 字典来保存到期时间。其中 ke
 </div>
 </div>
 
-<div id="outline-container-org021a32f" class="outline-3">
-<h3 id="org021a32f"><span class="section-number-3">5.2</span> <span class="done DONE">DONE</span> Redis 数据库通知功能实现</h3>
+<div id="outline-container-orgb355213" class="outline-3">
+<h3 id="orgb355213"><span class="section-number-3">5.2</span> <span class="done DONE">DONE</span> Redis 数据库通知功能实现</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 文件：notify.c<br>
@@ -593,8 +593,8 @@ redis 数据库中使用 redisDb.expires 字典来保存到期时间。其中 ke
 </div>
 </div>
 
-<div id="outline-container-org7f5ccbe" class="outline-3">
-<h3 id="org7f5ccbe"><span class="section-number-3">5.3</span> <span class="done DONE">DONE</span> 发布与订阅功能的实现</h3>
+<div id="outline-container-org9ea27a7" class="outline-3">
+<h3 id="org9ea27a7"><span class="section-number-3">5.3</span> <span class="done DONE">DONE</span> 发布与订阅功能的实现</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 文件：pubsub.c 和 redis.h 文件的 pubsubPattern 结构<br>
@@ -628,8 +628,8 @@ redis 数据库中使用 redisDb.expires 字典来保存到期时间。其中 ke
 </div>
 </div>
 
-<div id="outline-container-orga483e3f" class="outline-3">
-<h3 id="orga483e3f"><span class="section-number-3">5.4</span> <span class="done DONE">DONE</span> RDB 持久化</h3>
+<div id="outline-container-orga45d305" class="outline-3">
+<h3 id="orga45d305"><span class="section-number-3">5.4</span> <span class="done DONE">DONE</span> RDB 持久化</h3>
 <div class="outline-text-3" id="text-5-4">
 <p>
 文件 rdb.h rdb.c<br>
@@ -654,8 +654,8 @@ redis 对文件流的读写（fread 和 fwrite）进行了封装，实现文件 
 </div>
 </div>
 
-<div id="outline-container-orgdcca766" class="outline-3">
-<h3 id="orgdcca766"><span class="section-number-3">5.5</span> <span class="done DONE">DONE</span> AOF 持久化</h3>
+<div id="outline-container-org8c19d42" class="outline-3">
+<h3 id="org8c19d42"><span class="section-number-3">5.5</span> <span class="done DONE">DONE</span> AOF 持久化</h3>
 <div class="outline-text-3" id="text-5-5">
 <p>
 文件 aof.c<br>
@@ -701,12 +701,12 @@ redis 执行写命令时会把命令追加到 <b><b>AOF 缓冲区 aof_buf</b></b
 </div>
 </div>
 
-<div id="outline-container-org848c726" class="outline-2">
-<h2 id="org848c726"><span class="section-number-2">6</span> 客户端和服务器的实现</h2>
+<div id="outline-container-orge9a4a4b" class="outline-2">
+<h2 id="orge9a4a4b"><span class="section-number-2">6</span> 客户端和服务器的实现</h2>
 <div class="outline-text-2" id="text-6">
 </div>
-<div id="outline-container-org2ec2b31" class="outline-3">
-<h3 id="org2ec2b31"><span class="section-number-3">6.1</span> <span class="done DONE">DONE</span> 事件处理器实现</h3>
+<div id="outline-container-org09cf6dc" class="outline-3">
+<h3 id="org09cf6dc"><span class="section-number-3">6.1</span> <span class="done DONE">DONE</span> 事件处理器实现</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 文件 ae.c ae.h ae_epoll.c 等<br>
@@ -737,8 +737,8 @@ redis 需要处理两种事件：时间事件、文件事件<br>
 </div>
 </div>
 
-<div id="outline-container-org9a43103" class="outline-3">
-<h3 id="org9a43103"><span class="section-number-3">6.2</span> <span class="done DONE">DONE</span> Redis 客户端</h3>
+<div id="outline-container-org32e5a46" class="outline-3">
+<h3 id="org32e5a46"><span class="section-number-3">6.2</span> <span class="done DONE">DONE</span> Redis 客户端</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 文件 networking.c<br>
@@ -778,14 +778,14 @@ redis 客户端分两种，这两种客户端的套接字描述符 fd 有区别�
 <li><p>
 例如命令：<br>
 </p>
-<pre class="example">
+<pre class="example" id="org654d387">
 SET key value
 </pre>
 
 <p>
 querybuf 的 sds 值为<br>
 </p>
-<pre class="example">
+<pre class="example" id="org5b28838">
 *3\r\n$3\r\nSET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n
 </pre>
 <p>
@@ -829,22 +829,22 @@ querybuf 的 sds 值为<br>
 </div>
 </div>
 
-<div id="outline-container-org2e3d05b" class="outline-3">
-<h3 id="org2e3d05b"><span class="section-number-3">6.3</span> <span class="todo DOING">DOING</span> 单机 Redis 服务器的实现</h3>
+<div id="outline-container-orgc368d48" class="outline-3">
+<h3 id="orgc368d48"><span class="section-number-3">6.3</span> <span class="todo DOING">DOING</span> 单机 Redis 服务器的实现</h3>
 </div>
 </div>
-<div id="outline-container-org0c6c58b" class="outline-2">
-<h2 id="org0c6c58b"><span class="section-number-2">7</span> 多机功能的实现</h2>
+<div id="outline-container-org0db343c" class="outline-2">
+<h2 id="org0db343c"><span class="section-number-2">7</span> 多机功能的实现</h2>
 <div class="outline-text-2" id="text-7">
 </div>
-<div id="outline-container-orgc0c3990" class="outline-3">
-<h3 id="orgc0c3990"><span class="section-number-3">7.1</span> <span class="todo TODO">TODO</span> redis 主从复制</h3>
+<div id="outline-container-org4d5bb73" class="outline-3">
+<h3 id="org4d5bb73"><span class="section-number-3">7.1</span> <span class="todo TODO">TODO</span> redis 主从复制</h3>
 </div>
-<div id="outline-container-org9b62fbc" class="outline-3">
-<h3 id="org9b62fbc"><span class="section-number-3">7.2</span> <span class="todo TODO">TODO</span> redis sentinel</h3>
+<div id="outline-container-org9fdecd2" class="outline-3">
+<h3 id="org9fdecd2"><span class="section-number-3">7.2</span> <span class="todo TODO">TODO</span> redis sentinel</h3>
 </div>
-<div id="outline-container-orgedabf49" class="outline-3">
-<h3 id="orgedabf49"><span class="section-number-3">7.3</span> <span class="todo TODO">TODO</span> redis 集群</h3>
+<div id="outline-container-orga471f36" class="outline-3">
+<h3 id="orga471f36"><span class="section-number-3">7.3</span> <span class="todo TODO">TODO</span> redis 集群</h3>
 </div>
 </div>
 </div>
@@ -856,8 +856,8 @@ querybuf 的 sds 值为<br>
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>矩阵连乘</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         displayAlign: "center",
@@ -36,11 +36,11 @@
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -56,18 +56,18 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgfac2893">1. 问题</a></li>
-<li><a href="#org507906d">2. 分析</a></li>
-<li><a href="#orga62c2b3">3. 状态转移方程</a></li>
-<li><a href="#org5a82044">4. 填表过程</a></li>
-<li><a href="#orgf2dbf4c">5. 动态规划</a></li>
-<li><a href="#orgbcf7b7d">6. 备忘录</a></li>
+<li><a href="#org3ffd3e3">1. 问题</a></li>
+<li><a href="#org04e9b42">2. 分析</a></li>
+<li><a href="#org493dba2">3. 状态转移方程</a></li>
+<li><a href="#orgcb0e46f">4. 填表过程</a></li>
+<li><a href="#orgc82992a">5. 动态规划</a></li>
+<li><a href="#org8792323">6. 备忘录</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgfac2893" class="outline-2">
-<h2 id="orgfac2893"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org3ffd3e3" class="outline-2">
+<h2 id="org3ffd3e3"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 设有矩阵 A<sub>1</sub>(30*35)、A<sub>2</sub>(35*15)、A<sub>3</sub>(15*5)、A<sub>4</sub>(5*10)，M = A<sub>1</sub>*A<sub>2</sub>*A<sub>3</sub>*A<sub>4</sub>，计算所需乘法次数的最小值<br>
@@ -75,8 +75,8 @@
 </div>
 </div>
 
-<div id="outline-container-org507906d" class="outline-2">
-<h2 id="org507906d"><span class="section-number-2">2</span> 分析</h2>
+<div id="outline-container-org04e9b42" class="outline-2">
+<h2 id="org04e9b42"><span class="section-number-2">2</span> 分析</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 A<sub>1</sub>*A<sub>2</sub> 的乘法次数为 30*35*15<br>
@@ -95,8 +95,8 @@ m[i][j] 表示A<sub>i</sub>*A<sub>i+1</sub>*&#x2026;*A<sub>j</sub> 所需乘法�
 </div>
 </div>
 
-<div id="outline-container-orga62c2b3" class="outline-2">
-<h2 id="orga62c2b3"><span class="section-number-2">3</span> 状态转移方程</h2>
+<div id="outline-container-org493dba2" class="outline-2">
+<h2 id="org493dba2"><span class="section-number-2">3</span> 状态转移方程</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 \[
@@ -114,8 +114,8 @@ m[i][j]=\left\{
 </div>
 </div>
 
-<div id="outline-container-org5a82044" class="outline-2">
-<h2 id="org5a82044"><span class="section-number-2">4</span> 填表过程</h2>
+<div id="outline-container-orgcb0e46f" class="outline-2">
+<h2 id="orgcb0e46f"><span class="section-number-2">4</span> 填表过程</h2>
 <div class="outline-text-2" id="text-4">
 <table>
 
@@ -177,8 +177,8 @@ m[i][j]=\left\{
 </div>
 </div>
 
-<div id="outline-container-orgf2dbf4c" class="outline-2">
-<h2 id="orgf2dbf4c"><span class="section-number-2">5</span> 动态规划</h2>
+<div id="outline-container-orgc82992a" class="outline-2">
+<h2 id="orgc82992a"><span class="section-number-2">5</span> 动态规划</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[1024][1024];    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26368;&#20248;&#35299;</span>
@@ -243,8 +243,8 @@ m[i][j]=\left\{
 </div>
 </div>
 
-<div id="outline-container-orgbcf7b7d" class="outline-2">
-<h2 id="orgbcf7b7d"><span class="section-number-2">6</span> 备忘录</h2>
+<div id="outline-container-org8792323" class="outline-2">
+<h2 id="org8792323"><span class="section-number-2">6</span> 备忘录</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">fun2</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">p</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span>)
@@ -280,8 +280,8 @@ m[i][j]=\left\{
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

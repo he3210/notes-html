@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>doki 故障解决笔记</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,19 +34,19 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2803902">1. doki 线上后台重启方法</a></li>
-<li><a href="#org70dbe79">2. 测试环境跨域</a></li>
-<li><a href="#org3ce9393">3. 2019.05.24 五月病活动恢复连续开播用户连续开播天数没加上的问题</a></li>
-<li><a href="#org2fed98a">4. 2019.05.27 统计开播时长、本次开播收礼、start_time（日本时间）</a></li>
-<li><a href="#org1ab8c47">5. 统计红方胜利次数、蓝方胜利次数、平局次数等</a></li>
-<li><a href="#orgf40cd8a">6. 2019-CM 活动家族对战获取用户应该补偿的积分</a></li>
-<li><a href="#orga1a873a">7. 根据主播等级把主播划分为新人榜和达人榜的吸金主播活动</a></li>
+<li><a href="#org2342bd0">1. doki 线上后台重启方法</a></li>
+<li><a href="#org6e6f323">2. 测试环境跨域</a></li>
+<li><a href="#org529f0d9">3. 2019.05.24 五月病活动恢复连续开播用户连续开播天数没加上的问题</a></li>
+<li><a href="#org0971558">4. 2019.05.27 统计开播时长、本次开播收礼、start_time（日本时间）</a></li>
+<li><a href="#orgfbb13d8">5. 统计红方胜利次数、蓝方胜利次数、平局次数等</a></li>
+<li><a href="#org058f9c7">6. 2019-CM 活动家族对战获取用户应该补偿的积分</a></li>
+<li><a href="#org7510f61">7. 根据主播等级把主播划分为新人榜和达人榜的吸金主播活动</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2803902" class="outline-2">
-<h2 id="org2803902"><span class="section-number-2">1</span> doki 线上后台重启方法</h2>
+<div id="outline-container-org2342bd0" class="outline-2">
+<h2 id="org2342bd0"><span class="section-number-2">1</span> doki 线上后台重启方法</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 主机：jp-live-admin01<br>
@@ -64,8 +64,8 @@ ctrl+c 杀死当前进程<br>
 </div>
 </div>
 
-<div id="outline-container-org70dbe79" class="outline-2">
-<h2 id="org70dbe79"><span class="section-number-2">2</span> 测试环境跨域</h2>
+<div id="outline-container-org6e6f323" class="outline-2">
+<h2 id="org6e6f323"><span class="section-number-2">2</span> 测试环境跨域</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 在测试环境注释文件： miveshow/webserver/src/settings.py<br>
@@ -74,8 +74,8 @@ ctrl+c 杀死当前进程<br>
 </div>
 </div>
 
-<div id="outline-container-org3ce9393" class="outline-2">
-<h2 id="org3ce9393"><span class="section-number-2">3</span> 2019.05.24 五月病活动恢复连续开播用户连续开播天数没加上的问题</h2>
+<div id="outline-container-org529f0d9" class="outline-2">
+<h2 id="org529f0d9"><span class="section-number-2">3</span> 2019.05.24 五月病活动恢复连续开播用户连续开播天数没加上的问题</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 搜索所有有效开播的直播<br>
@@ -90,8 +90,8 @@ ctrl+c 杀死当前进程<br>
 </div>
 </div>
 </div>
-<div id="outline-container-org2fed98a" class="outline-2">
-<h2 id="org2fed98a"><span class="section-number-2">4</span> 2019.05.27 统计开播时长、本次开播收礼、start_time（日本时间）</h2>
+<div id="outline-container-org0971558" class="outline-2">
+<h2 id="org0971558"><span class="section-number-2">4</span> 2019.05.27 统计开播时长、本次开播收礼、start_time（日本时间）</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5f8700;">select</span> t.id, t.uid, t.show_id, UNIX_TIMESTAMP(t.end_time) - UNIX_TIMESTAMP(t.start_time) `<span style="color: #af8700;">time</span>(<span style="color: #5f8700;">second</span>)`, from_unixtime(UNIX_TIMESTAMP(t.start_time) + 9*3600) `start_time(japan)`, t.credits
@@ -103,8 +103,8 @@ ctrl+c 杀死当前进程<br>
 </div>
 </div>
 </div>
-<div id="outline-container-org1ab8c47" class="outline-2">
-<h2 id="org1ab8c47"><span class="section-number-2">5</span> 统计红方胜利次数、蓝方胜利次数、平局次数等</h2>
+<div id="outline-container-orgfbb13d8" class="outline-2">
+<h2 id="orgfbb13d8"><span class="section-number-2">5</span> 统计红方胜利次数、蓝方胜利次数、平局次数等</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5f8700;">select</span> <span style="color: #5f8700;">COUNT</span>(if(<span style="color: #5f8700;">result</span>=1, <span style="color: #5f8700;">true</span>, <span style="color: #5f8700;">null</span>)) red_win_count, <span style="color: #5f8700;">COUNT</span>(if(<span style="color: #5f8700;">result</span>=2, <span style="color: #5f8700;">true</span>, <span style="color: #5f8700;">null</span>)) blue_win_count, <span style="color: #5f8700;">COUNT</span>(if(<span style="color: #5f8700;">result</span>=0, <span style="color: #5f8700;">true</span>, <span style="color: #5f8700;">null</span>)) nothing, <span style="color: #5f8700;">COUNT</span>(if(<span style="color: #5f8700;">result</span>=3, <span style="color: #5f8700;">true</span>, <span style="color: #5f8700;">null</span>)) draw, <span style="color: #5f8700;">COUNT</span>(*) `<span style="color: #5f8700;">all</span>`, red_uid, blue_uid 
@@ -113,8 +113,8 @@ ctrl+c 杀死当前进程<br>
 </div>
 </div>
 </div>
-<div id="outline-container-orgf40cd8a" class="outline-2">
-<h2 id="orgf40cd8a"><span class="section-number-2">6</span> 2019-CM 活动家族对战获取用户应该补偿的积分</h2>
+<div id="outline-container-org058f9c7" class="outline-2">
+<h2 id="org058f9c7"><span class="section-number-2">6</span> 2019-CM 活动家族对战获取用户应该补偿的积分</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-sql"><span style="color: #5f8700;">select</span> tt.uid, <span style="color: #5f8700;">SUM</span>(tt.score) score <span style="color: #5f8700;">from</span> 
@@ -125,8 +125,8 @@ ctrl+c 杀死当前进程<br>
 </div>
 </div>
 </div>
-<div id="outline-container-orga1a873a" class="outline-2">
-<h2 id="orga1a873a"><span class="section-number-2">7</span> 根据主播等级把主播划分为新人榜和达人榜的吸金主播活动</h2>
+<div id="outline-container-org7510f61" class="outline-2">
+<h2 id="org7510f61"><span class="section-number-2">7</span> 根据主播等级把主播划分为新人榜和达人榜的吸金主播活动</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 如果获取主播等级失败可能会把主播划分到新人榜<br>
@@ -156,8 +156,8 @@ ctrl+c 杀死当前进程<br>
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

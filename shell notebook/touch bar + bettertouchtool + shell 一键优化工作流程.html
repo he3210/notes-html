@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>touch bar + bettertouchtool + shell 一键优化工作流程</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,20 +34,20 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org72f4374">1. Macbook pro touch bar</a></li>
-<li><a href="#org48cb334">2. bettertouchtool touch bar 基本配置</a></li>
-<li><a href="#org1e1f882">3. touch bar 简化工作流程</a>
+<li><a href="#org0e65be3">1. Macbook pro touch bar</a></li>
+<li><a href="#orgea9b9cd">2. bettertouchtool touch bar 基本配置</a></li>
+<li><a href="#org890a294">3. touch bar 简化工作流程</a>
 <ul>
-<li><a href="#orgcd60a96">3.1. 发包步骤</a></li>
-<li><a href="#org78d55e2">3.2. 优化发包步骤</a></li>
+<li><a href="#org300c7f2">3.1. 发包步骤</a></li>
+<li><a href="#org98f4293">3.2. 优化发包步骤</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org72f4374" class="outline-2">
-<h2 id="org72f4374"><span class="section-number-2">1</span> Macbook pro touch bar</h2>
+<div id="outline-container-org0e65be3" class="outline-2">
+<h2 id="org0e65be3"><span class="section-number-2">1</span> Macbook pro touch bar</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 对我来说，Apple 的 Touch Bar 的设计毫无意义：<br>
@@ -82,15 +82,15 @@ touch bar 的优势在于它是一个条形触摸屏，而不是键盘。比如�
 </div>
 </div>
 
-<div id="outline-container-org48cb334" class="outline-2">
-<h2 id="org48cb334"><span class="section-number-2">2</span> bettertouchtool touch bar 基本配置</h2>
+<div id="outline-container-orgea9b9cd" class="outline-2">
+<h2 id="orgea9b9cd"><span class="section-number-2">2</span> bettertouchtool touch bar 基本配置</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 借助 bettertouchtool 可定制 mac 的快捷键、触控板、touch bar、键盘改键、鼠标、siri、遥控器等。这里用到对 touch bar 的定制。<br>
 参考博客 <a href="https://andrewchidden.com/long-live-the-macbook-pro-with-touch-bar/">andrewchidden</a>，github 项目 <a href="https://github.com/andrewchidden/btt-controllers">btt-controllers</a>，我添加的功能有待办事项提示功能，git 仓库状态功能，剩余电量，天气，时间展示，倒计时器功能，双指左右滑控制音量，三指左右滑控制亮度。我的 touch bar 主界面：<br>
 </p>
 
-<div class="figure">
+<div id="org0912da3" class="figure">
 <p><img src="../images/touch bar-1.png" alt="touch bar-1.png" width="90%"><br>
 </p>
 </div>
@@ -103,7 +103,7 @@ touch bar 的优势在于它是一个条形触摸屏，而不是键盘。比如�
 <b><b>天气控件</b></b> ，显示现在的天气情况。单击后显示今天、明天、后天三天的天气情况：<br>
 </p>
 
-<div class="figure">
+<div id="org6bd312f" class="figure">
 <p><img src="../images/touch bar-2.png" alt="touch bar-2.png" width="90%"><br>
 </p>
 </div></li>
@@ -113,7 +113,7 @@ touch bar 的优势在于它是一个条形触摸屏，而不是键盘。比如�
 单击后展示详细时间:<br>
 </p>
 
-<div class="figure">
+<div id="org66659b7" class="figure">
 <p><img src="../images/touch bar-3.png" alt="touch bar-3.png" width="90%"><br>
 </p>
 </div></li>
@@ -121,7 +121,7 @@ touch bar 的优势在于它是一个条形触摸屏，而不是键盘。比如�
 长按后打开倒计时器，macOS 没有计时器应用程序，该计时器使用 shell 构建，计时结束后 shell 脚本使用 <code>osascript</code> 命令向本机发送一个计时结束的桌面通知：<br>
 </p>
 
-<div class="figure">
+<div id="org9ae0ecb" class="figure">
 <p><img src="../images/touch bar-4.png" alt="touch bar-4.png" width="90%"><br>
 </p>
 </div>
@@ -133,7 +133,7 @@ touch bar 的优势在于它是一个条形触摸屏，而不是键盘。比如�
 下图为正在计时的 30 minutes 倒计时器，点击红色按钮取消计时；点击时间控件，返回主界面<br>
 </p>
 
-<div class="figure">
+<div id="orgcd05387" class="figure">
 <p><img src="../images/touch bar-5.png" alt="touch bar-5.png" width="90%"><br>
 </p>
 </div></li>
@@ -146,15 +146,15 @@ touch bar 的优势在于它是一个条形触摸屏，而不是键盘。比如�
 </div>
 </div>
 
-<div id="outline-container-org1e1f882" class="outline-2">
-<h2 id="org1e1f882"><span class="section-number-2">3</span> touch bar 简化工作流程</h2>
+<div id="outline-container-org890a294" class="outline-2">
+<h2 id="org890a294"><span class="section-number-2">3</span> touch bar 简化工作流程</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 在工作中碰到的一些事情，可以使用 shell 脚本优化工作流程。例如：为 IOS 客户端发包<br>
 </p>
 </div>
-<div id="outline-container-orgcd60a96" class="outline-3">
-<h3 id="orgcd60a96"><span class="section-number-3">3.1</span> 发包步骤</h3>
+<div id="outline-container-org300c7f2" class="outline-3">
+<h3 id="org300c7f2"><span class="section-number-3">3.1</span> 发包步骤</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 IOS ipa 包：xxxx_xxxx_xxxx_1.0.81.1707171146.ipa<br>
@@ -170,15 +170,15 @@ build 号码：ipa 包名的末尾 1707171146 就是 build 号。其中，前 6 
 </div>
 </div>
 
-<div id="outline-container-org78d55e2" class="outline-3">
-<h3 id="org78d55e2"><span class="section-number-3">3.2</span> 优化发包步骤</h3>
+<div id="outline-container-org98f4293" class="outline-3">
+<h3 id="org98f4293"><span class="section-number-3">3.2</span> 优化发包步骤</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 写 2 个 shell 脚本，1.sh 放在本地，2.sh 放在服务器<br>
 </p>
 <ul class="org-ul">
 <li>1.sh 做的事情首先是 scp 命令上传 ipa 文件到服务器，然后使用 ssh 命令在服务器上执行 2.sh。最后根据执行结果，使用 <code>osascript</code> 命令向桌面推送一个通知<br></li>
-<li>2.sh 需要做的是 <a href="#orgcd60a96">发包步骤</a> 中的 2~5 步<br></li>
+<li>2.sh 需要做的是 <a href="#org300c7f2">发包步骤</a> 中的 2~5 步<br></li>
 </ul>
 
 <p>
@@ -207,8 +207,8 @@ build 号码：ipa 包名的末尾 1707171146 就是 build 号。其中，前 6 
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

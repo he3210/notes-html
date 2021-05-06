@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ssh key 登陆远程</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,22 +34,39 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge43b1e1">1. 生成 public_key 和 private_key</a></li>
-<li><a href="#org6172816">2. 公钥拷贝到远程</a></li>
-<li><a href="#org4948e1e">3. 修改本机的配置文件</a></li>
-<li><a href="#org4f48019">4. 使用</a></li>
-<li><a href="#org850ea56">5. 其它</a>
+<li><a href="#orgb7743d9">1. 基础用法</a>
 <ul>
-<li><a href="#org384ad54">5.1. 去除 private_key 私钥密码</a></li>
+<li><a href="#org8910135">1.1. 生成 public_key 和 private_key</a></li>
+<li><a href="#orgb4bc5ba">1.2. 公钥拷贝到远程</a></li>
+<li><a href="#orgfb29fe5">1.3. 修改本机的配置文件</a></li>
+<li><a href="#org3c4329d">1.4. 使用</a></li>
+<li><a href="#org6f9302a">1.5. 其它</a></li>
+<li><a href="#org5c963ff">1.6. 去除 private_key 私钥密码</a></li>
+</ul>
+</li>
+<li><a href="#org4f36940">2. 认证过程</a></li>
+<li><a href="#orga9569e4">3. 使用跳板机登陆目标 server</a></li>
+<li><a href="#orgfe23e1a">4. ssh 隧道</a>
+<ul>
+<li><a href="#org3a2fda0">4.1. ssh 隧道&#x2013;本地端口转发</a></li>
+<li><a href="#orgcb3dde8">4.2. ssh 隧道&#x2013;远程端口转发</a></li>
+<li><a href="#org968cf87">4.3. ssh 隧道&#x2013;动态端口转发（SOCKS 代理）</a></li>
+<li><a href="#org5f28ae6">4.4. 隧道安全性和使用场景</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-orge43b1e1" class="outline-2">
-<h2 id="orge43b1e1"><span class="section-number-2">1</span> 生成 public_key 和 private_key</h2>
+<div id="outline-container-orgb7743d9" class="outline-2">
+<h2 id="orgb7743d9"><span class="section-number-2">1</span> 基础用法</h2>
 <div class="outline-text-2" id="text-1">
+<p>
+在随意一台机器上，使用 ssh-kegen 命令生成一密钥对，私钥放在 client ~/.ssh/ 目录下。公钥追加在 server ~/.ssh/authorized_keys 文件中<br>
+</p>
+</div>
+<div id="outline-container-org8910135" class="outline-3">
+<h3 id="org8910135"><span class="section-number-3">1.1</span> 生成 public_key 和 private_key</h3>
+<div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ ssh-keygen -t rsa -C <span style="color: #00afaf;">"shi_zhonghe@163.com"</span>
 </pre>
@@ -68,26 +85,22 @@
 </div>
 </div>
 
-<div id="outline-container-org6172816" class="outline-2">
-<h2 id="org6172816"><span class="section-number-2">2</span> 公钥拷贝到远程</h2>
-<div class="outline-text-2" id="text-2">
+<div id="outline-container-orgb4bc5ba" class="outline-3">
+<h3 id="orgb4bc5ba"><span class="section-number-3">1.2</span> 公钥拷贝到远程</h3>
+<div class="outline-text-3" id="text-1-2">
 <p>
-拷贝 id_ras.pub 到远程服务器，并重命名为 authorized_keys，然后拷贝到用户根目录下的 .ssh/ 目录<br>
+拷贝公钥 id_ras.pub 内容，追加到 server 端 ~/.ssh/authorized_keys 文件中<br>
 </p>
-<div class="org-src-container">
-<pre class="src src-shell">$ scp -P2207 id_rsa.pub root@www.langdebuqing:/root/.ssh/authorized_keys
-</pre>
-</div>
 </div>
 </div>
 
-<div id="outline-container-org4948e1e" class="outline-2">
-<h2 id="org4948e1e"><span class="section-number-2">3</span> 修改本机的配置文件</h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-orgfb29fe5" class="outline-3">
+<h3 id="orgfb29fe5"><span class="section-number-3">1.3</span> 修改本机的配置文件</h3>
+<div class="outline-text-3" id="text-1-3">
 <p>
 修改本地主机 ~/.ssh/config 文件，添加如下类似内容：<br>
 </p>
-<pre class="example">
+<pre class="example" id="org5d61fd8">
 # server 2
 Host he
     HostName www.langdebuqing.com
@@ -97,24 +110,26 @@ Host he
 </pre>
 </div>
 </div>
-
-<div id="outline-container-org4f48019" class="outline-2">
-<h2 id="org4f48019"><span class="section-number-2">4</span> 使用</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-org3c4329d" class="outline-3">
+<h3 id="org3c4329d"><span class="section-number-3">1.4</span> 使用</h3>
+<div class="outline-text-3" id="text-1-4">
 <div class="org-src-container">
 <pre class="src src-shell">$ ssh he  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992;&#35813;&#21629;&#20196;&#21363;&#21487;&#30331;&#24405;&#65288;&#21482;&#26377;&#39318;&#27425;&#30331;&#38470;&#26102;&#38656;&#35201;&#36755;&#20837;&#23494;&#30721;&#65292;&#20197;&#21518;&#21017;&#19981;&#38656;&#35201;&#65289;</span>
+$ ssh root@langdebuqing.com -p 2107 -i /Users/he/.ssh/id_rsa  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">-i &#26159;&#25351;&#23450;&#35299;&#23494;&#29992;&#30340;&#31169;&#38053;</span>
+$ ssh root@langdebuqing.com -p 2107 -i /Users/he/.ssh/id_rsa <span style="color: #00afaf;">'ls -al'</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30331;&#38470;&#36828;&#31243;&#65292;&#25191;&#34892;&#21629;&#20196;&#65292;&#28982;&#21518;&#36864;&#20986;&#30331;&#38470;</span>
+$ ssh root@langdebuqing.com -p 2107 -i /Users/he/.ssh/id_rsa -t <span style="color: #00afaf;">'ls -al;zsh'</span>  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30331;&#38470;&#36828;&#31243;&#65292;&#20351;&#29992;&#20266;&#32456;&#31471;&#65292;&#25191;&#34892;&#21629;&#20196;</span>
+$ scp -P2207 aa root@www.langdebuqing.com:/root/bb    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23558; aa &#25335;&#36125;&#21040;&#20027;&#26426; www.langdebuqing.com/root/ &#19979;&#65292;&#37325;&#21629;&#21517;&#20026; bb</span>
 $ scp -r test he:/root/  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">scp &#21629;&#20196;&#20063;&#25903;&#25345; ssh key</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org850ea56" class="outline-2">
-<h2 id="org850ea56"><span class="section-number-2">5</span> 其它</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-org6f9302a" class="outline-3">
+<h3 id="org6f9302a"><span class="section-number-3">1.5</span> 其它</h3>
 </div>
-<div id="outline-container-org384ad54" class="outline-3">
-<h3 id="org384ad54"><span class="section-number-3">5.1</span> 去除 private_key 私钥密码</h3>
-<div class="outline-text-3" id="text-5-1">
+<div id="outline-container-org5c963ff" class="outline-3">
+<h3 id="org5c963ff"><span class="section-number-3">1.6</span> 去除 private_key 私钥密码</h3>
+<div class="outline-text-3" id="text-1-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ ssh-keygen -f he.pem -p
 Enter old passphrase:
@@ -123,6 +138,145 @@ Enter same passphrase again:
 Your identification has been saved with the new passphrase.
 </pre>
 </div>
+</div>
+</div>
+</div>
+<div id="outline-container-org4f36940" class="outline-2">
+<h2 id="org4f36940"><span class="section-number-2">2</span> 认证过程</h2>
+<div class="outline-text-2" id="text-2">
+<ol class="org-ol">
+<li>私钥放在 client 上；公钥存放在 server 上，追加在文件 authorized_keys 中<br></li>
+<li>server 端接收到 client 的连接请求后，会在 authorized_keys 中匹配到 client 的公钥串，并生成随机数 r，用公钥对 r 进行加密得到pubKey(r)，然后将加密后信息发送给 client<br></li>
+<li>client 端通过私钥进行解密得到随机数 r，然后对随机数 r 和本次 session 的 SessionKey 利用 MD5 生成摘要 Digest1，发送给 server<br></li>
+<li>server 端会也会对 r 和 SessionKey 利用同样摘要算法生成 Digest2<br></li>
+<li>server 端会最后比较 Digest1 和 Digest2 是否相同，完成认证过程<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orga9569e4" class="outline-2">
+<h2 id="orga9569e4"><span class="section-number-2">3</span> 使用跳板机登陆目标 server</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+目标 server 10.0.110.115<br>
+跳板机 45.40.61.11<br>
+private.pem 用于解密跳板机的私钥<br>
+private2.pem 用于解密目标 server 的私钥<br>
+-W %h:%p 会被填充为 -W 10.0.110.115:22<br>
+ProxyCommand 配置可改为 ProxyCommand ssh jp -W %h:%p<br>
+RemoteCommand 登陆远程主机后，在远程主机执行该命令<br>
+RequestTTY yes 等同于命令行中的 -t<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ ssh zeus@10.0.110.115 -i /Users/he/.ssh/private2.pem -p 22 -o <span style="color: #0087ff;">ProxyCommand</span>=<span style="color: #00afaf;">'ssh -i /Users/he/.ssh/private.pem -p 22 he@45.40.61.11 -W %h:%p'</span>
+</pre>
+</div>
+
+<p>
+~/.ssh/config 配置<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-conf">Host jp
+    Hostname 45.40.61.11
+    Port 22
+    User he
+    IdentityFile ~/.ssh/private.pem
+
+host test
+    HostName 10.0.110.115
+    Port 22
+    User zeus
+    IdentityFile /Users/he/.ssh/private2.pem
+    ProxyCommand ssh -i ~/.ssh/private.pem -p 22 he@45.40.61.11 -W %h:%p
+    RemoteCommand pwd;bash;
+    RequestTTY yes
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfe23e1a" class="outline-2">
+<h2 id="orgfe23e1a"><span class="section-number-2">4</span> ssh 隧道</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org3a2fda0" class="outline-3">
+<h3 id="org3a2fda0"><span class="section-number-3">4.1</span> ssh 隧道&#x2013;本地端口转发</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+<code>-N</code> 表示关闭执行远程命令的功能，仅用于端口转发<br>
+<code>-f</code> 后台运行<br>
+<code>-L</code> 6000:10.0.110.115:22  本机创建一个套接字，监听 6000 端口。通过该套接字把收到的内容转发到目标 server 10.0.110.115:22。如果 -L 不和 -g 一起使用，默认只能本机 localhost 或 127.0.0.1 回环地址访问 6000 端口。格式：[-L [bind_address:]port:host:hostport]<br>
+<code>-g</code> 如果指定 -g，其它主机也可访问该机器的 6000 端口，会把其它主机的请求转发到目标 server 10.0.110.115:22<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ lsof -i:6000
+$ ssh -N -f -L 6000:10.0.110.115:22 -i ~/.ssh/private.pem he@45.40.61.11 -p 22  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26500;&#24314;&#19968;&#26465;&#26412;&#26426;&#21040;&#36339;&#26495;&#26426; 45.40.61.11 &#30340; ssh &#38567;&#36947;&#12290;&#26412;&#26426; 6000 &#31471;&#21475;&#21457;&#20986;&#30340;&#20449;&#24687;&#65292;&#20250;&#34987;&#38567;&#36947;&#21478;&#19968;&#31471;&#36339;&#26495;&#26426; 45.40.61.11:22 &#36716;&#21457;&#21040;&#30446;&#26631; server 10.0.110.115:22</span>
+$ lsof -i:6000
+COMMAND   PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+ssh     48089   he    5u  IPv6 0x3fe908dfdb388b63      0t0  TCP localhost:6000 (LISTEN)
+ssh     48089   he    6u  IPv4 0x3fe908dfe282dcd3      0t0  TCP localhost:6000 (LISTEN)
+$ ssh -p 6000 zeus@localhost -i /Users/he/.ssh/private2.pem  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30331;&#38470;&#30446;&#26631; server&#12290;localhost:6000 &#20250;&#34987;&#36716;&#21457;&#21040;&#30446;&#26631; server&#12290;zeus &#20026;&#30446;&#26631; server &#29992;&#25143;&#21517;&#12290;&#26410;&#25351;&#23450; -g&#65292;&#21482;&#33021;&#30001; localhost &#35775;&#38382; 6000</span>
+
+$ ssh -N -f -L 6600:10.0.110.115:3306 -i ~/.ssh/private.pem he@45.40.61.11 -p 22
+$ mysql -h 127.0.0.1 -P 6600 -uuser -ppassward -Ddatasename  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992; ssh &#38567;&#36947;&#30331;&#38470;&#36828;&#31243; mysql&#12290;&#20351;&#29992; localhost &#21482;&#33021;&#30331;&#38470;&#21040;&#26412;&#26426; mysql&#65292;&#20351;&#29992; 127.0.0.1 &#25165;&#20250;&#35775;&#38382;&#30446;&#26631; server &#30340; mysql&#12290;&#26242;&#26102;&#19981;&#30693;&#36947;&#21407;&#22240;&#12290;</span>
+
+$ ssh -N -f -g -L 6660:10.0.110.115:22 -i ~/.ssh/private.pem he@45.40.61.11 -p 22  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">-g &#31034;&#20363;</span>
+$ ssh -p 6660 zeus@192.168.3.8 -i /Users/he/.ssh/private2.pem  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">192.168.3.8 &#20026;&#26412;&#26426;&#30340; ip &#22320;&#22336;&#12290;&#35813;&#21629;&#20196;&#22312;&#20854;&#23427;&#20027;&#26426;&#19978;&#25191;&#34892;&#12290;&#28040;&#24687;&#20250;&#34987;&#26412;&#26426; 192.168.3.8 &#36716;&#21457;&#21040;&#30446;&#26631; server</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcb3dde8" class="outline-3">
+<h3 id="orgcb3dde8"><span class="section-number-3">4.2</span> ssh 隧道&#x2013;远程端口转发</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+<code>-R [bind_addr:]host1_port:host2_ip:host2_port host1_ip</code> 在本机执行该命令。本机会请求 host1 上的 sshd 服务，在 host1 上建立一个套接字监听 host1_port 端口。host1 套接字收到的内容，会使用本机和 host1 之间构建的 ssh 隧道，转发到目标 server host2<br>
+远程端口转发表示的是将远程端口的数据转发到本地 IP:PORT<br>
+</p>
+
+
+<div id="org0e0b41d" class="figure">
+<p><img src="../images/ssh隧道--远程端口转发.png" alt="ssh隧道--远程端口转发.png"><br>
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ ssh -N -f -g -R 22333:host2:80 host1  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312; host3 &#19978;&#25191;&#34892;&#35813;&#21629;&#20196;&#12290;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org968cf87" class="outline-3">
+<h3 id="org968cf87"><span class="section-number-3">4.3</span> ssh 隧道&#x2013;动态端口转发（SOCKS 代理）</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+相对于动态端口转发，本地端口转发和远程端口转发都是静态端口转发。所谓的 "静态" 是指应用程序服务器端的 IP 地址和监听的端口是固定的。试想另外一类应用场景：设置浏览器通过端口转发访问不同网络中的网站。这类应用的特点是目标服务器的 IP 和端口是未知的并且总是在变化，创建端口转发时不可能知道这些信息。只有在发送 HTTP 请求时才能确定目标服务器的 IP 和端口。在这种场景下静态端口转发的方式是搞不定的，因而需要一种专门的端口转发方式支持即 "动态端口转发"。SSH 动态端口转发是通过 Socks 协议实现的，创建动态端口转发时 SSH 服务器扮演一个 Socks 代理服务器，所以这种转发方式也叫 Socks 转发<br>
+</p>
+
+<p>
+<code>-D [bind_addr:]port remote</code> 在本机监听 port 端口，把收到的信息发给隧道的另一端 remote，然后 remote 和目标站点进行通信<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ ssh -N -f -g -D 6667 -i ~/.ssh/id_rsa user@host1 -p 22  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30417;&#21548;&#26412;&#26426; 6667 &#31471;&#21475;&#65292;&#25226;&#25910;&#21040;&#30340;&#20449;&#24687;&#21457;&#32473;&#38567;&#36947;&#30340;&#21478;&#19968;&#31471; host1&#65292;&#28982;&#21518;&#30001; host1 &#21644;&#30446;&#26631;&#31449;&#28857;&#36827;&#34892;&#36890;&#20449;</span>
+</pre>
+</div>
+
+<p>
+然后在浏览器 SOCKS 代理中，填上本机的 ip 和 6667 端口。这样浏览器就可以使用 SOCKS 代理进行联网了。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5f28ae6" class="outline-3">
+<h3 id="org5f28ae6"><span class="section-number-3">4.4</span> 隧道安全性和使用场景</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+在构建的隧道中传输数据是经过公钥加密的，所以在隧道中传输数据是安全的。但是，通过隧道尾端转发数据是无公钥加密的，所以使用 ssh 隧道的目的并不是提升数据的安全性。<br>
+有时使用隧道是为了绕开防火墙。例如：serverA-serverB 互通，serverA-serverC 被防火墙阻断了，serverB-serverC 互通。serverA 访问 serverC，可以在 serverA-serverB 之间构建一个 ssh 隧道。通过 serverB 访问 serverC<br>
+</p>
 </div>
 </div>
 </div>
@@ -135,8 +289,8 @@ Your identification has been saved with the new passphrase.
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ac 自动机</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         displayAlign: "center",
@@ -36,11 +36,11 @@
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -56,23 +56,23 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org66e84ad">1. 参考</a></li>
-<li><a href="#orge127d77">2. 问题</a></li>
-<li><a href="#orge2c2a5e">3. 解题思路</a></li>
-<li><a href="#orged8f9a2">4. Aho–Corasick algorithm</a></li>
-<li><a href="#org81966ea">5. 解法一</a>
+<li><a href="#orga4e4545">1. 参考</a></li>
+<li><a href="#org4e910b5">2. 问题</a></li>
+<li><a href="#orgdd3fb66">3. 解题思路</a></li>
+<li><a href="#orgf7bf3a5">4. Aho–Corasick algorithm</a></li>
+<li><a href="#org050d27b">5. 解法一</a>
 <ul>
-<li><a href="#org66618d8">5.1. trie + fail 指针的一般解法</a></li>
-<li><a href="#org9a3cd1f">5.2. 进一步优化</a></li>
+<li><a href="#orgb6ebbc8">5.1. trie + fail 指针的一般解法</a></li>
+<li><a href="#orgae281bf">5.2. 进一步优化</a></li>
 </ul>
 </li>
-<li><a href="#orgbc1c556">6. 解法二：使用数组存储 trie 图</a></li>
+<li><a href="#orgeb2b069">6. 解法二：使用数组存储 trie 图</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org66e84ad" class="outline-2">
-<h2 id="org66e84ad"><span class="section-number-2">1</span> 参考</h2>
+<div id="outline-container-orga4e4545" class="outline-2">
+<h2 id="orga4e4545"><span class="section-number-2">1</span> 参考</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><a href="https://zh.wikipedia.org/wiki/AC%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%AE%97%E6%B3%95">wiki-AC自动机算法</a><br></li>
@@ -81,8 +81,8 @@
 </div>
 </div>
 
-<div id="outline-container-orge127d77" class="outline-2">
-<h2 id="orge127d77"><span class="section-number-2">2</span> 问题</h2>
+<div id="outline-container-org4e910b5" class="outline-2">
+<h2 id="org4e910b5"><span class="section-number-2">2</span> 问题</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 给一个很长的文本，长度为 n，然后再给 m 个模式串。求这 m 个模式串中有多少个是这个文本的子串。<br>
@@ -94,8 +94,8 @@
 </div>
 </div>
 
-<div id="outline-container-orge2c2a5e" class="outline-2">
-<h2 id="orge2c2a5e"><span class="section-number-2">3</span> 解题思路</h2>
+<div id="outline-container-orgdd3fb66" class="outline-2">
+<h2 id="orgdd3fb66"><span class="section-number-2">3</span> 解题思路</h2>
 <div class="outline-text-2" id="text-3">
 <ol class="org-ol">
 <li><code>暴力破解</code>  时间复杂度为 O(n*m*len(m))，显然时间复杂度太高<br></li>
@@ -133,8 +133,8 @@ ac 自动机算法时间复杂度为 O(n+len(m)*m)<br>
 </div>
 </div>
 
-<div id="outline-container-orged8f9a2" class="outline-2">
-<h2 id="orged8f9a2"><span class="section-number-2">4</span> Aho–Corasick algorithm</h2>
+<div id="outline-container-orgf7bf3a5" class="outline-2">
+<h2 id="orgf7bf3a5"><span class="section-number-2">4</span> Aho–Corasick algorithm</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 在<a href="https://zh.wikipedia.org/wiki/AC%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%AE%97%E6%B3%95">维基百科</a>中 AC 自动机的简介如下<br>
@@ -158,7 +158,7 @@ UNIX系统中的一个命令fgrep就是以AC自动机算法作为基础实现的
 </blockquote>
 
 <p>
-AC 自动机是一个 <code>确定有限状态自动机</code> ，确定有限状态自动机在<a href="https://zh.wikipedia.org/wiki/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E6%9C%BA">维基百科</a>中的简介如下<br>
+AC 自动机是一个 <code>确定有限状态自动机</code> ，确定有限状态自动机在<a href="https://zh.wikipedia.org/wiki/%25E7%25A1%25AE%25E5%25AE%259A%25E6%259C%2589%25E9%2599%2590%25E7%258A%25B6%25E6%2580%2581%25E8%2587%25AA%25E5%258A%25A8%25E6%259C%25BA">维基百科</a>中的简介如下<br>
 </p>
 <blockquote>
 <p>
@@ -168,12 +168,12 @@ AC 自动机是一个 <code>确定有限状态自动机</code> ，确定有限�
 </div>
 </div>
 
-<div id="outline-container-org81966ea" class="outline-2">
-<h2 id="org81966ea"><span class="section-number-2">5</span> 解法一</h2>
+<div id="outline-container-org050d27b" class="outline-2">
+<h2 id="org050d27b"><span class="section-number-2">5</span> 解法一</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org66618d8" class="outline-3">
-<h3 id="org66618d8"><span class="section-number-3">5.1</span> trie + fail 指针的一般解法</h3>
+<div id="outline-container-orgb6ebbc8" class="outline-3">
+<h3 id="orgb6ebbc8"><span class="section-number-3">5.1</span> trie + fail 指针的一般解法</h3>
 <div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
 <pre class="src src-c++"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdio&gt;</span>
@@ -332,8 +332,8 @@ Found 2 pattern strings
 </div>
 </div>
 
-<div id="outline-container-org9a3cd1f" class="outline-3">
-<h3 id="org9a3cd1f"><span class="section-number-3">5.2</span> 进一步优化</h3>
+<div id="outline-container-orgae281bf" class="outline-3">
+<h3 id="orgae281bf"><span class="section-number-3">5.2</span> 进一步优化</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 该解法并不符合 <code>确定有限状态自动机</code> 的定义。原因如下：<br>
@@ -419,8 +419,8 @@ Found 2 pattern strings
 </div>
 </div>
 
-<div id="outline-container-orgbc1c556" class="outline-2">
-<h2 id="orgbc1c556"><span class="section-number-2">6</span> 解法二：使用数组存储 trie 图</h2>
+<div id="outline-container-orgeb2b069" class="outline-2">
+<h2 id="orgeb2b069"><span class="section-number-2">6</span> 解法二：使用数组存储 trie 图</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-c++"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;cstdio&gt;</span>
@@ -574,8 +574,8 @@ Found 2 pattern strings
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

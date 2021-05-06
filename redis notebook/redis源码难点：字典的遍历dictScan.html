@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>redis 源码难点：字典的遍历 dictScan</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,31 +34,31 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0790034">1. 问题</a></li>
-<li><a href="#orgcfdd224">2. 算法核心原理</a></li>
-<li><a href="#org58ba42d">3. 为什么要采用这种算法</a>
+<li><a href="#org84d05e4">1. 问题</a></li>
+<li><a href="#orgad72d36">2. 算法核心原理</a></li>
+<li><a href="#orgd4d592c">3. 为什么要采用这种算法</a>
 <ul>
-<li><a href="#org205ecd2">3.1. 该算法的迭代过程</a>
+<li><a href="#orge50e6e4">3.1. 该算法的迭代过程</a>
 <ul>
-<li><a href="#org0abbb73">3.1.1. 哈希表扩展</a></li>
-<li><a href="#org83ceaa0">3.1.2. 哈希表收缩</a></li>
+<li><a href="#org03abab7">3.1.1. 哈希表扩展</a></li>
+<li><a href="#orgd3ad934">3.1.2. 哈希表收缩</a></li>
 </ul>
 </li>
-<li><a href="#orgb077f42">3.2. 普通的顺序迭代过程</a>
+<li><a href="#orgcee506c">3.2. 普通的顺序迭代过程</a>
 <ul>
-<li><a href="#org96b2dca">3.2.1. 哈希表扩展</a></li>
-<li><a href="#orgd78840e">3.2.2. 哈希表收缩</a></li>
+<li><a href="#org7546a33">3.2.1. 哈希表扩展</a></li>
+<li><a href="#org0a5bba7">3.2.2. 哈希表收缩</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org608ebc7">4. dictScan 源码</a></li>
+<li><a href="#org2b5fc5c">4. dictScan 源码</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0790034" class="outline-2">
-<h2 id="org0790034"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org84d05e4" class="outline-2">
+<h2 id="org84d05e4"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 dict.c 中的 dictScan 函数，用来遍历字典，迭代其中的每个元素。该函数使用的算法十分精妙<br>
@@ -79,8 +79,8 @@ dict.c 中的 dictScan 函数，用来遍历字典，迭代其中的每个元素
 </div>
 </div>
 
-<div id="outline-container-orgcfdd224" class="outline-2">
-<h2 id="orgcfdd224"><span class="section-number-2">2</span> 算法核心原理</h2>
+<div id="outline-container-orgad72d36" class="outline-2">
+<h2 id="orgad72d36"><span class="section-number-2">2</span> 算法核心原理</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 该算法使用了游标 v 来遍历字典，它表示本次要访问的哈希表 bucket 的索引。bucket 中保存了一个 entry 链表（哈希表用的是链地址法来解决键冲突），因此每次迭代都会把该 bucket 的链表中的所有元素都遍历一遍。<br>
@@ -187,8 +187,8 @@ $ ./main
 </div>
 </div>
 
-<div id="outline-container-org58ba42d" class="outline-2">
-<h2 id="org58ba42d"><span class="section-number-2">3</span> 为什么要采用这种算法</h2>
+<div id="outline-container-orgd4d592c" class="outline-2">
+<h2 id="orgd4d592c"><span class="section-number-2">3</span> 为什么要采用这种算法</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 这样设计的原因就在于，字典中的哈希表有可能扩展（redis 中扩展指的是调整哈希表大小，使 load-factor &lt;= 0.5 附近），也有可能收缩（redis 中收缩指的是调整哈希表大小，使 load-factor &lt;= 1 附近）。在字典不稳定的情况下，既要遍历到所有没被删除的元素，又要尽可能较少的重复遍历。<br>
@@ -203,21 +203,21 @@ $ ./main
 </p>
 </div>
 
-<div id="outline-container-org205ecd2" class="outline-3">
-<h3 id="org205ecd2"><span class="section-number-3">3.1</span> 该算法的迭代过程</h3>
+<div id="outline-container-orge50e6e4" class="outline-3">
+<h3 id="orge50e6e4"><span class="section-number-3">3.1</span> 该算法的迭代过程</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 重新看一下该算法中，哈希表容量分别为 8 和 16 时，v 的迭代过程：<br>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgcfa49ae">
 000 -&gt; 100 -&gt; 010 -&gt; 110 -&gt; 001 -&gt; 101 -&gt; 011 -&gt; 111 -&gt; 000
 0000 -&gt; 1000 -&gt; 0100 -&gt; 1100 -&gt; 0010 -&gt; 1010 -&gt; 0110 -&gt; 1110 -&gt; 0001 -&gt; 1001 -&gt; 0101 -&gt; 1101 -&gt; 0011 -&gt; 1011 -&gt; 0111 -&gt; 1111 -&gt; 0000
 </pre>
 </div>
 
-<div id="outline-container-org0abbb73" class="outline-4">
-<h4 id="org0abbb73"><span class="section-number-4">3.1.1</span> 哈希表扩展</h4>
+<div id="outline-container-org03abab7" class="outline-4">
+<h4 id="org03abab7"><span class="section-number-4">3.1.1</span> 哈希表扩展</h4>
 <div class="outline-text-4" id="text-3-1-1">
 <p>
 哈希表容量为 8 时，第 i 个 v 的值（0 &lt;= i &lt;=7），扩展到容量为 16 的哈希表中，对应的值是 2i 和 2i+1，它们是相邻的，这点很重要。<br>
@@ -233,8 +233,8 @@ $ ./main
 </div>
 </div>
 
-<div id="outline-container-org83ceaa0" class="outline-4">
-<h4 id="org83ceaa0"><span class="section-number-4">3.1.2</span> 哈希表收缩</h4>
+<div id="outline-container-orgd3ad934" class="outline-4">
+<h4 id="orgd3ad934"><span class="section-number-4">3.1.2</span> 哈希表收缩</h4>
 <div class="outline-text-4" id="text-3-1-2">
 <p>
 再看一下字典哈希表收缩的情况，也就是由 16 收缩为 8。在容量为 16 时，迭代完索引 0100 之后，下一个索引为 1100，假设此时哈希表容量收缩为 8。1100 这个索引，在容量为 8 的情况下，就成了 100。因此开始迭代索引为 100 的 bucket 中的节点。<br>
@@ -263,21 +263,21 @@ $ ./main
 </div>
 </div>
 
-<div id="outline-container-orgb077f42" class="outline-3">
-<h3 id="orgb077f42"><span class="section-number-3">3.2</span> 普通的顺序迭代过程</h3>
+<div id="outline-container-orgcee506c" class="outline-3">
+<h3 id="orgcee506c"><span class="section-number-3">3.2</span> 普通的顺序迭代过程</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 如果按照正常的顺序迭代，哈希表容量分别为 8 和 16 时，v 的迭代过程如下：<br>
 </p>
 
-<pre class="example">
+<pre class="example" id="orgd658806">
 000 -&gt; 001 -&gt; 010 -&gt; 011 -&gt; 100 -&gt; 101 -&gt; 110 -&gt; 111 -&gt; 000     
 0000 -&gt; 0001 -&gt; 0010 -&gt; 0011 -&gt; 0100 -&gt; 0101 -&gt; 0110 -&gt; 0111 -&gt; 1000 -&gt; 1001 -&gt; 1010 -&gt; 1011 -&gt; 1100 -&gt; 1101 -&gt; 1110 -&gt; 1111 -&gt; 0000  
 </pre>
 </div>
 
-<div id="outline-container-org96b2dca" class="outline-4">
-<h4 id="org96b2dca"><span class="section-number-4">3.2.1</span> 哈希表扩展</h4>
+<div id="outline-container-org7546a33" class="outline-4">
+<h4 id="org7546a33"><span class="section-number-4">3.2.1</span> 哈希表扩展</h4>
 <div class="outline-text-4" id="text-3-2-1">
 <p>
 字典扩展的情况，当前字典哈希表容量为 8，假设在迭代完索引为 010 的 bucket 之后，下一个索引为 011。迭代 011 之前，字典容量扩展成了 16。011 这个索引，在容量为 16 的情况下，就成了 0011，因此开始迭代索引为 0011 的 bucket 中的节点。<br>
@@ -297,8 +297,8 @@ $ ./main
 </div>
 </div>
 
-<div id="outline-container-orgd78840e" class="outline-4">
-<h4 id="orgd78840e"><span class="section-number-4">3.2.2</span> 哈希表收缩</h4>
+<div id="outline-container-org0a5bba7" class="outline-4">
+<h4 id="org0a5bba7"><span class="section-number-4">3.2.2</span> 哈希表收缩</h4>
 <div class="outline-text-4" id="text-3-2-2">
 <p>
 再看一下容量缩小的情况，容量由 16 缩小为 8。在容量为 16 时，迭代完 0100 之后，下一个为 0101，此时容量缩小为 8。0101 在容量为 8 的情况下，就成了101。<br>
@@ -324,8 +324,8 @@ $ ./main
 </div>
 </div>
 
-<div id="outline-container-org608ebc7" class="outline-2">
-<h2 id="org608ebc7"><span class="section-number-2">4</span> dictScan 源码</h2>
+<div id="outline-container-org2b5fc5c" class="outline-2">
+<h2 id="org2b5fc5c"><span class="section-number-2">4</span> dictScan 源码</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #af8700;">unsigned</span> <span style="color: #af8700;">long</span> <span style="color: #0087ff;">dictScan</span>(<span style="color: #af8700;">dict</span> *<span style="color: #0087ff;">d</span>,
@@ -521,8 +521,8 @@ large v is: 11111
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

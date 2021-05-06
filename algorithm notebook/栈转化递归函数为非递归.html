@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>栈转化递归函数为非递归</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         displayAlign: "center",
@@ -36,11 +36,11 @@
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -56,15 +56,15 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org8c19c0f">1. 问题</a></li>
-<li><a href="#org613dffa">2. 递归</a></li>
-<li><a href="#org6b5292e">3. 非递归</a></li>
+<li><a href="#org6367978">1. 问题</a></li>
+<li><a href="#orgcc7c8b4">2. 递归</a></li>
+<li><a href="#orgba299a9">3. 非递归</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org8c19c0f" class="outline-2">
-<h2 id="org8c19c0f"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-org6367978" class="outline-2">
+<h2 id="org6367978"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 利用一个栈实现一下递归函数的非递归计算<br>
@@ -83,8 +83,8 @@ P_n(x)=\left\{
 </div>
 </div>
 
-<div id="outline-container-org613dffa" class="outline-2">
-<h2 id="org613dffa"><span class="section-number-2">2</span> 递归</h2>
+<div id="outline-container-orgcc7c8b4" class="outline-2">
+<h2 id="orgcc7c8b4"><span class="section-number-2">2</span> 递归</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">double</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">double</span> <span style="color: #0087ff;">x</span>)
@@ -101,8 +101,8 @@ P_n(x)=\left\{
 </div>
 </div>
 
-<div id="outline-container-org6b5292e" class="outline-2">
-<h2 id="org6b5292e"><span class="section-number-2">3</span> 非递归</h2>
+<div id="outline-container-orgba299a9" class="outline-2">
+<h2 id="orgba299a9"><span class="section-number-2">3</span> 非递归</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #d75f00;">#define</span> <span style="color: #0087ff;">N</span> 1024
@@ -139,8 +139,8 @@ P_n(x)=\left\{
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

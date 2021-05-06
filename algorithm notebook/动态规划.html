@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>动态规划</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,24 +34,24 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge3b2a09">1. 动态规划基本要素</a>
+<li><a href="#orgd966c3c">1. 动态规划基本要素</a>
 <ul>
-<li><a href="#orgce37361">1.1. 最优子结构</a></li>
-<li><a href="#org28568a5">1.2. 重叠子问题</a></li>
+<li><a href="#org7f2dfc4">1.1. 最优子结构</a></li>
+<li><a href="#org2b4f706">1.2. 重叠子问题</a></li>
 </ul>
 </li>
-<li><a href="#org8bfd23f">2. 备忘录方法</a></li>
-<li><a href="#orgbd61b89">3. 动态规划、备忘录、递归区别</a></li>
+<li><a href="#org8bc8eee">2. 备忘录方法</a></li>
+<li><a href="#org103b8a2">3. 动态规划、备忘录、递归区别</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge3b2a09" class="outline-2">
-<h2 id="orge3b2a09"><span class="section-number-2">1</span> 动态规划基本要素</h2>
+<div id="outline-container-orgd966c3c" class="outline-2">
+<h2 id="orgd966c3c"><span class="section-number-2">1</span> 动态规划基本要素</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgce37361" class="outline-3">
-<h3 id="orgce37361"><span class="section-number-3">1.1</span> 最优子结构</h3>
+<div id="outline-container-org7f2dfc4" class="outline-3">
+<h3 id="org7f2dfc4"><span class="section-number-3">1.1</span> 最优子结构</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 当问题的最优解包含了其子问题的最优解时，称该问题具有最优子结构性质<br>
@@ -59,8 +59,8 @@
 </div>
 </div>
 
-<div id="outline-container-org28568a5" class="outline-3">
-<h3 id="org28568a5"><span class="section-number-3">1.2</span> 重叠子问题</h3>
+<div id="outline-container-org2b4f706" class="outline-3">
+<h3 id="org2b4f706"><span class="section-number-3">1.2</span> 重叠子问题</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 动态规划算法对每个问题只解一次，将其解保存在一个表格中，当再次需要解此问题时，用常数时间查看一下结果。因此，用动态规划算法通常只需要多项式时间<br>
@@ -69,8 +69,8 @@
 </div>
 </div>
 
-<div id="outline-container-org8bfd23f" class="outline-2">
-<h2 id="org8bfd23f"><span class="section-number-2">2</span> 备忘录方法</h2>
+<div id="outline-container-org8bc8eee" class="outline-2">
+<h2 id="org8bc8eee"><span class="section-number-2">2</span> 备忘录方法</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 用一个表格来保存已解决的子问题的答案，用的时候查表即可。<br>
@@ -81,8 +81,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgbd61b89" class="outline-2">
-<h2 id="orgbd61b89"><span class="section-number-2">3</span> 动态规划、备忘录、递归区别</h2>
+<div id="outline-container-org103b8a2" class="outline-2">
+<h2 id="org103b8a2"><span class="section-number-2">3</span> 动态规划、备忘录、递归区别</h2>
 <div class="outline-text-2" id="text-3">
 <ol class="org-ol">
 <li>动态规划是自底向上；备忘录是自顶向下；递归是自顶向下<br></li>
@@ -99,8 +99,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

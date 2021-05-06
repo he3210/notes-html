@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:26 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>clion 远程调试 redis6.0.5</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">clion 远程调试 redis6.0.5</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org89dc3c9">1. 远程主机开发环境搭建</a></li>
+<li><a href="#org414e0be">2. 远程主机下载源码、编译二进制文件</a></li>
+<li><a href="#org485b91d">3. 本地 mac 主机准备工作</a>
+<ul>
+<li><a href="#org535995e">3.1. 生成 Clang's JSON Compilation Database file</a></li>
+<li><a href="#org4a74b7b">3.2. 安装两个插件</a></li>
+<li><a href="#org45f33dd">3.3. 添加 toolchains</a></li>
+<li><a href="#org592805a">3.4. 配置 Deployment</a></li>
+<li><a href="#orga9d7e43">3.5. 配置 GDB Remote Debug</a></li>
+</ul>
+</li>
+<li><a href="#orgf65e699">4. 远程调试</a></li>
+<li><a href="#org67d9355">5. 问题fix</a></li>
+</ul>
+</div>
+</div>
+<p>
+参考<br>
+</p>
+<ul class="org-ul">
+<li><a href="https://www.jetbrains.com/help/clion/managing-makefile-projects.html#filewatcher">Managing Makefile Projects</a><br></li>
+<li><a href="https://www.jetbrains.com/help/clion/remote-debug.html">GDB Remote Debug</a><br></li>
+</ul>
+
+<div id="outline-container-org89dc3c9" class="outline-2">
+<h2 id="org89dc3c9"><span class="section-number-2">1</span> 远程主机开发环境搭建</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+安装最新开发环境 devtoolset-9。<br>
+为什么需要安装开发环境呢？<br>
+因为我的远程主机是 centos7，gcc 是 4.8.5 版本，不支持 c11<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">$ yum install centos-release-scl
+$ yum install scl-utils-build
+$ yum install devtoolset-9
+$ scl --list
+devtoolset-9
+$ scl enable devtoolset-9 zsh  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22312;&#24403;&#21069; zsh &#19978;&#21551;&#29992;&#24320;&#21457;&#29615;&#22659; devtoolset-9&#65292;&#37325;&#26032;&#30331;&#38470;&#21518;&#38656;&#35201;&#37325;&#26032;&#25191;&#34892;&#35813;&#21629;&#20196;&#36827;&#20837;&#24320;&#21457;&#29615;&#22659;</span>
+$ which gcc
+/opt/rh/devtoolset-9/root/usr/bin/gcc
+$ gcc --version
+<span style="color: #0087ff;">gcc</span> (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2)
+<span style="color: #0087ff;">Copyright</span> (C) 2019 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ /usr/bin/gcc --version
+<span style="color: #0087ff;">gcc</span> (GCC) 4.8.5 20150623 (Red Hat 4.8.5-39)
+<span style="color: #0087ff;">Copyright</span> (C) 2015 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ g++ --version
+g++ (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2)
+<span style="color: #0087ff;">Copyright</span> (C) 2019 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ make --version
+GNU Make 4.2.1
+Built for x86_64-redhat-linux-gnu
+<span style="color: #0087ff;">Copyright</span> (C) 1988-2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <a href="http://gnu.org/licenses/gpl.html">&lt;http://gnu.org/licenses/gpl.html&gt;</a>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+</pre>
+</div>
+
+<p>
+在 .zshrc 中默认使用 devtoolset-9 开发环境<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-conf">source /opt/rh/devtoolset-9/enable
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org414e0be" class="outline-2">
+<h2 id="org414e0be"><span class="section-number-2">2</span> 远程主机下载源码、编译二进制文件</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+在远程主机编译生成二进制文件<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ cd /root/code/
+$ wget http://download.redis.io/releases/redis-6.0.5.tar.gz
+$ tar -xzvf redis-6.0.5.tar.gz
+$ cd redis-6.0.5/deps
+$ make hiredis jemalloc linenoise lua
+$ cd ..
+$ make noopt  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992; -O0 &#32534;&#35793;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org485b91d" class="outline-2">
+<h2 id="org485b91d"><span class="section-number-2">3</span> 本地 mac 主机准备工作</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org535995e" class="outline-3">
+<h3 id="org535995e"><span class="section-number-3">3.1</span> 生成 Clang's JSON Compilation Database file</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+在本地 mac 主机生成 compile_commands.json 文件。为什么要生成 compile_commands.json 文件呢？<br>
+因为 clion 默认 project 使用 cmake，而 redis 没有用 cmake，用了 makefile。<br>
+所以需要借助 Compilation Database 来管理 makefile project<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ cd /Users/he/
+$ wget http://download.redis.io/releases/redis-6.0.5.tar.gz
+$ tar -xzvf redis-6.0.5.tar.gz
+$ rm redis-6.0.5.tar.gz
+$ cd redis-6.0.5
+$ pip install compiledb
+$ compiledb -n make noopt  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">noopt &#34920;&#31034;&#20351;&#29992; -O0 &#26631;&#24535; &#29983;&#25104; compile_commands.json</span>
+$ ls -al compile_commands.json
+-rw-r--r--  1 he  staff  46949 Jul 18 13:30 compile_commands.json
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4a74b7b" class="outline-3">
+<h3 id="org4a74b7b"><span class="section-number-3">3.2</span> 安装两个插件</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+clion 安装两个插件 Makefile support、File Watchers。点击：<br>
+Clion -&gt; preferences -&gt; Plugins 搜索插件进行安装<br>
+可借助 File Watchers 监控 Makefile 文件，当 Makefile 文件发生变化时，重新执行 <code>compiledb -n make noopt</code> 命令<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org45f33dd" class="outline-3">
+<h3 id="org45f33dd"><span class="section-number-3">3.3</span> 添加 toolchains</h3>
+<div class="outline-text-3" id="text-3-3">
+
+<div id="orgb4539eb" class="figure">
+<p><img src="../images/clion toolchains.png" alt="clion toolchains.png" width="80%"><br>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org592805a" class="outline-3">
+<h3 id="org592805a"><span class="section-number-3">3.4</span> 配置 Deployment</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+点击 Tools -&gt; Deployment -&gt; Configuration&#x2026;，关联远程主机和本地 mac 主机的 project 文件夹<br>
+</p>
+
+<div id="orgd1de011" class="figure">
+<p><img src="../images/clion deployment1.png" alt="clion deployment1.png" width="55%"><br>
+</p>
+</div>
+
+<div id="org8b3ac66" class="figure">
+<p><img src="../images/clion deployment2.png" alt="clion deployment2.png" width="55%"><br>
+</p>
+</div>
+
+<p>
+点击 Tools -&gt; Deployment -&gt; Automatic Upload(always)，设置保存后自动上传文件<br>
+点击 Tools -&gt; Deployment -&gt; Download from vultr，把远程主机上，编译后的二进制文件、.o 文件等下载到本地 mac<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga9d7e43" class="outline-3">
+<h3 id="orga9d7e43"><span class="section-number-3">3.5</span> 配置 GDB Remote Debug</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+点击 Run -&gt; Edit Configurations&#x2026; -&gt; Templates -&gt; GDB Remote Debug 创建一个新的 GDB Remote Debug<br>
+</p>
+
+<div id="org715066d" class="figure">
+<p><img src="../images/clion gdb remote debug.png" alt="clion gdb remote debug.png" width="80%"><br>
+</p>
+</div>
+<ul class="org-ul">
+<li><code>Symbol file</code> 填本机 project 二进制文件<br></li>
+<li><code>Sysroot</code> 先填 project 根目录（DEBUG 时会报警告，但影响不大）。DEBUG 时，根据 warn 信息（warning: Could not load shared library symbols for 6 libraries, e.g. /lib64/libm.so.6. Use the "info sharedlibrary" command to see the complete listing. Do you need "set solib-search-path" or "set sysroot"?），使用命令 (gdb) info sharedlibrary 查看用到的远程的共享库。然后把远程共享库拷贝到本机的一个自建的文件夹，例如：/Users/he/Library/Caches/JetBrains/sysroot。共享库的目录结构也要拷贝到该文件夹下。最后，sysroot 设置为该目录<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf65e699" class="outline-2">
+<h2 id="orgf65e699"><span class="section-number-2">4</span> 远程调试</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+在远程主机开启 gdb 服务器调试 redis-server<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ cd /root/code/redis-6.0.5
+$ gdbserver 0.0.0.0:1234 ./src/redis-server ./redis.conf
+</pre>
+</div>
+
+<p>
+在本地 mac clion 点击小虫子 Debug 'redis6.0.5' 开始调试<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org67d9355" class="outline-2">
+<h2 id="org67d9355"><span class="section-number-2">5</span> 问题fix</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>碰到问题有可能是 clion 的 bug。更改配置后，有报错，多重启 clion，重启后可能就好了<br></li>
+<li>问题：所有配置都ok。但系统函数跳转到本机，而不是远程主机。解决：重新创建一个远程 Toolchains，原先的配置拷贝过去。稍后 clion 会创建一个进程用来下载远程系统函数头文件<br></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

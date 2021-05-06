@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>$() ${} $(()) 的用法</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,27 +34,27 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org86ad6e9">1. $()</a></li>
-<li><a href="#org0e44b22">2. ${}</a>
+<li><a href="#org33dad79">1. $()</a></li>
+<li><a href="#org9a1b126">2. ${}</a>
 <ul>
-<li><a href="#org7343a2e">2.1. shell 字符串的非贪婪(最小匹配)左删除</a></li>
-<li><a href="#org07461cb">2.2. shell 字符串的贪婪(最大匹配)左删除</a></li>
-<li><a href="#org02ecaf2">2.3. shell 字符串的非贪婪(最小匹配)右删除</a></li>
-<li><a href="#orga0293b9">2.4. shell 字符串的贪婪(最大匹配)右删除</a></li>
-<li><a href="#orgecaadba">2.5. shell 根据下标提取字符串</a></li>
-<li><a href="#org2d85989">2.6. shell 字符串变量值的替换</a></li>
-<li><a href="#org226b9c7">2.7. shell 字符串变量默认值</a></li>
-<li><a href="#orgfd3760e">2.8. 计算 shell 字符串变量的长度</a></li>
-<li><a href="#org3dbb95b">2.9. shell 数组</a></li>
+<li><a href="#org3ef293a">2.1. shell 字符串的非贪婪(最小匹配)左删除</a></li>
+<li><a href="#org194f4a3">2.2. shell 字符串的贪婪(最大匹配)左删除</a></li>
+<li><a href="#orgb25c4a1">2.3. shell 字符串的非贪婪(最小匹配)右删除</a></li>
+<li><a href="#org9cbb86c">2.4. shell 字符串的贪婪(最大匹配)右删除</a></li>
+<li><a href="#org979410e">2.5. shell 根据下标提取字符串</a></li>
+<li><a href="#orgd260c63">2.6. shell 字符串变量值的替换</a></li>
+<li><a href="#orgdd5dda5">2.7. shell 字符串变量默认值</a></li>
+<li><a href="#orgb18bf4f">2.8. 计算 shell 字符串变量的长度</a></li>
+<li><a href="#org1a6cd7e">2.9. shell 数组</a></li>
 </ul>
 </li>
-<li><a href="#orgae26f8c">3. $(()) 和 (())</a></li>
+<li><a href="#org597d395">3. $(()) 和 (())</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org86ad6e9" class="outline-2">
-<h2 id="org86ad6e9"><span class="section-number-2">1</span> $()</h2>
+<div id="outline-container-org33dad79" class="outline-2">
+<h2 id="org33dad79"><span class="section-number-2">1</span> $()</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 <code>$()</code> 和 <code>``</code> 都是用作命令替换 (command substitution) 的。<br>
@@ -79,16 +79,16 @@ $ echo <span style="color: #00afaf;">"`ls -al "\`echo $PWD\`" `"</span>
 </div>
 </div>
 
-<div id="outline-container-org0e44b22" class="outline-2">
-<h2 id="org0e44b22"><span class="section-number-2">2</span> ${}</h2>
+<div id="outline-container-org9a1b126" class="outline-2">
+<h2 id="org9a1b126"><span class="section-number-2">2</span> ${}</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 <code>${}</code> 用作变量替换。例如: <code>$ A=B; echo ${A}B</code><br>
 </p>
 </div>
 
-<div id="outline-container-org7343a2e" class="outline-3">
-<h3 id="org7343a2e"><span class="section-number-3">2.1</span> shell 字符串的非贪婪(最小匹配)左删除</h3>
+<div id="outline-container-org3ef293a" class="outline-3">
+<h3 id="org3ef293a"><span class="section-number-3">2.1</span> shell 字符串的非贪婪(最小匹配)左删除</h3>
 <div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
 <pre class="src src-shell">$ <span style="color: #0087ff;">file</span>=/dir1/dir2/dir3/my.file.txt
@@ -101,8 +101,8 @@ file.txt
 </div>
 </div>
 
-<div id="outline-container-org07461cb" class="outline-3">
-<h3 id="org07461cb"><span class="section-number-3">2.2</span> shell 字符串的贪婪(最大匹配)左删除</h3>
+<div id="outline-container-org194f4a3" class="outline-3">
+<h3 id="org194f4a3"><span class="section-number-3">2.2</span> shell 字符串的贪婪(最大匹配)左删除</h3>
 <div class="outline-text-3" id="text-2-2">
 <div class="org-src-container">
 <pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>##*/}            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#24038;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#26368;&#21518;&#19968;&#20010; / &#21491;&#38754;</span>
@@ -114,8 +114,8 @@ txt
 </div>
 </div>
 
-<div id="outline-container-org02ecaf2" class="outline-3">
-<h3 id="org02ecaf2"><span class="section-number-3">2.3</span> shell 字符串的非贪婪(最小匹配)右删除</h3>
+<div id="outline-container-orgb25c4a1" class="outline-3">
+<h3 id="orgb25c4a1"><span class="section-number-3">2.3</span> shell 字符串的非贪婪(最小匹配)右删除</h3>
 <div class="outline-text-3" id="text-2-3">
 <div class="org-src-container">
 <pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>%/*}             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#21491;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#31532;&#19968;&#20010; / &#24038;&#38754;</span>
@@ -127,8 +127,8 @@ $ echo ${<span style="color: #0087ff;">file</span>%.*}             <span style="
 </div>
 </div>
 
-<div id="outline-container-orga0293b9" class="outline-3">
-<h3 id="orga0293b9"><span class="section-number-3">2.4</span> shell 字符串的贪婪(最大匹配)右删除</h3>
+<div id="outline-container-org9cbb86c" class="outline-3">
+<h3 id="org9cbb86c"><span class="section-number-3">2.4</span> shell 字符串的贪婪(最大匹配)右删除</h3>
 <div class="outline-text-3" id="text-2-4">
 <div class="org-src-container">
 <pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>%%/*}            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#21491;&#36793;&#24320;&#22987;&#21024;&#38500;&#65292;&#19968;&#30452;&#21024;&#38500;&#21040;&#26368;&#21518;&#19968;&#20010; / &#24038;&#38754;</span>
@@ -150,8 +150,8 @@ $ echo ${<span style="color: #0087ff;">file</span>%%.*}            <span style="
 </div>
 </div>
 
-<div id="outline-container-orgecaadba" class="outline-3">
-<h3 id="orgecaadba"><span class="section-number-3">2.5</span> shell 根据下标提取字符串</h3>
+<div id="outline-container-org979410e" class="outline-3">
+<h3 id="org979410e"><span class="section-number-3">2.5</span> shell 根据下标提取字符串</h3>
 <div class="outline-text-3" id="text-2-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>:1:4}               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20174;&#21464;&#37327; file &#20013;&#25552;&#21462;&#23383;&#31526;&#20018;&#65292;&#24320;&#22987;&#19979;&#26631;&#20026; 1&#65292;&#25552;&#21462;&#23383;&#31526;&#25968;&#37327;&#20026; 4</span>
@@ -163,8 +163,8 @@ dir2
 </div>
 </div>
 
-<div id="outline-container-org2d85989" class="outline-3">
-<h3 id="org2d85989"><span class="section-number-3">2.6</span> shell 字符串变量值的替换</h3>
+<div id="outline-container-orgd260c63" class="outline-3">
+<h3 id="orgd260c63"><span class="section-number-3">2.6</span> shell 字符串变量值的替换</h3>
 <div class="outline-text-3" id="text-2-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>/dir/path}          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226;&#21464;&#37327; file &#20013;&#30340;&#31532;&#19968;&#20010;&#23376;&#20018; dir &#26367;&#25442;&#25104; path</span>
@@ -176,8 +176,8 @@ $ echo ${<span style="color: #0087ff;">file</span>//dir/path}         <span styl
 </div>
 </div>
 
-<div id="outline-container-org226b9c7" class="outline-3">
-<h3 id="org226b9c7"><span class="section-number-3">2.7</span> shell 字符串变量默认值</h3>
+<div id="outline-container-orgdd5dda5" class="outline-3">
+<h3 id="orgdd5dda5"><span class="section-number-3">2.7</span> shell 字符串变量默认值</h3>
 <div class="outline-text-3" id="text-2-7">
 <div class="org-src-container">
 <pre class="src src-shell">$ echo ${<span style="color: #0087ff;">file</span>-file.txt}              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#22914;&#26524;&#21464;&#37327; file &#26410;&#23450;&#20041;&#65292;&#36820;&#22238; file.txt&#65307;&#21542;&#21017;&#65292;&#36820;&#22238; ${file}</span>
@@ -204,8 +204,8 @@ $ echo ${<span style="color: #0087ff;">file</span>:?file.txt}             <span 
 </div>
 </div>
 
-<div id="outline-container-orgfd3760e" class="outline-3">
-<h3 id="orgfd3760e"><span class="section-number-3">2.8</span> 计算 shell 字符串变量的长度</h3>
+<div id="outline-container-orgb18bf4f" class="outline-3">
+<h3 id="orgb18bf4f"><span class="section-number-3">2.8</span> 计算 shell 字符串变量的长度</h3>
 <div class="outline-text-3" id="text-2-8">
 <div class="org-src-container">
 <pre class="src src-shell">$ echo ${#<span style="color: #0087ff;">file</span>}
@@ -214,8 +214,8 @@ $ echo ${<span style="color: #0087ff;">file</span>:?file.txt}             <span 
 </div>
 </div>
 
-<div id="outline-container-org3dbb95b" class="outline-3">
-<h3 id="org3dbb95b"><span class="section-number-3">2.9</span> shell 数组</h3>
+<div id="outline-container-org1a6cd7e" class="outline-3">
+<h3 id="org1a6cd7e"><span class="section-number-3">2.9</span> shell 数组</h3>
 <div class="outline-text-3" id="text-2-9">
 <div class="org-src-container">
 <pre class="src src-shell">$ <span style="color: #0087ff;">A</span>=(a b c def)           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23450;&#20041;&#25968;&#32452;</span>
@@ -238,8 +238,8 @@ $ <span style="color: #0087ff;">A</span>[2]=xyz                <span style="colo
 </div>
 </div>
 
-<div id="outline-container-orgae26f8c" class="outline-2">
-<h2 id="orgae26f8c"><span class="section-number-2">3</span> $(()) 和 (())</h2>
+<div id="outline-container-org597d395" class="outline-2">
+<h2 id="org597d395"><span class="section-number-2">3</span> $(()) 和 (())</h2>
 <div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li><b><b><code>$(())</code> 是用来做整数运算的</b></b> 。不能用于浮点数，因为它会当成字符串。<br>
@@ -273,8 +273,8 @@ $ ((a&lt;b))                <span style="color: #8a8a8a;"># </span><span style="
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

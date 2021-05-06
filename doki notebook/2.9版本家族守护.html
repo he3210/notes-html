@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:27 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&lrm;</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc54208d">1. 问题</a>
+<ul>
+<li><a href="#org5db784b">1.1. 未加入家族，点击开通守护按钮</a></li>
+<li><a href="#org06b917f">1.2. 粉丝铭牌是什么？</a></li>
+<li><a href="#orga498070">1.3. 个人家族等级</a></li>
+<li><a href="#org3549089">1.4. 如何查看扣费类型：自动续费？</a></li>
+<li><a href="#org59ddfdb">1.5. 开通守护是自然月、自然季吗？</a></li>
+<li><a href="#org25dfe79">1.6. 私信卡片消息支持领取奖励吗？（应该不行，新增私信领奖卡片类型）</a></li>
+<li><a href="#org6872cd0">1.7. 每个守护档位对应唯一的头像框吗？</a></li>
+</ul>
+</li>
+<li><a href="#orge8af394">2. 实现内容</a>
+<ul>
+<li><a href="#org35a4a0e">2.1. 各个功能</a></li>
+<li><a href="#orgacc613b">2.2. HTTP API</a>
+<ul>
+<li><a href="#org54228ae">2.2.1. 我的家族主页</a></li>
+<li><a href="#org6737eb9">2.2.2. 守护列表</a></li>
+<li><a href="#orgaec212b">2.2.3. 主播守护开关</a></li>
+<li><a href="#org236adc1">2.2.4. 粉丝铭牌编辑</a></li>
+<li><a href="#org60376f5">2.2.5. 我加入的家族列表</a></li>
+<li><a href="#orgcca6268">2.2.6. 拉黑接口GET</a></li>
+<li><a href="#org160b841">2.2.7. 拉黑 POST <i>api/user/block</i></a></li>
+<li><a href="#orgafe1ebd">2.2.8. 移除群聊接口 GET</a></li>
+<li><a href="#org7a0b696">2.2.9. 移除群聊接口 POST</a></li>
+<li><a href="#org34c954b">2.2.10. 用户退出家族（迭代）</a></li>
+<li><a href="#org4cd2480">2.2.11. 主播资料卡（迭代）</a></li>
+<li><a href="#orgdebc0b3">2.2.12. 观众资料卡（迭代）</a></li>
+<li><a href="#orge6a5296">2.2.13. 用户个人主页（迭代）</a></li>
+<li><a href="#org152e9b3">2.2.14. 守护榜单 1</a></li>
+<li><a href="#orgc445231">2.2.15. 守护购买页面 1</a></li>
+<li><a href="#org3a0f93a">2.2.16. 购买/续费  2</a></li>
+</ul>
+</li>
+<li><a href="#org4951cd0">2.3. 定时任务</a>
+<ul>
+<li><a href="#orgdf45ad8">2.3.1. 守护到期提醒事件/守护到期事件</a></li>
+<li><a href="#orgaa37f09">2.3.2. 签到天数自减</a></li>
+</ul>
+</li>
+<li><a href="#org393104a">2.4. 送礼模块</a>
+<ul>
+<li><a href="#org8b5668c">2.4.1. 专属礼物签到送礼，修改 backend 模块</a></li>
+<li><a href="#orgf2150e6">2.4.2. 专属守护礼物前10次经验加倍</a></li>
+</ul>
+</li>
+<li><a href="#org0fc5d2e">2.5. 续费</a>
+<ul>
+<li><a href="#orge753f7a">2.5.1. 同档位续费</a></li>
+<li><a href="#org5875bfb">2.5.2. 更改档位续费</a></li>
+</ul>
+</li>
+<li><a href="#org432570d">2.6. 其它</a>
+<ul>
+<li><a href="#org20a7507">2.6.1. 应援礼物</a></li>
+<li><a href="#org6363163">2.6.2. 守护特权</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgb0ec1a6">3. 数据结构</a>
+<ul>
+<li><a href="#orga44e40b">3.1. 产品表</a></li>
+<li><a href="#org2f83531">3.2. 守护关系表</a></li>
+<li><a href="#orgebf7110">3.3. 守护购买历史表</a></li>
+<li><a href="#org50305ed">3.4. 主播拉黑用户后，退款历史表</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
++TITLE 2.9版本家族守护<br>
+</p>
+
+<div id="outline-container-orgc54208d" class="outline-2">
+<h2 id="orgc54208d"><span class="section-number-2">1</span> 问题</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org5db784b" class="outline-3">
+<h3 id="org5db784b"><span class="section-number-3">1.1</span> 未加入家族，点击开通守护按钮</h3>
+</div>
+<div id="outline-container-org06b917f" class="outline-3">
+<h3 id="org06b917f"><span class="section-number-3">1.2</span> 粉丝铭牌是什么？</h3>
+</div>
+<div id="outline-container-orga498070" class="outline-3">
+<h3 id="orga498070"><span class="section-number-3">1.3</span> 个人家族等级</h3>
+</div>
+<div id="outline-container-org3549089" class="outline-3">
+<h3 id="org3549089"><span class="section-number-3">1.4</span> 如何查看扣费类型：自动续费？</h3>
+</div>
+<div id="outline-container-org59ddfdb" class="outline-3">
+<h3 id="org59ddfdb"><span class="section-number-3">1.5</span> 开通守护是自然月、自然季吗？</h3>
+</div>
+<div id="outline-container-org25dfe79" class="outline-3">
+<h3 id="org25dfe79"><span class="section-number-3">1.6</span> 私信卡片消息支持领取奖励吗？（应该不行，新增私信领奖卡片类型）</h3>
+</div>
+<div id="outline-container-org6872cd0" class="outline-3">
+<h3 id="org6872cd0"><span class="section-number-3">1.7</span> 每个守护档位对应唯一的头像框吗？</h3>
+</div>
+</div>
+
+<div id="outline-container-orge8af394" class="outline-2">
+<h2 id="orge8af394"><span class="section-number-2">2</span> 实现内容</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org35a4a0e" class="outline-3">
+<h3 id="org35a4a0e"><span class="section-number-3">2.1</span> 各个功能</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>签到功能（专属礼物）<br></li>
+<li>红包功能<br></li>
+<li>购买开通/续费功能<br></li>
+<li>迭代的接口/榜单接口<br></li>
+<li>各种特权/消息/特效<br></li>
+<li>拉黑/退群<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgacc613b" class="outline-3">
+<h3 id="orgacc613b"><span class="section-number-3">2.2</span> HTTP API</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-org54228ae" class="outline-4">
+<h4 id="org54228ae"><span class="section-number-4">2.2.1</span> 我的家族主页</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<ul class="org-ul">
+<li><i>api/family/profile_detail_v2</i><br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org6737eb9" class="outline-4">
+<h4 id="org6737eb9"><span class="section-number-4">2.2.2</span> 守护列表</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<ul class="org-ul">
+<li>函数：获取 uid、t_uid 守护信息<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgaec212b" class="outline-4">
+<h4 id="orgaec212b"><span class="section-number-4">2.2.3</span> 主播守护开关</h4>
+</div>
+<div id="outline-container-org236adc1" class="outline-4">
+<h4 id="org236adc1"><span class="section-number-4">2.2.4</span> 粉丝铭牌编辑</h4>
+</div>
+<div id="outline-container-org60376f5" class="outline-4">
+<h4 id="org60376f5"><span class="section-number-4">2.2.5</span> 我加入的家族列表</h4>
+</div>
+
+<div id="outline-container-orgcca6268" class="outline-4">
+<h4 id="orgcca6268"><span class="section-number-4">2.2.6</span> 拉黑接口GET</h4>
+<div class="outline-text-4" id="text-2-2-6">
+<ul class="org-ul">
+<li>弹出 toast，如果是守护关系，告知需要退款<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org160b841" class="outline-4">
+<h4 id="org160b841"><span class="section-number-4">2.2.7</span> 拉黑 POST <i>api/user/block</i></h4>
+<div class="outline-text-4" id="text-2-2-7">
+<ol class="org-ol">
+<li>判断是否是守护关系<br></li>
+<li>判断主播余额是否充足，不充足弹 toast<br></li>
+<li>获取用户购买的 3 种守护档位<br></li>
+<li>计算各个档位的退款数额，执行退款操作，记录退款历史<br></li>
+<li>相互退出家族<br></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-orgafe1ebd" class="outline-4">
+<h4 id="orgafe1ebd"><span class="section-number-4">2.2.8</span> 移除群聊接口 GET</h4>
+<div class="outline-text-4" id="text-2-2-8">
+<ul class="org-ul">
+<li>弹出 toast，如果是守护关系，告知需要退款<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7a0b696" class="outline-4">
+<h4 id="org7a0b696"><span class="section-number-4">2.2.9</span> 移除群聊接口 POST</h4>
+<div class="outline-text-4" id="text-2-2-9">
+<ul class="org-ul">
+<li>主播踢人接口 FamilyUpdateView<br></li>
+<li>参数：uid=u3684831580894394120001295&amp;family_uid=u3684831580894394120001295&amp;t_uid=u7871781602669936120001287&amp;family_type=0<br></li>
+<li>逻辑类似拉黑<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org34c954b" class="outline-4">
+<h4 id="org34c954b"><span class="section-number-4">2.2.10</span> 用户退出家族（迭代）</h4>
+</div>
+<div id="outline-container-org4cd2480" class="outline-4">
+<h4 id="org4cd2480"><span class="section-number-4">2.2.11</span> 主播资料卡（迭代）</h4>
+</div>
+<div id="outline-container-orgdebc0b3" class="outline-4">
+<h4 id="orgdebc0b3"><span class="section-number-4">2.2.12</span> 观众资料卡（迭代）</h4>
+</div>
+<div id="outline-container-orge6a5296" class="outline-4">
+<h4 id="orge6a5296"><span class="section-number-4">2.2.13</span> 用户个人主页（迭代）</h4>
+</div>
+<div id="outline-container-org152e9b3" class="outline-4">
+<h4 id="org152e9b3"><span class="section-number-4">2.2.14</span> 守护榜单 1</h4>
+</div>
+<div id="outline-container-orgc445231" class="outline-4">
+<h4 id="orgc445231"><span class="section-number-4">2.2.15</span> 守护购买页面 1</h4>
+<div class="outline-text-4" id="text-2-2-15">
+<ol class="org-ol">
+<li>验证主播是否打开守护开关，没打开就报错<br></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org3a0f93a" class="outline-4">
+<h4 id="org3a0f93a"><span class="section-number-4">2.2.16</span> 购买/续费  2</h4>
+<div class="outline-text-4" id="text-2-2-16">
+<p>
+参数：uid t_uid product_id count<br>
+</p>
+<ol class="org-ol">
+<li>判断该用户是否被拉黑  is_uid_blocked_t_uid<br></li>
+<li>验证主播是否打开守护开关，未打开，弹toast<br></li>
+<li>判断该类型产品是续费还是购买<br></li>
+<li>判断是否在家族，加入家族  update_family_user<br></li>
+<li>购买/续费逻辑<br>
+<ul class="org-ul">
+<li>购买<br>
+<ul class="org-ul">
+<li>获取产品信息<br></li>
+<li>获取用户购买的 3 种守护档位，计算各个档位的 end_time，更新数据刷新缓存<br></li>
+</ul></li>
+<li>续费<br>
+<ul class="org-ul">
+<li>获取产品信息<br></li>
+<li>获取用户购买的 3 种守护档位，计算各个档位的 end_time，更新数据刷新缓存<br></li>
+</ul></li>
+</ul></li>
+<li>发特效、评论、横幅等<br></li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4951cd0" class="outline-3">
+<h3 id="org4951cd0"><span class="section-number-3">2.3</span> 定时任务</h3>
+<div class="outline-text-3" id="text-2-3">
+</div>
+<div id="outline-container-orgdf45ad8" class="outline-4">
+<h4 id="orgdf45ad8"><span class="section-number-4">2.3.1</span> 守护到期提醒事件/守护到期事件</h4>
+</div>
+<div id="outline-container-orgaa37f09" class="outline-4">
+<h4 id="orgaa37f09"><span class="section-number-4">2.3.2</span> 签到天数自减</h4>
+</div>
+</div>
+
+<div id="outline-container-org393104a" class="outline-3">
+<h3 id="org393104a"><span class="section-number-3">2.4</span> 送礼模块</h3>
+<div class="outline-text-3" id="text-2-4">
+</div>
+<div id="outline-container-org8b5668c" class="outline-4">
+<h4 id="org8b5668c"><span class="section-number-4">2.4.1</span> 专属礼物签到送礼，修改 backend 模块</h4>
+</div>
+<div id="outline-container-orgf2150e6" class="outline-4">
+<h4 id="orgf2150e6"><span class="section-number-4">2.4.2</span> 专属守护礼物前10次经验加倍</h4>
+</div>
+</div>
+
+<div id="outline-container-org0fc5d2e" class="outline-3">
+<h3 id="org0fc5d2e"><span class="section-number-3">2.5</span> 续费</h3>
+<div class="outline-text-3" id="text-2-5">
+</div>
+<div id="outline-container-orge753f7a" class="outline-4">
+<h4 id="orge753f7a"><span class="section-number-4">2.5.1</span> 同档位续费</h4>
+</div>
+<div id="outline-container-org5875bfb" class="outline-4">
+<h4 id="org5875bfb"><span class="section-number-4">2.5.2</span> 更改档位续费</h4>
+<div class="outline-text-4" id="text-2-5-2">
+<ul class="org-ul">
+<li>低档位 =&gt; 高档位？<br></li>
+<li>高档位 =&gt; 低档位？<br></li>
+<li>开通后：横幅、直播间动效、评论、家族群聊 card 消息(奖励领取按钮)、私信card，续费有这些特效吗？<br></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org432570d" class="outline-3">
+<h3 id="org432570d"><span class="section-number-3">2.6</span> 其它</h3>
+<div class="outline-text-3" id="text-2-6">
+</div>
+<div id="outline-container-org20a7507" class="outline-4">
+<h4 id="org20a7507"><span class="section-number-4">2.6.1</span> 应援礼物</h4>
+</div>
+<div id="outline-container-org6363163" class="outline-4">
+<h4 id="org6363163"><span class="section-number-4">2.6.2</span> 守护特权</h4>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb0ec1a6" class="outline-2">
+<h2 id="orgb0ec1a6"><span class="section-number-2">3</span> 数据结构</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orga44e40b" class="outline-3">
+<h3 id="orga44e40b"><span class="section-number-3">3.1</span> 产品表</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">create</span> <span style="color: #5f8700;">table</span> <span style="color: #0087ff;">guard_products</span>(
+    `id` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> auto_increment,
+    `<span style="color: #5f8700;">type</span>` tinyint(4) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span>,
+    `type_name` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span>,
+    `product_id` <span style="color: #af8700;">varchar</span>(64) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span>,
+    `paid_gold` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span>,
+    `charge_days` <span style="color: #af8700;">int</span>(8) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span>,
+    `display_name` <span style="color: #af8700;">varchar</span>(64) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span>,
+    `display_price` <span style="color: #af8700;">varchar</span>(64) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> ,
+    `is_enabled` tinyint(4) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> <span style="color: #5f8700;">default</span> 0,
+    `ctime` datetime <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span>,
+    `mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">default</span> <span style="color: #5f8700;">current_time</span> <span style="color: #5f8700;">on</span> <span style="color: #5f8700;">update</span> <span style="color: #5f8700;">current_time</span>,
+    <span style="color: #5f8700;">primary</span> <span style="color: #5f8700;">key</span> pk_id (id),
+    <span style="color: #5f8700;">unique</span> <span style="color: #5f8700;">key</span> uniq_product_id (product_id)
+) ENGINE = InnoDB <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8mb4;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2f83531" class="outline-3">
+<h3 id="org2f83531"><span class="section-number-3">3.2</span> 守护关系表</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">create</span> <span style="color: #5f8700;">table</span> <span style="color: #0087ff;">user_guards</span>(
+    `id` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> auto_increment,
+    `uid` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'user id'</span>,
+    `t_uid` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'anchor user id'</span>,
+    `<span style="color: #5f8700;">type</span>` tinyint(4) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'guard type'</span>,
+    `start_time` datetime <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'&#29983;&#25928;&#26102;&#38388;'</span>,
+    `end_time` datetime <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'&#36807;&#26399;&#26102;&#38388;'</span>,
+    `is_enabled` tinyint(4) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'&#26377;&#25928;&#24615;'</span>,
+    `auto_renewal` tinyint(4) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> <span style="color: #5f8700;">default</span> 0 comment <span style="color: #00afaf;">'&#33258;&#21160;&#32493;&#36153;'</span>,
+    `renewal_product_id` <span style="color: #af8700;">varchar</span>(64) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'&#32493;&#36153;&#30340;&#31867;&#22411;'</span>,
+    `ctime` datetime <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'&#21019;&#24314;&#26102;&#38388;'</span>,
+    `mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> <span style="color: #5f8700;">default</span> <span style="color: #5f8700;">current_time</span> <span style="color: #5f8700;">on</span> <span style="color: #5f8700;">update</span> <span style="color: #5f8700;">current_time</span>,
+    <span style="color: #5f8700;">primary</span> <span style="color: #5f8700;">key</span> pk_id (id),
+    <span style="color: #5f8700;">unique</span> <span style="color: #5f8700;">key</span> uniq_uid_tuid_type (uid, t_uid, <span style="color: #5f8700;">type</span>)
+) ENGINE = InnoDB <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8mb4;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgebf7110" class="outline-3">
+<h3 id="orgebf7110"><span class="section-number-3">3.3</span> 守护购买历史表</h3>
+<div class="outline-text-3" id="text-3-3">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">create</span> <span style="color: #5f8700;">table</span> <span style="color: #0087ff;">user_guard_records</span>(
+    `id` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> auto_increment,
+    `uid` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'user id'</span>,
+    `t_uid` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'anchor user id'</span>,
+    `product_id` <span style="color: #af8700;">varchar</span>(64) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'purchased product id'</span>,
+    `<span style="color: #5f8700;">count</span>` <span style="color: #af8700;">int</span>(8) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'purchased number'</span>,
+    `paid_gold` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'paid gold num'</span>,
+    `charge_days` <span style="color: #af8700;">int</span>(8) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'purchased days'</span>,
+    `is_enabled` tinyint(4) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'&#26377;&#25928;&#24615;'</span>,
+    `ctime` datetime <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'&#21019;&#24314;&#26102;&#38388;'</span>,
+    `mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> <span style="color: #5f8700;">default</span> <span style="color: #5f8700;">current_time</span> <span style="color: #5f8700;">on</span> <span style="color: #5f8700;">update</span> <span style="color: #5f8700;">current_time</span>,
+    <span style="color: #5f8700;">primary</span> <span style="color: #5f8700;">key</span> pk_id (id),
+    <span style="color: #5f8700;">key</span> key_uid (uid),
+    <span style="color: #5f8700;">key</span> key_t_uid (t_uid),
+    <span style="color: #5f8700;">key</span> key_product_id (product_id)
+) ENGINE = InnoDB <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8mb4;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org50305ed" class="outline-3">
+<h3 id="org50305ed"><span class="section-number-3">3.4</span> 主播拉黑用户后，退款历史表</h3>
+<div class="outline-text-3" id="text-3-4">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">create</span> <span style="color: #5f8700;">table</span> <span style="color: #0087ff;">user_withdraw_guards</span>(
+    `id` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> auto_increment,
+    `uid` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'user id'</span>,
+    `t_uid` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'anchor user id'</span>,
+    `<span style="color: #5f8700;">type</span>` tinyint(4) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'withdraw guard type'</span>,
+    `guard_days` <span style="color: #af8700;">int</span>(8) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'remained days'</span>,
+    `withdraw_golds` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'&#36820;&#36824;&#30340;&#37329;&#39069;'</span>,
+    `ctime` datetime <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> comment <span style="color: #00afaf;">'&#21019;&#24314;&#26102;&#38388;'</span>,
+    `mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">not</span> <span style="color: #5f8700;">null</span> <span style="color: #5f8700;">default</span> <span style="color: #5f8700;">current_time</span> <span style="color: #5f8700;">on</span> <span style="color: #5f8700;">update</span> <span style="color: #5f8700;">current_time</span>,
+    <span style="color: #5f8700;">primary</span> <span style="color: #5f8700;">key</span> pk_id (id),
+    <span style="color: #5f8700;">key</span> key_uid (uid),
+    <span style="color: #5f8700;">key</span> key_t_uid (t_uid),
+    <span style="color: #5f8700;">key</span> <span style="color: #5f8700;">key_type</span> (<span style="color: #5f8700;">type</span>)
+) ENGINE = InnoDB <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8mb4;
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

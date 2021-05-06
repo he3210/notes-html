@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>libevent 核心流程</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,24 +34,24 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org68c6e4a">1. 简单示例</a></li>
-<li><a href="#org31ed6ce">2. event_base_new</a></li>
-<li><a href="#orgc01ca6e">3. event_new</a></li>
-<li><a href="#org9b6c24c">4. 向 event_base 注册事件</a>
+<li><a href="#org78672be">1. 简单示例</a></li>
+<li><a href="#orgf899c9a">2. event_base_new</a></li>
+<li><a href="#org022cbc7">3. event_new</a></li>
+<li><a href="#org97e3bd0">4. 向 event_base 注册事件</a>
 <ul>
-<li><a href="#orge24f734">4.1. event_add</a></li>
-<li><a href="#org346d95a">4.2. evmap_io_add</a></li>
-<li><a href="#org6e3280d">4.3. evmap_signal_add</a></li>
-<li><a href="#orgcf1e3e5">4.4. event_queue_insert</a></li>
+<li><a href="#org138b2d8">4.1. event_add</a></li>
+<li><a href="#org39a1c1c">4.2. evmap_io_add</a></li>
+<li><a href="#org96a28b3">4.3. evmap_signal_add</a></li>
+<li><a href="#orge73b35e">4.4. event_queue_insert</a></li>
 </ul>
 </li>
-<li><a href="#org75af80c">5. 事件主循环 event_base_dispatch</a></li>
+<li><a href="#org8c016a8">5. 事件主循环 event_base_dispatch</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org68c6e4a" class="outline-2">
-<h2 id="org68c6e4a"><span class="section-number-2">1</span> 简单示例</h2>
+<div id="outline-container-org78672be" class="outline-2">
+<h2 id="org78672be"><span class="section-number-2">1</span> 简单示例</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 四个核心函数<br>
@@ -102,8 +102,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-org31ed6ce" class="outline-2">
-<h2 id="org31ed6ce"><span class="section-number-2">2</span> event_base_new</h2>
+<div id="outline-container-orgf899c9a" class="outline-2">
+<h2 id="orgf899c9a"><span class="section-number-2">2</span> event_base_new</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35813;&#20989;&#25968;&#20250;&#29983;&#20135;&#19968;&#20010;&#20869;&#23481;&#20026;&#31354;&#30340;&#37197;&#32622;&#20449;&#24687; cfg&#65292;&#20351;&#29992;&#35813;&#37197;&#32622;&#29983;&#25104;&#19968;&#20010; event_base &#23545;&#35937;</span>
@@ -163,7 +163,7 @@ hello
     <span style="color: #5f8700;">for</span> (i = 0; <span style="color: #af8700;">eventops</span>[i] &amp;&amp; <span style="color: #d70000;">!</span>base-&gt;evbase; i++) {
         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21076;&#38500;&#19981;&#31526;&#21512;&#26465;&#20214;&#30340;&#21518;&#31471;&#65288;I/O &#22810;&#36335;&#22797;&#29992;&#26426;&#21046;&#65289;</span>
         <span style="color: #5f8700;">if</span> (cfg != <span style="color: #00afaf;">NULL</span>) {
-            <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">determine if this backend should be avoided </span><span style="color: #8a8a8a;">*/</span>
+            <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">determine if this backend should be avoided</span><span style="color: #8a8a8a;"> */</span>
             <span style="color: #5f8700;">if</span> (event_config_is_avoided_method(cfg,
                 eventops[i]-&gt;name))
                 <span style="color: #5f8700;">continue</span>;
@@ -172,7 +172,7 @@ hello
                 <span style="color: #5f8700;">continue</span>;
         }
 
-        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">also obey the environment variables </span><span style="color: #8a8a8a;">*/</span>
+        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">also obey the environment variables</span><span style="color: #8a8a8a;"> */</span>
         <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21076;&#38500;&#19981;&#31526;&#21512;&#29615;&#22659;&#21464;&#37327;&#30340;&#21518;&#31471;</span>
         <span style="color: #5f8700;">if</span> (should_check_environment &amp;&amp;
             event_is_method_disabled(eventops[i]-&gt;name))
@@ -193,14 +193,14 @@ hello
     <span style="color: #5f8700;">if</span> (evutil_getenv(<span style="color: #00afaf;">"EVENT_SHOW_METHOD"</span>))
         event_msgx(<span style="color: #00afaf;">"libevent using: %s"</span>, base-&gt;evsel-&gt;name);
 
-    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">allocate a single active event queue </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">allocate a single active event queue</span><span style="color: #8a8a8a;"> */</span>
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20026; base &#30340;&#28608;&#27963;&#20107;&#20214;&#38431;&#21015;&#25968;&#32452;&#20998;&#37197;&#31354;&#38388;&#65292;&#25968;&#32452;&#38271;&#24230;&#20026;1&#65292;&#20998;&#37197;&#19968;&#20010;&#28608;&#27963;&#20107;&#20214;&#38431;&#21015;</span>
     <span style="color: #5f8700;">if</span> (event_base_priority_init(base, 1) &lt; 0) {
         event_base_free(base);
         <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
     }
 
-    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">prepare for threading </span><span style="color: #8a8a8a;">*/</span>
+    <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">prepare for threading</span><span style="color: #8a8a8a;"> */</span>
 <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">libevent &#40664;&#35748;&#26159;&#19981;&#24320;&#21551;&#22810;&#32447;&#31243;&#30340;&#65292;&#20063;&#27809;&#26377;&#38145;&#12289;&#26465;&#20214;&#21464;&#37327;&#36825;&#20123;&#19996;&#35199;</span>
 <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21487;&#20197;&#35843;&#29992;&#25509;&#21475; evthread_use_windows_threads() &#25110;&#32773; evthread_use_pthreads() &#36827;&#34892;&#23450;&#21046;</span>
 <span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> _EVENT_DISABLE_THREAD_SUPPORT  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#32534;&#35793;&#26102;&#32447;&#31243;&#25903;&#25345;</span>
@@ -232,8 +232,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-orgc01ca6e" class="outline-2">
-<h2 id="orgc01ca6e"><span class="section-number-2">3</span> event_new</h2>
+<div id="outline-container-org022cbc7" class="outline-2">
+<h2 id="org022cbc7"><span class="section-number-2">3</span> event_new</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35813;&#20989;&#25968;&#21482;&#26159;&#30003;&#35831;&#20102;&#19968;&#20010; struct event &#30340;&#20869;&#23384;&#31354;&#38388;&#65292;&#28982;&#21518;&#23558;&#21442;&#25968;&#21407;&#23553;&#19981;&#21160;&#30340;&#20256;&#32473; event_assign</span>
@@ -297,7 +297,7 @@ hello
 
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35774;&#32622;&#20107;&#20214;&#20248;&#20808;&#32423;&#65292;&#40664;&#35748;&#26032; new &#30340;&#20107;&#20214;&#20248;&#20808;&#32423;&#20026;&#20013;&#31561;</span>
     <span style="color: #5f8700;">if</span> (base != <span style="color: #00afaf;">NULL</span>) {
-        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">by default, we put new events into the middle priority </span><span style="color: #8a8a8a;">*/</span>
+        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">by default, we put new events into the middle priority</span><span style="color: #8a8a8a;"> */</span>
         ev-&gt;ev_pri = base-&gt;nactivequeues / 2;
     }
 
@@ -310,12 +310,12 @@ hello
 </div>
 </div>
 
-<div id="outline-container-org9b6c24c" class="outline-2">
-<h2 id="org9b6c24c"><span class="section-number-2">4</span> 向 event_base 注册事件</h2>
+<div id="outline-container-org97e3bd0" class="outline-2">
+<h2 id="org97e3bd0"><span class="section-number-2">4</span> 向 event_base 注册事件</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orge24f734" class="outline-3">
-<h3 id="orge24f734"><span class="section-number-3">4.1</span> event_add</h3>
+<div id="outline-container-org138b2d8" class="outline-3">
+<h3 id="org138b2d8"><span class="section-number-3">4.1</span> event_add</h3>
 <div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">event_add &#21482;&#26159;&#20026; event_base &#21152;&#20102;&#38145;&#65292;&#28982;&#21518;&#35843;&#29992; event_add_internal</span>
@@ -368,7 +368,7 @@ hello
     <span style="color: #5f8700;">if</span> (tv != <span style="color: #00afaf;">NULL</span> &amp;&amp; <span style="color: #d70000;">!</span>(ev-&gt;ev_flags &amp; EVLIST_TIMEOUT)) {
         <span style="color: #5f8700;">if</span> (min_heap_reserve(&amp;base-&gt;timeheap,
             1 + min_heap_size(&amp;base-&gt;timeheap)) == -1)
-            <span style="color: #5f8700;">return</span> (-1);  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">ENOMEM == errno </span><span style="color: #8a8a8a;">*/</span>
+            <span style="color: #5f8700;">return</span> (-1);  <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">ENOMEM == errno</span><span style="color: #8a8a8a;"> */</span>
     }
 
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524;&#20027;&#32447;&#31243;&#24403;&#21069;&#27491;&#22312;&#25191;&#34892; ev &#30340;&#22238;&#35843;&#20989;&#25968;&#65292;&#19988; ev &#26159;&#20449;&#21495;&#20107;&#20214;&#65292;&#19988;&#24403;&#21069;&#32447;&#31243;&#19981;&#26159;&#20027;&#32447;&#31243;&#65292;&#23601;&#31561;&#24453;&#20027;&#32447;&#31243;&#25191;&#34892;&#23436; ev &#30340;&#22238;&#35843;&#20989;&#25968;&#20877;&#25191;&#34892;&#28155;&#21152;&#25805;&#20316;</span>
@@ -486,8 +486,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-org346d95a" class="outline-3">
-<h3 id="org346d95a"><span class="section-number-3">4.2</span> evmap_io_add</h3>
+<div id="outline-container-org39a1c1c" class="outline-3">
+<h3 id="org39a1c1c"><span class="section-number-3">4.2</span> evmap_io_add</h3>
 <div class="outline-text-3" id="text-4-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#28155;&#21152; I/O &#20107;&#20214; ev &#21040; event_base.event_io_map&#12290;&#24182;&#21521; I/O &#22810;&#36335;&#22797;&#29992;&#20989;&#25968;&#27880;&#20876;&#20107;&#20214;</span>
@@ -560,7 +560,7 @@ hello
         <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">extra</span> = ((<span style="color: #af8700;">char</span>*)ctx) + <span style="color: #5f8700;">sizeof</span>(<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">evmap_io</span>);
         <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">XXX(niels): we cannot mix edge-triggered and</span>
 <span style="color: #8a8a8a;">         * level-triggered, we should probably assert on</span>
-<span style="color: #8a8a8a;">         * this. </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;">         * this.</span><span style="color: #8a8a8a;"> */</span>
         <span style="color: #5f8700;">if</span> (evsel-&gt;add(base, ev-&gt;ev_fd,
             old, (ev-&gt;ev_events &amp; EV_ET) | res, extra) == -1)
             <span style="color: #5f8700;">return</span> (-1);
@@ -579,8 +579,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-org6e3280d" class="outline-3">
-<h3 id="org6e3280d"><span class="section-number-3">4.3</span> evmap_signal_add</h3>
+<div id="outline-container-org96a28b3" class="outline-3">
+<h3 id="org96a28b3"><span class="section-number-3">4.3</span> evmap_signal_add</h3>
 <div class="outline-text-3" id="text-4-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27880;&#20876;&#20449;&#21495;&#20107;&#20214;</span>
@@ -618,8 +618,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-orgcf1e3e5" class="outline-3">
-<h3 id="orgcf1e3e5"><span class="section-number-3">4.4</span> event_queue_insert</h3>
+<div id="outline-container-orge73b35e" class="outline-3">
+<h3 id="orge73b35e"><span class="section-number-3">4.4</span> event_queue_insert</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 该函数第三个参数取值为 EVLIST_INSERTED 时，代表插入事件到注册事件队列<br>
@@ -636,7 +636,7 @@ hello
 
     <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22914;&#26524; ev &#24050;&#32463;&#22312; queue &#26631;&#35760;&#25152;&#26631;&#24535;&#30340;&#38431;&#21015;&#20013;&#65292;&#30452;&#25509;&#36820;&#22238;</span>
     <span style="color: #5f8700;">if</span> (ev-&gt;ev_flags &amp; queue) {
-        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Double insertion is possible for active events </span><span style="color: #8a8a8a;">*/</span>
+        <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">Double insertion is possible for active events</span><span style="color: #8a8a8a;"> */</span>
         <span style="color: #5f8700;">if</span> (queue &amp; EVLIST_ACTIVE)
             <span style="color: #5f8700;">return</span>;
 
@@ -681,8 +681,8 @@ hello
 </div>
 </div>
 
-<div id="outline-container-org75af80c" class="outline-2">
-<h2 id="org75af80c"><span class="section-number-2">5</span> 事件主循环 event_base_dispatch</h2>
+<div id="outline-container-org8c016a8" class="outline-2">
+<h2 id="org8c016a8"><span class="section-number-2">5</span> 事件主循环 event_base_dispatch</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #af8700;">int</span>
@@ -810,8 +810,8 @@ hello
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>多级时间轮定时器</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,32 +34,32 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6ac1568">1. 高效定时器的设计方案</a></li>
-<li><a href="#orgbec8cac">2. 时间轮（Timing-Wheel）算法</a></li>
-<li><a href="#orgda8825c">3. 多级时间轮算法</a>
+<li><a href="#org592deef">1. 高效定时器的设计方案</a></li>
+<li><a href="#org826c7c3">2. 时间轮（Timing-Wheel）算法</a></li>
+<li><a href="#orged0e0da">3. 多级时间轮算法</a>
 <ul>
-<li><a href="#org856d06a">3.1. 多级时间轮算法处理定时器过程</a></li>
+<li><a href="#orgf909182">3.1. 多级时间轮算法处理定时器过程</a></li>
 </ul>
 </li>
-<li><a href="#org8c63d5c">4. 关于 monotonic 时间</a></li>
-<li><a href="#org8edbddf">5. 代码实现</a>
+<li><a href="#org4dcc5a0">4. 关于 monotonic 时间</a></li>
+<li><a href="#org20a6769">5. 代码实现</a>
 <ul>
-<li><a href="#org32f9936">5.1. def.h</a></li>
-<li><a href="#org3f87f76">5.2. Timer.h</a></li>
-<li><a href="#org06ed5dc">5.3. Timer.c</a></li>
-<li><a href="#orgd5aac21">5.4. Thread.h</a></li>
-<li><a href="#orgf766e6e">5.5. Thread.c</a></li>
-<li><a href="#orgd7a1b02">5.6. main.c</a></li>
-<li><a href="#org75bfe6d">5.7. Makefile</a></li>
+<li><a href="#org79d56a8">5.1. def.h</a></li>
+<li><a href="#orged82fcf">5.2. Timer.h</a></li>
+<li><a href="#org7135db4">5.3. Timer.c</a></li>
+<li><a href="#org6ffbfa0">5.4. Thread.h</a></li>
+<li><a href="#org1d98411">5.5. Thread.c</a></li>
+<li><a href="#org22e9bfd">5.6. main.c</a></li>
+<li><a href="#orgc9d2706">5.7. Makefile</a></li>
 </ul>
 </li>
-<li><a href="#org51b0c2c">6. 简单测试结果</a></li>
+<li><a href="#org5e61bb0">6. 简单测试结果</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6ac1568" class="outline-2">
-<h2 id="org6ac1568"><span class="section-number-2">1</span> 高效定时器的设计方案</h2>
+<div id="outline-container-org592deef" class="outline-2">
+<h2 id="org592deef"><span class="section-number-2">1</span> 高效定时器的设计方案</h2>
 <div class="outline-text-2" id="text-1">
 <ol class="org-ol">
 <li>libevent 源码中采用的方案是：I/O 多路复用函数（select、epoll、kqueue等） + 小根堆 + common-timeout 队列存放相同超时时长的事件<br></li>
@@ -68,8 +68,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgbec8cac" class="outline-2">
-<h2 id="orgbec8cac"><span class="section-number-2">2</span> 时间轮（Timing-Wheel）算法</h2>
+<div id="outline-container-org826c7c3" class="outline-2">
+<h2 id="org826c7c3"><span class="section-number-2">2</span> 时间轮（Timing-Wheel）算法</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 <img src="../images/Timing-Wheel.jpg" alt="Timing-Wheel.jpg"><br>
@@ -82,8 +82,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgda8825c" class="outline-2">
-<h2 id="orgda8825c"><span class="section-number-2">3</span> 多级时间轮算法</h2>
+<div id="outline-container-orged0e0da" class="outline-2">
+<h2 id="orged0e0da"><span class="section-number-2">3</span> 多级时间轮算法</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 还以秒针表盘为例，秒针表盘 60s 需要 60 个刻度，如果是 1h 呢？难道需要 3600 个刻度吗？不是这样的，时钟有 3 级表盘，秒针、分针、时针，它们的粒度分别是 1s、1min、1h。<br>
@@ -98,8 +98,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </p>
 </div>
 
-<div id="outline-container-org856d06a" class="outline-3">
-<h3 id="org856d06a"><span class="section-number-3">3.1</span> 多级时间轮算法处理定时器过程</h3>
+<div id="outline-container-orgf909182" class="outline-3">
+<h3 id="orgf909182"><span class="section-number-3">3.1</span> 多级时间轮算法处理定时器过程</h3>
 <div class="outline-text-3" id="text-3-1">
 <ol class="org-ol">
 <li>对于一个 32bits 以毫秒为单位的时间 t。tick 取 t 的低 8bits。如果 tick 不为 0，执行步骤 6；如果 tick 为 0，执行步骤 2<br></li>
@@ -113,8 +113,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </div>
 </div>
 
-<div id="outline-container-org8c63d5c" class="outline-2">
-<h2 id="org8c63d5c"><span class="section-number-2">4</span> 关于 monotonic 时间</h2>
+<div id="outline-container-org4dcc5a0" class="outline-2">
+<h2 id="org4dcc5a0"><span class="section-number-2">4</span> 关于 monotonic 时间</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 计时系统使用的是 monotonic 时间，它表示从系统启动这一刻起到现在的时长。不受系统时间被用户修改的影响。<br>
@@ -123,8 +123,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </div>
 </div>
 
-<div id="outline-container-org8edbddf" class="outline-2">
-<h2 id="org8edbddf"><span class="section-number-2">5</span> 代码实现</h2>
+<div id="outline-container-org20a6769" class="outline-2">
+<h2 id="org20a6769"><span class="section-number-2">5</span> 代码实现</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 特点<br>
@@ -141,8 +141,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </ul>
 </div>
 
-<div id="outline-container-org32f9936" class="outline-3">
-<h3 id="org32f9936"><span class="section-number-3">5.1</span> def.h</h3>
+<div id="outline-container-org79d56a8" class="outline-3">
+<h3 id="org79d56a8"><span class="section-number-3">5.1</span> def.h</h3>
 <div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> _DEF_H_
@@ -162,8 +162,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </div>
 </div>
 </div>
-<div id="outline-container-org3f87f76" class="outline-3">
-<h3 id="org3f87f76"><span class="section-number-3">5.2</span> Timer.h</h3>
+<div id="outline-container-orged82fcf" class="outline-3">
+<h3 id="orged82fcf"><span class="section-number-3">5.2</span> Timer.h</h3>
 <div class="outline-text-3" id="text-5-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> _TIMER_H_
@@ -197,7 +197,7 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
     <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">LIST_TIMER</span> <span style="color: #0087ff;">ltTimer</span>;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#26102;&#22120;&#21452;&#21521;&#38142;&#34920;&#30340;&#20837;&#21475;</span>
     <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uExpires</span>;            <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#26102;&#22120;&#21040;&#26399;&#26102;&#38388;</span>
     <span style="color: #af8700;">uint32</span> <span style="color: #0087ff;">uPeriod</span>;             <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#26102;&#22120;&#35302;&#21457;&#21518;&#65292;&#20877;&#27425;&#35302;&#21457;&#30340;&#38388;&#38548;&#26102;&#38271;&#12290;&#22914;&#26524;&#20026; 0&#65292;&#34920;&#31034;&#35813;&#23450;&#26102;&#22120;&#20026;&#19968;&#27425;&#24615;&#30340;</span>
-    <span style="color: #af8700;">void</span> (*timerFn)(<span style="color: #af8700;">void</span> *);    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#26102;&#22120;&#22238;&#35843;&#20989;&#25968;</span>
+    <span style="color: #af8700;">void</span> (*<span style="color: #0087ff;">timerFn</span>)(<span style="color: #af8700;">void</span> *);    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#26102;&#22120;&#22238;&#35843;&#20989;&#25968;</span>
     <span style="color: #af8700;">void</span> *<span style="color: #0087ff;">pParam</span>;               <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22238;&#35843;&#20989;&#25968;&#30340;&#21442;&#25968;</span>
 } <span style="color: #af8700;">TIMERNODE</span>, *<span style="color: #af8700;">LPTIMERNODE</span>;
 
@@ -234,8 +234,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </div>
 </div>
 
-<div id="outline-container-org06ed5dc" class="outline-3">
-<h3 id="org06ed5dc"><span class="section-number-3">5.3</span> Timer.c</h3>
+<div id="outline-container-org7135db4" class="outline-3">
+<h3 id="org7135db4"><span class="section-number-3">5.3</span> Timer.c</h3>
 <div class="outline-text-3" id="text-5-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stddef.h&gt;</span>
@@ -359,14 +359,14 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
         <span style="color: #8a8a8a;">/*</span>
 <span style="color: #8a8a8a;">         * Can happen if you add a timer with expires == jiffies,</span>
 <span style="color: #8a8a8a;">         * or you set a timer to go off in the past</span>
-<span style="color: #8a8a8a;">         </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;">         */</span>
         pHead = &amp;lpTimerManager-&gt;arrListTimer1[(lpTimerManager-&gt;uJiffies &amp; TVR_MASK)];
     }
     <span style="color: #5f8700;">else</span>
     {
         <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">If the timeout is larger than 0xffffffff on 64-bit</span>
 <span style="color: #8a8a8a;">         * architectures then we use the maximum timeout:</span>
-<span style="color: #8a8a8a;">         </span><span style="color: #8a8a8a;">*/</span>
+<span style="color: #8a8a8a;">         */</span>
         <span style="color: #5f8700;">if</span> (uDueTime &gt; 0xffffffffUL)
         {
             uDueTime = 0xffffffffUL;
@@ -552,8 +552,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </div>
 </div>
 </div>
-<div id="outline-container-orgd5aac21" class="outline-3">
-<h3 id="orgd5aac21"><span class="section-number-3">5.4</span> Thread.h</h3>
+<div id="outline-container-org6ffbfa0" class="outline-3">
+<h3 id="org6ffbfa0"><span class="section-number-3">5.4</span> Thread.h</h3>
 <div class="outline-text-3" id="text-5-4">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#if</span><span style="color: #d75f00;">n</span><span style="color: #d75f00;">def</span> _THREAD_H_
@@ -574,8 +574,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </div>
 </div>
 
-<div id="outline-container-orgf766e6e" class="outline-3">
-<h3 id="orgf766e6e"><span class="section-number-3">5.5</span> Thread.c</h3>
+<div id="outline-container-org1d98411" class="outline-3">
+<h3 id="org1d98411"><span class="section-number-3">5.5</span> Thread.c</h3>
 <div class="outline-text-3" id="text-5-5">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">"Thread.h"</span>
@@ -604,8 +604,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </div>
 </div>
 
-<div id="outline-container-orgd7a1b02" class="outline-3">
-<h3 id="orgd7a1b02"><span class="section-number-3">5.6</span> main.c</h3>
+<div id="outline-container-org22e9bfd" class="outline-3">
+<h3 id="org22e9bfd"><span class="section-number-3">5.6</span> main.c</h3>
 <div class="outline-text-3" id="text-5-6">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;stdio.h&gt;</span>
@@ -636,8 +636,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </div>
 </div>
 
-<div id="outline-container-org75bfe6d" class="outline-3">
-<h3 id="org75bfe6d"><span class="section-number-3">5.7</span> Makefile</h3>
+<div id="outline-container-orgc9d2706" class="outline-3">
+<h3 id="orgc9d2706"><span class="section-number-3">5.7</span> Makefile</h3>
 <div class="outline-text-3" id="text-5-7">
 <div class="org-src-container">
 <pre class="src src-makefile"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">Makefile for test timer</span>
@@ -677,8 +677,8 @@ linux 内核中的多级时间轮算法采用 5 级时间轮，每级时间轮�
 </div>
 </div>
 
-<div id="outline-container-org51b0c2c" class="outline-2">
-<h2 id="org51b0c2c"><span class="section-number-2">6</span> 简单测试结果</h2>
+<div id="outline-container-org5e61bb0" class="outline-2">
+<h2 id="org5e61bb0"><span class="section-number-2">6</span> 简单测试结果</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ make                                                                                                                                                                             &#57522; &#61452; &#57522; 03:23:30 &#61463;
@@ -710,8 +710,8 @@ Timer expire! Jiffies: 5596791743
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

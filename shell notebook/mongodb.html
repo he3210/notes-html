@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:27 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&lrm;</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org70d3871">1. 常用命令</a></li>
+<li><a href="#orgbf590c9">2. 聚合搜索</a></li>
+<li><a href="#orgf79fd79">3. 分析性能</a></li>
+</ul>
+</div>
+</div>
+<p>
++TITLE: mongodb 命令<br>
+</p>
+
+<div id="outline-container-org70d3871" class="outline-2">
+<h2 id="org70d3871"><span class="section-number-2">1</span> 常用命令</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ mongo3.4 10.0.110.115:27017/db_msg -u username -p password
+$ show dbs
+db_msg
+$ show collections               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#25152;&#26377;&#38598;&#21512;</span>
+msg
+$ db.msg.count()          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#38598;&#21512; msg &#20013;&#30340;&#25991;&#26723;&#25968;&#37327;</span>
+$ db.msg.getIndexes()     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#33719;&#21462;&#32034;&#24341;</span>
+$ db.msg.find({<span style="color: #00afaf;">"msg_id"</span>: 6329, <span style="color: #00afaf;">"type"</span>: 3}, {<span style="color: #00afaf;">"_id"</span>: 0, <span style="color: #00afaf;">"msg_id"</span>: 1, <span style="color: #00afaf;">"msg"</span>: 1})
+{ <span style="color: #00afaf;">"msg_id"</span>: 6329, <span style="color: #00afaf;">"msg"</span> : <span style="color: #00afaf;">"hello world"</span> }
+$ db.msg.find({<span style="color: #00afaf;">"_id"</span>: {$<span style="color: #0087ff;">in</span>: [ObjectId(<span style="color: #00afaf;">"5fc8aa05149d8015a0a98d3f"</span>), ObjectId(<span style="color: #00afaf;">"5fc8aa05149d8015a0a98d38"</span>)]}})
+$ db.msg.update({<span style="color: #00afaf;">"_id"</span>: ObjectId(<span style="color: #00afaf;">"5fc8aa05149d8015a0a98d3f"</span>)}, {$<span style="color: #0087ff;">set</span>:{<span style="color: #00afaf;">"is_enabled"</span>: 0}})
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbf590c9" class="outline-2">
+<h2 id="orgbf590c9"><span class="section-number-2">2</span> 聚合搜索</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ db.msg.aggregate([{$<span style="color: #0087ff;">match</span>: {<span style="color: #00afaf;">"type"</span>: 3}}, {$<span style="color: #0087ff;">group</span>: {_id: null, total_char_cnt: {$<span style="color: #0087ff;">sum</span>: <span style="color: #00afaf;">"$char_cnt"</span>}}}, {$<span style="color: #0087ff;">project</span>: {_id: 0, total_char_cnt: 1}}])
+{ <span style="color: #00afaf;">"total_char_cnt"</span>: 435 }
+$ db.msg.aggregate([{$<span style="color: #0087ff;">match</span>: {<span style="color: #00afaf;">"type"</span>: {$<span style="color: #0087ff;">gte</span>: 3, $<span style="color: #0087ff;">lte</span>: 5}}}, {$<span style="color: #0087ff;">group</span>: {_id: <span style="color: #00afaf;">"$type"</span>, total_char_cnt: {$<span style="color: #0087ff;">sum</span>: <span style="color: #00afaf;">"$char_cnt"</span>}}}, {$<span style="color: #0087ff;">project</span>: {_id: 1, total_char_cnt: 1}}])
+{ <span style="color: #00afaf;">"_id"</span>: 3, <span style="color: #00afaf;">"total_char_cnt"</span>: 435 }
+{ <span style="color: #00afaf;">"_id"</span>: 4, <span style="color: #00afaf;">"total_char_cnt"</span>: 211 }
+{ <span style="color: #00afaf;">"_id"</span>: 5, <span style="color: #00afaf;">"total_char_cnt"</span>: 379 }
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgf79fd79" class="outline-2">
+<h2 id="orgf79fd79"><span class="section-number-2">3</span> 分析性能</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ db.msg.find({<span style="color: #00afaf;">"msg_id"</span>: 6329}).explain(<span style="color: #00afaf;">"executionStats"</span>)
+$ db.msg.explain().aggregate([{$<span style="color: #0087ff;">match</span>: {<span style="color: #00afaf;">"type"</span>: 3}}, {$<span style="color: #0087ff;">group</span>: {_id: null, total_char_cnt: {$<span style="color: #0087ff;">sum</span>: <span style="color: #00afaf;">"$char_cnt"</span>}}}, {$<span style="color: #0087ff;">project</span>: {_id: 0, total_char_cnt: 1}}])
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

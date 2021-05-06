@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:26 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&lrm;</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org066aa38">1. 变量 char **environ 的初始化</a></li>
+<li><a href="#orge999db3">2. strdup 函数</a></li>
+<li><a href="#org2e44e77">3. strchr 函数</a></li>
+<li><a href="#org8e5d4a9">4. strstr 函数</a></li>
+<li><a href="#org6b98348">5. 大小端判断</a></li>
+<li><a href="#orgebfbc52">6. isspace 函数</a></li>
+</ul>
+</div>
+</div>
+<p>
++TITLE: redis 源码问题总结<br>
+</p>
+
+<div id="outline-container-org066aa38" class="outline-2">
+<h2 id="org066aa38"><span class="section-number-2">1</span> 变量 char **environ 的初始化</h2>
+</div>
+<div id="outline-container-orge999db3" class="outline-2">
+<h2 id="orge999db3"><span class="section-number-2">2</span> strdup 函数</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>char * strdup(const char *s);<br></li>
+<li>strdup 函数会先用 maolloc 分配与 s 字符串相同的内存大小的空间，然后将参数 s 字符串的内容复制到该内存地址，然后把该地址返回。该字符串不使用时，需要用户使用 free() 来释放<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org2e44e77" class="outline-2">
+<h2 id="org2e44e77"><span class="section-number-2">3</span> strchr 函数</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>char *strchr(const char *str, int c)<br></li>
+<li>在 str 中搜索第一次出现字符 c（一个无符号字符）的位置。<br></li>
+<li>返回在 str 中第一次出现字符 c 的位置指针，如果未找到该字符则返回 NULL。<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org8e5d4a9" class="outline-2">
+<h2 id="org8e5d4a9"><span class="section-number-2">4</span> strstr 函数</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>char *strstr(const char *haystack, const char *needle)<br></li>
+<li>在字符串 haystack 中查找第一次出现字符串 needle 的位置，不包含终止符 '\0'。<br></li>
+<li>如果未找到则返回 null<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org6b98348" class="outline-2">
+<h2 id="org6b98348"><span class="section-number-2">5</span> 大小端判断</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #af8700;">uint64_t</span> <span style="color: #0087ff;">n</span> = 1;
+<span style="color: #af8700;">char</span> <span style="color: #0087ff;">c</span> = *(<span style="color: #af8700;">char</span> *)&amp;n;
+<span style="color: #5f8700;">if</span>( c == 0x01 )
+{
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23567;&#31471;&#12290;&#20302;&#23383;&#33410;&#23384;&#25918;&#30340;&#26159;&#25968;&#25454;&#30340;&#20302;&#23383;&#33410;</span>
+}
+<span style="color: #5f8700;">else</span>
+{
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22823;&#31471;&#12290;&#20302;&#23383;&#33410;&#23384;&#25918;&#30340;&#26159;&#25968;&#25454;&#30340;&#39640;&#23383;&#33410;</span>
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgebfbc52" class="outline-2">
+<h2 id="orgebfbc52"><span class="section-number-2">6</span> isspace 函数</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li>int isspace(int c)<br></li>
+<li>检查所传的字符是否是空白字符<br></li>
+<li>' '     (0x20)    space (SPC) 空格符<br></li>
+<li>'\t'    (0x09)    horizontal tab (TAB) 水平制表符<br></li>
+<li>'\n'    (0x0a)    newline (LF) 换行符<br></li>
+<li>'\v'    (0x0b)    vertical tab (VT) 垂直制表符<br></li>
+<li>'\f'    (0x0c)    feed (FF) 换页符<br></li>
+<li>'\r'    (0x0d)    carriage return (CR) 回车符<br></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

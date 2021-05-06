@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>bloom filter</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         displayAlign: "center",
@@ -36,11 +36,11 @@
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -56,16 +56,24 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org99e91d2">1. bloom filter</a></li>
-<li><a href="#org642d3e7">2. bloom filter 特点</a></li>
-<li><a href="#org971be90">3. 参数调优</a></li>
-<li><a href="#orged23b7c">4. 一个简易的布隆过滤器</a></li>
+<li><a href="#org412cf45">1. bloom filter</a></li>
+<li><a href="#org535c4a1">2. bloom filter 特点</a></li>
+<li><a href="#orgdb7602a">3. 参数调优</a></li>
+<li><a href="#org9295083">4. 一个简易的 bloom filter</a></li>
+<li><a href="#orge2cc1da">5. redis bloom filter 实现思路</a>
+<ul>
+<li><a href="#orgab05484">5.1. 问题：redis 单 key 最大 512MB，且分配内存是耗时操作，特别是大内存</a></li>
+<li><a href="#org30820ed">5.2. setbit getbit 命令优化</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-org99e91d2" class="outline-2">
-<h2 id="org99e91d2"><span class="section-number-2">1</span> bloom filter</h2>
+<p>
+<a href="./https://zhuanlan.zhihu.com/p/94619052">SHA256算法原理</a><br>
+</p>
+<div id="outline-container-org412cf45" class="outline-2">
+<h2 id="org412cf45"><span class="section-number-2">1</span> bloom filter</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 布隆过滤器算法用不太严谨的话来说就是 hash + bit-map 的组合算法。<br>
@@ -77,8 +85,8 @@
 </div>
 </div>
 
-<div id="outline-container-org642d3e7" class="outline-2">
-<h2 id="org642d3e7"><span class="section-number-2">2</span> bloom filter 特点</h2>
+<div id="outline-container-org535c4a1" class="outline-2">
+<h2 id="org535c4a1"><span class="section-number-2">2</span> bloom filter 特点</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>不存在漏报。如果某个元素在某个集合中，肯定能检测出<br></li>
@@ -89,8 +97,8 @@
 </div>
 </div>
 
-<div id="outline-container-org971be90" class="outline-2">
-<h2 id="org971be90"><span class="section-number-2">3</span> 参数调优</h2>
+<div id="outline-container-orgdb7602a" class="outline-2">
+<h2 id="orgdb7602a"><span class="section-number-2">3</span> 参数调优</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 参考 <a href="https://en.wikipedia.org/wiki/Bloom_filter">Wikipedia</a><br>
@@ -104,14 +112,16 @@ p 为误判率<br>
 <li>如果给定 m 和 n，当 k 取以下值时，误判率 p 的值最小<br>
 \[k=\ln 2 \times \frac{m}{n} \approx 0.693 \times \frac{m}{n}\]<br>
 此时误判率 p 等于<br>
-\[p_{min} \approx (1-e^{\frac{kn}{m}})^k = (1 - \frac{1}{2})^k \approx 0.6185^{\frac{m}{n}}\]<br></li>
+\[p_{min} \approx (1-e^{\frac{-kn}{m}})^k = (1 - \frac{1}{2})^k \approx 0.6185^{\frac{m}{n}}\]<br></li>
 <li>更常见的需求是，已知 n，并设定好误判率p，需要计算出该给 bit-map 分配多大内存合适，也就是要确认 m 的大小，可使用如下公式解决问题<br>
 \[m = - \frac{n \ln p}{(\ln 2)^2}\]<br></li>
+<li>已知 p，求 k<br>
+\[k = -log_{2}p\]<br></li>
 </ol>
 </div>
 </div>
-<div id="outline-container-orged23b7c" class="outline-2">
-<h2 id="orged23b7c"><span class="section-number-2">4</span> 一个简易的布隆过滤器</h2>
+<div id="outline-container-org9295083" class="outline-2">
+<h2 id="org9295083"><span class="section-number-2">4</span> 一个简易的 bloom filter</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;iostream&gt;</span>
@@ -179,6 +189,30 @@ p 为误判率<br>
 </div>
 </div>
 </div>
+<div id="outline-container-orge2cc1da" class="outline-2">
+<h2 id="orge2cc1da"><span class="section-number-2">5</span> redis bloom filter 实现思路</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgab05484" class="outline-3">
+<h3 id="orgab05484"><span class="section-number-3">5.1</span> 问题：redis 单 key 最大 512MB，且分配内存是耗时操作，特别是大内存</h3>
+<div class="outline-text-3" id="text-5-1">
+<ul class="org-ul">
+<li>当 n 过大时，需要采用分治法<br></li>
+<li>分片处理，例如一片 512k，共有 10 片（具体 bloom filter 需要多少分片可以根据公式计算），分片 idx = md5(key)%10，根据 idx 可以定位到 redis 上的一片 bloom filter<br></li>
+<li>这样 redis 最大一次性分配 512k 内存，避免内存分片耗时过长<br></li>
+<li>分片的话，各个分片就可以存储在 redis 集群的不同 node，避免热 key<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org30820ed" class="outline-3">
+<h3 id="org30820ed"><span class="section-number-3">5.2</span> setbit getbit 命令优化</h3>
+<div class="outline-text-3" id="text-5-2">
+<ul class="org-ul">
+<li>使用 pipeline 来批量操作<br></li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p>本笔记系统由
@@ -188,8 +222,8 @@ p 为误判率<br>
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

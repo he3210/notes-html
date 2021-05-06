@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:27 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&lrm;</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3ed9bf4">1. 开发内容</a>
+<ul>
+<li><a href="#org2b1a5b4">1.1. 一起去赏樱</a>
+<ul>
+<li><a href="#org8678fc1">1.1.1. 无色樱花瓣</a></li>
+<li><a href="#org9158309">1.1.2. 无色樱合成</a></li>
+<li><a href="#org85ccace">1.1.3. 赏樱</a>
+<ul>
+<li><a href="#org8b0d19d">1.1.3.1. 用户端（1 个 tab：赏樱）</a></li>
+<li><a href="#org55ad2d4">1.1.3.2. 主播端（2 个 tab：无色樱、赏樱）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgb3450c2">1.2. 樱花名人</a>
+<ul>
+<li><a href="#org60b0ad2">1.2.1. 主界面接口</a></li>
+<li><a href="#org20fc6c5">1.2.2. 名人奖励接口</a></li>
+</ul>
+</li>
+<li><a href="#org4b47dce">1.3. 加分模块</a>
+<ul>
+<li><a href="#org2259de8">1.3.1. 一起去赏樱</a></li>
+<li><a href="#org40f8b34">1.3.2. 樱花名人</a></li>
+<li><a href="#orgd06f6df">1.3.3. 榜单</a></li>
+</ul>
+</li>
+<li><a href="#orgc2a7c8c">1.4. 夺宝事件</a>
+<ul>
+<li><a href="#org953c669">1.4.1. 当前事件</a>
+<ul>
+<li><a href="#org4950a72">1.4.1.1. 设置当前事件</a></li>
+</ul>
+</li>
+<li><a href="#orgc7e2485">1.4.2. 结束事件</a>
+<ul>
+<li><a href="#org5f41056">1.4.2.1. 事件</a></li>
+<li><a href="#orgc8c4dc9">1.4.2.2. 发起</a></li>
+<li><a href="#org997f339">1.4.2.3. 处理</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgeaaae45">1.5. icon 定时同步（五本樱、十本樱、百本樱）</a>
+<ul>
+<li><a href="#orgeac45ed">1.5.1. 未开启阶段</a></li>
+<li><a href="#orgc243837">1.5.2. 充能阶段</a></li>
+<li><a href="#org605f01e">1.5.3. 夺宝阶段</a></li>
+<li><a href="#orgf00a104">1.5.4. 其它数据：赏樱中</a></li>
+</ul>
+</li>
+<li><a href="#orgccd3a96">1.6. 数据结构</a>
+<ul>
+<li><a href="#org9a46fe3">1.6.1. reids 记录用户一轮夺宝累计送出数量</a></li>
+<li><a href="#org009528e">1.6.2. redis 记录本轮夺宝总人数</a></li>
+<li><a href="#orgc661e55">1.6.3. redis 记录一轮</a></li>
+<li><a href="#org54b6850">1.6.4. mysql 记录名人历史</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
++TITLE: 202103樱花活动<br>
+</p>
+
+<div id="outline-container-org3ed9bf4" class="outline-2">
+<h2 id="org3ed9bf4"><span class="section-number-2">1</span> 开发内容</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org2b1a5b4" class="outline-3">
+<h3 id="org2b1a5b4"><span class="section-number-3">1.1</span> 一起去赏樱</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org8678fc1" class="outline-4">
+<h4 id="org8678fc1"><span class="section-number-4">1.1.1</span> 无色樱花瓣</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<ul class="org-ul">
+<li>五色樱花瓣界面接口/兑换五色花瓣接口<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org9158309" class="outline-4">
+<h4 id="org9158309"><span class="section-number-4">1.1.2</span> 无色樱合成</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<ul class="org-ul">
+<li>无色樱合成界面接口/合成接口<br></li>
+<li>用户在本直播间的合成历史接口<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org85ccace" class="outline-4">
+<h4 id="org85ccace"><span class="section-number-4">1.1.3</span> 赏樱</h4>
+<div class="outline-text-4" id="text-1-1-3">
+</div>
+<div id="outline-container-org8b0d19d" class="outline-5">
+<h5 id="org8b0d19d"><span class="section-number-5">1.1.3.1</span> 用户端（1 个 tab：赏樱）</h5>
+<div class="outline-text-5" id="text-1-1-3-1">
+<ul class="org-ul">
+<li>赏樱界面接口<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org55ad2d4" class="outline-5">
+<h5 id="org55ad2d4"><span class="section-number-5">1.1.3.2</span> 主播端（2 个 tab：无色樱、赏樱）</h5>
+<div class="outline-text-5" id="text-1-1-3-2">
+<ul class="org-ul">
+<li>赏樱 tab 界面接口/主播解锁赏樱接口<br>
+<ul class="org-ul">
+<li>解锁赏樱时，使用队列，先解锁的先生效<br></li>
+<li>解锁后，有 buff 奖励，需要修改加分模块<br></li>
+</ul></li>
+<li>无色樱 tab 界面：该直播间所有用户合成记录<br></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb3450c2" class="outline-3">
+<h3 id="orgb3450c2"><span class="section-number-3">1.2</span> 樱花名人</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org60b0ad2" class="outline-4">
+<h4 id="org60b0ad2"><span class="section-number-4">1.2.1</span> 主界面接口</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<ul class="org-ul">
+<li>花见名人堂<br></li>
+<li>未开启阶段/充能阶段/夺宝阶段<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org20fc6c5" class="outline-4">
+<h4 id="org20fc6c5"><span class="section-number-4">1.2.2</span> 名人奖励接口</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<ul class="org-ul">
+<li>可以领取吗？旗子达到指定数量自动下发<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4b47dce" class="outline-3">
+<h3 id="org4b47dce"><span class="section-number-3">1.3</span> 加分模块</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<div id="outline-container-org2259de8" class="outline-4">
+<h4 id="org2259de8"><span class="section-number-4">1.3.1</span> 一起去赏樱</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<ul class="org-ul">
+<li>本直播间每贡献 200pt，加 1 无色樱抽奖机会<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org40f8b34" class="outline-4">
+<h4 id="org40f8b34"><span class="section-number-4">1.3.2</span> 樱花名人</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<ul class="org-ul">
+<li>记录本轮夺宝名人历史。使可以统计出上一轮夺宝，名人最多的主播；根据人数确定奖池 gold 上限；本轮夺宝人数；发起者本轮第一个名人<br></li>
+<li>记录充能，充能满后，开启夺宝事件<br></li>
+<li>抢夺成功后的花瓣收集加倍问题？<br></li>
+<li>充能下一天是否能继续？能<br></li>
+<li>每一轮首个成功参与夺宝的直播间将会掉落福袋。福袋上会显示该福袋的开启者？<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgd06f6df" class="outline-4">
+<h4 id="orgd06f6df"><span class="section-number-4">1.3.3</span> 榜单</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<ul class="org-ul">
+<li>赏樱期间，榜单加成。解锁赏樱时，使用队列，先解锁的先生效<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc2a7c8c" class="outline-3">
+<h3 id="orgc2a7c8c"><span class="section-number-3">1.4</span> 夺宝事件</h3>
+<div class="outline-text-3" id="text-1-4">
+</div>
+<div id="outline-container-org953c669" class="outline-4">
+<h4 id="org953c669"><span class="section-number-4">1.4.1</span> 当前事件</h4>
+<div class="outline-text-4" id="text-1-4-1">
+</div>
+<div id="outline-container-org4950a72" class="outline-5">
+<h5 id="org4950a72"><span class="section-number-5">1.4.1.1</span> 设置当前事件</h5>
+<div class="outline-text-5" id="text-1-4-1-1">
+<ul class="org-ul">
+<li>hash key = pre + day_index + type<br></li>
+<li>field: value<br></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-js">{
+    <span style="color: #00afaf;">"task_id"</span>: 123,
+    <span style="color: #00afaf;">"pre_task_id"</span>: 122,   # &#19978;&#19968;&#20010;&#20219;&#21153;id&#65292;0 &#20195;&#34920;&#19981;&#23384;&#22312;&#19978;&#19968;&#20010;&#20219;&#21153;
+    <span style="color: #00afaf;">"type"</span>: 0,            # 0-&#20116;&#26412;&#27185;&#22842;&#23453;&#20107;&#20214; 1-&#21313;&#26412;&#27185;&#22842;&#23453;&#20107;&#20214; 2-&#30334;&#26412;&#27185;&#22842;&#23453;&#20107;&#20214;
+    <span style="color: #00afaf;">"cur_v"</span>: 100,         # &#24403;&#21069;&#20805;&#33021;&#20540;
+    <span style="color: #00afaf;">"max_v"</span>: 3000,        # &#26368;&#22823;&#20805;&#33021;&#20540;
+    <span style="color: #00afaf;">"start"</span>: 1616076000,  # &#22842;&#23453;&#24320;&#22987;&#26102;&#38388;
+    <span style="color: #00afaf;">"end"</span>: 1616076900,    # &#22842;&#23453;&#32467;&#26463;&#26102;&#38388;
+    <span style="color: #00afaf;">"opener"</span>: <span style="color: #00afaf;">"u3684831580894394120001295"</span>,  # &#31532;&#19968;&#20010;&#21517;&#20154;
+    <span style="color: #00afaf;">"winner"</span>: <span style="color: #00afaf;">"u3684831580894394120001295"</span>,  # &#26368;&#21518;&#19968;&#20010;&#21517;&#20154;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc7e2485" class="outline-4">
+<h4 id="orgc7e2485"><span class="section-number-4">1.4.2</span> 结束事件</h4>
+<div class="outline-text-4" id="text-1-4-2">
+</div>
+<div id="outline-container-org5f41056" class="outline-5">
+<h5 id="org5f41056"><span class="section-number-5">1.4.2.1</span> 事件</h5>
+<div class="outline-text-5" id="text-1-4-2-1">
+<div class="org-src-container">
+<pre class="src src-js">{
+    <span style="color: #00afaf;">"task_id"</span>: 123
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc8c4dc9" class="outline-5">
+<h5 id="orgc8c4dc9"><span class="section-number-5">1.4.2.2</span> 发起</h5>
+<div class="outline-text-5" id="text-1-4-2-2">
+<ul class="org-ul">
+<li>充能完成后，发出一个 15min 后的结束事件<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org997f339" class="outline-5">
+<h5 id="org997f339"><span class="section-number-5">1.4.2.3</span> 处理</h5>
+<div class="outline-text-5" id="text-1-4-2-3">
+<ul class="org-ul">
+<li>设置任务结束<br></li>
+<li>设置本轮最后一个名人为夺宝成功者，并下发福袋<br></li>
+<li>设置夺宝成功者所在直播间花瓣收集翻倍<br></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeaaae45" class="outline-3">
+<h3 id="orgeaaae45"><span class="section-number-3">1.5</span> icon 定时同步（五本樱、十本樱、百本樱）</h3>
+<div class="outline-text-3" id="text-1-5">
+</div>
+<div id="outline-container-orgeac45ed" class="outline-4">
+<h4 id="orgeac45ed"><span class="section-number-4">1.5.1</span> 未开启阶段</h4>
+<div class="outline-text-4" id="text-1-5-1">
+<ul class="org-ul">
+<li>充能礼物图<br></li>
+<li>充能 0 进度，例如 0/3000<br></li>
+<li>本阶段名人、樱姬头像为空<br></li>
+<li>文案：09:00～次日02:00 开启<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc243837" class="outline-4">
+<h4 id="orgc243837"><span class="section-number-4">1.5.2</span> 充能阶段</h4>
+<div class="outline-text-4" id="text-1-5-2">
+<ul class="org-ul">
+<li>充能礼物图<br></li>
+<li>充能进度<br></li>
+<li>本阶段名人、樱姬头像为空<br></li>
+<li>文案：充能完毕开启花见夺宝<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org605f01e" class="outline-4">
+<h4 id="org605f01e"><span class="section-number-4">1.5.3</span> 夺宝阶段</h4>
+<div class="outline-text-4" id="text-1-5-3">
+<ul class="org-ul">
+<li>充能礼物图<br></li>
+<li>礼物价值<br></li>
+<li>夺宝人数<br></li>
+<li>夺宝倒计时<br></li>
+<li>本阶段名人、樱姬头像<br></li>
+<li>3 种状态文案：本轮没有名人时；有名人时；送礼人数达到要求时<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf00a104" class="outline-4">
+<h4 id="orgf00a104"><span class="section-number-4">1.5.4</span> 其它数据：赏樱中</h4>
+<div class="outline-text-4" id="text-1-5-4">
+<ul class="org-ul">
+<li>赏樱地点<br></li>
+<li>奖励：1.2倍pt<br></li>
+<li>赏樱倒计时<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgccd3a96" class="outline-3">
+<h3 id="orgccd3a96"><span class="section-number-3">1.6</span> 数据结构</h3>
+<div class="outline-text-3" id="text-1-6">
+</div>
+<div id="outline-container-org9a46fe3" class="outline-4">
+<h4 id="org9a46fe3"><span class="section-number-4">1.6.1</span> reids 记录用户一轮夺宝累计送出数量</h4>
+<div class="outline-text-4" id="text-1-6-1">
+<ul class="org-ul">
+<li>hash key: pre + task_id + uid<br></li>
+<li>field: gift_id1/gift_id2/gift_id3<br></li>
+<li>value: 收礼数量<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org009528e" class="outline-4">
+<h4 id="org009528e"><span class="section-number-4">1.6.2</span> redis 记录本轮夺宝总人数</h4>
+<div class="outline-text-4" id="text-1-6-2">
+<ul class="org-ul">
+<li>hash key: pre<br></li>
+<li>field: task_id<br></li>
+<li>value: 夺宝总人数<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc661e55" class="outline-4">
+<h4 id="orgc661e55"><span class="section-number-4">1.6.3</span> redis 记录一轮</h4>
+</div>
+<div id="outline-container-org54b6850" class="outline-4">
+<h4 id="org54b6850"><span class="section-number-4">1.6.4</span> mysql 记录名人历史</h4>
+<div class="outline-text-4" id="text-1-6-4">
+<ul class="org-ul">
+<li>task_id<br></li>
+<li>type<br></li>
+<li>uid<br></li>
+<li>t_uid<br></li>
+<li>ctime<br></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

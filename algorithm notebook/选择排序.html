@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>选择排序</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,13 +34,13 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org04a18fb">1. 简单选择排序</a></li>
-<li><a href="#orgde37a06">2. 堆排</a>
+<li><a href="#org40a2105">1. 简单选择排序</a></li>
+<li><a href="#org4e61aab">2. 堆排</a>
 <ul>
-<li><a href="#org9a01d7f">2.1. 大根堆实例一</a></li>
-<li><a href="#org122614d">2.2. 大根堆实例二</a></li>
-<li><a href="#org3f4fa6d">2.3. 总结</a></li>
-<li><a href="#org5d29476">2.4. 优化</a></li>
+<li><a href="#org8d0facc">2.1. 大根堆实例一</a></li>
+<li><a href="#org55bc4bd">2.2. 大根堆实例二</a></li>
+<li><a href="#orgf86e244">2.3. 总结</a></li>
+<li><a href="#orgbee3283">2.4. 优化</a></li>
 </ul>
 </li>
 </ul>
@@ -51,8 +51,8 @@
 选择排序包括简单选择排序和堆排<br>
 </p>
 
-<div id="outline-container-org04a18fb" class="outline-2">
-<h2 id="org04a18fb"><span class="section-number-2">1</span> 简单选择排序</h2>
+<div id="outline-container-org40a2105" class="outline-2">
+<h2 id="org40a2105"><span class="section-number-2">1</span> 简单选择排序</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">SelectSort</span>(<span style="color: #af8700;">ElemType</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
@@ -79,12 +79,12 @@
 </div>
 </div>
 
-<div id="outline-container-orgde37a06" class="outline-2">
-<h2 id="orgde37a06"><span class="section-number-2">2</span> 堆排</h2>
+<div id="outline-container-org4e61aab" class="outline-2">
+<h2 id="org4e61aab"><span class="section-number-2">2</span> 堆排</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org9a01d7f" class="outline-3">
-<h3 id="org9a01d7f"><span class="section-number-3">2.1</span> 大根堆实例一</h3>
+<div id="outline-container-org8d0facc" class="outline-3">
+<h3 id="org8d0facc"><span class="section-number-3">2.1</span> 大根堆实例一</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 特点：<br>
@@ -176,8 +176,8 @@
 </div>
 </div>
 
-<div id="outline-container-org122614d" class="outline-3">
-<h3 id="org122614d"><span class="section-number-3">2.2</span> 大根堆实例二</h3>
+<div id="outline-container-org55bc4bd" class="outline-3">
+<h3 id="org55bc4bd"><span class="section-number-3">2.2</span> 大根堆实例二</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 特点：<br>
@@ -283,10 +283,10 @@
 <span style="color: #af8700;">int</span> <span style="color: #0087ff;">MinK</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">A</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">B</span>[], <span style="color: #af8700;">int</span> <span style="color: #0087ff;">k</span>)
 {
     <span style="color: #5f8700;">if</span>(k &lt; n)
-        memmove(B, A, <span style="color: #af8700;">k</span>*<span style="color: #5f8700;">sizeof</span>(<span style="color: #af8700;">int</span>));
+        memmove(B, A, k*<span style="color: #5f8700;">sizeof</span>(<span style="color: #af8700;">int</span>));
     <span style="color: #5f8700;">else</span>
     {
-        memmove(B, A, <span style="color: #af8700;">n</span>*<span style="color: #5f8700;">sizeof</span>(<span style="color: #af8700;">int</span>));
+        memmove(B, A, n*<span style="color: #5f8700;">sizeof</span>(<span style="color: #af8700;">int</span>));
         <span style="color: #5f8700;">return</span> n;
     }
 
@@ -355,8 +355,8 @@
 </div>
 </div>
 
-<div id="outline-container-org3f4fa6d" class="outline-3">
-<h3 id="org3f4fa6d"><span class="section-number-3">2.3</span> 总结</h3>
+<div id="outline-container-orgf86e244" class="outline-3">
+<h3 id="orgf86e244"><span class="section-number-3">2.3</span> 总结</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 最好、最坏、平均时间复杂度 O(nlog<sub>2</sub>n)<br>
@@ -398,8 +398,8 @@
 </div>
 </div>
 
-<div id="outline-container-org5d29476" class="outline-3">
-<h3 id="org5d29476"><span class="section-number-3">2.4</span> 优化</h3>
+<div id="outline-container-orgbee3283" class="outline-3">
+<h3 id="orgbee3283"><span class="section-number-3">2.4</span> 优化</h3>
 <div class="outline-text-3" id="text-2-4">
 <ul class="org-ul">
 <li><p>
@@ -432,8 +432,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

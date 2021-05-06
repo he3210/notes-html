@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:26 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>瓷砖铺地板</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         displayAlign: "center",
@@ -36,11 +36,11 @@
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -56,17 +56,17 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org82514ca">1. 问题</a></li>
-<li><a href="#org96d82e6">2. 状态转移方程</a></li>
-<li><a href="#org11e1406">3. 递归求解</a></li>
-<li><a href="#orgd23f72e">4. 动态规划（自顶向下）</a></li>
-<li><a href="#org2a7c95f">5. 动态规划（自底向上）</a></li>
+<li><a href="#orgc033949">1. 问题</a></li>
+<li><a href="#org2b9efea">2. 状态转移方程</a></li>
+<li><a href="#org41ee57d">3. 递归求解</a></li>
+<li><a href="#org9028c5f">4. 动态规划（自顶向下）</a></li>
+<li><a href="#org43ba53d">5. 动态规划（自底向上）</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org82514ca" class="outline-2">
-<h2 id="org82514ca"><span class="section-number-2">1</span> 问题</h2>
+<div id="outline-container-orgc033949" class="outline-2">
+<h2 id="orgc033949"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 求用 1*2 的瓷砖覆盖 2*n 的地板有几种方式<br>
@@ -74,8 +74,8 @@
 </div>
 </div>
 
-<div id="outline-container-org96d82e6" class="outline-2">
-<h2 id="org96d82e6"><span class="section-number-2">2</span> 状态转移方程</h2>
+<div id="outline-container-org2b9efea" class="outline-2">
+<h2 id="org2b9efea"><span class="section-number-2">2</span> 状态转移方程</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 \[
@@ -91,8 +91,8 @@ F(n - 1) + F(n - 2) & & {n > 2}
 </div>
 </div>
 
-<div id="outline-container-org11e1406" class="outline-2">
-<h2 id="org11e1406"><span class="section-number-2">3</span> 递归求解</h2>
+<div id="outline-container-org41ee57d" class="outline-2">
+<h2 id="org41ee57d"><span class="section-number-2">3</span> 递归求解</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">Fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span>)
@@ -109,8 +109,8 @@ F(n - 1) + F(n - 2) & & {n > 2}
 </div>
 </div>
 
-<div id="outline-container-orgd23f72e" class="outline-2">
-<h2 id="orgd23f72e"><span class="section-number-2">4</span> 动态规划（自顶向下）</h2>
+<div id="outline-container-org9028c5f" class="outline-2">
+<h2 id="org9028c5f"><span class="section-number-2">4</span> 动态规划（自顶向下）</h2>
 <div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[1000]={0};
@@ -133,8 +133,8 @@ F(n - 1) + F(n - 2) & & {n > 2}
 </div>
 </div>
 
-<div id="outline-container-org2a7c95f" class="outline-2">
-<h2 id="org2a7c95f"><span class="section-number-2">5</span> 动态规划（自底向上）</h2>
+<div id="outline-container-org43ba53d" class="outline-2">
+<h2 id="org43ba53d"><span class="section-number-2">5</span> 动态规划（自底向上）</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span>[1000]={0};
@@ -161,8 +161,8 @@ F(n - 1) + F(n - 2) & & {n > 2}
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

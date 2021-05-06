@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:27 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2020黄金周接龙活动</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">2020黄金周接龙活动</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9083822">1. 需求</a>
+<ul>
+<li><a href="#org46944d7">1.1. 元素礼物的获取。元素礼物可以填充水晶槽</a>
+<ul>
+<li><a href="#org6934e7c">1.1.1. 每日登陆领取奖励、连续登陆x天领取元素</a></li>
+<li><a href="#orgf3ae9dc">1.1.2. 满足观看时长送元素</a></li>
+<li><a href="#orgd22d36f">1.1.3. 活动期间充值指定额度可领取元素</a></li>
+</ul>
+</li>
+<li><a href="#orgfde5d2b">1.2. 红包弹窗</a>
+<ul>
+<li><a href="#org59c680f">1.2.1. 服务端不能一个红包中同时弹出2礼物，但可以分2次，每次弹出一个礼物</a></li>
+</ul>
+</li>
+<li><a href="#org39c352f">1.3. 三个榜单。排名奖励是什么东东？</a>
+<ul>
+<li><a href="#org752fee7">1.3.1. 活动积分榜：根据主播等级划分3个board。是否能用吸金主播？</a></li>
+<li><a href="#org1fee6ea">1.3.2. 守护兽伤害榜：是骑士总榜</a></li>
+<li><a href="#orge7a83d7">1.3.3. 直播间开启水晶次数榜</a></li>
+</ul>
+</li>
+<li><a href="#orgfe0f01f">1.4. 完成任务后直播间弹出提示：有奖励可以领取</a></li>
+<li><a href="#org2556896">1.5. 元素槽填满后，开启接龙且接龙结束后，是继续填元素槽吗？</a></li>
+<li><a href="#org9594be2">1.6. 水晶能量进度条弹窗</a></li>
+<li><a href="#org057d00a">1.7. 若连击途中火元素到达max，则此次连击结束后继续下一场</a></li>
+<li><a href="#org483f099">1.8. gift_chain 消息</a>
+<ul>
+<li><a href="#orgea984d3">1.8.1. 有 4 种守护兽接龙任务，前端需要一个字段确定是哪个接龙任务</a></li>
+<li><a href="#orgba4eb55">1.8.2. 需要水晶 icon</a></li>
+</ul>
+</li>
+<li><a href="#orgfbd17b9">1.9. 关于属性克制</a></li>
+<li><a href="#orga3b2243">1.10. 关于icon消息精简</a></li>
+<li><a href="#orgeaf76c1">1.11. 记录每一场接龙历史</a></li>
+<li><a href="#org257487f">1.12. 定时任务拆分到 event2</a></li>
+</ul>
+</li>
+<li><a href="#org0a7ffd2">2. 数据结构调整：调整为可由多个源触发接龙&amp;可触发多种不同类型的接龙</a>
+<ul>
+<li><a href="#org028b1f1">2.1. 新增水晶槽进度</a></li>
+<li><a href="#orgbaa23f7">2.2. 记录水晶槽骑士</a></li>
+<li><a href="#orgaa647d9">2.3. 等待队列</a></li>
+<li><a href="#orgfcd99bc">2.4. till_key</a></li>
+<li><a href="#org255d77b">2.5. gift_settings 配置结构调整</a></li>
+</ul>
+</li>
+<li><a href="#orgbe7c000">3. 开发任务</a>
+<ul>
+<li><a href="#org8106375">3.1. 水晶槽进度接口</a></li>
+<li><a href="#orga907f27">3.2. 加分模块加榜单、加能量槽等</a></li>
+<li><a href="#org117c00e">3.3. 定时开启/结算接龙模块，给直播间每个用户单发发水晶槽消息</a></li>
+<li><a href="#orge965e39">3.4. 领奖模块：2个页面：领取各种类型元素；领取属性币聊天框  4天</a></li>
+</ul>
+</li>
+<li><a href="#org545ddee">4. 上线</a>
+<ul>
+<li><a href="#org52d7445">4.1. sql</a></li>
+<li><a href="#org5816b9a">4.2. 修改 LuckyBagView 接口，更改领取背包礼物的文案</a></li>
+<li><a href="#orgd8c6586">4.3. 屏蔽背包礼物碎片</a></li>
+<li><a href="#org4899337">4.4. knights_max_count</a></li>
+<li><a href="#org6df8f21">4.5. icon 上小红点</a></li>
+<li><a href="#org301f62d">4.6. web_event 消息中启用了新字段，较老安卓版本可能不支持</a></li>
+<li><a href="#org7b67305">4.7. 活动结束/非 start_hour、end_hour 期间关闭 icon 展示</a></li>
+<li><a href="#org4835dfe">4.8. 放入等待队列中不发消息</a></li>
+<li><a href="#orgf74273b">4.9. sql</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9083822" class="outline-2">
+<h2 id="org9083822"><span class="section-number-2">1</span> 需求</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org46944d7" class="outline-3">
+<h3 id="org46944d7"><span class="section-number-3">1.1</span> 元素礼物的获取。元素礼物可以填充水晶槽</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org6934e7c" class="outline-4">
+<h4 id="org6934e7c"><span class="section-number-4">1.1.1</span> 每日登陆领取奖励、连续登陆x天领取元素</h4>
+</div>
+<div id="outline-container-orgf3ae9dc" class="outline-4">
+<h4 id="orgf3ae9dc"><span class="section-number-4">1.1.2</span> 满足观看时长送元素</h4>
+</div>
+<div id="outline-container-orgd22d36f" class="outline-4">
+<h4 id="orgd22d36f"><span class="section-number-4">1.1.3</span> 活动期间充值指定额度可领取元素</h4>
+</div>
+</div>
+<div id="outline-container-orgfde5d2b" class="outline-3">
+<h3 id="orgfde5d2b"><span class="section-number-3">1.2</span> 红包弹窗</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org59c680f" class="outline-4">
+<h4 id="org59c680f"><span class="section-number-4">1.2.1</span> 服务端不能一个红包中同时弹出2礼物，但可以分2次，每次弹出一个礼物</h4>
+</div>
+</div>
+<div id="outline-container-org39c352f" class="outline-3">
+<h3 id="org39c352f"><span class="section-number-3">1.3</span> 三个榜单。排名奖励是什么东东？</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<div id="outline-container-org752fee7" class="outline-4">
+<h4 id="org752fee7"><span class="section-number-4">1.3.1</span> 活动积分榜：根据主播等级划分3个board。是否能用吸金主播？</h4>
+</div>
+<div id="outline-container-org1fee6ea" class="outline-4">
+<h4 id="org1fee6ea"><span class="section-number-4">1.3.2</span> 守护兽伤害榜：是骑士总榜</h4>
+</div>
+<div id="outline-container-orge7a83d7" class="outline-4">
+<h4 id="orge7a83d7"><span class="section-number-4">1.3.3</span> 直播间开启水晶次数榜</h4>
+</div>
+</div>
+<div id="outline-container-orgfe0f01f" class="outline-3">
+<h3 id="orgfe0f01f"><span class="section-number-3">1.4</span> 完成任务后直播间弹出提示：有奖励可以领取</h3>
+</div>
+<div id="outline-container-org2556896" class="outline-3">
+<h3 id="org2556896"><span class="section-number-3">1.5</span> 元素槽填满后，开启接龙且接龙结束后，是继续填元素槽吗？</h3>
+</div>
+<div id="outline-container-org9594be2" class="outline-3">
+<h3 id="org9594be2"><span class="section-number-3">1.6</span> 水晶能量进度条弹窗</h3>
+</div>
+<div id="outline-container-org057d00a" class="outline-3">
+<h3 id="org057d00a"><span class="section-number-3">1.7</span> 若连击途中火元素到达max，则此次连击结束后继续下一场</h3>
+</div>
+<div id="outline-container-org483f099" class="outline-3">
+<h3 id="org483f099"><span class="section-number-3">1.8</span> gift_chain 消息</h3>
+<div class="outline-text-3" id="text-1-8">
+</div>
+<div id="outline-container-orgea984d3" class="outline-4">
+<h4 id="orgea984d3"><span class="section-number-4">1.8.1</span> 有 4 种守护兽接龙任务，前端需要一个字段确定是哪个接龙任务</h4>
+</div>
+<div id="outline-container-orgba4eb55" class="outline-4">
+<h4 id="orgba4eb55"><span class="section-number-4">1.8.2</span> 需要水晶 icon</h4>
+</div>
+</div>
+<div id="outline-container-orgfbd17b9" class="outline-3">
+<h3 id="orgfbd17b9"><span class="section-number-3">1.9</span> 关于属性克制</h3>
+</div>
+<div id="outline-container-orga3b2243" class="outline-3">
+<h3 id="orga3b2243"><span class="section-number-3">1.10</span> 关于icon消息精简</h3>
+</div>
+<div id="outline-container-orgeaf76c1" class="outline-3">
+<h3 id="orgeaf76c1"><span class="section-number-3">1.11</span> 记录每一场接龙历史</h3>
+</div>
+<div id="outline-container-org257487f" class="outline-3">
+<h3 id="org257487f"><span class="section-number-3">1.12</span> 定时任务拆分到 event2</h3>
+</div>
+</div>
+
+<div id="outline-container-org0a7ffd2" class="outline-2">
+<h2 id="org0a7ffd2"><span class="section-number-2">2</span> 数据结构调整：调整为可由多个源触发接龙&amp;可触发多种不同类型的接龙</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org028b1f1" class="outline-3">
+<h3 id="org028b1f1"><span class="section-number-3">2.1</span> 新增水晶槽进度</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+redis hash key            field   value<br>
+pre + event_name + uid    type    进度<br>
+</p>
+</div>
+</div>
+<div id="outline-container-orgbaa23f7" class="outline-3">
+<h3 id="orgbaa23f7"><span class="section-number-3">2.2</span> 记录水晶槽骑士</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+redis set key                        value<br>
+pre + event_name + uid + icon_id     knight_uid<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaa647d9" class="outline-3">
+<h3 id="orgaa647d9"><span class="section-number-3">2.3</span> 等待队列</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+添加 type 字段，0、1、2、3 分别标识 风、雷、水、火 4 种接龙<br>
+source 有：big_gift、schedule、progress_bar<br>
+init_time 接龙 icon 初始的展示时间<br>
+删除 "gift_id" 属性<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-python">{
+    <span style="color: #00afaf;">'source'</span>: <span style="color: #00afaf;">'big_gift'</span>,
+    <span style="color: #00afaf;">'icon_type'</span>: 1,
+    <span style="color: #00afaf;">'icon_id'</span>: 123,
+    <span style="color: #00afaf;">'init_time'</span>: 20,
+    <span style="color: #00afaf;">'knight_uid'</span>: knight_uid
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfcd99bc" class="outline-3">
+<h3 id="orgfcd99bc"><span class="section-number-3">2.4</span> till_key</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+redis string key                  value<br>
+pre + event_name + anchor_uid    {"deadline": "1587443415.242131", "source": "big_gift", "icon_type": 0, "icon_id": 123, "knight_uid": "xxx"}<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org255d77b" class="outline-3">
+<h3 id="org255d77b"><span class="section-number-3">2.5</span> gift_settings 配置结构调整</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+新增 type，表示在列表种随机一种接龙，默认 [0]<br>
+add_time 改为 list，对应 type 0、1、2、3<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-js">{
+  <span style="color: #00afaf;">"max_progress_bar_score"</span>: 100,
+  <span style="color: #00afaf;">"gift_chain_init_time"</span>: 20,
+  <span style="color: #00afaf;">"gift_settings"</span>: [
+    {
+      <span style="color: #00afaf;">"gift_id"</span>: 30029,
+      <span style="color: #00afaf;">"function"</span>: <span style="color: #00afaf;">"open"</span>,
+      <span style="color: #00afaf;">"score"</span>: 2222,
+      <span style="color: #00afaf;">"icon_types"</span>: [0,1,2,3],
+      <span style="color: #00afaf;">"random"</span>: [20,20,30,30]
+    },
+    {
+      <span style="color: #00afaf;">"gift_id"</span>: 274,
+      <span style="color: #00afaf;">"function"</span>: <span style="color: #00afaf;">"extend"</span>,
+      <span style="color: #00afaf;">"score"</span>: 111,
+      <span style="color: #00afaf;">"add_time_list"</span>: [10,12,10,10]
+    },
+    {
+      <span style="color: #00afaf;">"gift_id"</span>: 275,
+      <span style="color: #00afaf;">"function"</span>: <span style="color: #00afaf;">"progress_bar"</span>,
+      <span style="color: #00afaf;">"icon_type"</span>: 0,
+      <span style="color: #00afaf;">"score"</span>: 1
+    }
+  ]
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbe7c000" class="outline-2">
+<h2 id="orgbe7c000"><span class="section-number-2">3</span> 开发任务</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org8106375" class="outline-3">
+<h3 id="org8106375"><span class="section-number-3">3.1</span> 水晶槽进度接口</h3>
+<div class="outline-text-3" id="text-3-1">
+<ul class="org-ul">
+<li>进度<br></li>
+<li>是否可领取奖励的小红点<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orga907f27" class="outline-3">
+<h3 id="orga907f27"><span class="section-number-3">3.2</span> 加分模块加榜单、加能量槽等</h3>
+</div>
+<div id="outline-container-org117c00e" class="outline-3">
+<h3 id="org117c00e"><span class="section-number-3">3.3</span> 定时开启/结算接龙模块，给直播间每个用户单发发水晶槽消息</h3>
+</div>
+<div id="outline-container-orge965e39" class="outline-3">
+<h3 id="orge965e39"><span class="section-number-3">3.4</span> 领奖模块：2个页面：领取各种类型元素；领取属性币聊天框  4天</h3>
+<div class="outline-text-3" id="text-3-4">
+<ul class="org-ul">
+<li>查询奖励接口<br></li>
+<li>领奖接口<br></li>
+<li>用户每日登陆、连续登陆、每日观看时长、充值，需要生成可领奖记录<br></li>
+<li>奖励掉落<br>
+<ul class="org-ul">
+<li>接龙结束，对特定用户掉落5种属性币，属性币可兑换聊天框<br></li>
+</ul></li>
+<li>接龙icon、http接口上的小红点相关api<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org545ddee" class="outline-2">
+<h2 id="org545ddee"><span class="section-number-2">4</span> 上线</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org52d7445" class="outline-3">
+<h3 id="org52d7445"><span class="section-number-3">4.1</span> sql</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">insert</span> <span style="color: #5f8700;">into</span> miveshow.id_generator (`<span style="color: #5f8700;">name</span>`, `next_id`) <span style="color: #5f8700;">values</span> ("gift_chain", 1);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5816b9a" class="outline-3">
+<h3 id="org5816b9a"><span class="section-number-3">4.2</span> 修改 LuckyBagView 接口，更改领取背包礼物的文案</h3>
+</div>
+<div id="outline-container-orgd8c6586" class="outline-3">
+<h3 id="orgd8c6586"><span class="section-number-3">4.3</span> 屏蔽背包礼物碎片</h3>
+</div>
+<div id="outline-container-org4899337" class="outline-3">
+<h3 id="org4899337"><span class="section-number-3">4.4</span> knights_max_count</h3>
+</div>
+<div id="outline-container-org6df8f21" class="outline-3">
+<h3 id="org6df8f21"><span class="section-number-3">4.5</span> icon 上小红点</h3>
+</div>
+<div id="outline-container-org301f62d" class="outline-3">
+<h3 id="org301f62d"><span class="section-number-3">4.6</span> web_event 消息中启用了新字段，较老安卓版本可能不支持</h3>
+</div>
+<div id="outline-container-org7b67305" class="outline-3">
+<h3 id="org7b67305"><span class="section-number-3">4.7</span> 活动结束/非 start_hour、end_hour 期间关闭 icon 展示</h3>
+</div>
+<div id="outline-container-org4835dfe" class="outline-3">
+<h3 id="org4835dfe"><span class="section-number-3">4.8</span> 放入等待队列中不发消息</h3>
+</div>
+<div id="outline-container-orgf74273b" class="outline-3">
+<h3 id="orgf74273b"><span class="section-number-3">4.9</span> sql</h3>
+<div class="outline-text-3" id="text-4-9">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">alter</span> <span style="color: #5f8700;">table</span> <span style="color: #0087ff;">event_settings</span> change `rules` `rules` <span style="color: #af8700;">varchar</span>(9216) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'{}'</span>;
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `user_event_info` (
+`id` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> AUTO_INCREMENT,
+`gift_chain_coins` <span style="color: #af8700;">int</span>(11) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#31036;&#29289;&#25509;&#40857;&#36890;&#29992;&#36135;&#24065;&#65292;&#29992;&#26469;&#20817;&#25442;&#32972;&#21253;&#29289;&#21697;'</span>,
+`uid` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+`is_enabled` tinyint(4) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span>,
+`ctime` datetime <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+`mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> <span style="color: #5f8700;">ON</span> <span style="color: #5f8700;">UPDATE</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span>,
+<span style="color: #5f8700;">PRIMARY</span> <span style="color: #5f8700;">KEY</span> (`id`),
+<span style="color: #5f8700;">UNIQUE</span> <span style="color: #5f8700;">KEY</span> `uk_uid` (`uid`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8mb4;
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `gift_chain_history` (
+`id` <span style="color: #af8700;">int</span>(10) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> AUTO_INCREMENT,
+`event_name` <span style="color: #af8700;">varchar</span>(40) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#27963;&#21160;&#21517;&#31216;'</span>,
+`uid` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#20027;&#25773;uid'</span>,
+`open_uid` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#21457;&#36215;&#25509;&#40857;&#32773;'</span>,
+`<span style="color: #5f8700;">source</span>` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'progress_bar  schedule  big_gift'</span>,
+`icon_id` <span style="color: #af8700;">varchar</span>(32) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#25509;&#40857;id'</span>,
+`icon_type` tinyint(4)  <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#25509;&#40857;&#31867;&#22411; 0 1 2 3'</span>,
+`init_time` <span style="color: #af8700;">int</span>(10) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'20'</span> COMMENT <span style="color: #00afaf;">'&#25509;&#40857;&#21021;&#22987;&#26102;&#38388;&#65288;&#31186;&#65289;'</span>,
+`status` <span style="color: #af8700;">varchar</span>(64) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#25509;&#40857;&#29366;&#24577;'</span>,
+`ctime` datetime <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span>,
+`mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> <span style="color: #5f8700;">ON</span> <span style="color: #5f8700;">UPDATE</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span>,
+<span style="color: #5f8700;">PRIMARY</span> <span style="color: #5f8700;">KEY</span> (`id`),
+<span style="color: #5f8700;">UNIQUE</span> <span style="color: #5f8700;">KEY</span> `unq_icon_id` (`icon_id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8mb4;
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

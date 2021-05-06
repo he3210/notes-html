@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:26 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>golang 基础知识笔记</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">golang 基础知识笔记</h1>
+<ol class="org-ol">
+<li>%T 打印变量类型<br>
+<code>fmt.Printf("%T", d)</code><br></li>
+
+<li>不同于 c 语言，Go 没有隐式类型转换，不同类型之间不能运算<br></li>
+
+<li>常量的值会在编译的时候确定，函数调用发生在运行时，所以不能将函数的返回值赋值给常量<br>
+<code>const b = math.Sqrt(4)</code> 会报错<br></li>
+
+<li><p>
+声明一个无类型的常量后，可以把它赋值给类型兼容的变量<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">const</span> <span style="color: #00afaf;">a</span> = 5      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26080;&#31867;&#22411;&#30340;&#24120;&#37327;</span>
+<span style="color: #5f8700;">const</span> <span style="color: #00afaf;">b</span> <span style="color: #af8700;">int</span> = 9  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26377;&#31867;&#22411;&#30340;&#24120;&#37327;</span>
+<span style="color: #5f8700;">var</span> <span style="color: #0087ff;">b</span> <span style="color: #af8700;">int</span> = a
+<span style="color: #5f8700;">var</span> <span style="color: #0087ff;">c</span> <span style="color: #af8700;">int32</span> = a
+<span style="color: #5f8700;">var</span> <span style="color: #0087ff;">d</span> <span style="color: #af8700;">float64</span> = a
+<span style="color: #5f8700;">var</span> <span style="color: #0087ff;">e</span> <span style="color: #af8700;">complex64</span> = a
+</pre>
+</div></li>
+
+<li><p>
+包的初始化顺序<br>
+</p>
+<p width="50%">
+<img src="../images/package_order.png" alt="package_order.png" width="50%"><br>
+要注意的是，<br>
+</p>
+<ul class="org-ul">
+<li><p>
+在 main.main 函数执行之前所有代码都运行在同一个 goroutine，也就是程序的主系统线程中。因此，如果某个 init 函数内部用 go 关键字启动了新的 goroutine 的话，新的 goroutine 只有在进入 main.main 函数之后才会开始执行<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">package</span> main
+
+<span style="color: #5f8700;">import</span> (
+    <span style="color: #00afaf;">"fmt"</span>
+    <span style="color: #00afaf;">"time"</span>
+)
+
+<span style="color: #5f8700;">var</span> <span style="color: #0087ff;">test</span> = 1
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">init</span>() {
+    fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #00afaf;">"enter into init"</span>)
+
+    <span style="color: #5f8700;">go</span> <span style="color: #5f8700;">func</span>() {
+        test = 2
+        fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #00afaf;">"hello world in goroute"</span>)
+    }()
+
+    fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #00afaf;">"exit from init"</span>)
+}
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">main</span>() {
+    fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #00afaf;">"1st test:"</span>,test)
+    time.<span style="color: #0087ff;">Sleep</span>(1)
+    fmt.<span style="color: #0087ff;">Println</span>(<span style="color: #00afaf;">"2nd test:"</span>,test)
+}
+</pre>
+</div>
+
+<p>
+结果<br>
+</p>
+<pre class="example" id="orga068376">
+enter into init
+exit from init
+1st test: 1
+2nd test: 1
+</pre></li>
+
+<li>每个包只会初始化一次。例如，即使 fmt 被多个包引入，也只会在第一次时被初始化<br></li>
+<li>包不能循环引用<br></li>
+</ul></li>
+
+<li>在 <code>${GOPATH}/src/</code> 目录下新建 go 项目 aa。然后执行 <code>go install aa</code> ，会在 <code>${GOPATH}/bin/</code> 目录下编译出 aa 的二进制文件<br></li>
+
+<li>循环语句没有 <code>while</code> 和 <code>do...while</code><br></li>
+
+<li><p>
+switch 语句中使用 fallthrough 会强制执行后面的 case 语句，fallthrough 不会判断下一条 case 的表达式结果是否为 true<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">package</span> main
+
+<span style="color: #5f8700;">import</span> (
+    <span style="color: #00afaf;">"fmt"</span>
+)
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">number</span>() <span style="color: #af8700;">int</span> {
+    <span style="color: #5f8700;">return</span> 40
+}
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">main</span>() {
+    <span style="color: #5f8700;">switch</span> <span style="color: #0087ff;">num</span> := <span style="color: #0087ff;">number</span>(); {
+    <span style="color: #5f8700;">case</span> num &lt; 20, num == 40:  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20219;&#24847;&#28385;&#36275;&#19968;&#20010;&#26465;&#20214;&#23601;&#36890;&#36807;</span>
+        fmt.<span style="color: #0087ff;">Printf</span>(<span style="color: #00afaf;">"%d &lt; 20 or %d == 40\n"</span>, num, num)
+        <span style="color: #5f8700;">fallthrough</span>
+    <span style="color: #5f8700;">case</span> num &gt; 100:
+        fmt.<span style="color: #0087ff;">Printf</span>(<span style="color: #00afaf;">"%d &gt; 100\n"</span>, num)
+    <span style="color: #5f8700;">default</span>:  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">default &#19981;&#19968;&#23450;&#25918;&#22312; switch &#35821;&#21477;&#26368;&#21518;</span>
+        fmt.<span style="color: #0087ff;">Printf</span>(<span style="color: #00afaf;">"default"</span>)
+    <span style="color: #5f8700;">case</span> num &lt; 70:
+        fmt.<span style="color: #0087ff;">Printf</span>(<span style="color: #00afaf;">"%d &lt; 200"</span>, num)
+    }
+}
+</pre>
+</div>
+
+<p>
+结果<br>
+</p>
+<pre class="example" id="orgdbe9695">
+40 &lt; 20 or 40 == 40
+40 &gt; 100
+</pre></li>
+
+<li>不同长度的数组不能相互赋值。例如 [3]int 的变量不能赋值给 [5]int<br></li>
+
+<li>数组是值类型不是引用类型。将数组 a 赋值给一个新的变量 b 后，对数组 b 的元素进行更改不影响数组 a；将数组作为形参传递给函数也是值传递<br></li>
+
+<li>切片是一个结构体，该结构体包含 len、cap 和指向数组的指针。当切片作为参数传递给函数时，会将该结构体值传递给函数<br></li>
+
+<li><p>
+可变参数函数<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">package</span> main
+
+<span style="color: #5f8700;">import</span> (
+    <span style="color: #00afaf;">"fmt"</span>
+)
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">change</span>(<span style="color: #0087ff;">s</span> ...<span style="color: #af8700;">string</span>) {
+    s[0] = <span style="color: #00afaf;">"Go"</span>
+    s = <span style="color: #5f8700;">append</span>(s, <span style="color: #00afaf;">"playground"</span>)
+    fmt.<span style="color: #0087ff;">Println</span>(s)
+}
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">main</span>() {
+    <span style="color: #0087ff;">welcome</span> := []<span style="color: #af8700;">string</span>{<span style="color: #00afaf;">"hello"</span>, <span style="color: #00afaf;">"world"</span>}
+    <span style="color: #0087ff;">change</span>(welcome...)
+    fmt.<span style="color: #0087ff;">Println</span>(welcome)
+}
+</pre>
+</div>
+<p>
+结果<br>
+</p>
+<pre class="example" id="orgaa083c7">
+[Go world playground]
+[Go world]
+</pre>
+<ul class="org-ul">
+<li>可变参数 <code>s ...string</code> 会被转换为 <code>[]string</code> 类型切片然后在传入函数 change 中<br></li>
+<li>传入 <code>welcome...</code> 时，语法糖 <code>...</code> 代表不再转换为切片了，直接使用切片 <code>welcome</code><br></li>
+</ul></li>
+
+<li>make<br>
+<ul class="org-ul">
+<li>创建 len 为 3，cap 为 10 的切片 <code>a := make([]string, 3, 10)</code><br></li>
+<li>创建 map <code>b := make(map[string]int)</code><br></li>
+</ul></li>
+
+<li><p>
+rune<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #0087ff;">runes</span> := []<span style="color: #0087ff;">rune</span>(<span style="color: #00afaf;">"&#20320;&#22909;"</span>)
+<span style="color: #5f8700;">for</span> <span style="color: #0087ff;">i</span>:=0; i &lt; <span style="color: #5f8700;">len</span>(runes); i++ {
+    fmt.<span style="color: #0087ff;">Printf</span>(<span style="color: #00afaf;">"%c\n"</span>, runes[i])
+}
+<span style="color: #0087ff;">s</span> := <span style="color: #00afaf;">"&#20320;&#22909;&#21834;"</span>
+<span style="color: #5f8700;">for</span> <span style="color: #0087ff;">index</span>, <span style="color: #0087ff;">rune</span> := <span style="color: #5f8700;">range</span> s {
+    fmt.<span style="color: #0087ff;">Printf</span>(<span style="color: #00afaf;">"%c %d\n"</span>, rune, index)
+}
+fmt.<span style="color: #0087ff;">Printf</span>(<span style="color: #00afaf;">"len: %d, rune len: %d\n"</span>, <span style="color: #5f8700;">len</span>(s), utf8.<span style="color: #0087ff;">RuneCountInString</span>(s))
+</pre>
+</div>
+
+<p>
+结果<br>
+</p>
+<pre class="example" id="org4ba7a1d">
+你
+好
+你 0
+好 3
+啊 6
+len: 9, rune len: 3
+</pre></li>
+
+<li>结构体是值类型。如果它的每一个字段都是可比较的，则该结构体也是可比较的。如果两个结构体变量的对应字段相等，则这两个变量也是相等的<br></li>
+
+<li>当一个方法使用值接收器，它可以接受值接收器和指针接收器<br></li>
+
+<li>当一个方法使用指针接收器，它可以接受值接收器和指针接收器<br></li>
+
+<li><p>
+对于使用指针接受者的方法，用一个指针或者一个可取得地址的值来调用都是合法的。但接口中存储的具体值（Concrete Value）并不能取到地址，因此译器无法自动获取 a 的地址，于是程序报错<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">package</span> main
+
+<span style="color: #5f8700;">import</span> <span style="color: #00afaf;">"fmt"</span>
+
+<span style="color: #5f8700;">type</span> <span style="color: #af8700;">Describer</span> <span style="color: #5f8700;">interface</span> {  
+    <span style="color: #0087ff;">Describe</span>()
+}
+
+<span style="color: #5f8700;">type</span> <span style="color: #af8700;">Address</span> <span style="color: #5f8700;">struct</span> {
+    state   <span style="color: #af8700;">string</span>
+    country <span style="color: #af8700;">string</span>
+}
+
+<span style="color: #5f8700;">func</span> (<span style="color: #0087ff;">a</span> *<span style="color: #af8700;">Address</span>) <span style="color: #0087ff;">Describe</span>() { <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992;&#25351;&#38024;&#25509;&#21463;&#32773;&#23454;&#29616;</span>
+    fmt.<span style="color: #0087ff;">Printf</span>(<span style="color: #00afaf;">"State %s Country %s"</span>, a.state, a.country)
+}
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">main</span>() {  
+    <span style="color: #5f8700;">var</span> <span style="color: #0087ff;">d</span> <span style="color: #af8700;">Describer</span>
+    <span style="color: #0087ff;">a</span> := <span style="color: #af8700;">Address</span>{<span style="color: #00afaf;">"Washington"</span>, <span style="color: #00afaf;">"USA"</span>}
+
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">d = a  // &#25253;&#38169;</span>
+    d = &amp;a    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36825;&#26159;&#21512;&#27861;&#30340;</span>
+    d.<span style="color: #0087ff;">Describe</span>()
+}
+</pre>
+</div></li>
+</ol>
+
+
+<ol class="org-ol">
+<li>并非调用延迟函数的时候才确定实参，而是当执行 defer 语句的时候，就会对延迟函数的实参进行求值<br></li>
+</ol>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

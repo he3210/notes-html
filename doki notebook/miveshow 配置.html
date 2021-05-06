@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-05-06 Thu 15:27 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>miveshow 配置</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">miveshow 配置</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5042b6f">1. 依赖安装</a></li>
+<li><a href="#org3fd8074">2. 本地环境配置</a>
+<ul>
+<li><a href="#orgbb7cc58">2.1. 添加 local.conf，开发环境标记为 dev</a></li>
+<li><a href="#org09a86c4">2.2. 创建 log 文件夹</a></li>
+</ul>
+</li>
+<li><a href="#orga31c008">3. mysql</a></li>
+<li><a href="#org1e20c01">4. 问题汇总</a>
+<ul>
+<li><a href="#org1c8c6fe">4.1. from _mysql import IntegrityError 无法导入的问题</a></li>
+<li><a href="#org6d5d35d">4.2. 删除系统自带的 pyutil，这个包和 util 库中的 pyutil 冲突</a></li>
+</ul>
+</li>
+<li><a href="#org899aab6">5. docker 安装 debian miveshow 环境</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5042b6f" class="outline-2">
+<h2 id="org5042b6f"><span class="section-number-2">1</span> 依赖安装</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ pip3 install virtualenv
+$ cd ~
+$ mkdir env
+$ cd env
+$ virtualenv miveshow --python=python2
+$ source ~/env/miveshow/bin/activate
+$ cd ~/test/miveshow/websocket/src
+$ pip install -r requirements.txt
+$ deactivate
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3fd8074" class="outline-2">
+<h2 id="org3fd8074"><span class="section-number-2">2</span> 本地环境配置</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgbb7cc58" class="outline-3">
+<h3 id="orgbb7cc58"><span class="section-number-3">2.1</span> 添加 local.conf，开发环境标记为 dev</h3>
+<div class="outline-text-3" id="text-2-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ cd /Users/he/test/miveshow/webserver/conf
+$ cat local.conf
+env dev
+log2kafka False
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org09a86c4" class="outline-3">
+<h3 id="org09a86c4"><span class="section-number-3">2.2</span> 创建 log 文件夹</h3>
+<div class="outline-text-3" id="text-2-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ cd ~/test/miveshow/websocket/src
+$ mkdir log
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga31c008" class="outline-2">
+<h2 id="orga31c008"><span class="section-number-2">3</span> mysql</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell">mysql -h localhost -P 6600 -umiveshow -pmiveshow123 -Dmiveshow_event;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1e20c01" class="outline-2">
+<h2 id="org1e20c01"><span class="section-number-2">4</span> 问题汇总</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org1c8c6fe" class="outline-3">
+<h3 id="org1c8c6fe"><span class="section-number-3">4.1</span> from _mysql import IntegrityError 无法导入的问题</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+在测试环境发现（动态库 _mysql.so 是安装 MySQL-python 后才有的）<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-python">&gt;&gt;&gt; <span style="color: #5f8700;">import</span> _mysql
+&gt;&gt;&gt; <span style="color: #5f8700;">print</span> _mysql.__file__
+/usr/local/lib/python2.7/dist-packages/_mysql.so
+</pre>
+</div>
+
+<p>
+在本机发现缺少 libssl.1.0.0.dylib<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-python">&gt;&gt;&gt; <span style="color: #5f8700;">import</span> _mysql
+Traceback (most recent call last):
+  File <span style="color: #00afaf;">"&lt;stdin&gt;"</span>, line 1, <span style="color: #5f8700;">in</span> &lt;module&gt;
+<span style="color: #af8700;">ImportError</span>: dlopen(/Users/he/env/miveshow/lib/python2.7/site-packages/_mysql.so, 2): Library <span style="color: #5f8700;">not</span> loaded: /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+  Referenced <span style="color: #5f8700;">from</span>: /Users/he/env/miveshow/lib/python2.7/site-packages/_mysql.so
+  Reason: image <span style="color: #5f8700;">not</span> found
+</pre>
+</div>
+
+<p>
+通过 brew list 命令发现 openssl@1.1，版本比较高，需要 1.0.0 版本。<br>
+可以添加一个软连接<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ cd /usr/local/opt/openssl/lib/
+$ ls -l
+total 15144
+drwxr-xr-x  4 he  staff      128 Mar 25 21:28 engines-1.1
+-r--r--r--  1 he  staff  2437024 Apr 16 21:07 libcrypto.1.1.dylib
+-r--r--r--  1 he  staff  4087176 Mar 25 21:28 libcrypto.a
+lrwxr-xr-x  1 he  staff       19 Mar 25 21:28 libcrypto.dylib -&gt; libcrypto.1.1.dylib
+-r--r--r--  1 he  staff   502872 Apr 16 21:07 libssl.1.1.dylib
+-r--r--r--  1 he  staff   723992 Mar 25 21:28 libssl.a
+lrwxr-xr-x  1 he  staff       16 Mar 25 21:28 libssl.dylib -&gt; libssl.1.1.dylib
+drwxr-xr-x  5 he  staff      160 Apr 16 21:07 pkgconfig
+$ ln -s ./libssl.1.1.dylib libssl.1.0.0.dylib
+</pre>
+</div>
+
+<p>
+添加完该软连接之后，python 导入 _mysql 发现又缺少 libcrypto.1.0.0.dylib<br>
+同理，添加软连接。添加完后，可以导入了<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ cd /usr/local/opt/openssl/lib/
+$ ln -s ./libcrypto.1.1.dylib libcrypto.1.0.0.dylib
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org6d5d35d" class="outline-3">
+<h3 id="org6d5d35d"><span class="section-number-3">4.2</span> 删除系统自带的 pyutil，这个包和 util 库中的 pyutil 冲突</h3>
+<div class="outline-text-3" id="text-4-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ cd /Users/liangzhichao/Workspace/miveshow/lib/python2.7/site-packages
+$ rm -rf pyutil
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org899aab6" class="outline-2">
+<h2 id="org899aab6"><span class="section-number-2">5</span> docker 安装 debian miveshow 环境</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-bash">$ docker pull debian
+$ docker run --name miveshow -i -t debian /bin/bash
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">python --version</span>
+bash: python: command not found
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install python2.7</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">python --version</span>
+bash: python: command not found
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">python2.7 --version</span>
+Python 2.7.16
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">which python2.7</span>
+/usr/bin/python2.7
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">cd /usr/bin/</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ln -s python2.7 python</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install python-pip</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install vim</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">cat /root/.bashrc</span>
+<span style="color: #5f8700;">export</span> <span style="color: #0087ff;">LS_OPTIONS</span>=<span style="color: #00afaf;">'--color=auto'</span>
+<span style="color: #5f8700;">eval</span> <span style="color: #00afaf;">"`dircolors`"</span>
+<span style="color: #5f8700;">alias</span> <span style="color: #0087ff;">ls</span>=<span style="color: #00afaf;">'ls $LS_OPTIONS'</span>
+<span style="color: #5f8700;">alias</span> <span style="color: #0087ff;">ll</span>=<span style="color: #00afaf;">'ls $LS_OPTIONS -l'</span>
+<span style="color: #5f8700;">alias</span> <span style="color: #0087ff;">l</span>=<span style="color: #00afaf;">'ls $LS_OPTIONS -lA'</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install git</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">mkdir -p /opt/zeus/</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">cd /opt/zeus/</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">git clone gitlab:live/miveshow.git  # &#25552;&#21069;&#37197;&#32622;&#22909; ~/.ssh/config</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install wget</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install procps</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install redis</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install memcached</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">service redis-server start  # &#21551;&#21160; redis</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">service memcached start</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -  # https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4 main" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt update</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install mongodb-org</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">mongod -f /etc/mongod.conf --fork  # mongod &#21518;&#21488;&#21551;&#21160;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

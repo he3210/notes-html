@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2020-01-15 Wed 12:03 -->
+<!-- 2021-05-06 Thu 15:27 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>shell 单引号和双引号的区别</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -34,18 +34,18 @@
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd5b5a8b">1. shell command line 分解</a></li>
-<li><a href="#org0e4c1dc">2. quoting 处理</a></li>
-<li><a href="#orgf30010f">3. 举例：从 Enter 键看区别</a></li>
-<li><a href="#org1eee13e">4. 举例：从 awk 命令看区别</a></li>
-<li><a href="#orgb062f19">5. 举例: 从 stdin 输入变量看区别</a></li>
-<li><a href="#org60cd765">6. 举例：输出原文件</a></li>
+<li><a href="#orgacfc8b7">1. shell command line 分解</a></li>
+<li><a href="#org8ab4075">2. quoting 处理</a></li>
+<li><a href="#org9e8d633">3. 举例：从 Enter 键看区别</a></li>
+<li><a href="#org2f70f81">4. 举例：从 awk 命令看区别</a></li>
+<li><a href="#org1005daa">5. 举例: 从 stdin 输入变量看区别</a></li>
+<li><a href="#orged6c374">6. 举例：输出原文件</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd5b5a8b" class="outline-2">
-<h2 id="orgd5b5a8b"><span class="section-number-2">1</span> shell command line 分解</h2>
+<div id="outline-container-orgacfc8b7" class="outline-2">
+<h2 id="orgacfc8b7"><span class="section-number-2">1</span> shell command line 分解</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 shell command line 处理流程：<br>
@@ -83,8 +83,8 @@ command line 的每一个 charactor, 分为如下两种：<br>
 </div>
 </div>
 
-<div id="outline-container-org0e4c1dc" class="outline-2">
-<h2 id="org0e4c1dc"><span class="section-number-2">2</span> quoting 处理</h2>
+<div id="outline-container-org8ab4075" class="outline-2">
+<h2 id="org8ab4075"><span class="section-number-2">2</span> quoting 处理</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 假如我们需要在 command line 中将这些保留元字符的功能关闭的话，就需要 quoting 处理了<br>
@@ -98,8 +98,8 @@ command line 的每一个 charactor, 分为如下两种：<br>
 </div>
 </div>
 
-<div id="outline-container-orgf30010f" class="outline-2">
-<h2 id="orgf30010f"><span class="section-number-2">3</span> 举例：从 Enter 键看区别</h2>
+<div id="outline-container-org9e8d633" class="outline-2">
+<h2 id="org9e8d633"><span class="section-number-2">3</span> 举例：从 Enter 键看区别</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Enter 存在如下含义<br>
@@ -149,8 +149,8 @@ BC
 </div>
 </div>
 
-<div id="outline-container-org1eee13e" class="outline-2">
-<h2 id="org1eee13e"><span class="section-number-2">4</span> 举例：从 awk 命令看区别</h2>
+<div id="outline-container-org2f70f81" class="outline-2">
+<h2 id="org2f70f81"><span class="section-number-2">4</span> 举例：从 awk 命令看区别</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 shell meta 和 command meta 区别<br>
@@ -177,8 +177,8 @@ $ awk <span style="color: #00afaf;">'{print $'"$A"'}'</span> 1.txt    <span styl
 </div>
 </div>
 
-<div id="outline-container-orgb062f19" class="outline-2">
-<h2 id="orgb062f19"><span class="section-number-2">5</span> 举例: 从 stdin 输入变量看区别</h2>
+<div id="outline-container-org1005daa" class="outline-2">
+<h2 id="org1005daa"><span class="section-number-2">5</span> 举例: 从 stdin 输入变量看区别</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-shell">$ read A
@@ -228,8 +228,8 @@ b h  test
 </div>
 </div>
 
-<div id="outline-container-org60cd765" class="outline-2">
-<h2 id="org60cd765"><span class="section-number-2">6</span> 举例：输出原文件</h2>
+<div id="outline-container-orged6c374" class="outline-2">
+<h2 id="orged6c374"><span class="section-number-2">6</span> 举例：输出原文件</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-shell">$ cat aaaa | <span style="color: #5f8700;">while </span><span style="color: #5f8700;">read</span> i; <span style="color: #5f8700;">do</span>; <span style="color: #5f8700;">echo</span> $<span style="color: #0087ff;">i</span>; <span style="color: #5f8700;">done</span>;
@@ -259,8 +259,8 @@ b h  test
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>
