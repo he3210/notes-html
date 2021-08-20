@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-05-06 Thu 15:26 -->
+<!-- 2021-08-20 Fri 15:39 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>dockerfile 语法笔记</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
-<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -111,7 +111,7 @@ Dockerfile 所在目录就是构建环境（build environment），Docker 称其
 <p>
 Dockerfile 关键字使用例子：<br>
 </p>
-<pre class="example" id="orgf8daf53">
+<pre class="example" id="org34b3a96">
 USER nginx                               # 以 nginx 用户的身份来运行容器
 VOLUME ["/opt/project", "/data"]         # 向容器中添加两个匿名卷，挂载到容器中的 /opt/project 和 /data
 ADD latest.tar.gz /var/www/wordpress/    # 不会解压以 URL 方式指定归档源文件
@@ -130,7 +130,7 @@ LABEL location="New York" type="Data Center" role="Web Server"
 有两种指令格式：shell 格式的指令，exec 格式的指令。区别在于：<br>
 shell 格式指令默认 <code>/bin/sh -c</code> 运行可执行文件；exec 格式是直接执行可执行文件。例如：<br>
 </p>
-<pre class="example" id="orgf31cebb">
+<pre class="example" id="orgb718f88">
 RUN ["echo" "$HOME"]          # exec 格式指令（使用中括号包住指令参数）。会直接执行 echo 命令，直接输出字符串 =$HOME= ，而不是输出变量 =$HOME=
 RUN ["sh" "-c" "echo $HOME"]  # exec 格式指令。使用 sh -c 执行命令，执行后会展开变量 =$HOME=
 RUN apt-get -y update         # shell 格式指令。使用 =/bin/sh -c= 执行命令
@@ -191,7 +191,7 @@ docker 以 &lt;command&gt; 的退出状态码来区分容器是否健康，这�
 <p>
 举例：每5分钟检测本地网页是否可访问，超时设为3秒：<br>
 </p>
-<pre class="example" id="org322ba0e">
+<pre class="example" id="org8893e3a">
 HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost/ || exit 1
 </pre>
 <p>
@@ -264,7 +264,7 @@ $ docker build -t=<span style="color: #00afaf;">"he3210/static_web:v1"</span> gi
 例如：<br>
 Dockerfile文件如下：<br>
 </p>
-<pre class="example" id="orgfb18d3a">
+<pre class="example" id="orgbef30b5">
 ...
 ENTRYPOINT ["/usr/sbin/nginx"]
 CMD ["-h"]
@@ -294,8 +294,8 @@ docker run 命令行如下：<br>
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
-<script src="file:/Users/he/notes/html/css/main.js"></script>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
 </div>
 </body>
 </html>

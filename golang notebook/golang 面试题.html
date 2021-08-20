@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-08-20 Fri 15:39 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>&lrm;</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org785f449">1. range 遍历时使用的不是元素的引用</a></li>
+<li><a href="#orgdd92c29">2. 下面这段代码有什么缺陷</a></li>
+</ul>
+</div>
+</div>
+<p>
++TITLE: golang 面试题<br>
+</p>
+
+<div id="outline-container-org785f449" class="outline-2">
+<h2 id="org785f449"><span class="section-number-2">1</span> range 遍历时使用的不是元素的引用</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">package</span> main
+
+<span style="color: #5f8700;">import</span> <span style="color: #00afaf;">"fmt"</span>
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">main</span>() {
+    <span style="color: #0087ff;">slice</span> := []<span style="color: #af8700;">int</span>{7,8,9,10}
+    <span style="color: #0087ff;">m</span> := <span style="color: #5f8700;">make</span>(<span style="color: #5f8700;">map</span>[<span style="color: #af8700;">int</span>]*<span style="color: #af8700;">int</span>)
+
+    <span style="color: #5f8700;">for</span> <span style="color: #0087ff;">i</span>, <span style="color: #0087ff;">val</span> := <span style="color: #5f8700;">range</span> slice {
+        m[i] = &amp;val
+        fmt.<span style="color: #0087ff;">Println</span>(&amp;val)
+    }
+
+    <span style="color: #5f8700;">for</span> <span style="color: #0087ff;">i</span>, <span style="color: #0087ff;">v</span> := <span style="color: #5f8700;">range</span> m {
+        fmt.<span style="color: #0087ff;">Println</span>(i,<span style="color: #00afaf;">"-&gt;"</span>,*v)
+    }
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">package</span> main
+
+<span style="color: #5f8700;">import</span> <span style="color: #00afaf;">"fmt"</span>
+<span style="color: #5f8700;">import</span> <span style="color: #00afaf;">"reflect"</span>
+
+<span style="color: #5f8700;">type</span> <span style="color: #af8700;">Test</span> <span style="color: #5f8700;">struct</span> {
+    name <span style="color: #af8700;">string</span>
+}
+
+<span style="color: #5f8700;">func</span> (<span style="color: #0087ff;">this</span> *<span style="color: #af8700;">Test</span>) <span style="color: #0087ff;">Point</span>(){
+    fmt.<span style="color: #0087ff;">Println</span>(this.name)
+}
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">main</span>() {
+    <span style="color: #0087ff;">ts</span> := []<span style="color: #af8700;">Test</span>{{<span style="color: #00afaf;">"a"</span>}, {<span style="color: #00afaf;">"b"</span>}, {<span style="color: #00afaf;">"c"</span>},}
+
+    <span style="color: #5f8700;">for</span> <span style="color: #0087ff;">_</span>, <span style="color: #0087ff;">t</span> := <span style="color: #5f8700;">range</span> ts {
+        fmt.<span style="color: #0087ff;">Println</span>(reflect.<span style="color: #0087ff;">TypeOf</span>(t))
+        <span style="color: #5f8700;">defer</span> t.<span style="color: #0087ff;">Point</span>()
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdd92c29" class="outline-2">
+<h2 id="orgdd92c29"><span class="section-number-2">2</span> 下面这段代码有什么缺陷</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">func</span> <span style="color: #0087ff;">funcMui</span>(<span style="color: #0087ff;">x</span>,<span style="color: #0087ff;">y</span> <span style="color: #af8700;">int</span>)(sum <span style="color: #af8700;">int</span>,error){
+    <span style="color: #5f8700;">return</span> x+y,<span style="color: #00afaf;">nil</span>
+}
+</pre>
+</div>
+<p>
+第二个返回值没有命名<br>
+解析： 在函数有多个返回值时，只要有一个返回值有命名，其他的也必须命名。如果有多个返回值必须加上括号()；如果只有一个返回值且命名也必须加上括号()。这里的第一个返回值有命名 sum，第二个没有命名，所以错误。<br>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

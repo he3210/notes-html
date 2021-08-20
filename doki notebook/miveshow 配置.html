@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-05-06 Thu 15:27 -->
+<!-- 2021-08-20 Fri 15:39 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>miveshow 配置</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
-<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -44,11 +44,18 @@
 <li><a href="#orga31c008">3. mysql</a></li>
 <li><a href="#org1e20c01">4. 问题汇总</a>
 <ul>
-<li><a href="#org1c8c6fe">4.1. from _mysql import IntegrityError 无法导入的问题</a></li>
-<li><a href="#org6d5d35d">4.2. 删除系统自带的 pyutil，这个包和 util 库中的 pyutil 冲突</a></li>
+<li><a href="#orge230592">4.1. 安装 MYSQL-python</a></li>
 </ul>
 </li>
-<li><a href="#org899aab6">5. docker 安装 debian miveshow 环境</a></li>
+<li><a href="#org899aab6">5. docker 安装 debian miveshow 环境</a>
+<ul>
+<li><a href="#org130594b">5.1. 进入容器</a></li>
+<li><a href="#orga9654ce">5.2. 安装 python</a></li>
+<li><a href="#org2303db0">5.3. 基础配置</a></li>
+<li><a href="#org25745e7">5.4. 项目配置</a></li>
+<li><a href="#orge67ebad">5.5. 其它</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -57,13 +64,13 @@
 <h2 id="org5042b6f"><span class="section-number-2">1</span> 依赖安装</h2>
 <div class="outline-text-2" id="text-1">
 <div class="org-src-container">
-<pre class="src src-shell">$ pip3 install virtualenv
+<pre class="src src-shell">$ pip3 install virtualenv  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25110; brew install virtualenv</span>
 $ cd ~
 $ mkdir env
 $ cd env
 $ virtualenv miveshow --python=python2
 $ source ~/env/miveshow/bin/activate
-$ cd ~/test/miveshow/websocket/src
+$ cd ~/test/miveshow/webserver/src
 $ pip install -r requirements.txt
 $ deactivate
 </pre>
@@ -113,72 +120,53 @@ $ mkdir log
 <h2 id="org1e20c01"><span class="section-number-2">4</span> 问题汇总</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org1c8c6fe" class="outline-3">
-<h3 id="org1c8c6fe"><span class="section-number-3">4.1</span> from _mysql import IntegrityError 无法导入的问题</h3>
+<div id="outline-container-orge230592" class="outline-3">
+<h3 id="orge230592"><span class="section-number-3">4.1</span> 安装 MYSQL-python</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
-在测试环境发现（动态库 _mysql.so 是安装 MySQL-python 后才有的）<br>
+参考：<a href="https://www.zhihu.com/question/30963225">https://www.zhihu.com/question/30963225</a><br>
 </p>
 <div class="org-src-container">
-<pre class="src src-python">&gt;&gt;&gt; <span style="color: #5f8700;">import</span> _mysql
-&gt;&gt;&gt; <span style="color: #5f8700;">print</span> _mysql.__file__
-/usr/local/lib/python2.7/dist-packages/_mysql.so
-</pre>
-</div>
+<pre class="src src-sh">$ brew install mysql@5.6
+$ brew install mysql-connector-c
+$ pip install MySQL-python==1.2.5  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#27492;&#26102;&#25253;&#38169; ld: library not found for -lssl</span>
+$ echo <span style="color: #00afaf;">'export PATH="$PATH:/usr/local/opt/mysql@5.6/bin:/usr/local/opt/mysql-client/bin:/usr/local/opt/openssl@1.1/bin"'</span> &gt;&gt; ~/.zshrc
+$ brew info openssl@1.1
+openssl@1.1: stable 1.1.1k (bottled) [keg-only]
+Cryptography and SSL/TLS Toolkit
+https://openssl.org/
+/usr/local/Cellar/openssl@1.1/1.1.1k (8,071 files, 18.5MB)
+  Poured from bottle on 2021-05-04 at 00:29:34
+From: https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/openssl@1.1.rb
+License: OpenSSL
+==&gt; Caveats
+A CA file has been bootstrapped using certificates from the system
+keychain. To add additional certificates, place .pem files<span style="color: #5f8700;"> in</span>
+  /usr/local/etc/openssl@1.1/certs
 
-<p>
-在本机发现缺少 libssl.1.0.0.dylib<br>
-</p>
-<div class="org-src-container">
-<pre class="src src-python">&gt;&gt;&gt; <span style="color: #5f8700;">import</span> _mysql
-Traceback (most recent call last):
-  File <span style="color: #00afaf;">"&lt;stdin&gt;"</span>, line 1, <span style="color: #5f8700;">in</span> &lt;module&gt;
-<span style="color: #af8700;">ImportError</span>: dlopen(/Users/he/env/miveshow/lib/python2.7/site-packages/_mysql.so, 2): Library <span style="color: #5f8700;">not</span> loaded: /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
-  Referenced <span style="color: #5f8700;">from</span>: /Users/he/env/miveshow/lib/python2.7/site-packages/_mysql.so
-  Reason: image <span style="color: #5f8700;">not</span> found
-</pre>
-</div>
+and run
+  /usr/local/opt/openssl@1.1/bin/c_rehash
 
-<p>
-通过 brew list 命令发现 openssl@1.1，版本比较高，需要 1.0.0 版本。<br>
-可以添加一个软连接<br>
-</p>
+openssl@1.1 is keg-only, which means it was not symlinked into /usr/local,
+because macOS provides LibreSSL.
 
-<div class="org-src-container">
-<pre class="src src-shell">$ cd /usr/local/opt/openssl/lib/
-$ ls -l
-total 15144
-drwxr-xr-x  4 he  staff      128 Mar 25 21:28 engines-1.1
--r--r--r--  1 he  staff  2437024 Apr 16 21:07 libcrypto.1.1.dylib
--r--r--r--  1 he  staff  4087176 Mar 25 21:28 libcrypto.a
-lrwxr-xr-x  1 he  staff       19 Mar 25 21:28 libcrypto.dylib -&gt; libcrypto.1.1.dylib
--r--r--r--  1 he  staff   502872 Apr 16 21:07 libssl.1.1.dylib
--r--r--r--  1 he  staff   723992 Mar 25 21:28 libssl.a
-lrwxr-xr-x  1 he  staff       16 Mar 25 21:28 libssl.dylib -&gt; libssl.1.1.dylib
-drwxr-xr-x  5 he  staff      160 Apr 16 21:07 pkgconfig
-$ ln -s ./libssl.1.1.dylib libssl.1.0.0.dylib
-</pre>
-</div>
+If you need to have openssl@1.1 first<span style="color: #5f8700;"> in</span> your PATH, run:
+  <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"'</span> &gt;&gt; ~/.zshrc
 
-<p>
-添加完该软连接之后，python 导入 _mysql 发现又缺少 libcrypto.1.0.0.dylib<br>
-同理，添加软连接。添加完后，可以导入了<br>
-</p>
-<div class="org-src-container">
-<pre class="src src-shell">$ cd /usr/local/opt/openssl/lib/
-$ ln -s ./libcrypto.1.1.dylib libcrypto.1.0.0.dylib
-</pre>
-</div>
-</div>
-</div>
+For compilers to find openssl@1.1 you may need to set:
+  <span style="color: #5f8700;">export</span> <span style="color: #0087ff;">LDFLAGS</span>=<span style="color: #00afaf;">"-L/usr/local/opt/openssl@1.1/lib"</span>
+  <span style="color: #5f8700;">export</span> <span style="color: #0087ff;">CPPFLAGS</span>=<span style="color: #00afaf;">"-I/usr/local/opt/openssl@1.1/include"</span>
 
+For pkg-config to find openssl@1.1 you may need to set:
+  <span style="color: #5f8700;">export</span> <span style="color: #0087ff;">PKG_CONFIG_PATH</span>=<span style="color: #00afaf;">"/usr/local/opt/openssl@1.1/lib/pkgconfig"</span>
 
-<div id="outline-container-org6d5d35d" class="outline-3">
-<h3 id="org6d5d35d"><span class="section-number-3">4.2</span> 删除系统自带的 pyutil，这个包和 util 库中的 pyutil 冲突</h3>
-<div class="outline-text-3" id="text-4-2">
-<div class="org-src-container">
-<pre class="src src-shell">$ cd /Users/liangzhichao/Workspace/miveshow/lib/python2.7/site-packages
-$ rm -rf pyutil
+==&gt; Analytics
+install: 851,994 (30 days), 2,613,538 (90 days), 8,841,714 (365 days)
+install-on-request: 66,168 (30 days), 268,421 (90 days), 1,160,568 (365 days)
+build-error: 0 (30 days)
+$ export <span style="color: #0087ff;">LDFLAGS</span>=<span style="color: #00afaf;">"-L/usr/local/opt/openssl@1.1/lib"</span>
+$ export <span style="color: #0087ff;">CPPFLAGS</span>=<span style="color: #00afaf;">"-I/usr/local/opt/openssl@1.1/include"</span>
+$ pip install MySQL-python==1.2.5  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25104;&#21151;&#23433;&#35013;</span>
 </pre>
 </div>
 </div>
@@ -188,44 +176,113 @@ $ rm -rf pyutil
 <div id="outline-container-org899aab6" class="outline-2">
 <h2 id="org899aab6"><span class="section-number-2">5</span> docker 安装 debian miveshow 环境</h2>
 <div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org130594b" class="outline-3">
+<h3 id="org130594b"><span class="section-number-3">5.1</span> 进入容器</h3>
+<div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
 <pre class="src src-bash">$ docker pull debian
 $ docker run --name miveshow -i -t debian /bin/bash
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga9654ce" class="outline-3">
+<h3 id="orga9654ce"><span class="section-number-3">5.2</span> 安装 python</h3>
+<div class="outline-text-3" id="text-5-2">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt update</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt upgrade</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install python2.7 python-pip</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">python --version</span>
-bash: python: command not found
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install python2.7</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">python --version</span>
-bash: python: command not found
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">python2.7 --version</span>
 Python 2.7.16
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">which python2.7</span>
-/usr/bin/python2.7
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">cd /usr/bin/</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ln -s python2.7 python</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install python-pip</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install vim</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">pip --version</span>
+pip 18.1 from /usr/lib/python2.7/dist-packages/pip (python 2.7)
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install python3-pip</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">python3 --version</span>
+Python 3.7.3
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">pip3 --version</span>
+pip 18.1 from /usr/lib/python3/dist-packages/pip (python 3.7)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2303db0" class="outline-3">
+<h3 id="org2303db0"><span class="section-number-3">5.3</span> 基础配置</h3>
+<div class="outline-text-3" id="text-5-3">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install vim</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install git</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">git config --global user.name shizhonghe</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">git config --global user.email shi_zhonghe@163.com</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install wget</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">pip3 install virtualenv</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">cat /root/.bashrc</span>
 <span style="color: #5f8700;">export</span> <span style="color: #0087ff;">LS_OPTIONS</span>=<span style="color: #00afaf;">'--color=auto'</span>
 <span style="color: #5f8700;">eval</span> <span style="color: #00afaf;">"`dircolors`"</span>
 <span style="color: #5f8700;">alias</span> <span style="color: #0087ff;">ls</span>=<span style="color: #00afaf;">'ls $LS_OPTIONS'</span>
 <span style="color: #5f8700;">alias</span> <span style="color: #0087ff;">ll</span>=<span style="color: #00afaf;">'ls $LS_OPTIONS -l'</span>
 <span style="color: #5f8700;">alias</span> <span style="color: #0087ff;">l</span>=<span style="color: #00afaf;">'ls $LS_OPTIONS -lA'</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install git</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org25745e7" class="outline-3">
+<h3 id="org25745e7"><span class="section-number-3">5.4</span> 项目配置</h3>
+<div class="outline-text-3" id="text-5-4">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">mkdir /root/env</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">cd /root/env</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">virtualenv miveshow --python=python2  # python2 &#34394;&#25311;&#29615;&#22659;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">source ~/env/miveshow/bin/activate</span>
+
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">mkdir -p /opt/zeus/</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">cd /opt/zeus/</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">git clone gitlab:live/miveshow.git  # &#25552;&#21069;&#37197;&#32622;&#22909; ~/.ssh/config</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install wget</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install procps</span>
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">cd /opt/zeus/miveshow/webserver/conf</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">cat local.conf  # &#28155;&#21152; local.conf&#65292;&#24320;&#21457;&#29615;&#22659;&#26631;&#35760;&#20026; dev</span>
+env dev
+log2kafka False
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">cd /opt/zeus/miveshow/webserver/src</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">mkdir log  # miveshow &#20195;&#30721;&#24211;&#21019;&#24314; log &#25991;&#20214;&#22841;</span>
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install default-libmysqlclient-dev  # pip &#23433;&#35013; MySQL-python==1.2.5 &#21069;&#38656;&#35201;&#23433;&#35013;&#35813;&#20381;&#36182;</span>
+</pre>
+</div>
+
+<p>
+MySQL-python 安装注意事项：<br>
+debian:8.8 使用命令 <code>apt install libmysqlclient-dev</code> 安装依赖<br>
+debian:9.13 使用命令 <code>apt install default-libmysqlclient-dev</code> 安装依赖<br>
+这两个 debian 版本安装完后，就可执行 <code>pip install MySQL-python==1.2.5</code> 正确安装了<br>
+</p>
+
+<p>
+其它 debian 版本安装完上述依赖后，需要校验 <code>/usr/include/mariadb/mysql.h</code> 或 <code>/usr/include/mysql/mysql.h</code> ，查找结构体 <code>typedef struct st_mysql</code> ，检查 <code>mybool reconnect;</code> 是否在结构体内，不在的话就添加上。再次安装 <code>MySQL-python==1.2.5</code> 就不会报错了<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge67ebad" class="outline-3">
+<h3 id="orge67ebad"><span class="section-number-3">5.5</span> 其它</h3>
+<div class="outline-text-3" id="text-5-5">
+<div class="org-src-container">
+<pre class="src src-bash"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install procps</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install redis</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install memcached</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">service redis-server start  # &#21551;&#21160; redis</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">service memcached start</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -  # https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4 main" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list</span>
-<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt update</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install mongodb-org</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">mongod -f /etc/mongod.conf --fork  # mongod &#21518;&#21488;&#21551;&#21160;</span>
 </pre>
+</div>
 </div>
 </div>
 </div>
@@ -238,8 +295,8 @@ Python 2.7.16
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
-<script src="file:/Users/he/notes/html/css/main.js"></script>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
 </div>
 </body>
 </html>

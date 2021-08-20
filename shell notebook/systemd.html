@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-05-06 Thu 15:27 -->
+<!-- 2021-08-20 Fri 15:40 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>systemd</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
-<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -30,10 +30,88 @@
 </div>
 <div id="content">
 <h1 class="title">systemd</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org594ab38">1. systemctl &#x2013;user</a></li>
+</ul>
+</div>
+</div>
 <ul class="org-ul">
 <li><a href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html">廖雪峰-Systemd 入门教程：命令篇</a><br></li>
 <li><a href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html">廖雪峰-Systemd 入门教程：实战篇</a><br></li>
 </ul>
+
+<div id="outline-container-org594ab38" class="outline-2">
+<h2 id="org594ab38"><span class="section-number-2">1</span> systemctl &#x2013;user</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ systemctl --user  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#29992;&#25143; units</span>
+UNIT                                                                        LOAD   ACTIVE SUB     DESCRIPTION
+sys-devices-pci0000:00-0000:00:03.0-virtio0-net-eth0.device                 loaded active plugged Virtio network device
+sys-devices-pci0000:00-0000:00:04.0-virtio1-virtio\x2dports-vport1p1.device loaded active plugged /sys/devices/pci0000:00/0000:00:04.0/virtio1/virtio-ports/vport1p1
+sys-devices-pci0000:00-0000:00:05.0-virtio2-block-vda-vda1.device           loaded active plugged /sys/devices/pci0000:00/0000:00:05.0/virtio2/block/vda/vda1
+sys-devices-pci0000:00-0000:00:05.0-virtio2-block-vda-vda2.device           loaded active plugged /sys/devices/pci0000:00/0000:00:05.0/virtio2/block/vda/vda2
+sys-devices-pci0000:00-0000:00:05.0-virtio2-block-vda.device                loaded active plugged /sys/devices/pci0000:00/0000:00:05.0/virtio2/block/vda
+sys-devices-pci0000:00-0000:00:06.0-virtio3-block-vdb.device                loaded active plugged /sys/devices/pci0000:00/0000:00:06.0/virtio3/block/vdb
+sys-devices-pci0000:00-0000:00:08.0-virtio5-net-eth1.device                 loaded active plugged Virtio network device
+sys-devices-platform-serial8250-tty-ttyS2.device                            loaded active plugged /sys/devices/platform/serial8250/tty/ttyS2
+sys-devices-platform-serial8250-tty-ttyS3.device                            loaded active plugged /sys/devices/platform/serial8250/tty/ttyS3
+sys-devices-pnp0-00:04-tty-ttyS0.device                                     loaded active plugged /sys/devices/pnp0/00:04/tty/ttyS0
+sys-devices-pnp0-00:05-tty-ttyS1.device                                     loaded active plugged /sys/devices/pnp0/00:05/tty/ttyS1
+sys-module-fuse.device                                                      loaded active plugged /sys/module/fuse
+sys-subsystem-net-devices-eth0.device                                       loaded active plugged Virtio network device
+sys-subsystem-net-devices-eth1.device                                       loaded active plugged Virtio network device
+-.mount                                                                     loaded active mounted /
+data.mount                                                                  loaded active mounted /data
+dev-hugepages.mount                                                         loaded active mounted /dev/hugepages
+dev-mqueue.mount                                                            loaded active mounted /dev/mqueue
+glusterdata.mount                                                           loaded active mounted /glusterdata
+run-user-0.mount                                                            loaded active mounted /run/user/0
+run-user-1001.mount                                                         loaded active mounted /run/user/1001
+run-user-10011.mount                                                        loaded active mounted /run/user/10011
+sys-fs-fuse-connections.mount                                               loaded active mounted /sys/fs/fuse/connections
+sys-kernel-debug.mount                                                      loaded active mounted /sys/kernel/debug
+pusic_agent.service                                                         loaded active running pusic agent by wutao, service by lqq
+-.slice                                                                     loaded active active  -.slice
+dev-vda1.swap                                                               loaded active active  /dev/vda1
+basic.target                                                                loaded active active  Basic System
+default.target                                                              loaded active active  Default
+paths.target                                                                loaded active active  Paths
+sockets.target                                                              loaded active active  Sockets
+timers.target                                                               loaded active active  Timers
+
+<span style="color: #0087ff;">LOAD</span>   = Reflects whether the unit definition was properly loaded.
+<span style="color: #0087ff;">ACTIVE</span> = The high-level unit activation state, i.e. generalization of SUB.
+<span style="color: #0087ff;">SUB</span>    = The low-level unit activation state, values depend on unit type.
+
+32 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use <span style="color: #00afaf;">'systemctl list-unit-files'</span>.
+$ systemctl --user restart pusic_agent  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#37325;&#21551; pusic_agent &#26381;&#21153;</span>
+</pre>
+</div>
+
+<p>
+用户自定义的 units 可以放置在如下四个位置<br>
+</p>
+<ul class="org-ul">
+<li><code>/usr/lib/systemd/user</code> 优先级最低，会被高优先级的同名 unit 覆盖<br></li>
+<li><code>~/.local/share/systemd/user</code><br></li>
+<li><code>/etc/systemd/user</code> 全局共享的用户级 unit[s]<br></li>
+<li><code>~/.config/systemd/user</code> 优先级最高<br></li>
+</ul>
+
+<p>
+注：<br>
+</p>
+<ul class="org-ul">
+<li>用户级 unit 与系统级 unit 相互独立，不能互相关联或依赖<br></li>
+<li>用户级 unit 运行环境通常用 default.target，系统级通常用 multi-user.target<br></li>
+<li>即使用户不登陆，其定制的服务依然会启动<br></li>
+</ul>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p>本笔记系统由
@@ -43,8 +121,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
-<script src="file:/Users/he/notes/html/css/main.js"></script>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
 </div>
 </body>
 </html>

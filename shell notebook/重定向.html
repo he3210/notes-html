@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-05-06 Thu 15:27 -->
+<!-- 2021-08-20 Fri 15:39 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>重定向</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
-<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -74,9 +74,10 @@ $ cat &lt;&lt;EOF       <span style="color: #8a8a8a;"># </span><span style="colo
 </ul>
 
 <div class="org-src-container">
-<pre class="src src-shell">$ ls my.file no.such.file 1&gt;file.both 2&gt;file.both  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">1 &#21644; 2 &#21516;&#26102;&#23450;&#21521;&#21040;&#21516;&#19968;&#20010;&#25991;&#20214;&#12290;&#25991;&#20214;&#20869;&#23481;&#20250;&#30456;&#20114;&#35206;&#30422;</span>
-$ ls my.file no.such.file 1&gt;file.both 2&gt;&amp;1         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">1 &#37325;&#23450;&#21521;&#21040;&#25991;&#20214; file.both&#65292;&#28982;&#21518;&#25226; 2 &#37325;&#23450;&#21521;&#21040;&#25991;&#20214;&#25551;&#36848;&#31526; 1&#12290;&#35299;&#20915;&#20102;&#25991;&#20214;&#20869;&#23481;&#30456;&#20114;&#35206;&#30422;&#30340;&#38382;&#39064;&#12290;&#31561;&#20215;&#20110;&#19979;&#38754;&#19968;&#34892;&#21629;&#20196;</span>
-$ ls my.file no.such.file &gt;&amp;file.both
+<pre class="src src-shell">$ python aa.py 1&gt;aa.log 2&gt;aa.log     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">1 &#21644; 2 &#21516;&#26102;&#23450;&#21521;&#21040;&#21516;&#19968;&#20010;&#25991;&#20214;&#12290;&#25991;&#20214;&#20869;&#23481;&#20250;&#30456;&#20114;&#35206;&#30422;</span>
+$ python aa.py 1&gt;aa.log 2&gt;&amp;1         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">1 &#37325;&#23450;&#21521;&#21040; aa.log&#65292;&#28982;&#21518;&#25226; 2 &#37325;&#23450;&#21521;&#21040; 1&#12290;&#35299;&#20915;&#20102;&#25991;&#20214;&#20869;&#23481;&#30456;&#20114;&#35206;&#30422;&#30340;&#38382;&#39064;&#12290;&#31561;&#20215;&#20110;&#19979;&#38754;&#19968;&#34892;&#21629;&#20196;</span>
+$ python aa.py &gt;&amp;aa.log              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">stdout&#12289;stderr &#20197;&#25130;&#26029;&#30340;&#26041;&#24335;&#37325;&#23450;&#21521;&#21040; aa.log</span>
+$ python aa.py 1&gt;&gt;aa.log 2&gt;&amp;1        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">stdout&#12289;stderr &#20197;&#36861;&#21152;&#30340;&#26041;&#24335;&#37325;&#23450;&#21521;&#21040; aa.log</span>
 </pre>
 </div>
 </div>
@@ -91,9 +92,9 @@ $ ls my.file no.such.file &gt;&amp;file.both
 </p>
 
 <div class="org-src-container">
-<pre class="src src-shell">$ ls my.file no.such.file 2&gt;/dev/null       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24573;&#30053; stderr</span>
-$ ls my.file no.such.file &gt;/dev/null 2&gt;&amp;1   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24573;&#30053; stderr stdout</span>
-$ ls my.file no.such.file &amp;&gt;/dev/null       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226; 1 &#21644; 2 &#37117;&#37325;&#23450;&#21521;&#21040; /etc/null</span>
+<pre class="src src-shell">$ python aa.log 2&gt;/dev/null       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24573;&#30053; stderr</span>
+$ python aa.log &gt;/dev/null 2&gt;&amp;1   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#24573;&#30053; stderr stdout</span>
+$ python aa.log &amp;&gt;/dev/null       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226; 1 &#21644; 2 &#37117;&#37325;&#23450;&#21521;&#21040; /etc/null</span>
 </pre>
 </div>
 </div>
@@ -144,8 +145,8 @@ $ cmd1 | cmd2 | tee file | cmd3 | ...        <span style="color: #8a8a8a;"># </s
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
-<script src="file:/Users/he/notes/html/css/main.js"></script>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
 </div>
 </body>
 </html>

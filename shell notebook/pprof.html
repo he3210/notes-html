@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-08-20 Fri 15:39 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pprof 内存泄漏</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">pprof 内存泄漏</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc87bcbb">1. 测试代码</a></li>
+<li><a href="#org39ad7f0">2. 测试</a></li>
+</ul>
+</div>
+</div>
+<p>
+参考：<a href="https://segmentfault.com/a/1190000019222661">实战Go内存泄露</a><br>
+</p>
+
+<div id="outline-container-orgc87bcbb" class="outline-2">
+<h2 id="orgc87bcbb"><span class="section-number-2">1</span> 测试代码</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-go"><span style="color: #5f8700;">package</span> main
+
+<span style="color: #5f8700;">import</span> (
+    <span style="color: #00afaf;">"fmt"</span>
+    <span style="color: #00afaf;">"net/http"</span>
+    _ <span style="color: #00afaf;">"net/http/pprof"</span>
+    <span style="color: #00afaf;">"os"</span>
+    <span style="color: #00afaf;">"time"</span>
+)
+
+<span style="color: #5f8700;">func</span> <span style="color: #0087ff;">main</span>() {
+    <span style="color: #5f8700;">go</span> <span style="color: #5f8700;">func</span>() {
+        <span style="color: #0087ff;">ip</span> := <span style="color: #00afaf;">"0.0.0.0:6060"</span>
+        <span style="color: #5f8700;">if</span> <span style="color: #0087ff;">err</span> := http.<span style="color: #0087ff;">ListenAndServe</span>(ip, <span style="color: #00afaf;">nil</span>); err != <span style="color: #00afaf;">nil</span> {
+            fmt.<span style="color: #0087ff;">Printf</span>(<span style="color: #00afaf;">"start pprof failed on %s\n"</span>, ip)
+            os.<span style="color: #0087ff;">Exit</span>(1)
+        }
+    }()
+
+    <span style="color: #0087ff;">tick</span> := time.<span style="color: #0087ff;">Tick</span>(time.Second / 10)
+    <span style="color: #5f8700;">var</span> <span style="color: #0087ff;">buf</span> []<span style="color: #af8700;">byte</span>
+    <span style="color: #5f8700;">for</span> <span style="color: #5f8700;">range</span> tick {
+        buf = <span style="color: #5f8700;">append</span>(buf, <span style="color: #5f8700;">make</span>([]<span style="color: #af8700;">byte</span>, 1024*16)...)
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org39ad7f0" class="outline-2">
+<h2 id="org39ad7f0"><span class="section-number-2">2</span> 测试</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+top 会列出 5 组统计数据<br>
+</p>
+<ul class="org-ul">
+<li><code>flat</code> 本函数占用的内存量<br></li>
+<li><code>flat%</code> 本函数内存占使用中内存总量的百分比<br></li>
+<li><code>sum%</code> 前面每一行flat百分比的和，比如第2行虽然的100% 是 100% + 0%<br></li>
+<li><code>cum</code> 是累计量，加入main函数调用了函数f，函数f占用的内存量，也会记进来<br></li>
+<li><code>cum%</code> 是累计量占总量的百分比<br></li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-shell">$ go tool pprof -alloc_space http://127.0.0.1:6060/debug/pprof/heap
+(pprof) traces main.main  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#35843;&#29992;&#22534;&#26632;&#25351;&#26631;&#20449;&#24687;</span>
+Type: alloc_space
+Time: Jul 30, 2021 at 5:47pm (CST)
+-----------+-------------------------------------------------------
+     bytes:  304kB
+  678.95kB   main.main
+             runtime.main
+-----------+-------------------------------------------------------
+(pprof) list main.main    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#26576;&#20010;&#20989;&#25968;&#27599;&#34892;&#20195;&#30721;&#30340;&#25351;&#26631;&#20449;&#24687;</span>
+Total: 324.64MB
+<span style="color: #0087ff;">ROUTINE</span> ======================== main.main<span style="color: #5f8700;"> in</span> /Users/he/code/test/pprof/main.go
+  322.98MB   322.98MB (flat, cum) 99.49% of Total
+         .          .     18:    }()
+         .          .     19:
+         .          .     20:    tick := time.Tick(time.Second / 10)
+         .          .     21:    var buf []byte
+         .          .     22:    for range tick {
+  322.98MB   322.98MB     23:        <span style="color: #0087ff;">buf</span> = append(buf, make([]byte, 1024*16)...)
+         .          .     24:    }
+         .          .     25:}
+(pprof) top               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25353;&#25351;&#26631;&#22823;&#23567;&#21015;&#20986;&#21069; 10 &#20010;&#20989;&#25968;&#30340;&#25351;&#26631;&#20449;&#24687;</span>
+Showing nodes accounting for 678.95kB, 100% of 678.95kB total
+      flat  flat%   sum%        cum   cum%
+  678.95kB   100%   100%   678.95kB   100%  main.main
+         0     0%   100%   678.95kB   100%  runtime.main
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-08-20 Fri 15:39 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>daemontools 工具</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">daemontools 工具</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgfbe7366">1. 常用命令</a></li>
+<li><a href="#org9269fda">2. 知识点</a></li>
+<li><a href="#org1f5111f">3. 注意事项</a></li>
+</ul>
+</div>
+</div>
+<p>
+<a href="https://cr.yp.to/daemontools.html">daemontools 文档</a><br>
+<a href="https://chengqian90.com/Linux%E5%B7%A5%E5%85%B7/%E8%BF%9B%E7%A8%8B%E7%9B%91%E6%8E%A7%E4%B9%8Bdaemontools.html">进程监控工具 daemontools</a><br>
+</p>
+
+<div id="outline-container-orgfbe7366" class="outline-2">
+<h2 id="orgfbe7366"><span class="section-number-2">1</span> 常用命令</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-bash">$ sudo svc -d /etc/service/applog2es   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20851;&#38381;&#36827;&#31243;</span>
+$ sudo svstat /etc/service/applog2es   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475; service &#36816;&#34892;&#29366;&#24577;</span>
+/etc/service/applog2es: up (pid 14333) 2986 seconds
+$ sudo svstat /etc/service/sfServer_online_run
+/etc/service/sfServer_online_run: down 29651 seconds, normally up
+$ sudo svc -u /etc/service/applog2es   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21551;&#21160;&#36827;&#31243;</span>
+$ sudo svc -iu /etc/service/applog2es  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21521;&#36827;&#31243;&#21457; SIGINT&#65292;&#20877;&#21551;&#21160;&#36827;&#31243;</span>
+$ sudo svc -ku /etc/service/applog2es  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21521;&#36827;&#31243;&#21457; SIGKILL&#65292;&#20877;&#21551;&#21160;&#36827;&#31243;</span>
+$ sudo svc -dx /etc/service/applog2es  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31227;&#38500;&#25351;&#23450; service&#65292;&#19981;&#20877;&#23432;&#25252;&#20102;&#65288;&#23454;&#27979;&#26080;&#25928;&#65292;&#27979;&#35797;&#32467;&#26524;&#26159;&#23376;&#36827;&#31243;&#21551;&#21160;&#20102;&#65289;&#12290;&#20043;&#21518;&#21487;&#20197;&#20351;&#29992; sudo rm /etc/service/applog2es &#21024;&#38500;&#36719;&#38142;&#25509;</span>
+</pre>
+</div>
+
+<p>
+svc 选项有<br>
+</p>
+<ul class="org-ul">
+<li><code>-u</code> Up. If the service is not running, start it. If the service stops, restart it.<br></li>
+<li><code>-d</code> Down. If the service is running, send it a TERM signal and then a CONT signal. After it stops, do not restart it.<br></li>
+<li><code>-o</code> Once. If the service is not running, start it. Do not restart it if it stops.<br></li>
+<li><code>-p</code> Pause. Send the service a STOP signal.<br></li>
+<li><code>-c</code> Continue. Send the service a CONT signal.<br></li>
+<li><code>-h</code> Hangup. Send the service a HUP signal.<br></li>
+<li><code>-a</code> Alarm. Send the service an ALRM signal.<br></li>
+<li><code>-i</code> Interrupt. Send the service an INT signal.<br></li>
+<li><code>-t</code> Terminate. Send the service a TERM signal.<br></li>
+<li><code>-k</code> Kill. Send the service a KILL signal.<br></li>
+<li><code>-x</code> Exit. supervise will exit as soon as the service is down. If you use this option on a stable system, you're doing something wrong; supervise is designed to run forever.<br></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org9269fda" class="outline-2">
+<h2 id="org9269fda"><span class="section-number-2">2</span> 知识点</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>Daemontools 是 svscanboot，svscan，supervise，svc，svok，svstat 等一系列工具的合集<br></li>
+<li>svscanboot 是 svscan 的开机启动程序<br></li>
+<li>svscan<br>
+<ul class="org-ul">
+<li>svscan 为当前目录的每个子目录启动一个监控进程 supervise，最多可达 1000 个子目录<br></li>
+<li>每个子目录下都会有一个名为 run 的 shell 脚本，用来启动服务<br></li>
+<li>每隔 5s，svscan 再次检查当前目录下的子目录。如果它看到一个新的子目录，它会启动一个新的监控进程<br></li>
+</ul></li>
+<li>supervise<br>
+<ul class="org-ul">
+<li>supervise 是一种进程监控工具，其功能是当监控的指定进程消亡时，重启进程<br></li>
+<li>监控时，需要为 supervise 指定一个目录(该目录设为 the_dir)，the_dir 用来存放服务启动脚本等<br></li>
+<li>supervise 目录：supervise 会在 the_dir 目录下创建名为 supervise 的目录，其中有文件：<br>
+<ol class="org-ol">
+<li><code>control</code> 管道文件。supervise 通过给该管道发信号来控制子进程。例如：<br>
+<ul class="org-ul">
+<li><code>echo 'd' &gt; contorl</code> 停掉子进程<br></li>
+<li><code>echo 'u' &gt; contorl</code> 启动子进程<br></li>
+<li><code>echo 'k' &gt; control</code> 向子进程发送 SIGKILL 信号（随后该子进程又会被 supervise 重新拉起来）<br></li>
+</ul></li>
+<li><code>lock</code> 文件锁，防止启动多个子进程<br></li>
+<li><code>ok</code> 通过此文件判断 supervise 进程状态<br></li>
+<li><code>status</code> supervise 用来存放一些信息，比如子进程的 pid 等。使用命令 <code>od -An -j12 -N2 -tu4 status</code> 可查看子进程 pid<br></li>
+</ol></li>
+</ul></li>
+</ul>
+
+<p>
+例如：如下进程结构<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ tree -N /etc/service
+/etc/service
+&#9500;&#9472;&#9472; auth_doki_run -&gt; /opt/zeus/service/auth/auth_doki_run/
+&#9500;&#9472;&#9472; did_doki_run -&gt; /opt/zeus/service/run/did_doki_run/
+&#9500;&#9472;&#9472; image_uploader_doki_run -&gt; /opt/zeus/service/image_uploader/image_uploader_doki_run
+&#9492;&#9472;&#9472; utdid_run -&gt; /opt/zeus/run/utdid_run
+
+$ cd did_doki_run &amp;&amp; tree -N .
+.
+&#9500;&#9472;&#9472; real_run
+&#9500;&#9472;&#9472; run           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">run &#20026;&#21551;&#21160;&#26381;&#21153;&#30340; shell &#33050;&#26412;</span>
+&#9492;&#9472;&#9472; supervise     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20889;&#22909;&#21551;&#21160;&#33050;&#26412;&#21518;&#65292;svscan &#20250;&#35843;&#29992; supervise &#30417;&#25511;&#36827;&#31243;&#65292;supervise &#20250;&#33258;&#21160;&#21019;&#24314;&#35813;&#30446;&#24405;</span>
+    &#9500;&#9472;&#9472; control
+    &#9500;&#9472;&#9472; lock
+    &#9500;&#9472;&#9472; ok
+    &#9492;&#9472;&#9472; status
+
+$ cat run
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/sh</span>
+
+<span style="color: #0087ff;">who</span>=$(id -un)
+<span style="color: #5f8700;">ulimit</span> -n 655350
+<span style="color: #5f8700;">if</span> [ $<span style="color: #0087ff;">who</span> = <span style="color: #00afaf;">'root'</span> ]; <span style="color: #5f8700;">then</span>
+    <span style="color: #5f8700;">exec</span> /usr/bin/setuidgid zeus ./real_run
+<span style="color: #5f8700;">elif</span> [ $<span style="color: #0087ff;">who</span> = <span style="color: #00afaf;">'zeus'</span> ];<span style="color: #5f8700;">then</span>
+    <span style="color: #5f8700;">exec</span> ./real_run
+<span style="color: #5f8700;">else</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"not root"</span>
+<span style="color: #5f8700;">fi</span>
+
+$ cat real_run
+<span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">!/bin/sh</span>
+<span style="color: #5f8700;">export</span> <span style="color: #0087ff;">LANG</span>=en_US.UTF-8
+<span style="color: #5f8700;">export</span> <span style="color: #0087ff;">LC_ALL</span>=<span style="color: #00afaf;">'en_US.UTF-8'</span>
+<span style="color: #5f8700;">ulimit</span> -c 10485760
+<span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">"`date '+%Y-%m-%d %H:%M:%S'`  `hostname` : did generator start"</span> &gt;&gt; /var/log/zeus/did_generator_svc.log
+
+<span style="color: #5f8700;">cd</span> ../../did/
+<span style="color: #5f8700;">exec</span> python server.py 1&gt;&gt;/dev/null 2&gt;&gt;/var/log/zeus/did_generator_err.log
+
+$ ps -ef f
+  root     31145     1  0  2018 ?        Ss     0:00 /bin/sh /usr/bin/svscanboot /etc/service/
+  root     31147 31145  0  2018 ?        S     63:04  <span style="color: #00afaf;">\_</span> svscan /etc/service
+  root     25298 31147  0  2018 ?        S      0:13      <span style="color: #00afaf;">\_</span> supervise auth_doki_run
+  root     25838 31147  0  2018 ?        S      0:09      <span style="color: #00afaf;">\_</span> supervise image_uploader_doki_run
+  zeus     22453 25838  0  2019 ?        Sl   856:49      |   <span style="color: #00afaf;">\_</span> python server.py image_uploader
+  root      7962 31147  0  2018 ?        S      0:09      <span style="color: #00afaf;">\_</span> supervise utdid_run           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36816;&#34892;&#20102;&#21629;&#20196; svc -d /etc/services/utdid_run&#65292;&#25152;&#20197;&#27809;&#26377;&#23376;&#36827;&#31243;</span>
+  root     26744 31147  0  2018 ?        S      0:10      <span style="color: #00afaf;">\_</span> supervise did_doki_run
+  zeus     28544 26744  0  2018 ?        Sl     8:28          <span style="color: #00afaf;">\_</span> ./server
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f5111f" class="outline-2">
+<h2 id="org1f5111f"><span class="section-number-2">3</span> 注意事项</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>被管理的进程不能以 daemon 形式运行，例如 nginx.conf 必须关闭 daemon， daemon off<br></li>
+<li>不要在 service 文件夹建任何目录，service 目录只存放一些 symbol link<br></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

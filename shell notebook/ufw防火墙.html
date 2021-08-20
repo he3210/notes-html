@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-08-20 Fri 15:39 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ufw 防火墙</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">ufw 防火墙</h1>
+<ul class="org-ul">
+<li>UFW阻止所有传入连接并允许所有出站连接。 这意味着除非您专门打开端口，否则任何尝试访问您的服务器的人都将无法连接。 服务器上运行的应用程序和服务将能够访问外部世界。<br></li>
+<li>大多数应用程序附带一个描述服务的应用程序配置文件，其中包含UFW设置。 在安装软件包期间，将在/etc/ufw/applications.d目录中自动创建配置文件。<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw status verbose                              # &#24403;&#21069; ufw &#37197;&#32622;&#35814;&#24773;</span>
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22                         ALLOW IN    Anywhere
+<span style="color: #0087ff;">22</span> (v6)                    ALLOW IN    Anywhere (v6)
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw app list                                    # &#21015;&#20986;&#31995;&#32479;&#19978;&#25152;&#26377;&#21487;&#29992;&#30340; app</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw app info OpenSSH                            # &#26597;&#30475;&#25351;&#23450; app &#38656;&#35201;&#30340;&#38450;&#28779;&#22681; profile</span>
+Profile: OpenSSH
+Title: Secure shell server, an rshd replacement
+Description: OpenSSH is a free implementation of the Secure Shell protocol.
+
+Port:
+22/tcp
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow OpenSSH                               # &#25171;&#24320; OpenSSH &#30417;&#21548;&#30340;&#31471;&#21475; 22/tcp&#12290;ALLOW IN</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 7722/tcp                              # &#25171;&#24320;&#31471;&#21475; 7722/tcp&#12290;ALLOW IN</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 7100:7200/udp                         # &#25171;&#24320;&#31471;&#21475;&#33539;&#22260;&#22312; [7100,7200] udp &#31471;&#21475;&#12290;ALLOW IN</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow from 64.63.62.61 to any port 22       # &#20801;&#35768; 64.63.62.61 &#36830;&#25509;&#21040;&#26412;&#26426;&#31471;&#21475; 22</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow from 192.168.1.0/24 to any port 3306  # &#20801;&#35768;&#23376;&#32593; 23.24.25.0/24 &#36830;&#25509;&#21040;&#26412;&#26426; 3306</span>
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw deny from 23.24.25.0/24                     # &#25298;&#32477;&#26469;&#33258;&#23376;&#32593; 23.24.25.0/24 &#30340;&#25152;&#26377;&#38142;&#25509;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw deny from 23.24.25.0/24 to any port 80      # &#25298;&#32477;&#23376;&#32593; 23.24.25.0/24 &#36830;&#25509;&#21040;&#26412;&#26426; 80</span>
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw status numbered                             # &#21015;&#20986; ufw &#35268;&#21017;&#65292;&#24182;&#32534;&#21495;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw delete 3                                    # &#21024;&#38500;&#35268;&#21017; 3</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw delete allow 8069/tcp                       # &#20851;&#38381;&#31471;&#21475; 8069/tcp</span>
+</pre>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

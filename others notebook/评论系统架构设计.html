@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-08-20 Fri 15:39 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>评论系统架构设计</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">评论系统架构设计</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge05d002">1. 存储设计</a>
+<ul>
+<li><a href="#org37bbd50">1.1. 存储设计-mysql</a>
+<ul>
+<li><a href="#org4748fca">1.1.1. 写入逻辑</a></li>
+<li><a href="#orge7032bb">1.1.2. 读取逻辑</a></li>
+<li><a href="#org77bce3d">1.1.3. 存储-索引内容分离</a></li>
+<li><a href="#orgf901729">1.1.4. obj 表</a></li>
+<li><a href="#org8c2214e">1.1.5. index 表</a></li>
+<li><a href="#org18d2905">1.1.6. content 表</a></li>
+</ul>
+</li>
+<li><a href="#org3b4091f">1.2. 存储设计-redis</a>
+<ul>
+<li><a href="#org18c3e79">1.2.1. obj-cache string</a></li>
+<li><a href="#org5dd223d">1.2.2. index-cache zset</a></li>
+<li><a href="#org92b9535">1.2.3. content-cache string</a></li>
+<li><a href="#org3d8587a">1.2.4. 防止缓存击穿</a></li>
+<li><a href="#org83f7fc2">1.2.5. 热点数据识别</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+需求参考 <a href="https://www.bilibili.com/video/BV1i64y1b7Eb/?spm_id_from=autoNext">B 站评论系统</a><br>
+设计参考 <a href="https://juejin.cn/post/6907187734696165389#comment">Golang进阶6-评论系统架构设计</a><br>
+</p>
+
+<div id="outline-container-orge05d002" class="outline-2">
+<h2 id="orge05d002"><span class="section-number-2">1</span> 存储设计</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org37bbd50" class="outline-3">
+<h3 id="org37bbd50"><span class="section-number-3">1.1</span> 存储设计-mysql</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li><code>comment_obj_[0-49]</code> 评论主题表（obj 表）<br></li>
+<li><code>coment_index_[0-199]</code> 评论索引表。不包含评论的实际内容（index 表）<br></li>
+<li><code>comment_content[0-199]</code> 评论内容表（content 表）<br></li>
+</ul>
+</div>
+<div id="outline-container-org4748fca" class="outline-4">
+<h4 id="org4748fca"><span class="section-number-4">1.1.1</span> 写入逻辑</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+事务更新这 3 张表。当然，content 表不必强制考虑数据的一致性：可以先写入 content 表，之后事务更新 obj、index 表。因为即便 content 写入成功，obj、index 写入失败，content 表也仅存在一条 ghost 数据<br>
+</p>
+</div>
+</div>
+<div id="outline-container-orge7032bb" class="outline-4">
+<h4 id="orge7032bb"><span class="section-number-4">1.1.2</span> 读取逻辑</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+基于 obj_id + obj_type 在 index 表找到评论列表，排序。之后根据评论 id 字段查出 content 表的评论内容。对于二级的子楼层，WHERE parent/root IN (id&#x2026;)<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #8a8a8a;">-- &#22522;&#20110;&#23454;&#38469;&#25490;&#24207;</span>
+<span style="color: #5f8700;">select</span> *
+<span style="color: #5f8700;">from</span> index
+<span style="color: #5f8700;">where</span> obj_id = 111 <span style="color: #5f8700;">and</span> obj_type = 11 <span style="color: #5f8700;">and</span> root = 0 <span style="color: #5f8700;">and</span> <span style="color: #5f8700;">state</span> = 0
+<span style="color: #5f8700;">order</span> <span style="color: #5f8700;">by</span> ctime <span style="color: #5f8700;">desc</span>;
+
+<span style="color: #8a8a8a;">-- &#22522;&#20110;&#28909;&#24230;&#25490;&#24207;</span>
+<span style="color: #5f8700;">select</span> *
+<span style="color: #5f8700;">from</span> index
+<span style="color: #5f8700;">where</span> obj_id = 111 <span style="color: #5f8700;">and</span> obj_type = 11 <span style="color: #5f8700;">and</span> root = 0 <span style="color: #5f8700;">and</span> <span style="color: #5f8700;">state</span> = 0
+<span style="color: #5f8700;">order</span> <span style="color: #5f8700;">by</span> attrs <span style="color: #5f8700;">desc</span>, <span style="color: #5f8700;">like</span> <span style="color: #5f8700;">desc</span>, ctime <span style="color: #5f8700;">asc</span>;
+
+<span style="color: #8a8a8a;">-- &#20108;&#32423;&#30340;&#23376;&#27004;&#23618;&#26597;&#35810;</span>
+<span style="color: #5f8700;">select</span> *
+<span style="color: #5f8700;">from</span> index
+<span style="color: #5f8700;">where</span> obj_id = 111 <span style="color: #5f8700;">and</span> obj_type = 11 <span style="color: #5f8700;">and</span> root <span style="color: #5f8700;">in</span> (xxx, xxx...) <span style="color: #5f8700;">and</span> <span style="color: #5f8700;">state</span> = 0;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org77bce3d" class="outline-4">
+<h4 id="org77bce3d"><span class="section-number-4">1.1.3</span> 存储-索引内容分离</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+index 表的 id 字段和 content 表的 comment_id 一一对应。这里面包含几种设计思想<br>
+</p>
+<ul class="org-ul">
+<li>表都有主键，即 cluster index，是物理组织形式存放的，content 表没有 id，是为了减少一次二级索引查找，直接基于主键检索，同时 comment_id 在写入要尽可能的顺序自增<br></li>
+<li>索引、内容分离，方便 mysql datapage 缓存更多的 row，如果和 content 耦合，会导致更大的 IO。长远来看 content 信息可以直接使用 KV storage 存储<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf901729" class="outline-4">
+<h4 id="orgf901729"><span class="section-number-4">1.1.4</span> obj 表</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `comment_obj_0` (
+`id` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> AUTO_INCREMENT COMMENT <span style="color: #00afaf;">'&#20027;&#38190;'</span>,
+`obj_id` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#23545;&#35937; id'</span>,
+`obj_type` tinyint(4) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#23545;&#35937;&#31867;&#22411;'</span>,
+`owner_id` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#20316;&#32773; id'</span>,
+`<span style="color: #5f8700;">count</span>` <span style="color: #af8700;">int</span>(11) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#35780;&#35770;&#24635;&#25968;'</span>,
+`root_count` <span style="color: #af8700;">int</span>(11) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#26681;&#35780;&#35770;&#24635;&#25968;'</span>,
+`<span style="color: #5f8700;">state</span>` tinyint(4) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#29366;&#24577; 0-&#27491;&#24120; 1-&#38544;&#34255;&#35780;&#35770;'</span>,
+`attrs` <span style="color: #af8700;">int</span>(11) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#23646;&#24615; bit0-&#36816;&#33829;&#32622;&#39030; bit1-up&#20027;&#32622;&#39030; bit2-...'</span>,
+`ctime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> COMMENT <span style="color: #00afaf;">'&#21019;&#24314;&#26102;&#38388;'</span>,
+`mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> <span style="color: #5f8700;">ON</span> <span style="color: #5f8700;">UPDATE</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> COMMENT <span style="color: #00afaf;">'&#20462;&#25913;&#26102;&#38388;'</span>,
+<span style="color: #5f8700;">PRIMARY</span> <span style="color: #5f8700;">KEY</span> (`id`),
+<span style="color: #5f8700;">UNIQUE</span> <span style="color: #5f8700;">KEY</span> `uniq_oid_type` (`obj_id`, `obj_type`),
+<span style="color: #5f8700;">KEY</span> `idx_owner_id` (`owner_id`)
+) ENGINE = InnoDB <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8 COMMENT <span style="color: #00afaf;">'&#35780;&#35770;&#23545;&#35937;&#34920;'</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8c2214e" class="outline-4">
+<h4 id="org8c2214e"><span class="section-number-4">1.1.5</span> index 表</h4>
+<div class="outline-text-4" id="text-1-1-5">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `comment_index_0` (
+`id` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> AUTO_INCREMENT COMMENT <span style="color: #00afaf;">'&#20027;&#38190;&#12290;&#35780;&#35770; id'</span>,
+`obj_id` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#23545;&#35937; id'</span>,
+`obj_type` tinyint(4) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#23545;&#35937;&#31867;&#22411;'</span>,
+`owner_id` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#20316;&#32773; id'</span>,
+`root` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#26681;&#35780;&#35770; id&#12290;0-&#20195;&#34920;&#35813;&#35780;&#35770;&#26159;&#26681;&#35780;&#35770;'</span>,
+`parent` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#29238;&#35780;&#35770; id&#12290;0-&#20195;&#34920;&#35813;&#35780;&#35770;&#26159;&#26681;&#35780;&#35770;'</span>,
+`<span style="color: #5f8700;">count</span>` <span style="color: #af8700;">int</span>(11) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#35813;&#35780;&#35770;&#30340;&#22238;&#22797;&#24635;&#25968;'</span>,
+`root_count` <span style="color: #af8700;">int</span>(11) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#35813;&#35780;&#35770;&#30340;&#26681;&#22238;&#22797;&#24635;&#25968;'</span>,
+`<span style="color: #5f8700;">like</span>` <span style="color: #af8700;">int</span>(11) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#28857;&#36190;&#25968;'</span>,
+`hate` <span style="color: #af8700;">int</span>(11) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#28857;&#36393;&#25968;'</span>,
+`<span style="color: #5f8700;">state</span>` tinyint(4) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#29366;&#24577; 0-&#27491;&#24120; 1-&#38544;&#34255;&#35780;&#35770;'</span>,
+`attrs` <span style="color: #af8700;">int</span>(11) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">'0'</span> COMMENT <span style="color: #00afaf;">'&#23646;&#24615; bit0-&#36816;&#33829;&#32622;&#39030; bit1-up&#20027;&#32622;&#39030; bit2-...'</span>,
+`ctime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> COMMENT <span style="color: #00afaf;">'&#21019;&#24314;&#26102;&#38388;'</span>,
+`mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> <span style="color: #5f8700;">ON</span> <span style="color: #5f8700;">UPDATE</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> COMMENT <span style="color: #00afaf;">'&#20462;&#25913;&#26102;&#38388;'</span>,
+<span style="color: #5f8700;">PRIMARY</span> <span style="color: #5f8700;">KEY</span> (`id`),
+<span style="color: #5f8700;">KEY</span> `idx_oid_type` (`obj_id`, `obj_type`),
+) ENGINE = InnoDB <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8 COMMENT <span style="color: #00afaf;">'&#35780;&#35770;&#32034;&#24341;&#34920;'</span>;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org18d2905" class="outline-4">
+<h4 id="org18d2905"><span class="section-number-4">1.1.6</span> content 表</h4>
+<div class="outline-text-4" id="text-1-1-6">
+<div class="org-src-container">
+<pre class="src src-sql"><span style="color: #5f8700;">CREATE</span> <span style="color: #5f8700;">TABLE</span> `comment_content_0` (
+`comment_id` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#20027;&#38190;&#12290;&#35780;&#35770; id&#65292;&#23545;&#24212; coment_index_[0-199] &#34920;&#30340; id'</span>,
+`at_someone` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'at &#26576;&#20154;'</span>,
+`obj_id` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#23545;&#35937; id'</span>,
+`obj_type` tinyint(4) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#23545;&#35937;&#31867;&#22411;'</span>,
+`owner_id` bigint(20) unsigned <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#20316;&#32773; id'</span>,
+`content` <span style="color: #af8700;">varchar</span>(4096) <span style="color: #af8700;">CHARACTER</span> <span style="color: #5f8700;">SET</span> utf8mb4 <span style="color: #5f8700;">COLLATE</span> utf8mb4_unicode_ci <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> COMMENT <span style="color: #00afaf;">'&#35780;&#35770;&#20869;&#23481;'</span>,
+`meta` <span style="color: #af8700;">varchar</span>(512) <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #00afaf;">''</span> COMMENT <span style="color: #00afaf;">'&#35780;&#35770;&#20803;&#25968;&#25454;&#65306;&#32972;&#26223;&#12289;&#23383;&#20307;&#31561;'</span>,
+`ctime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> COMMENT <span style="color: #00afaf;">'&#21019;&#24314;&#26102;&#38388;'</span>,
+`mtime` <span style="color: #af8700;">timestamp</span> <span style="color: #5f8700;">NOT</span> <span style="color: #5f8700;">NULL</span> <span style="color: #5f8700;">DEFAULT</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> <span style="color: #5f8700;">ON</span> <span style="color: #5f8700;">UPDATE</span> <span style="color: #5f8700;">CURRENT_TIMESTAMP</span> COMMENT <span style="color: #00afaf;">'&#20462;&#25913;&#26102;&#38388;'</span>,
+<span style="color: #5f8700;">PRIMARY</span> <span style="color: #5f8700;">KEY</span> (`id`),
+<span style="color: #5f8700;">KEY</span> `idx_oid_type` (`obj_id`, `obj_type`),
+) ENGINE = InnoDB <span style="color: #5f8700;">DEFAULT</span> CHARSET = utf8mb4 COMMENT <span style="color: #00afaf;">'&#35780;&#35770;&#20869;&#23481;&#34920;'</span>;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org3b4091f" class="outline-3">
+<h3 id="org3b4091f"><span class="section-number-3">1.2</span> 存储设计-redis</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org18c3e79" class="outline-4">
+<h4 id="org18c3e79"><span class="section-number-4">1.2.1</span> obj-cache string</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">key</td>
+<td class="org-left">pre + obj_id + obj_type</td>
+</tr>
+
+<tr>
+<td class="org-left">value</td>
+<td class="org-left">obj json string</td>
+</tr>
+
+<tr>
+<td class="org-left">expire</td>
+<td class="org-left">1day</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org5dd223d" class="outline-4">
+<h4 id="org5dd223d"><span class="section-number-4">1.2.2</span> index-cache zset</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">key</td>
+<td class="org-left">pre + obj_id + obj_type + sort。其中 sort 是排序方式：like-点赞数 ctime-评论时间</td>
+</tr>
+
+<tr>
+<td class="org-left">field</td>
+<td class="org-left">comment_id</td>
+</tr>
+
+<tr>
+<td class="org-left">score</td>
+<td class="org-left">点赞数、评论时间&#x2026;</td>
+</tr>
+
+<tr>
+<td class="org-left">expire</td>
+<td class="org-left">8h</td>
+</tr>
+</tbody>
+</table>
+<p>
+注意：zset 是要增量追加的，所以一定要判定 key 存在才能 zadd<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org92b9535" class="outline-4">
+<h4 id="org92b9535"><span class="section-number-4">1.2.3</span> content-cache string</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">key</td>
+<td class="org-left">comment_id</td>
+</tr>
+
+<tr>
+<td class="org-left">value</td>
+<td class="org-left">content json string</td>
+</tr>
+
+<tr>
+<td class="org-left">expire</td>
+<td class="org-left">1day</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org3d8587a" class="outline-4">
+<h4 id="org3d8587a"><span class="section-number-4">1.2.4</span> 防止缓存击穿</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<p>
+1.对于一些热门主题，如果存在缓存穿透，会导致大量请求回源到 mysql。可以借助一个库：<a href="https://pkg.go.dev/golang.org/x/sync/singleflight">singleflight</a><br>
+2.在同进程内多个协程并发访问同一个 key，该库可以交由第一个协程去获取 mysql 数据，其它协程阻塞，直到该协程获取到数据，所有协程解除阻塞，批量返回数据<br>
+3.同时，该协程投递一个 kafka 消息，做 index-cache 的 rebuild 操作<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org83f7fc2" class="outline-4">
+<h4 id="org83f7fc2"><span class="section-number-4">1.2.5</span> 热点数据识别</h4>
+<div class="outline-text-4" id="text-1-2-5">
+<p>
+1.流量热点是因为突然热门的主题，被高频次的访问。redis-cache 的设计，是按照 key 进行哈希槽分片，热点 key 一定命中某一个节点，这时候 redis cache 可能会变为瓶颈，因此做 local cache 是有必要的<br>
+2.我们可以使用单进程自适应发现热点的思路，然后为热点 key 附加一个短时的 ttl local cache，可以在进程内避免大量的 redis-cache 读请求<br>
+3.如何识别热点数据呢？可以使用滑动窗口，在每个窗口中，维护一个 hashmap，用来统计该窗口时间段内的 key 访问频次数据，之后汇总所有 key 的数据。然后使用小根堆计算 TopK 的数据，自动进行热点识别。<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>

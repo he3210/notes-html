@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-05-06 Thu 15:26 -->
+<!-- 2021-08-20 Fri 15:39 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>主播自定义活动</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
-<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -62,18 +62,18 @@
 <ul>
 <li><a href="#orgffbf8a1">13.1. 1.获取自己的活动 ec_my_events HTTP GET  2day</a>
 <ul>
-<li><a href="#org0736b4e">13.1.1. 请求参数</a></li>
-<li><a href="#orgb53ede8">13.1.2. 返回参数</a></li>
+<li><a href="#org161b131">13.1.1. 请求参数</a></li>
+<li><a href="#org7e26b49">13.1.2. 返回参数</a></li>
 </ul>
 </li>
 <li><a href="#org6c50b7f">13.2. 2.操作自己的活动 ec_my_events HTTP POST  1day</a>
 <ul>
-<li><a href="#org61d69f2">13.2.1. 请求参数</a></li>
+<li><a href="#orgbe3eb00">13.2.1. 请求参数</a></li>
 </ul>
 </li>
 <li><a href="#org356956d">13.3. 3.获取关注主播的自定义活动 ec_followed_events HTTP GET 2day</a>
 <ul>
-<li><a href="#orgb4b665f">13.3.1. 请求参数</a></li>
+<li><a href="#orge342cef">13.3.1. 请求参数</a></li>
 <li><a href="#org991a574">13.3.2. 返回的活动元数据</a></li>
 <li><a href="#org26040ab">13.3.3. 仅展示进行中、即将开始的活动</a></li>
 <li><a href="#org1548550">13.3.4. 按 start_time 升序，按 ctime 升序</a></li>
@@ -82,26 +82,26 @@
 </li>
 <li><a href="#org5ede875">13.4. 4.获取所有主播的自定义活动 ec_total_events HTTP GET 1day</a>
 <ul>
-<li><a href="#orge57873b">13.4.1. 请求参数</a></li>
+<li><a href="#org931672b">13.4.1. 请求参数</a></li>
 <li><a href="#org066b60d">13.4.2. 基于接口2，新增返回参数</a></li>
 </ul>
 </li>
 <li><a href="#org61014b7">13.5. 5.获取自定义信息 ec_custom_event HTTP GET 1day</a>
 <ul>
-<li><a href="#org76f3c5c">13.5.1. 请求参数</a></li>
-<li><a href="#org6e8ced5">13.5.2. 返回数据</a></li>
+<li><a href="#org751b4c5">13.5.1. 请求参数</a></li>
+<li><a href="#orgdc5d1ae">13.5.2. 返回数据</a></li>
 </ul>
 </li>
 <li><a href="#orga77d110">13.6. 6.定制活动 ec_custom_event HTTP POST 1day</a>
 <ul>
-<li><a href="#org6c617c5">13.6.1. 请求参数</a></li>
-<li><a href="#org69a4474">13.6.2. 返回数据</a></li>
+<li><a href="#org42b7c1b">13.6.1. 请求参数</a></li>
+<li><a href="#org325a899">13.6.2. 返回数据</a></li>
 </ul>
 </li>
 <li><a href="#org7aeafb6">13.7. 7.查看活动获奖详情 ec_event_result HTTP GET 1day</a>
 <ul>
-<li><a href="#org1eac96f">13.7.1. 请求参数</a></li>
-<li><a href="#orgcf68021">13.7.2. 返回数据</a></li>
+<li><a href="#org4086994">13.7.1. 请求参数</a></li>
+<li><a href="#orga9903d1">13.7.2. 返回数据</a></li>
 </ul>
 </li>
 <li><a href="#org11ed38e">13.8. 8.收货地址接口 event_address GET  1day</a></li>
@@ -109,20 +109,20 @@
 <li><a href="#org065362e">13.10. 10.发现页预告：定制活动列表</a></li>
 <li><a href="#orgbc1c31d">13.11. 11.直播间弹窗接口 ec_event_status HTTP GET 1day</a>
 <ul>
-<li><a href="#orgdbdcf17">13.11.1. 请求参数</a></li>
-<li><a href="#orgd3885e0">13.11.2. 返回数据</a></li>
+<li><a href="#org5a2144e">13.11.1. 请求参数</a></li>
+<li><a href="#org04ce6ea">13.11.2. 返回数据</a></li>
 <li><a href="#orgaad39d4">13.11.3. 需求中直播间弹窗的第4个图片如何触发？</a></li>
 </ul>
 </li>
 <li><a href="#org9e74fa1">13.12. 12.校验主播定制的时间范围 ec_check_event_time HTTP GET 1day</a>
 <ul>
-<li><a href="#orgcfc9c6c">13.12.1. 请求参数</a></li>
+<li><a href="#org119fbfb">13.12.1. 请求参数</a></li>
 </ul>
 </li>
 <li><a href="#org2d614cf">13.13. 13.活动详情页 ec_event_info</a>
 <ul>
-<li><a href="#orga63b4db">13.13.1. 请求参数</a></li>
-<li><a href="#org1c44cb9">13.13.2. 返回参数</a></li>
+<li><a href="#org3aaab35">13.13.1. 请求参数</a></li>
+<li><a href="#org467d6f9">13.13.2. 返回参数</a></li>
 </ul>
 </li>
 </ul>
@@ -311,16 +311,16 @@
 <h3 id="orgffbf8a1"><span class="section-number-3">13.1</span> 1.获取自己的活动 ec_my_events HTTP GET  2day</h3>
 <div class="outline-text-3" id="text-13-1">
 </div>
-<div id="outline-container-org0736b4e" class="outline-4">
-<h4 id="org0736b4e"><span class="section-number-4">13.1.1</span> 请求参数</h4>
+<div id="outline-container-org161b131" class="outline-4">
+<h4 id="org161b131"><span class="section-number-4">13.1.1</span> 请求参数</h4>
 <div class="outline-text-4" id="text-13-1-1">
 <ul class="org-ul">
 <li>session<br></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgb53ede8" class="outline-4">
-<h4 id="orgb53ede8"><span class="section-number-4">13.1.2</span> 返回参数</h4>
+<div id="outline-container-org7e26b49" class="outline-4">
+<h4 id="org7e26b49"><span class="section-number-4">13.1.2</span> 返回参数</h4>
 <div class="outline-text-4" id="text-13-1-2">
 <ul class="org-ul">
 <li>活动元数据<br>
@@ -357,8 +357,8 @@
 <h3 id="org6c50b7f"><span class="section-number-3">13.2</span> 2.操作自己的活动 ec_my_events HTTP POST  1day</h3>
 <div class="outline-text-3" id="text-13-2">
 </div>
-<div id="outline-container-org61d69f2" class="outline-4">
-<h4 id="org61d69f2"><span class="section-number-4">13.2.1</span> 请求参数</h4>
+<div id="outline-container-orgbe3eb00" class="outline-4">
+<h4 id="orgbe3eb00"><span class="section-number-4">13.2.1</span> 请求参数</h4>
 <div class="outline-text-4" id="text-13-2-1">
 <ul class="org-ul">
 <li>session<br></li>
@@ -372,8 +372,8 @@
 <h3 id="org356956d"><span class="section-number-3">13.3</span> 3.获取关注主播的自定义活动 ec_followed_events HTTP GET 2day</h3>
 <div class="outline-text-3" id="text-13-3">
 </div>
-<div id="outline-container-orgb4b665f" class="outline-4">
-<h4 id="orgb4b665f"><span class="section-number-4">13.3.1</span> 请求参数</h4>
+<div id="outline-container-orge342cef" class="outline-4">
+<h4 id="orge342cef"><span class="section-number-4">13.3.1</span> 请求参数</h4>
 <div class="outline-text-4" id="text-13-3-1">
 <ul class="org-ul">
 <li>session<br></li>
@@ -409,8 +409,8 @@
 <h3 id="org5ede875"><span class="section-number-3">13.4</span> 4.获取所有主播的自定义活动 ec_total_events HTTP GET 1day</h3>
 <div class="outline-text-3" id="text-13-4">
 </div>
-<div id="outline-container-orge57873b" class="outline-4">
-<h4 id="orge57873b"><span class="section-number-4">13.4.1</span> 请求参数</h4>
+<div id="outline-container-org931672b" class="outline-4">
+<h4 id="org931672b"><span class="section-number-4">13.4.1</span> 请求参数</h4>
 <div class="outline-text-4" id="text-13-4-1">
 <ul class="org-ul">
 <li>session<br></li>
@@ -431,16 +431,16 @@
 <h3 id="org61014b7"><span class="section-number-3">13.5</span> 5.获取自定义信息 ec_custom_event HTTP GET 1day</h3>
 <div class="outline-text-3" id="text-13-5">
 </div>
-<div id="outline-container-org76f3c5c" class="outline-4">
-<h4 id="org76f3c5c"><span class="section-number-4">13.5.1</span> 请求参数</h4>
+<div id="outline-container-org751b4c5" class="outline-4">
+<h4 id="org751b4c5"><span class="section-number-4">13.5.1</span> 请求参数</h4>
 <div class="outline-text-4" id="text-13-5-1">
 <p>
 session<br>
 </p>
 </div>
 </div>
-<div id="outline-container-org6e8ced5" class="outline-4">
-<h4 id="org6e8ced5"><span class="section-number-4">13.5.2</span> 返回数据</h4>
+<div id="outline-container-orgdc5d1ae" class="outline-4">
+<h4 id="orgdc5d1ae"><span class="section-number-4">13.5.2</span> 返回数据</h4>
 <div class="outline-text-4" id="text-13-5-2">
 <ul class="org-ul">
 <li>theme_info list    theme_info 中包含 help 信息<br></li>
@@ -454,8 +454,8 @@ session<br>
 <h3 id="orga77d110"><span class="section-number-3">13.6</span> 6.定制活动 ec_custom_event HTTP POST 1day</h3>
 <div class="outline-text-3" id="text-13-6">
 </div>
-<div id="outline-container-org6c617c5" class="outline-4">
-<h4 id="org6c617c5"><span class="section-number-4">13.6.1</span> 请求参数</h4>
+<div id="outline-container-org42b7c1b" class="outline-4">
+<h4 id="org42b7c1b"><span class="section-number-4">13.6.1</span> 请求参数</h4>
 <div class="outline-text-4" id="text-13-6-1">
 <ul class="org-ul">
 <li>ec_id 非必须参数。无该参数-新建，有该参数-编辑<br></li>
@@ -475,8 +475,8 @@ session<br>
 </ul>
 </div>
 </div>
-<div id="outline-container-org69a4474" class="outline-4">
-<h4 id="org69a4474"><span class="section-number-4">13.6.2</span> 返回数据</h4>
+<div id="outline-container-org325a899" class="outline-4">
+<h4 id="org325a899"><span class="section-number-4">13.6.2</span> 返回数据</h4>
 </div>
 </div>
 
@@ -484,16 +484,16 @@ session<br>
 <h3 id="org7aeafb6"><span class="section-number-3">13.7</span> 7.查看活动获奖详情 ec_event_result HTTP GET 1day</h3>
 <div class="outline-text-3" id="text-13-7">
 </div>
-<div id="outline-container-org1eac96f" class="outline-4">
-<h4 id="org1eac96f"><span class="section-number-4">13.7.1</span> 请求参数</h4>
+<div id="outline-container-org4086994" class="outline-4">
+<h4 id="org4086994"><span class="section-number-4">13.7.1</span> 请求参数</h4>
 <div class="outline-text-4" id="text-13-7-1">
 <ul class="org-ul">
 <li>ec_id<br></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgcf68021" class="outline-4">
-<h4 id="orgcf68021"><span class="section-number-4">13.7.2</span> 返回数据</h4>
+<div id="outline-container-orga9903d1" class="outline-4">
+<h4 id="orga9903d1"><span class="section-number-4">13.7.2</span> 返回数据</h4>
 <div class="outline-text-4" id="text-13-7-2">
 <ul class="org-ul">
 <li>活动信息：start_time end_time theme_name, rewards<br></li>
@@ -518,16 +518,16 @@ session<br>
 <h3 id="orgbc1c31d"><span class="section-number-3">13.11</span> 11.直播间弹窗接口 ec_event_status HTTP GET 1day</h3>
 <div class="outline-text-3" id="text-13-11">
 </div>
-<div id="outline-container-orgdbdcf17" class="outline-4">
-<h4 id="orgdbdcf17"><span class="section-number-4">13.11.1</span> 请求参数</h4>
+<div id="outline-container-org5a2144e" class="outline-4">
+<h4 id="org5a2144e"><span class="section-number-4">13.11.1</span> 请求参数</h4>
 <div class="outline-text-4" id="text-13-11-1">
 <ul class="org-ul">
 <li>ec_id<br></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd3885e0" class="outline-4">
-<h4 id="orgd3885e0"><span class="section-number-4">13.11.2</span> 返回数据</h4>
+<div id="outline-container-org04ce6ea" class="outline-4">
+<h4 id="org04ce6ea"><span class="section-number-4">13.11.2</span> 返回数据</h4>
 <div class="outline-text-4" id="text-13-11-2">
 <ul class="org-ul">
 <li>活动信息：start_time end_time theme_name, rewards<br></li>
@@ -545,8 +545,8 @@ session<br>
 <h3 id="org9e74fa1"><span class="section-number-3">13.12</span> 12.校验主播定制的时间范围 ec_check_event_time HTTP GET 1day</h3>
 <div class="outline-text-3" id="text-13-12">
 </div>
-<div id="outline-container-orgcfc9c6c" class="outline-4">
-<h4 id="orgcfc9c6c"><span class="section-number-4">13.12.1</span> 请求参数</h4>
+<div id="outline-container-org119fbfb" class="outline-4">
+<h4 id="org119fbfb"><span class="section-number-4">13.12.1</span> 请求参数</h4>
 <div class="outline-text-4" id="text-13-12-1">
 <ul class="org-ul">
 <li>session<br></li>
@@ -561,8 +561,8 @@ session<br>
 <h3 id="org2d614cf"><span class="section-number-3">13.13</span> 13.活动详情页 ec_event_info</h3>
 <div class="outline-text-3" id="text-13-13">
 </div>
-<div id="outline-container-orga63b4db" class="outline-4">
-<h4 id="orga63b4db"><span class="section-number-4">13.13.1</span> 请求参数</h4>
+<div id="outline-container-org3aaab35" class="outline-4">
+<h4 id="org3aaab35"><span class="section-number-4">13.13.1</span> 请求参数</h4>
 <div class="outline-text-4" id="text-13-13-1">
 <ul class="org-ul">
 <li>ec_id<br></li>
@@ -570,8 +570,8 @@ session<br>
 </div>
 </div>
 
-<div id="outline-container-org1c44cb9" class="outline-4">
-<h4 id="org1c44cb9"><span class="section-number-4">13.13.2</span> 返回参数</h4>
+<div id="outline-container-org467d6f9" class="outline-4">
+<h4 id="org467d6f9"><span class="section-number-4">13.13.2</span> 返回参数</h4>
 <div class="outline-text-4" id="text-13-13-2">
 <ul class="org-ul">
 <li>奖励信息：奖品名、数量、照片、发奖类型等<br></li>
@@ -992,8 +992,8 @@ session<br>
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
-<script src="file:/Users/he/notes/html/css/main.js"></script>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
 </div>
 </body>
 </html>

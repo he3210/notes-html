@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-05-06 Thu 15:27 -->
+<!-- 2021-08-20 Fri 15:39 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>shell 常用命令</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
-<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -39,6 +39,8 @@
 <li><a href="#orge4a7327">3. netstat 查看端口网络连接信息</a></li>
 <li><a href="#org6da3522">4. tcptraceroute 基于 TCP 的 traceroute</a></li>
 <li><a href="#orgabbe765">5. ps -T -p 进程号</a></li>
+<li><a href="#org21452af">6. 查看系统版本</a></li>
+<li><a href="#org45c4312">7. 切换账号</a></li>
 </ul>
 </div>
 </div>
@@ -159,6 +161,36 @@ udp6       0      0 localhost:323           [::]:*                              
 </p>
 </div>
 </div>
+
+<div id="outline-container-org21452af" class="outline-2">
+<h2 id="org21452af"><span class="section-number-2">6</span> 查看系统版本</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-bash">$ cat /etc/debian_version  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475; debian &#29256;&#26412;</span>
+9.13
+$ lsb_release -a  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#31995;&#32479;&#29256;&#26412;&#65292;&#21487;&#33021;&#38656;&#35201;&#23433;&#35013; apt install lsb-release</span>
+No LSB modules are available.
+Distributor ID: Debian
+Description:    Debian GNU/Linux 9.13 (stretch)
+Release:    9.13
+Codename:   stretch
+$ uname -a        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#29256;&#26412;&#24403;&#21069;&#25805;&#20316;&#31995;&#32479;&#20869;&#26680;&#20449;&#24687;</span>
+Linux VM-1-28-debian 4.9.0-13-amd64 <span style="color: #8a8a8a;">#</span><span style="color: #8a8a8a;">1 SMP Debian 4.9.228-1 (2020-07-05) x86_64 GNU/Linux</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org45c4312" class="outline-2">
+<h2 id="org45c4312"><span class="section-number-2">7</span> 切换账号</h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+<pre class="src src-bash">$ sudo su -l root  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20999;&#25442;&#21040; root &#36134;&#21495;&#65292;&#21516;&#26102;&#25913;&#21464; HOME, SHELL, PATH, TERM, USER&#65292;&#20063;&#20250;&#21464;&#26356;&#24037;&#20316;&#30446;&#24405;&#35813;&#29992;&#25143;&#30340; home &#30446;&#24405;&#12290;&#21487;&#31616;&#20889;&#20026; sudo su - root</span>
+$ sudo su root     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20999;&#25442;&#21040; root &#36134;&#21495;&#65292;&#29615;&#22659;&#21464;&#37327;&#19981;&#21464;&#65292;&#24037;&#20316;&#30446;&#24405;&#19981;&#21464;</span>
+</pre>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p>本笔记系统由
@@ -168,8 +200,8 @@ udp6       0      0 localhost:323           [::]:*                              
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
-<script src="file:/Users/he/notes/html/css/main.js"></script>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
 </div>
 </body>
 </html>

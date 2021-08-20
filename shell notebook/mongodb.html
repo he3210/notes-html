@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-05-06 Thu 15:27 -->
+<!-- 2021-08-20 Fri 15:40 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>&lrm;</title>
+<title>mongodb 命令</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
-<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -29,6 +29,7 @@
 </div>
 </div>
 <div id="content">
+<h1 class="title">mongodb 命令</h1>
 <div id="table-of-contents">
 <h2>&#30446;&#24405;</h2>
 <div id="text-table-of-contents">
@@ -39,9 +40,6 @@
 </ul>
 </div>
 </div>
-<p>
-+TITLE: mongodb 命令<br>
-</p>
 
 <div id="outline-container-org70d3871" class="outline-2">
 <h2 id="org70d3871"><span class="section-number-2">1</span> 常用命令</h2>
@@ -57,6 +55,9 @@ $ db.msg.getIndexes()     <span style="color: #8a8a8a;"># </span><span style="co
 $ db.msg.find({<span style="color: #00afaf;">"msg_id"</span>: 6329, <span style="color: #00afaf;">"type"</span>: 3}, {<span style="color: #00afaf;">"_id"</span>: 0, <span style="color: #00afaf;">"msg_id"</span>: 1, <span style="color: #00afaf;">"msg"</span>: 1})
 { <span style="color: #00afaf;">"msg_id"</span>: 6329, <span style="color: #00afaf;">"msg"</span> : <span style="color: #00afaf;">"hello world"</span> }
 $ db.msg.find({<span style="color: #00afaf;">"_id"</span>: {$<span style="color: #0087ff;">in</span>: [ObjectId(<span style="color: #00afaf;">"5fc8aa05149d8015a0a98d3f"</span>), ObjectId(<span style="color: #00afaf;">"5fc8aa05149d8015a0a98d38"</span>)]}})
+$ db.msg.find({<span style="color: #00afaf;">"_id"</span>: ObjectId(<span style="color: #00afaf;">"5fc8aa05149d8015a0a98d3f"</span>), <span style="color: #00afaf;">"ctime"</span>: {$<span style="color: #0087ff;">gt</span>: ISODate(<span style="color: #00afaf;">"2021-06-01T10:21:35Z"</span>)}})
+$ db.msg.find({<span style="color: #00afaf;">"msg"</span>: {$<span style="color: #0087ff;">regex</span>: /hello/}})   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25628;&#32034;&#21253;&#21547; "hello" &#30340; msg &#30340;&#25991;&#26723;</span>
+$ db.msg.find({<span style="color: #00afaf;">"msg"</span>: {$<span style="color: #0087ff;">regex</span>: /^hello/}})  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25628;&#32034;&#20197; "hello" &#23383;&#31526;&#20018;&#24320;&#22836;&#30340; msg &#30340;&#25991;&#26723;&#12290;&#27491;&#21017;&#26159;&#21069;&#32512;&#34920;&#36798;&#24335;&#26102;&#65292;&#26597;&#35810;&#36895;&#24230;&#20250;&#24555;&#19968;&#20123;</span>
 $ db.msg.update({<span style="color: #00afaf;">"_id"</span>: ObjectId(<span style="color: #00afaf;">"5fc8aa05149d8015a0a98d3f"</span>)}, {$<span style="color: #0087ff;">set</span>:{<span style="color: #00afaf;">"is_enabled"</span>: 0}})
 </pre>
 </div>
@@ -98,8 +99,8 @@ $ db.msg.explain().aggregate([{$<span style="color: #0087ff;">match</span>: {<sp
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
-<script src="file:/Users/he/notes/html/css/main.js"></script>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
 </div>
 </body>
 </html>

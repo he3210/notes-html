@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-08-20 Fri 15:39 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>debian 配置</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">debian 配置</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgff26db0">1. 配置免密登陆</a>
+<ul>
+<li><a href="#org35ec4a3">1.1. 粘贴本机公钥 id_rsa.pub 到 debian <i>root</i>.ssh/authorized_keys 文件内</a></li>
+<li><a href="#orgc9ec4f4">1.2. 修改 /etc/ssh/sshd_config</a></li>
+<li><a href="#org809fb4a">1.3. 配置本机 ~/.ssh/config</a></li>
+</ul>
+</li>
+<li><a href="#org0afd089">2. 开启防火墙</a></li>
+<li><a href="#orgb211c75">3. 配置 SSR</a>
+<ul>
+<li><a href="#org108b6b4">3.1. 客户端 mac</a></li>
+<li><a href="#orgaaebcaa">3.2. 客户端 android</a></li>
+<li><a href="#org3edbba8">3.3. 服务器</a></li>
+</ul>
+</li>
+<li><a href="#org0fd0588">4. 配置 aria2</a>
+<ul>
+<li><a href="#org82141b8">4.1. 服务端</a></li>
+<li><a href="#orgec22154">4.2. web 端</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgff26db0" class="outline-2">
+<h2 id="orgff26db0"><span class="section-number-2">1</span> 配置免密登陆</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org35ec4a3" class="outline-3">
+<h3 id="org35ec4a3"><span class="section-number-3">1.1</span> 粘贴本机公钥 id_rsa.pub 到 debian <i>root</i>.ssh/authorized_keys 文件内</h3>
+</div>
+<div id="outline-container-orgc9ec4f4" class="outline-3">
+<h3 id="orgc9ec4f4"><span class="section-number-3">1.2</span> 修改 /etc/ssh/sshd_config</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">vim /etc/ssh/sshd_config    # &#20462;&#25913;&#22914;&#19979;&#37197;&#32622;&#12290;&#35774;&#32622;&#23494;&#38053;&#35748;&#35777;&#65292;&#20813;&#23494;&#30331;&#38470;</span>
+Port 2107
+PubkeyAuthentication yes
+PasswardAuthentication no
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">/etc/init.d/ssh restart     # &#37325;&#21551; sshd</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org809fb4a" class="outline-3">
+<h3 id="org809fb4a"><span class="section-number-3">1.3</span> 配置本机 ~/.ssh/config</h3>
+<div class="outline-text-3" id="text-1-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ vim ~/.ssh/config             <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28155;&#21152;&#24555;&#25463;&#30331;&#38470;&#37197;&#32622;</span>
+Host debian
+    HostName 108.61.223.41
+    Port 2107
+    User root
+    ServerAliveInterval 60
+    IdentityFile ~/.ssh/id_rsa
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0afd089" class="outline-2">
+<h2 id="org0afd089"><span class="section-number-2">2</span> 开启防火墙</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 2107/tcp</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 2107/udp</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 19422/tcp</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 19422/udp</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 19999/tcp</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 1234/tcp</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 6379/tcp</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 80/tcp</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 6800/tcp    # aria2</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 6881:6999/tcp</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw allow 51413/tcp</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ufw status verbose    # &#26816;&#26597;&#38450;&#28779;&#22681;&#29366;&#24577;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb211c75" class="outline-2">
+<h2 id="orgb211c75"><span class="section-number-2">3</span> 配置 SSR</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org108b6b4" class="outline-3">
+<h3 id="org108b6b4"><span class="section-number-3">3.1</span> 客户端 mac</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+<pre class="src src-shell">brew install shadowsocksx-ng-r
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgaaebcaa" class="outline-3">
+<h3 id="orgaaebcaa"><span class="section-number-3">3.2</span> 客户端 android</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li><a href="https://github.com/shadowsocksrr/shadowsocksr-android/releases/tag/3.5.4">shadowsocksrr/shadowsocksr-android</a><br></li>
+<li><a href="https://github.com/xxf098/shadowsocksr-v2ray-trojan-android/releases">xxf098/shadowsocksr-v2ray-trojan-android</a><br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org3edbba8" class="outline-3">
+<h3 id="org3edbba8"><span class="section-number-3">3.3</span> 服务器</h3>
+<div class="outline-text-3" id="text-3-3">
+<div class="org-src-container">
+<pre class="src src-shell">$ vim /etc/shadowsocks.json    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28155;&#21152;&#22914;&#19979;&#37197;&#32622;</span>
+{
+    <span style="color: #00afaf;">"server"</span>:<span style="color: #00afaf;">"0.0.0.0"</span>,
+    <span style="color: #00afaf;">"server_ipv6"</span>:<span style="color: #00afaf;">"[::]"</span>,
+    <span style="color: #00afaf;">"server_port"</span>:19422,
+    <span style="color: #00afaf;">"local_address"</span>:<span style="color: #00afaf;">"127.0.0.1"</span>,
+    <span style="color: #00afaf;">"local_port"</span>:1080,
+    <span style="color: #00afaf;">"password"</span>:<span style="color: #00afaf;">"langdebuqing.com"</span>,
+    <span style="color: #00afaf;">"timeout"</span>:120,
+    <span style="color: #00afaf;">"method"</span>:<span style="color: #00afaf;">"aes-256-cfb"</span>,
+    <span style="color: #00afaf;">"protocol"</span>:<span style="color: #00afaf;">"auth_aes128_md5"</span>,
+    <span style="color: #00afaf;">"protocol_param"</span>:<span style="color: #00afaf;">""</span>,
+    <span style="color: #00afaf;">"obfs"</span>:<span style="color: #00afaf;">"plain"</span>,
+    <span style="color: #00afaf;">"obfs_param"</span>:<span style="color: #00afaf;">""</span>,
+    <span style="color: #00afaf;">"redirect"</span>:<span style="color: #00afaf;">""</span>,
+    <span style="color: #00afaf;">"dns_ipv6"</span>:false,
+    <span style="color: #00afaf;">"fast_open"</span>:false,
+    <span style="color: #00afaf;">"workers"</span>:1
+}
+$ /etc/init.d/shadowsocks restart  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">python /usr/local/shadowsocks/server.py -c /etc/shadowsocks.json -d start</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0fd0588" class="outline-2">
+<h2 id="org0fd0588"><span class="section-number-2">4</span> 配置 aria2</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org82141b8" class="outline-3">
+<h3 id="org82141b8"><span class="section-number-3">4.1</span> 服务端</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+<pre class="src src-shell">$ cd ~
+$ yum install aria2
+$ mkdir ~/.aria2
+$ vim ~/.aria2/aria2.conf  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28155;&#21152; aria2 &#37197;&#32622;&#22914;&#19979;</span>
+$ mkdir ~/download
+$ firewall-cmd --zone=public --add-port=6800/tcp --permanent
+$ firewall-cmd --zone=public --add-port=6881-6999/tcp --permanent
+$ firewall-cmd --zone=public --add-port=51413/tcp --permanent
+$ firewall-cmd --reload    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">centos &#24320;&#21551; 6800 6881-6999 51413 &#31471;&#21475;</span>
+$ aria2c --conf-path=/root/.aria2/aria2.conf -D  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21551;&#21160;&#26381;&#21153;&#22120;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgec22154" class="outline-3">
+<h3 id="orgec22154"><span class="section-number-3">4.2</span> web 端</h3>
+<div class="outline-text-3" id="text-4-2">
+<div class="org-src-container">
+<pre class="src src-shell">$ wget https://github.com/mayswind/AriaNg-DailyBuild/archive/master.zip  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">https://github.com/mayswind/AriaNg</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
+</div>
+</body>
+</html>
