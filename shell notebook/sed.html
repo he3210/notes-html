@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-08-20 Fri 15:39 -->
+<!-- 2022-01-12 Wed 04:56 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>sed</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -127,6 +127,8 @@ $ sed -n <span style="color: #00afaf;">'s/test/test project/p'</span> test.txt  
 $ sed -n <span style="color: #00afaf;">'s/test/test project/2w aaa.txt'</span> test.txt  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25226;&#25991;&#26412; test.txt &#20013;&#27599;&#34892;&#30340;&#31532;&#20108;&#20010; "test" &#26367;&#25442;&#25104; "test project"&#65292;&#28982;&#21518;&#20165;&#25226;&#26367;&#25442;&#36807;&#30340;&#34892;&#20889;&#20837; aaa.txt</span>
 $ echo <span style="color: #00afaf;">"/bin/bash"</span> | sed <span style="color: #00afaf;">'s!/bin/bash!/bin/csh!'</span>    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992;&#20854;&#23427;&#20219;&#24847;&#23383;&#31526;&#20195;&#26367; / &#65292;&#21482;&#35201;&#23427;&#27809;&#22312; pattern &#20013;&#12290;&#36825;&#37324;&#20351;&#29992;&#31526;&#21495; ! &#20195;&#26367; /&#65292;&#25226; /bin/bash &#26367;&#25442;&#25104; /bin/csh</span>
 $ sed -e <span style="color: #00afaf;">'s/^How/You/; s/you$/right/'</span> test.txt      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20351;&#29992;&#22810;&#20010; sed &#21629;&#20196;</span>
+$ sed <span style="color: #00afaf;">'s/'"'"</span>/<span style="color: #00afaf;">'"''/g'</span> test.txt                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21333;&#24341;&#21495;&#26367;&#25442;&#20026;&#21452;&#24341;&#21495;</span>
+$ sed -i <span style="color: #00afaf;">'s/^#alias ll='"'"'ls -l'"'"'$/alias ll='"'"'ls -l'"'"'/g'</span> /home/dev/.bashrc  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">#alias ll='ls -l' &#26367;&#25442;&#20026; alias ll='ls -l'</span>
 
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25351;&#23450; sed &#33050;&#26412;&#25991;&#20214;</span>
 $ cat test.sed
@@ -136,7 +138,7 @@ $ sed -f test.sed test.txt    <span style="color: #8a8a8a;"># </span><span style
 
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20808;&#25226;&#25991;&#20214; style.css &#22791;&#20221;&#21040; style.css_bak&#65292;&#28982;&#21518; sed &#21629;&#20196;&#30452;&#25509;&#26367;&#25442;&#28304;&#25991;&#20214; style.css&#12290;</span>
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">-i '_bak' &#25351;&#23450;&#22791;&#20221;&#25991;&#20214;&#21518;&#32512;&#65292;&#20808;&#22791;&#20221;&#21407;&#25991;&#20214;&#21040;&#25351;&#23450;&#25991;&#20214;&#65292;&#28982;&#21518; sed &#20250;&#30452;&#25509;&#26367;&#25442;&#28304;&#25991;&#20214;&#12290;-i '' &#34920;&#31034;&#19981;&#22791;&#20221;</span>
-$ sed -i <span style="color: #00afaf;">'_bak'</span> <span style="color: #00afaf;">'s!color!dddd!g'</span> style.css
+$ sed -i <span style="color: #00afaf;">'_bak'</span> <span style="color: #00afaf;">'s!color!dddd!g'</span> style.css  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26377; sed &#30340; -i &#38656;&#35201;&#36825;&#26679;&#20889; -i_bak</span>
 
 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25968;&#23383;&#24418;&#24335;&#30340;&#34892;&#23547;&#22336;</span>
 $ sed -n <span style="color: #00afaf;">'4s/test/test project/p'</span> test.txt      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">sed &#32534;&#36753;&#22120;&#21482;&#20462;&#25913;&#31532; 4 &#34892;&#25991;&#26412;</span>
@@ -198,8 +200,8 @@ $ sed <span style="color: #00afaf;">'/first/,/second/d'</span> test.txt
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

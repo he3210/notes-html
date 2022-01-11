@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2022-01-12 Wed 04:56 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mac clion 通过 docker debian10 调试 redis</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">mac clion 通过 docker debian10 调试 redis</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0a29a27">1. dockerfile</a></li>
+<li><a href="#orgcdc2731">2. clion 配置</a>
+<ul>
+<li><a href="#org2a7a92a">2.1. clion 中配置连接到 docker 的远程工具链</a></li>
+<li><a href="#org351968c">2.2. clion 中 redis 项目配置 docker 调试</a></li>
+<li><a href="#org472a22e">2.3. 配置过程中的的报错</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+参考：<br>
+<a href="https://www.jetbrains.com/help/clion/remote-development.html">Remote development</a><br>
+<a href="https://blog.jetbrains.com/clion/2020/01/using-docker-with-clion/">using-docker-with-clion</a><br>
+</p>
+
+<p>
+clion 远程调试有多种：<br>
+</p>
+<ol class="org-ol">
+<li><code>gdbserver/lldb-server</code> clion 作为 gdb 客户端连接远程 gdbserver 进行调试。有点不太方便，每次需要手动在远程启动 gdbserver；如果调试的是守护进程，clion 终止调试后，守护进程依然存在，还需要手动 kill 掉守护进程<br></li>
+<li><code>full remote mode</code> clion 通过 ssh 登录到远程，在远程启动一个 gdb 进行调试。支持 makefile、cmake。配置好后，调试是全自动的，和本地调试的体验完全一样<br></li>
+<li>&#x2026;<br></li>
+</ol>
+<p>
+本文就是第 2 种<br>
+</p>
+
+<div id="outline-container-org0a29a27" class="outline-2">
+<h2 id="org0a29a27"><span class="section-number-2">1</span> dockerfile</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>文件名：Dockerfile.clion_remote_cpp_env<br></li>
+<li>构建镜像： <code>$ docker build -t clion/remote-cpp-env:1.0 -f Dockerfile.clion_remote_cpp_env .</code><br></li>
+<li>启动容器： <code>$ docker run -d --cap-add sys_ptrace --security-opt seccomp=unconfined -v /Users/he/code:/home/dev/code:rw -p 127.0.0.1:2222:22/tcp -p 127.0.0.1:6379:6379/tcp --name clion_remote_env clion/remote-cpp-env:1.0</code><br></li>
+<li>关停容器： <code>$ docker stop clion_remote_env</code><br></li>
+<li>ssh 连接： <code>$ ssh dev@127.0.0.1 -p 2222</code><br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-dockerfile"><span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">CLion remote docker environment (How to build docker container, run and stop it)</span>
+<span style="color: #8a8a8a;">#</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">Build and run:</span>
+<span style="color: #8a8a8a;">#   </span><span style="color: #8a8a8a;"># &#20854;&#20013; --cap-add sys_ptrace &#21644; --security-opt seccomp=unconfined &#37117;&#26159;&#20026; gdb &#25552;&#20379;&#19968;&#20123;&#26435;&#38480;&#65292;&#38450;&#27490;&#20854;&#25253;&#38169;&amp;&#26041;&#20415;&#20854;&#20351;&#29992;</span>
+<span style="color: #8a8a8a;">#   </span><span style="color: #8a8a8a;">docker build -t clion/remote-cpp-env:1.0 -f Dockerfile.clion_remote_cpp_env .</span>
+<span style="color: #8a8a8a;">#   </span><span style="color: #8a8a8a;">docker run -d --cap-add sys_ptrace --security-opt seccomp=unconfined -v /Users/he/code:/home/dev/code:rw -p 2222:22/tcp -p 6379:6379/tcp --name clion_remote_env clion/remote-cpp-env:1.0</span>
+<span style="color: #8a8a8a;">#   </span><span style="color: #8a8a8a;"># gdbserver &#35843;&#35797;&#26102;&#24320;&#21551;&#35843;&#35797;&#31471;&#21475; -p 1234:1234/tcp</span>
+<span style="color: #8a8a8a;">#   </span><span style="color: #8a8a8a;"># docker run -d --cap-add sys_ptrace --security-opt seccomp=unconfined -v /Users/he/code:/home/dev/code:rw -p 2222:22/tcp -p 6379:6379/tcp -p 1234:1234/tcp --name clion_remote_env clion/remote-cpp-env:1.0</span>
+<span style="color: #8a8a8a;">#</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#23481;&#22120;&#26032;&#24314;&#26102; 2222 &#31471;&#21475;&#34987;&#37325;&#26032;&#20351;&#29992;&#65292;&#26377;&#21487;&#33021;&#38656;&#35201;&#28165;&#29702;&#25481; known_hosts &#20445;&#23384;&#30340;&#20844;&#38053;&#65292;&#25165;&#33021; ssh &#35775;&#38382;</span>
+<span style="color: #8a8a8a;">#   </span><span style="color: #8a8a8a;">ssh-keygen -f "$HOME/.ssh/known_hosts" -R "[localhost]:2222" &amp;&amp; ssh-keygen -f "$HOME/.ssh/known_hosts" -R "[127.0.0.1]:2222"</span>
+<span style="color: #8a8a8a;">#</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">ssh credentials:</span>
+<span style="color: #8a8a8a;">#   </span><span style="color: #8a8a8a;">ssh root@127.0.0.1 -p 2222</span>
+<span style="color: #8a8a8a;">#   </span><span style="color: #8a8a8a;">ssh dev@127.0.0.1 -p 2222</span>
+
+<span style="color: #5f8700;">FROM</span> <span style="color: #af8700; font-weight: bold;">debian:10</span>
+<span style="color: #5f8700;">MAINTAINER</span> shi_zhonghe@163.com
+
+<span style="color: #5f8700;">RUN</span> mv /etc/apt/sources.list /etc/apt/sources.list_bak &amp;&amp; ( <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'deb http://mirrors.aliyun.com/debian/ buster main non-free contrib'</span>; <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'deb http://mirrors.aliyun.com/debian/ buster-updates main non-free contrib'</span>; <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'deb http://mirrors.aliyun.com/debian/ buster-backports main non-free contrib'</span>; <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'deb http://mirrors.aliyun.com/debian-security/ buster/updates main non-free contrib'</span>; <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'deb-src http://mirrors.aliyun.com/debian/ buster main non-free contrib'</span>; <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'deb-src http://mirrors.aliyun.com/debian/ buster-updates main non-free contrib'</span>; <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'deb-src http://mirrors.aliyun.com/debian/ buster-backports main non-free contrib'</span>; <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'deb-src http://mirrors.aliyun.com/debian-security/ buster/updates main non-free contrib'</span>; <span style="color: #00afaf;">\</span>
+  ) &gt; /etc/apt/sources.list    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26356;&#25442; apt &#28304;</span>
+
+<span style="color: #5f8700;">RUN</span> <span style="color: #0087ff;">DEBIAN_FRONTEND</span>=<span style="color: #00afaf;">"noninteractive"</span> apt update &amp;&amp; apt -y install tzdata  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26041;&#20415;&#26080;&#20154;&#20540;&#23432;&#26500;&#24314;&#38236;&#20687;</span>
+
+<span style="color: #5f8700;">RUN</span> apt update <span style="color: #00afaf;">\</span>
+  &amp;&amp; apt install -y ssh <span style="color: #00afaf;">\</span>
+    build-essential <span style="color: #00afaf;">\</span>
+    gcc <span style="color: #00afaf;">\</span>
+    g++ <span style="color: #00afaf;">\</span>
+    clang <span style="color: #00afaf;">\</span>
+    cmake <span style="color: #00afaf;">\</span>
+    rsync <span style="color: #00afaf;">\</span>
+    tar <span style="color: #00afaf;">\</span>
+    python <span style="color: #00afaf;">\</span>
+    python-dev <span style="color: #00afaf;">\</span>
+    wget <span style="color: #00afaf;">\</span>
+    pkg-config <span style="color: #00afaf;">\</span>
+    tcl <span style="color: #00afaf;">\</span>
+  &amp;&amp; apt clean
+
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">apt install gdb &#20250;&#23433;&#35013; 8.2 &#29256;&#26412;&#65292;&#20302;&#20110; 8.3 &#29256;&#26412;&#26102;&#36828;&#31243;&#35843;&#35797;&#20250;&#26377;&#19968;&#20123;&#38382;&#39064;&#65288;&#24536;&#35760;&#35760;&#24405;&#26159;&#21861;&#38382;&#39064;&#20102;&#65289;&#12290;&#25152;&#20197;&#36825;&#37324;&#32534;&#35793;&#23433;&#35013;&#39640;&#29256;&#26412; gdb10.2 gdbserver10.2 &#31561;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#32534;&#35793;&#26102;&#65292;&#20250;&#20381;&#36182; texinfo &#31561;</span>
+<span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">--with-python &#34920;&#31034; gdb &#25903;&#25345;&#35843;&#35797; python&#12290;clion &#35843;&#35797; c++ &#20063;&#20250;&#29992;&#21040; python &#33050;&#26412; pretty-printer&#65292;&#38656;&#35201;&#35774;&#32622;&#35813;&#39033;</span>
+<span style="color: #5f8700;">RUN</span> apt install -y texinfo &amp;&amp; apt clean <span style="color: #00afaf;">\</span>
+  &amp;&amp; wget https://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.xz &amp;&amp; xz -d gdb-10.2.tar.xz &amp;&amp; tar -xf gdb-10.2.tar &amp;&amp; rm gdb-10.2.tar <span style="color: #00afaf;">\</span>
+  &amp;&amp; <span style="color: #5f8700;">cd</span> gdb-10.2 &amp;&amp; ./configure --with-python &amp;&amp; make &amp;&amp; make install <span style="color: #00afaf;">\</span>
+  &amp;&amp; <span style="color: #5f8700;">cd</span> .. &amp;&amp; rm -rf gdb-10.2
+
+<span style="color: #5f8700;">RUN</span> useradd -m dev <span style="color: #00afaf;">\</span>
+  &amp;&amp; yes 123456 | passwd dev <span style="color: #00afaf;">\</span>
+  &amp;&amp; usermod -s /bin/bash dev <span style="color: #00afaf;">\</span>
+  &amp;&amp; yes 123456 | passwd root  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21019;&#24314; dev &#29992;&#25143;&#12289;&#23494;&#30721;&#12289;&#30331;&#24405;&#21518;&#40664;&#35748;&#20351;&#29992; /bin/bash&#65307;&#20462;&#25913; root &#23494;&#30721;</span>
+
+<span style="color: #5f8700;">RUN</span> sed -i <span style="color: #00afaf;">'s/^#alias ll='"'"'ls -l'"'"'$/alias ll='"'"'ls -l'"'"'/g'</span> /home/dev/.bashrc <span style="color: #00afaf;">\</span>
+  &amp;&amp; sed -i <span style="color: #00afaf;">'s/^#alias ll='"'"'ls -l'"'"'$/alias ll='"'"'ls -l'"'"'/g'</span> /root/.bashrc  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">.bashrc &#25991;&#20214;&#20462;&#25913;&#37197;&#32622; #alias ll='ls -l' &#26367;&#25442;&#20026; alias ll='ls -l'</span>
+<span style="color: #5f8700;">RUN</span> ( <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'LogLevel DEBUG2'</span>; <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'PermitRootLogin yes'</span>; <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'PasswordAuthentication yes'</span>; <span style="color: #00afaf;">\</span>
+    <span style="color: #5f8700;">echo</span> <span style="color: #00afaf;">'Subsystem sftp /usr/lib/openssh/sftp-server'</span>; <span style="color: #00afaf;">\</span>
+  ) &gt; /etc/ssh/sshd_config_docker <span style="color: #00afaf;">\</span>
+  &amp;&amp; mkdir /run/sshd
+
+<span style="color: #5f8700;">CMD</span> [<span style="color: #00afaf;">"/usr/sbin/sshd"</span>, <span style="color: #00afaf;">"-D"</span>, <span style="color: #00afaf;">"-e"</span>, <span style="color: #00afaf;">"-f"</span>, <span style="color: #00afaf;">"/etc/ssh/sshd_config_docker"</span>]
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcdc2731" class="outline-2">
+<h2 id="orgcdc2731"><span class="section-number-2">2</span> clion 配置</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org2a7a92a" class="outline-3">
+<h3 id="org2a7a92a"><span class="section-number-3">2.1</span> clion 中配置连接到 docker 的远程工具链</h3>
+<div class="outline-text-3" id="text-2-1">
+<ol class="org-ol">
+<li>在 clion 中配置连接 docker 容器的 <code>SSH Configurations</code> ： <code>ssh dev@127.0.0.1 -p 2222</code><br></li>
+<li><p>
+在 clion 中配置 Toolchains<br>
+docker 容器中编译好的 gdb 位于 <code>/usr/local/bin/gdb</code><br>
+</p>
+
+<div id="orgb9c01bf" class="figure">
+<p><img src="../images/clion_toolchains_conf_docker.png" alt="clion_toolchains_conf_docker.png" width="50%"><br>
+</p>
+</div></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org351968c" class="outline-3">
+<h3 id="org351968c"><span class="section-number-3">2.2</span> clion 中 redis 项目配置 docker 调试</h3>
+<div class="outline-text-3" id="text-2-2">
+<ol class="org-ol">
+<li>在 clion 中点击 Open -&gt; 选中 redis 根目录的 Makefile -&gt; Open -&gt; Open as project。然后会打开 redis 项目并弹窗 Load Project，提示配置 make clean 命令，配置后点击 OK<br></li>
+<li><p>
+clion 此时会执行 build 操作，分为 2 步<br>
+</p>
+<ul class="org-ul">
+<li><code>分析 Makefile 文件</code> 提取 Makefile 中的所有 Target，供 clion 使用<br></li>
+<li><code>build</code> 即命令 <code>$ make all</code> ，可在 <code>Build,Execution,Deployment-&gt;Makefile</code> 页配置。按理说应该会进入 docker 容器中的 redis 项目目录（该目录在 clion 中此时还未配置），进行 build<br></li>
+</ul>
+<p>
+此时会报错。报错提示进入了目录 <code>/tmp/tmp.UYeUotPS8H</code> ，目录肯定进错了，暂时不管这个错误，继续向下走<br>
+</p>
+
+<div id="orgd1c206c" class="figure">
+<p><img src="../images/clion_build_makefile_analyze.png" alt="clion_build_makefile_analyze.png" width="50%"><br>
+</p>
+</div></li>
+<li><p>
+在 clion 中配置 Makefile 页<br>
+toolchains 调整为刚才配置的 docker Toolchain<br>
+</p>
+
+<div id="org2073451" class="figure">
+<p><img src="../images/clion_makefile_conf.png" alt="clion_makefile_conf.png" width="50%"><br>
+</p>
+</div></li>
+<li><p>
+在 clion 中配置 Deployment<br>
+</p>
+<ul class="org-ul">
+<li><code>Local or mounted folder</code> 就用这个。项目目录正是挂载在 docker 中的<br></li>
+<li><code>In place</code> 表示项目已经在它该在的位置上了，项目不用执行同步操作。<br></li>
+</ul>
+
+<div id="org7d0c628" class="figure">
+<p><img src="../images/clion_deployment_connection.png" alt="clion_deployment_connection.png" width="50%"><br>
+</p>
+</div>
+
+<p>
+首次点进 Mappings 页时，红圈 <code>Deployment path</code> 项不存在，需要点击 <code>Add New Mapping</code> 把它搞出来。搞出来后，它的值是 <code>/tmp/tmp.UYeUotPS8H</code> ，所以步骤 2 报错，改完就好了<br>
+</p>
+
+<div id="org4c84418" class="figure">
+<p><img src="../images/clion_deployment_mappings.png" alt="clion_deployment_mappings.png" width="40%"><br>
+</p>
+</div>
+
+<p>
+然后进入步骤 2 的界面 <code>Reload Makefile Project</code> ，然后执行完步骤 2 后，clion 会提取到一些 Makefile 信息，如下图<br>
+</p>
+
+<div id="orgb00814d" class="figure">
+<p><img src="../images/clion_makefile_application_debug.png" alt="clion_makefile_application_debug.png" width="30%"><br>
+</p>
+</div></li>
+<li><p>
+在 clion 中配置 Makefile Application 用于调试<br>
+</p>
+<ul class="org-ul">
+<li>下拉框选中 <code>redis-server</code> 后，点击 🔨 编译出 <code>redis-server</code> 二进制文件；或在 docker 容器中 <code>$ make all</code><br></li>
+<li>点击 <code>Edit Configurations...</code> -&gt; <code>Makefile Application</code> -&gt; <code>redis-server</code><br></li>
+<li><code>Executable</code> 项选择编译好的 <code>redis-server</code> 二进制文件<br></li>
+<li><code>Working directory</code> 项填 <code>/Users/he/code/redis</code> （为什么是本机目录而非 remote host 目录呢？clion 会把本机目录映射为 remote host 目录的），否则会默认为 redis-server 二进制文件所在目录<br></li>
+</ul>
+
+<div id="org428d1a7" class="figure">
+<p><img src="../images/clion_makefile_application_conf.png" alt="clion_makefile_application_conf.png" width="50%"><br>
+</p>
+</div></li>
+<li>可以断点 debug 了<br></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org472a22e" class="outline-3">
+<h3 id="org472a22e"><span class="section-number-3">2.3</span> 配置过程中的的报错</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+clion console 报错<br>
+</p>
+<blockquote>
+<p>
+Error during pretty printers setup: Error while executing Python code<br>
+Some features and performance optimizations will not be available.<br>
+</p>
+</blockquote>
+
+<p>
+打开 clion 日志看一下：Help -&gt; Show Log in Finder -&gt; idea.log<br>
+</p>
+<blockquote>
+<p>
+2022-01-10 02:57:50,398 [  26479]   WARN - brains.cidr.execution.debugger - &gt;python import sys; sys.dont_write_bytecode = True; sys.path.insert(0, "<i>tmp/3e9651bf-cd4f-412a-a0e3-193eecdfde7b</i>.clion.resources/pretty_printers/gdb"); from default.printers import register_default_printers; register_default_printers(None); from default.libstdcxx_printers import patch_libstdcxx_printers_module; patch_libstdcxx_printers_module();<br>
+2022-01-10 02:57:50,399 [  26480]   WARN - brains.cidr.execution.debugger - &lt;^error,msg="Error while executing Python code."<br>
+2022-01-10 02:57:50,399 [  26480]   WARN - brains.cidr.execution.debugger - Error during pretty printers setup: Error while executing Python code.<br>
+</p>
+
+<p>
+Some features and performance optimizations will not be available.<br>
+com.jetbrains.cidr.execution.debugger.backend.gdb.GDBDriver$GDBCommandException: Error while executing Python code.<br>
+</p>
+</blockquote>
+
+<p>
+分析：<br>
+</p>
+<ul class="org-ul">
+<li>其中，日志第一条有个路径 <code>/tmp/3e9651bf-cd4f-412a-a0e3-193eecdfde7b/.clion.resources/pretty_printers/gdb</code> ，=3e9651bf-cd4f-412a-a0e3-193eecdfde7b= 是远程主机编号，可以在 clion Deployment 配置里面看到<br></li>
+<li>在 docker 容器中有目录 <code>/home/dev/code/tmp/3e9651bf-cd4f-412a-a0e3-193eecdfde7b/.clion.resources/pretty_printers/gdb</code><br></li>
+<li>所以肯定是在 docker 容器中，gdb 加载这个 python 路径时，没有 <code>/tmp/3e9651bf-cd4f-412a-a0e3-193eecdfde7b/...</code> 这个目录，导致 python module 无法加载<br></li>
+<li><p>
+在 docker 容器中，/home/dev/.gdbinit 中添加配置。添加后再用 clion 连接 docker 容器调试，就不会报这个错了<br>
+参考：<a href="https://sourceware.org/gdb/wiki/STLSupport">https://sourceware.org/gdb/wiki/STLSupport</a><br>
+</p>
+<div class="org-src-container">
+<pre class="src src-conf">python
+import sys
+sys.path.insert(0, <span style="color: #00afaf;">'/home/dev/code/tmp/3e9651bf-cd4f-412a-a0e3-193eecdfde7b/.clion.resources/pretty_printers/gdb'</span>)
+end
+</pre>
+</div></li>
+</ul>
+<p>
+补充：<br>
+后来想到，之前曾在 clion -&gt; Deployment 配置 docker 时，Type 配置为 <code>Local or mounted folder</code> ，有个参数 Folder 配置为 <code>/home/dev/code</code> 。估计 clion 把这个目录认为是 docker 容器根目录了，所以才会出现那个无效的 python 搜索路径。删掉容器，删掉项目 .idea 文件，重新配置。Folder 改为 <code>/</code> 就不再报错了，容器内文件 .gdbinit 引入的 python 模块的代码也可以去掉了。<br>
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

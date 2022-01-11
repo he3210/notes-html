@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-08-20 Fri 15:39 -->
+<!-- 2022-01-12 Wed 04:56 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KMP</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -37,8 +37,7 @@
 <li><a href="#org6b38b2c">1. 问题描述</a></li>
 <li><a href="#orgec09e85">2. BF 解法</a></li>
 <li><a href="#org19a02d3">3. KMP 解法</a></li>
-<li><a href="#org106c96d">4. 优化</a></li>
-<li><a href="#org173ddad">5. previous 数组</a></li>
+<li><a href="#orgdb3fbf5">4. next 数组</a></li>
 </ul>
 </div>
 </div>
@@ -56,22 +55,16 @@
 <h2 id="orgec09e85"><span class="section-number-2">2</span> BF 解法</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
-<pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;assert.h&gt;</span>
-<span style="color: #af8700;">int</span> <span style="color: #0087ff;">BF</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">str</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">substr</span>)
-{
+<pre class="src src-c"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">BF</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">str</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">substr</span>) {
     assert(str &amp;&amp; substr);
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenStr</span> = strlen(str);
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenSubstr</span> = strlen(substr);
-    <span style="color: #5f8700;">if</span>(lenStr &lt; lenSubstr)
-        <span style="color: #5f8700;">return</span> -1;
-
-    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i != lenStr-lenSubstr+1; ++i)
-    {
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span> = strlen(str);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">m</span> = strlen(substr);
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; n - m + 1; ++i) {
         <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span>;
-        <span style="color: #5f8700;">for</span>(j = 0; j != lenSubstr; ++j)
+        <span style="color: #5f8700;">for</span>(j = 0; j &lt; m; ++j)
             <span style="color: #5f8700;">if</span>(str[i+j] != substr[j])
                 <span style="color: #5f8700;">break</span>;
-        <span style="color: #5f8700;">if</span>(j == lenSubstr)
+        <span style="color: #5f8700;">if</span>(j == m)
             <span style="color: #5f8700;">return</span> i;
     }
     <span style="color: #5f8700;">return</span> -1;
@@ -87,107 +80,77 @@
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdio.h&gt;</span>
 <span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;string.h&gt;</span>
+<span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;stdlib.h&gt;</span>
 
-<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#33719;&#21462;&#25351;&#38024;&#25968;&#32452; previous</span>
-<span style="color: #af8700;">void</span> <span style="color: #0087ff;">getPrevious</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenPattern</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">previous</span>)
-{
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">curPos</span> = 0;
-    previous[curPos] = -1;
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">flagPos</span> = -1;
-    <span style="color: #5f8700;">while</span>(curPos &lt; lenPattern-1)
-    {
-        <span style="color: #5f8700;">if</span>(-1 == flagPos || pattern[curPos] == pattern[flagPos])
-        {
-            ++curPos;
-            ++flagPos;
-            previous[curPos] = flagPos;
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">get_next</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">plen</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">next</span>) {
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0;
+    next[i] = -1;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#29992;&#26469;&#20445;&#23384;&#20027;&#20018;&#21644;&#27169;&#24335;&#20018;&#22833;&#37197;&#26102;&#65292;&#27169;&#24335;&#20018;&#24212;&#21521;&#21069;&#22238;&#28335;&#30340;&#20301;&#32622;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = -1;
+    <span style="color: #5f8700;">while</span>(i &lt; plen-1) {
+        <span style="color: #5f8700;">if</span>(j == -1 || pattern[i] == pattern[j]) {  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20363;&#22914; "xyxa" &#20013;&#30340;&#20004;&#20010; 'x'</span>
+            ++i;
+            ++j;
+            next[i] = j;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20363;&#22914; "xyxa"&#65292;&#20027;&#20018;&#21644; 'a' &#22833;&#37197;&#21518;&#65292;&#24212;&#35813;&#22238;&#28335;&#21040; 'y'&#65292;&#20027;&#20018;&#20877;&#21644; 'y' &#27604;&#36739;&#19968;&#19979;</span>
+        } <span style="color: #5f8700;">else</span> {
+            j = next[j];
         }
-        <span style="color: #5f8700;">else</span>
-            flagPos = previous[flagPos];
     }
 }
 
-<span style="color: #af8700;">int</span> <span style="color: #0087ff;">KMP</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">str</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenStr</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenPattern</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">previous</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">pos</span>)
-{
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">strPos</span> = pos;
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">patternPos</span> = 0;
-    <span style="color: #5f8700;">while</span>(strPos != lenStr &amp;&amp; patternPos != lenPattern)
-    {
-        <span style="color: #5f8700;">if</span>(-1 == patternPos || str[strPos] == pattern[patternPos])
-        {
-            ++strPos;
-            ++patternPos;
-        }
-        <span style="color: #5f8700;">else</span>
-            patternPos = previous[patternPos];
-    }
-    <span style="color: #5f8700;">if</span>(patternPos == lenPattern)
-        <span style="color: #5f8700;">return</span> strPos-lenPattern;
-    <span style="color: #5f8700;">else</span>
-        <span style="color: #5f8700;">return</span> -1;
-}
-
-<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">void</span>)
-{
-    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">str</span> = <span style="color: #00afaf;">"How are you"</span>;
-    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">substr</span> = <span style="color: #00afaf;">"are"</span>;
-    printf(<span style="color: #00afaf;">"%d\n"</span>, BF(str, substr));
-
-    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">str2</span> = <span style="color: #00afaf;">"001012012301234"</span>;
-    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">substr2</span> = <span style="color: #00afaf;">"0120123"</span>;
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">previous</span>[1024];
-    getPrevious(substr2, strlen(substr2), previous);
-    printf(<span style="color: #00afaf;">"%d\n"</span>, KMP(str2, strlen(str2), substr2, strlen(substr2), previous, 0));
-
-    <span style="color: #5f8700;">return</span> 0;
-}
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org106c96d" class="outline-2">
-<h2 id="org106c96d"><span class="section-number-2">4</span> 优化</h2>
-<div class="outline-text-2" id="text-4">
-<div class="org-src-container">
-<pre class="src src-c"><span style="color: #af8700;">void</span> <span style="color: #0087ff;">getPrevious</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenPattern</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">previous</span>)
-{
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">curPos</span> = 0;
-    previous[curPos] = -1;
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">flagPos</span> = -1;
-    <span style="color: #5f8700;">while</span>(curPos &lt; lenPattern-1)
-    {
-        <span style="color: #5f8700;">if</span>(-1 == flagPos || pattern[curPos] == pattern[flagPos])
-        {
-            ++curPos;
-            ++flagPos;
-            <span style="color: #5f8700;">if</span>(pattern[curPos] != pattern[flagPos])
-                previous[curPos] = flagPos;
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25913;&#36827;&#29256;&#26412;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">get_next_v2</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">plen</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">next</span>) {
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0;
+    next[i] = -1;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">j</span> = -1;
+    <span style="color: #5f8700;">while</span>(i &lt; plen-1) {
+        <span style="color: #5f8700;">if</span>(j == -1 || pattern[i] == pattern[j]) {  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27169;&#24335;&#20018;&#20013;&#20301;&#32622;&#36830;&#32493;&#30340;&#20004;&#20010;&#23376;&#20018;&#65292;&#19978;&#19968;&#20010;&#23383;&#31526;&#21305;&#37197;&#19978;&#20102;&#12290;&#20363;&#22914; "xyxy" &#20013;&#19979;&#26631; 0 &#30340; 'x' &#21644;&#19979;&#26631; 2 &#30340; 'x'</span>
+            ++i;
+            ++j;
+            <span style="color: #5f8700;">if</span>(pattern[i] == pattern[j])  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27169;&#24335;&#20018;&#20013;&#30340;&#20004;&#20010;&#23376;&#20018;&#30340;&#19979;&#19968;&#20010;&#23383;&#31526;&#20063;&#21305;&#37197;&#19978;&#20102;&#65292;&#20363;&#22914; "xyxy" &#30340;&#23376;&#20018; "xy" "xy" &#20013; 'y'&#12290;&#22914;&#26524;&#20027;&#20018;&#21644;&#27169;&#24335;&#20018;&#19979;&#26631; 3 &#30340; 'y' &#22833;&#37197;&#30340;&#35805;&#65292;&#32943;&#23450;&#20063;&#21644;&#19979;&#26631; 1 &#30340; 'y' &#22833;&#37197;&#65292;&#25152;&#20197;&#21487;&#20197;&#21521;&#21069;&#22238;&#28335;&#20004;&#27425;</span>
+                next[i] = next[j];
             <span style="color: #5f8700;">else</span>
-                <span style="color: #8a8a8a;">/* </span><span style="color: #8a8a8a;">&#27492;&#26102; pattern[curPos-1] &#21644; pattern[flagPos-1] &#30456;&#31561;&#12289;</span>
-<span style="color: #8a8a8a;">                   pattern[curPos] &#21644; pattern[flagPos] &#30456;&#31561;&#12290;</span>
-<span style="color: #8a8a8a;">                   &#36825;&#26679;&#30340;&#23383;&#31526;&#20018;&#24418;&#24335;&#20026;&#65306;"...xy...xy...",</span>
-<span style="color: #8a8a8a;">                   &#32780; previous &#25968;&#32452;&#23384;&#22312;&#30340;&#24847;&#20041;&#26159;&#28304;&#20018;&#21644;&#27169;&#24335;&#20018;&#19981;&#21305;&#37197;&#26102;&#27169;&#24335;&#20018;&#24212;&#35813;&#22238;&#28335;&#30340;&#19979;&#26631;</span>
-<span style="color: #8a8a8a;">                   &#31532;&#19968;&#20010; "xy" &#21644;&#31532;&#20108;&#20010; "xy" &#30456;&#21516;&#65292;&#30001;&#20110;&#28304;&#20018;&#21644;&#31532;&#20108;&#20010; "xy" &#19981;&#21305;&#37197;&#65292;&#25152;&#20197;&#32943;&#23450;&#21644;&#31532;&#19968;&#20010; "xy" &#20063;&#19981;&#21305;&#37197;&#65288;&#20363;&#22914;&#65306;&#28304;&#20018;&#20026; xyxx&#65292;&#27169;&#24335;&#20018;&#20026; xyxy&#65289;</span>
-<span style="color: #8a8a8a;">                   &#25925;&#21521;&#21069;&#22238;&#28335;&#26102;&#65292;&#24212;&#36339;&#36807;&#31532;&#19968;&#20010; "xy"&#65292;&#20351;&#29992; previous[curPos] = previous[flagPos] &#35821;&#21477;</span>
-<span style="color: #8a8a8a;">                   &#36825;&#26679;&#29983;&#25104;&#30340; previous &#25968;&#32452;&#21487;&#20197;&#20351; KMP &#20989;&#25968;&#20013;&#23569;&#19968;&#20123;&#19981;&#24517;&#35201;&#30340;&#27604;&#36739;</span>
-<span style="color: #8a8a8a;">                 */</span>
-                previous[curPos] = previous[flagPos];
+                next[i] = j;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20363;&#22914; "xyxa" &#20013;&#30340; 'y' &#21644; 'a'&#12290;&#22914;&#26524;&#20027;&#20018;&#21644;&#27169;&#24335;&#20018;&#20013; 'a' &#22833;&#37197;&#30340;&#35805;&#65292;'a' &#21448;&#21644; 'y' &#19981;&#30456;&#31561;&#65292;&#25152;&#20197;&#20027;&#20018;&#19981;&#19968;&#23450;&#21644; 'y' &#22833;&#37197;&#65292;&#25152;&#20197;&#24212;&#35813;&#22238;&#28335;&#21040; 'y'</span>
+        } <span style="color: #5f8700;">else</span> {
+            j = next[j];
         }
-        <span style="color: #5f8700;">else</span>
-            flagPos = previous[flagPos];
     }
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">KMP</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">str</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">slen</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">char</span> *<span style="color: #0087ff;">pattern</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">plen</span>, <span style="color: #5f8700;">const</span> <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">next</span>) {
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0, <span style="color: #0087ff;">j</span> = 0;
+    <span style="color: #5f8700;">while</span>(i &lt; slen &amp;&amp; j &lt; plen) {
+        <span style="color: #5f8700;">if</span>(j == -1 || str[i] == pattern[j]) {
+            ++i;
+            ++j;
+        } <span style="color: #5f8700;">else</span> {
+            j = next[j];
+        }
+    }
+    <span style="color: #5f8700;">if</span>(j == plen)
+        <span style="color: #5f8700;">return</span> i - plen;
+    <span style="color: #5f8700;">return</span> -1;
+}
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">argc</span>, <span style="color: #af8700;">char</span> **<span style="color: #0087ff;">argv</span>) {
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">str</span>[] = <span style="color: #00afaf;">"abxyxyxyyxxyxadf"</span>;
+    <span style="color: #af8700;">char</span> <span style="color: #0087ff;">pattern</span>[] = <span style="color: #00afaf;">"xyxyyxxyx"</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">slen</span> = strlen(str);
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">plen</span> = strlen(pattern);
+    <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">next</span> = (<span style="color: #af8700;">int</span>*)calloc(plen, <span style="color: #5f8700;">sizeof</span>(<span style="color: #af8700;">int</span>));
+    get_next_v2(pattern, plen, next);
+    printf(<span style="color: #00afaf;">"%d\n"</span>, KMP(str, slen, pattern, plen, next));
 }
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org173ddad" class="outline-2">
-<h2 id="org173ddad"><span class="section-number-2">5</span> previous 数组</h2>
-<div class="outline-text-2" id="text-5">
+
+<div id="outline-container-orgdb3fbf5" class="outline-2">
+<h2 id="orgdb3fbf5"><span class="section-number-2">4</span> next 数组</h2>
+<div class="outline-text-2" id="text-4">
 <p>
-对于模式串"xyxyyxxyx"，previous数组为<br>
+对于模式串"xyxyyxxyx"，next 数组为<br>
 </p>
 <table>
 
@@ -310,8 +273,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-08-20 Fri 15:39 -->
+<!-- 2022-01-12 Wed 04:56 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>前序中序构造二叉树</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -36,6 +36,7 @@
 <ul>
 <li><a href="#org6a0e46e">1. 问题</a></li>
 <li><a href="#orgfcff315">2. 递归实现</a></li>
+<li><a href="#org45052ef">3. 迭代法（借助栈）</a></li>
 </ul>
 </div>
 </div>
@@ -44,14 +45,14 @@
 <h2 id="org6a0e46e"><span class="section-number-2">1</span> 问题</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-输入二叉树的前序遍历序列和中序遍历序列，重建该二叉树<br>
-假设输入的前序遍历序列和中序遍历序列都不包含重复数字<br>
+输入二叉树的前序遍历序列和中序遍历序列，构造该二叉树<br>
+输入的前序遍历序列和中序遍历序列都不包含重复数字<br>
 例如输入<br>
 前序遍历序列 {1, 2, 4, 7, 3, 5, 6, 8, 9}<br>
 中序遍历序列 {4, 7, 2, 1, 5, 3, 8, 6, 9}<br>
 </p>
 
-<pre class="example" id="orgdbabc49">
+<pre class="example" id="orgdf6e688">
             1
         /       \
     2               3
@@ -67,43 +68,77 @@
 <h2 id="orgfcff315"><span class="section-number-2">2</span> 递归实现</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
-<pre class="src src-C"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24453;&#25913;&#36827;&#65306;&#26410;&#37322;&#25918;&#20869;&#23384;</span>
-<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21487;&#20197;&#25226;&#21160;&#24577;&#20998;&#37197;&#24471;&#21040;&#30340;&#20869;&#23384;&#20445;&#23384;&#22312;&#19968;&#20010;&#38431;&#21015;&#37324;&#38754;&#65292;&#20986;&#29616;&#24322;&#24120;&#23601;&#21487;&#20197;&#37322;&#25918;&#20869;&#23384;</span>
-<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">ConstructCore</span>(<span style="color: #af8700;">int</span> *<span style="color: #0087ff;">StartPreOrder</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">EndPreOrder</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">StartInOrder</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">EndInOrder</span>)
-{
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">RootVal</span> = StartPreOrder[0];
-    <span style="color: #af8700;">node</span>* <span style="color: #0087ff;">root</span> = (<span style="color: #af8700;">node</span>*)malloc(<span style="color: #5f8700;">sizeof</span>(node));
-    root-&gt;data = RootVal;
-    root-&gt;lchild = root-&gt;rchild = <span style="color: #00afaf;">NULL</span>;
-    <span style="color: #5f8700;">if</span>(StartPreOrder == EndPreOrder)
-    {
-        <span style="color: #5f8700;">if</span>(StartInOrder == EndInOrder) <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36793;&#30028;&#26465;&#20214;</span>
-            <span style="color: #5f8700;">return</span> root;
-        <span style="color: #5f8700;">else</span>    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#27861;&#36755;&#20837;</span>
-            throw std::exception();
-    }
+<pre class="src src-cpp"><span style="color: #af8700;">unordered_map</span>&lt;<span style="color: #af8700;">int</span>, <span style="color: #af8700;">int</span>&gt; <span style="color: #0087ff;">m</span>;
 
-    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312;&#20013;&#24207;&#36941;&#21382;&#20013;&#26597;&#25214;&#26681;&#32467;&#28857;&#30340;&#20540;</span>
-    <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">p</span> = StartInOrder;
-    <span style="color: #5f8700;">while</span>(p &lt;= EndInOrder &amp;&amp; *p != RootVal)
-        ++p;
-    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38750;&#27861;&#36755;&#20837;</span>
-    <span style="color: #5f8700;">if</span>(p &gt; EndInOrder)
-        <span style="color: #af8700;">throw</span> <span style="color: #0087ff;">std</span>::exception();
-    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">LeftLen</span> = p - StartInOrder;    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24038;&#23376;&#26641;&#30340;&#38271;&#24230;</span>
-    <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">LeftPreOrderEnd</span> = StartPreOrder + LeftLen;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20808;&#24207;&#36941;&#21382;&#24207;&#21015;&#20013;&#24038;&#23376;&#26641;&#30340;&#26411;&#23614;&#19979;&#26631;</span>
-    <span style="color: #5f8700;">if</span>(LeftLen &gt; 0)
-        root-&gt;lchild = ConstructCore(StartPreOrder+1, LeftPreOrderEnd, StartInOrder, p-1);
-    <span style="color: #5f8700;">if</span>(LeftLen &lt; EndPreOrder-StartPreOrder)
-        root-&gt;rchild = ConstructCore(LeftPreOrderEnd+1, EndPreOrder, p+1, EndInOrder);
+<span style="color: #af8700;">TreeNode</span>* <span style="color: #0087ff;">build</span>(<span style="color: #af8700;">vector</span>&lt;<span style="color: #af8700;">int</span>&gt;&amp; <span style="color: #0087ff;">preorder</span>, <span style="color: #af8700;">vector</span>&lt;<span style="color: #af8700;">int</span>&gt;&amp; <span style="color: #0087ff;">inorder</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">prel</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">prer</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">inl</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">inr</span>) {
+    <span style="color: #5f8700;">if</span>(inr &lt; inl)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">nullptr</span>;
+    <span style="color: #af8700;">TreeNode</span>* <span style="color: #0087ff;">root</span> = <span style="color: #5f8700;">new</span> <span style="color: #af8700;">TreeNode</span>(preorder[prel], <span style="color: #00afaf;">nullptr</span>, <span style="color: #00afaf;">nullptr</span>);
+
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">lenLeftTree</span> = m[root-&gt;val] - inl;
+    root-&gt;left = build(preorder, inorder, prel+1, prel+lenLeftTree, inl, m[root-&gt;val]-1);
+    root-&gt;right = build(preorder, inorder, prel+lenLeftTree+1, prer, m[root-&gt;val]+1, inr);
     <span style="color: #5f8700;">return</span> root;
 }
 
-<span style="color: #af8700;">node</span> *<span style="color: #0087ff;">Construct</span>(<span style="color: #af8700;">int</span> *<span style="color: #0087ff;">PreOrder</span>, <span style="color: #af8700;">int</span> *<span style="color: #0087ff;">InOrder</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">length</span>)
-{
-    <span style="color: #5f8700;">if</span>(<span style="color: #00afaf;">NULL</span> == PreOrder || <span style="color: #00afaf;">NULL</span> == InOrder || length &lt;= 0)
-        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">NULL</span>;
-    <span style="color: #5f8700;">return</span> ConstructCore(PreOrder, PreOrder+length-1, InOrder, InOrder+length-1);
+<span style="color: #af8700;">TreeNode</span>* <span style="color: #0087ff;">buildTree</span>(<span style="color: #af8700;">vector</span>&lt;<span style="color: #af8700;">int</span>&gt;&amp; <span style="color: #0087ff;">preorder</span>, <span style="color: #af8700;">vector</span>&lt;<span style="color: #af8700;">int</span>&gt;&amp; <span style="color: #0087ff;">inorder</span>) {
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span> = inorder.size();
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 0; i &lt; n; ++i) {
+        m[inorder[i]] = i;
+    }
+    <span style="color: #5f8700;">return</span> build(preorder, inorder, 0, n-1, 0, n-1);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org45052ef" class="outline-2">
+<h2 id="org45052ef"><span class="section-number-2">3</span> 迭代法（借助栈）</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+思考：<br>
+</p>
+<ol class="org-ol">
+<li><code>构造二叉树按什么顺序构造？</code> 肯定得从根节点向下构造，中序遍历序列肯定不符合，所以可以用先序遍历序列 preorder 的顺序来构造<br></li>
+<li><code>先序遍历构造完左子树后，如何构造所有的右子树呢？</code> 肯定得回溯到子树的根节点，才能转向右子树。所以可以借助栈，在遍历构造左子树的时候入栈。遍历完左子树时，子树根节点出栈，如此回溯到子树根节点，转向右子树<br></li>
+<li><code>中序遍历序列 inorder 的作用是什么呢？</code><br>
+<ul class="org-ul">
+<li>观察一下，如果存在左子树的话，先序遍历会一直遍历左子树，直到左子树一条线的遍历完。<br></li>
+<li>而中序遍历的顺序是 [左子树] [根节点] [右子树]，然后向上遍历。如果没有右子树，会 [左子树] [根节点]，然后向上遍历， <b>这样的中序遍历序列和先序遍历左子树后的回溯路径一致</b><br></li>
+<li>先序遍历左子树时会入栈，形成一个个回溯点，当栈顶的回溯点的值==inorder[i] （i 从 0~n）时，说明没有右子树；否则有右子树，然后右子树入栈，开始处理右子树<br></li>
+</ul></li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #af8700;">TreeNode</span>* <span style="color: #0087ff;">buildTree</span>(<span style="color: #af8700;">vector</span>&lt;<span style="color: #af8700;">int</span>&gt;&amp; <span style="color: #0087ff;">preorder</span>, <span style="color: #af8700;">vector</span>&lt;<span style="color: #af8700;">int</span>&gt;&amp; <span style="color: #0087ff;">inorder</span>) {
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">n</span> = preorder.size();
+    <span style="color: #5f8700;">if</span>(<span style="color: #d70000;">!</span>n)
+        <span style="color: #5f8700;">return</span> <span style="color: #00afaf;">nullptr</span>;
+
+    <span style="color: #af8700;">stack</span>&lt;<span style="color: #af8700;">TreeNode</span>*&gt; <span style="color: #0087ff;">s</span>;
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">ii</span> = 0;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20013;&#24207;&#36941;&#21382;&#30340;&#32034;&#24341;</span>
+    <span style="color: #af8700;">TreeNode</span>* <span style="color: #0087ff;">root</span> = <span style="color: #5f8700;">new</span> <span style="color: #af8700;">TreeNode</span>(preorder[0]);
+    s.push(root);
+
+    <span style="color: #5f8700;">for</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">i</span> = 1; i &lt; n; ++i) {  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25353;&#29031;&#20808;&#24207;&#36941;&#21382;&#30340;&#39034;&#24207;&#26500;&#36896;&#26681;&#33410;&#28857;&#30340;&#24038;&#21491;&#23376;&#26641;</span>
+        <span style="color: #af8700;">int</span> <span style="color: #0087ff;">v</span> = preorder[i];      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26412;&#27425;&#35201;&#26500;&#36896;&#30340;&#33410;&#28857;&#20540;</span>
+        <span style="color: #5f8700;">if</span>(s.top()-&gt;val != inorder[ii]) {
+            <span style="color: #af8700;">TreeNode</span>* <span style="color: #0087ff;">node</span>;
+            node = <span style="color: #5f8700;">new</span> <span style="color: #af8700;">TreeNode</span>(v);
+            s.top()-&gt;left = node;
+            s.push(node);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992;&#26632;&#35760;&#24405;&#22238;&#28335;&#28857;</span>
+        } <span style="color: #5f8700;">else</span> {
+            <span style="color: #af8700;">TreeNode</span>* <span style="color: #0087ff;">node</span>;
+            <span style="color: #5f8700;">while</span>(<span style="color: #d70000;">!</span>s.empty() &amp;&amp; s.top()-&gt;val == inorder[ii]) {  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#24038;&#23376;&#26641;&#26500;&#36896;&#23436;&#20102;&#65292;&#26681;&#25454;&#26632;&#39030;&#20803;&#32032;&#21521;&#19978;&#22238;&#28335;&#65292;&#25214;&#21040;&#26377;&#21491;&#23376;&#26641;&#30340;&#22238;&#28335;&#28857;</span>
+                node = s.top(); s.pop();
+                ++ii;
+            }
+            node-&gt;right = <span style="color: #5f8700;">new</span> <span style="color: #af8700;">TreeNode</span>(v);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26500;&#36896;&#21491;&#23376;&#26641;</span>
+            s.push(node-&gt;right);  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20837;&#26632;&#65292;&#26500;&#36896;&#21491;&#23376;&#26641;</span>
+        }
+    }
+    <span style="color: #5f8700;">return</span> root;
 }
 </pre>
 </div>
@@ -118,8 +153,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

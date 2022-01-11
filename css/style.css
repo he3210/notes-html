@@ -333,6 +333,7 @@ pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
 /* additional language identifiers per "defun org-babel-execute"
        in ob-*.el */
 pre.src-cpp:before  { content: 'C++'; }
+pre.src-dockerfile:before  { content: 'dockerfile'; }
 pre.src-abc:before  { content: 'ABC'; }
 pre.src-coq:before  { content: 'Coq'; }
 pre.src-groovy:before  { content: 'Groovy'; }

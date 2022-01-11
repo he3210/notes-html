@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-08-20 Fri 15:39 -->
+<!-- 2022-01-12 Wed 04:56 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>gdb</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -41,6 +41,9 @@
 </ul>
 </div>
 </div>
+<p>
+参考：<a href="https://wizardforcel.gitbooks.io/100-gdb-tips/content/finish-and-return.html">gdb 100 个小技巧</a><br>
+</p>
 
 <div id="outline-container-org874700d" class="outline-2">
 <h2 id="org874700d"><span class="section-number-2">1</span> gdb 调试的几种方法</h2>
@@ -100,7 +103,7 @@ run
 (gdb) <span style="color: #5f8700;">r</span>                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36816;&#34892;&#31243;&#24207;</span>
 (gdb) n                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21333;&#27493;&#25191;&#34892;</span>
 (gdb) c                            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#32487;&#32493;&#36816;&#34892;</span>
-(gdb) p &#21464;&#37327;                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25171;&#21360;&#21464;&#37327;&#30340;&#20540;</span>
+(gdb) p count                      <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25171;&#21360;&#21464;&#37327; count &#30340;&#20540;</span>
 (gdb) p *arr@10                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25171;&#21360;&#25968;&#32452; arr &#30340; 10 &#20010;&#20803;&#32032;</span>
 (gdb) p func(10)                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">func &#26159;&#20989;&#25968;&#65292;10 &#26159;&#23454;&#21442;&#65292;&#36825;&#34920;&#31034;&#25171;&#21360;&#20989;&#25968;&#35843;&#29992; func(10) &#30340;&#36820;&#22238;&#20540;</span>
 (gdb) call func(10)                <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#34920;&#31034;&#35843;&#29992;&#20989;&#25968; func(10)</span>
@@ -111,19 +114,23 @@ run
 (gdb) info threads                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#34920;&#31034;&#26174;&#31034;&#25152;&#26377;&#32447;&#31243;</span>
 (gdb) thread 3                     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#20999;&#25442;&#21040; 3 &#21495;&#32447;&#31243;&#65292;&#36825;&#26102;&#21487;&#20197;&#29992; bt/where &#26174;&#31034; 3 &#21495;&#32447;&#31243;&#22534;&#26632;</span>
 (gdb) finish                       <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#36864;&#20986;&#20989;&#25968;</span>
-(gdb) shell &#21629;&#20196;&#34892;                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25191;&#34892; shell &#21629;&#20196;&#34892;</span>
+(gdb) shell ls -l                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25191;&#34892; shell &#21629;&#20196; ls -l</span>
 (gdb) <span style="color: #5f8700;">set</span> var <span style="color: #0087ff;">width</span>=5              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#25351;&#23450;&#36816;&#34892;&#26102;&#30340;&#31243;&#24207;&#30340;&#21464;&#37327;&#20540;&#65292;var &#34920;&#31034; width &#26159;&#19968;&#20010;&#31243;&#24207;&#21464;&#37327;&#65292;&#21487;&#20197;&#38450;&#27490; GDB &#25226; width &#35823;&#35748;&#20026;&#26159; GDB &#20445;&#30041;&#21442;&#25968;</span>
 (gdb) signal SIGUSR1               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30452;&#25509;&#21521;&#34987;&#35843;&#35797;&#31243;&#24207;&#21457;&#36865;&#19968;&#20010; SIGUSR1 &#20449;&#21495;&#65292;&#19981;&#20250;&#34987; GDB &#25130;&#33719;</span>
 (gdb) shell kill -USR1 6631        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">6631 &#26159;&#34987;&#35843;&#35797;&#31243;&#24207;&#30340;&#36827;&#31243; id&#65292;&#34920;&#31034;&#21521;&#36827;&#31243; 6631 &#21457;&#36865;&#19968;&#20010; SIGUSR1 &#20449;&#21495;&#65292;&#35813;&#20449;&#21495;&#20250;&#34987; GDB &#25130;&#33719;</span>
 (gdb) show args                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#35774;&#32622;&#22909;&#30340;&#21442;&#25968; </span>
 (gdb) show paths                   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#31243;&#24207;&#36816;&#34892;&#36335;&#24452; </span>
-<span style="color: #5f8700;">set</span> environment varname [=value]   <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#35774;&#32622;&#29615;&#22659;&#21464;&#37327;&#12290;&#22914;&#65306;set env USER=hchen</span>
-show environment [varname]         <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#29615;&#22659;&#21464;&#37327;</span>
+(gdb) <span style="color: #5f8700;">set</span> env <span style="color: #0087ff;">USER</span>=hchen           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#35774;&#32622;&#29615;&#22659;&#21464;&#37327;</span>
+(gdb) <span style="color: #5f8700;">set</span> <span style="color: #0087ff;">high</span>=47                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#35774;&#32622;&#31243;&#24207;&#20013;&#30340;&#21464;&#37327;</span>
+(gdb) show env                     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26597;&#30475;&#21464;&#37327;</span>
 (gdb) <span style="color: #5f8700;">cd</span>                           <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#30456;&#24403;&#20110; shell &#30340; cd</span>
 (gdb) <span style="color: #5f8700;">pwd</span>                          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26174;&#31034;&#24403;&#21069;&#25152;&#22312;&#30446;&#24405;</span>
 (gdb) info program                 <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26469;&#26597;&#30475;&#31243;&#24207;&#30340;&#26159;&#21542;&#22312;&#36816;&#34892;&#65292;&#36827;&#31243;&#21495;&#65292;&#34987;&#26242;&#20572;&#30340;&#21407;&#22240;</span>
-(gdb) clear &#34892;&#21495;n&#25110;&#20989;&#25968;&#21517;          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28165;&#38500;&#31532; n &#34892;&#30340;&#26029;&#28857;</span>
-(gdb) delete &#26029;&#28857;&#21495;n               <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#31532; n &#20010;&#26029;&#28857;</span>
+(gdb) clear                        <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28165;&#38500;&#25152;&#26377;&#26029;&#28857;</span>
+(gdb) clear 10                     <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28165;&#38500;&#31532; 10 &#34892;&#30340;&#26029;&#28857;</span>
+(gdb) clear server.c:10            <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28165;&#38500; server.c &#25991;&#20214;&#31532; 10 &#34892;&#30340;&#26029;&#28857;</span>
+(gdb) clear server.c:func          <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#28165;&#38500; server.c &#25991;&#20214;&#20013;&#20989;&#25968; func &#30340;&#25152;&#26377;&#26029;&#28857;</span>
+(gdb) delete 10                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#26029;&#28857;&#21495;&#26159; 10 &#30340;&#26029;&#28857;</span>
 (gdb) display i                    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21160;&#24577;&#26174;&#31034; i &#30340;&#20540;&#65292;&#24403;&#31243;&#24207;&#26242;&#20572;&#26102;&#25110;&#21333;&#27493;&#36319;&#36394;&#26102;&#26174;&#31034; i &#30340;&#20540;</span>
 (gdb) undisplay 1                  <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#21024;&#38500;&#32534;&#21495;&#20026; 1 &#30340;&#21160;&#24577;&#26174;&#31034;</span>
 (gdb) <span style="color: #5f8700;">disable</span> &#26029;&#28857;&#21495;n              <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#26242;&#20572;&#31532; n &#20010;&#26029;&#28857;</span>
@@ -236,7 +243,7 @@ gdb signal 命令和 shell 的 kill 命令不同，kill 命令发信号给被调
 clion 点击 Edit Configurations，配置 GDB Remote Debug<br>
 </p>
 
-<div id="orgc190a25" class="figure">
+<div id="org595cb2a" class="figure">
 <p><img src="../images/gdb_gdbserver.png" alt="gdb_gdbserver.png" width="50%"><br>
 </p>
 </div></li>
@@ -254,8 +261,8 @@ clion 点击 Edit Configurations，配置 GDB Remote Debug<br>
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

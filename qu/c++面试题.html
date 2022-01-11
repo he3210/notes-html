@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2022-01-12 Wed 04:56 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>c++ 面试题</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="时中贺">
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="preamble" class="status">
+<div id="navbar">
+    <ul>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li class="search">
+            <form action="http://google.com/search" method="get" accept-charset="utf-8">
+                <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
+                <input type="hidden" name="q" value="site:www.langdebuqing.com">
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">c++ 面试题</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org333c597">1. C++ 基础</a>
+<ul>
+<li><a href="#org177904a">1.1. 介绍一下 C++ 的枚举</a></li>
+<li><a href="#org763016a">1.2. 指针和引用的区别</a></li>
+<li><a href="#orgd137d97">1.3. static 关键字的作用</a></li>
+<li><a href="#orga6c1f17">1.4. C++ 数组有哪几种定义方式</a></li>
+<li><a href="#org86e37c2">1.5. malloc 和 free 如何分配和释放内存</a></li>
+<li><a href="#org60b8726">1.6. new 和 malloc 有何区别</a></li>
+<li><a href="#org5f466c9">1.7. 简述 C++ 的 void 指针</a></li>
+<li><a href="#orgb532ba7">1.8. 简述 C++ 中的函数指针</a></li>
+<li><a href="#org400ad88">1.9. const 关键字的作用是什么</a></li>
+<li><a href="#org786480c">1.10. C++中const和#define在实现常量时有何区别</a></li>
+<li><a href="#org5d02a7a">1.11. 分析 inline 关键字的作用</a></li>
+<li><a href="#org3963e15">1.12. 静态全局变量和全局变量的区别</a></li>
+</ul>
+</li>
+<li><a href="#org9bdcdfd">2. STL 容器与算法</a>
+<ul>
+<li><a href="#orgc5124f2">2.1. unordered_map 和 unordered_set 是怎样实现的</a></li>
+<li><a href="#orgdf2e517">2.2. vector 是怎样实现的</a></li>
+<li><a href="#org378a8fb">2.3. C++ 智能指针是如何实现的</a></li>
+<li><a href="#orgf730494">2.4. STL 进行了哪些内存优化</a></li>
+<li><a href="#orgfde487b">2.5. STL 为什么要提供迭代器</a></li>
+<li><a href="#org388e29f">2.6. STL 容器是否线程安全</a></li>
+<li><a href="#orgeb0dd45">2.7. STL 迭代器会在哪些情况下失效</a></li>
+<li><a href="#org1ddf97e">2.8. C++ 的 sort 函数底层如何实现</a></li>
+<li><a href="#org5c92687">2.9. 红黑树与二叉平衡树有何区别？为什么 STL 选择使用红黑树？</a></li>
+<li><a href="#orgb5e84fc">2.10. tuple 类的底层原理</a></li>
+<li><a href="#orgc7b4d5d">2.11. C++ 中 vector&lt;bool&gt; 有何特殊性</a></li>
+</ul>
+</li>
+<li><a href="#org26631a8">3. C++ 面向对象</a>
+<ul>
+<li><a href="#org11f9e0e">3.1. 构造函数和析构函数的作用是什么？能不能是虚函数</a></li>
+<li><a href="#org7edd95c">3.2. 多态是什么？</a></li>
+<li><a href="#org9528760">3.3. 解释虚函数表的原理</a></li>
+<li><a href="#org33b4cae">3.4. C++中struct和class的区别</a></li>
+<li><a href="#org0303b8c">3.5. C++类内如何定义引用成员</a></li>
+<li><a href="#orgfe7f18f">3.6. C++类的编译顺序是怎样的</a></li>
+<li><a href="#org9bf1ad2">3.7. 什么事 PIMPL 模式</a></li>
+<li><a href="#org8135354">3.8. 继承时构造和析构函数的执行顺序</a></li>
+<li><a href="#org67660fd">3.9. 一个空类在什么情况下非空</a></li>
+<li><a href="#org479a45b">3.10. 在 C++ 的继承中，类所占用的内存有多大？</a></li>
+<li><a href="#org4b81220">3.11. 构造和析构函数的执行顺序与访问权限</a></li>
+</ul>
+</li>
+<li><a href="#orge4ce107">4. C++11/17</a>
+<ul>
+<li><a href="#orgd5b67c8">4.1. 右值引用与移动语义</a></li>
+<li><a href="#org1c95475">4.2. 什么是 lambda 表达式</a></li>
+<li><a href="#orgcdb3e3e">4.3. 为什么要引入 nullptr</a></li>
+<li><a href="#orgb753322">4.4. C++11 类型推导有哪些原则</a></li>
+</ul>
+</li>
+<li><a href="#org39abf2b">5. 其他</a>
+<ul>
+<li><a href="#org2efde79">5.1. C++ 程序的内存结构</a></li>
+<li><a href="#org0482263">5.2. 一个C++源码文件从文本到可执行文件经历的过程</a></li>
+<li><a href="#org92b9e08">5.3. 描述C++常规文件调用函数的原理</a></li>
+<li><a href="#org7d4aa99">5.4. 分析mmap()函数的原理和作用</a></li>
+<li><a href="#orgf6c2531">5.5. 什么是内存泄漏？</a></li>
+<li><a href="#orgef4f2f2">5.6. 为什么要进行结构体对齐和字节对齐</a></li>
+<li><a href="#org0da63fa">5.7. 预编译期主要进行哪些操作</a></li>
+<li><a href="#org0ce616e">5.8. 如何用C++实现单例模式</a></li>
+<li><a href="#orgfe1b6c5">5.9. C++ 整型变量赋值操作是否具有原子性</a></li>
+<li><a href="#org7ab1194">5.10. 什么是编程语言的垃圾回收机制</a></li>
+<li><a href="#orgf850c74">5.11. C 和 C++ 的区别</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+参考<br>
+</p>
+<ul class="org-ul">
+<li><a href="https://zhuanlan.zhihu.com/p/401341063">c++ 面经</a><br></li>
+</ul>
+
+<div id="outline-container-org333c597" class="outline-2">
+<h2 id="org333c597"><span class="section-number-2">1</span> C++ 基础</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org177904a" class="outline-3">
+<h3 id="org177904a"><span class="section-number-3">1.1</span> 介绍一下 C++ 的枚举</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+枚举类型 enum 是 C++ 的一种派生数据类型，是用户定义的若干枚举常量的集合，只能用标识符表示。默认情况下，系统会从 0 开始位每个枚举常量分配一个序号，用户也可以自行指定。指定前按默认方式分配序号，指定后从分配序号开始重新递增。枚举序号可以重复，例如<br>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #5f8700;">enum</span> <span style="color: #af8700;">fruit</span> { <span style="color: #0087ff;">apple</span>, <span style="color: #0087ff;">orange</span>, <span style="color: #0087ff;">banana</span>=1, <span style="color: #0087ff;">peach</span> };
+<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">&#26522;&#20030;&#24120;&#37327;apple=0,orange=1, banana=1,peach=2,grape</span>
+</pre>
+</div>
+
+<p>
+枚举变量可以直接输出，但是不能直接输入，也不能直接将常量赋予枚举变量。不同类型的枚举变量之间不能相互赋值。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org763016a" class="outline-3">
+<h3 id="org763016a"><span class="section-number-3">1.2</span> 指针和引用的区别</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>指针是一个表示地址的变量，指针中所指的可以是空地址，也可以是某个变量的地址。指针所指向的对象（地址）是可以修改的。引用可以理解为对象在标识符之外的别名，在声明时必须初始化，并且绑定之后不能再和其他对象绑定，因此不存在空引用。引用只能修改对象的值。<br></li>
+<li>引用在底层以指针的形式实现，该指针不可修改。<br></li>
+<li>C++ 允许由指针所构成的数组，但是不允许引用所构成的数组。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd137d97" class="outline-3">
+<h3 id="orgd137d97"><span class="section-number-3">1.3</span> static 关键字的作用</h3>
+<div class="outline-text-3" id="text-1-3">
+<ul class="org-ul">
+<li>隐藏：当同时编译多个文件时，所有未添加 static 前缀的全局变量和函数都具有全局可见性。<br></li>
+<li>改变变量的生命周期：static 变量存储于静态数据区，会在程序开始运行时完成惟一的一次初始化。函数内部的 static 变量在函数退出后仍然存在，并且再次调用函数时不会重新初始化。<br></li>
+<li>静态变量默认初始化为 0。<br></li>
+<li>类成员的声明：<br>
+<ul class="org-ul">
+<li>静态函数属于整个类，没有 this 指针，不能定义为虚函数<br></li>
+<li>缩短子类对父类静态成员的访问时间<br></li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga6c1f17" class="outline-3">
+<h3 id="orga6c1f17"><span class="section-number-3">1.4</span> C++ 数组有哪几种定义方式</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+一共有 3 种：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25968;&#32452;&#30340;&#23450;&#20041;&#19977;&#31181;&#26041;&#24335;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">numpy</span>[5]; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19968;&#31181;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">numpy1</span>[5] = { 0,1,2,3,4 }; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#20108;&#31181;&#65288;&#22914;&#26524;&#27809;&#26377;&#20840;&#37096;&#22635;&#20889;&#23436;&#65292;&#20250;&#29992;0&#36827;&#34892;&#22635;&#34917;&#65289;</span>
+<span style="color: #af8700;">float</span> <span style="color: #0087ff;">numpy2</span>[] = { 0.23,0.56 }; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31532;&#19977;&#31181;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org86e37c2" class="outline-3">
+<h3 id="org86e37c2"><span class="section-number-3">1.5</span> malloc 和 free 如何分配和释放内存</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+内存结构：在程序第一次调用 malloc 时，会从系统获取至少一个单元的空闲空间（1024 个单元块），然后进行分配。随着程序的进行，剩余的空闲空间会逐渐破碎化。malloc 会维护一个空闲空间所构成的循环链表，该链表具有一个大小为0的内存块作为链表的头部。<br>
+</p>
+
+<p>
+在调用 malloc 时，C++ 使用首次适应算法扫描空闲块链表，如果没有合适的空间，会申请一个新的空闲块。如果堆空间不足，函数会要求移动堆顶指针。<br>
+</p>
+
+<p>
+调用 free 函数时，程序会回收对应的内存空间，然后根据内存块的边界判断是否能够进行合并。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org60b8726" class="outline-3">
+<h3 id="org60b8726"><span class="section-number-3">1.6</span> new 和 malloc 有何区别</h3>
+<div class="outline-text-3" id="text-1-6">
+<ul class="org-ul">
+<li>new/delete 是 C++ 的关键字，需要编译器的支持；malloc/free 是库函数，需要头文件支持；<br></li>
+<li>使用 new 操作符时所需的内存空间由编译器计算得出；malloc 需要显式给出所需的内存空间；<br></li>
+<li>new 失败会抛出异常，malloc 失败会返回空指针；<br></li>
+<li>new/delete 可以被重载；<br></li>
+<li>new/delete 会调用自定义类型的构造和析构函数，完成初始化工作；<br></li>
+<li>new 从自由存储区中为对象动态分配内存，这是 C++ 抽象出的概念，指 new 所申请到的内存空间；malloc 直接从堆上获得内存空间。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5f466c9" class="outline-3">
+<h3 id="org5f466c9"><span class="section-number-3">1.7</span> 简述 C++ 的 void 指针</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+无类型指针可以存放任意对象的地址，其使用规则如下：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20219;&#24847;&#31867;&#22411;&#30340;&#25351;&#38024;&#37117;&#21487;&#20197;&#30452;&#25509;&#36171;&#20540;&#32473;&#26080;&#31867;&#22411;&#25351;&#38024;&#65292;&#24182;&#19988;&#19981;&#38656;&#35201;&#36827;&#34892;&#24378;&#21046;&#31867;&#22411;&#36716;&#25442;</span>
+<span style="color: #af8700;">double</span> <span style="color: #0087ff;">pi</span> = 3.14;
+<span style="color: #af8700;">void</span>* <span style="color: #0087ff;">p1</span> = &amp;pi;
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26080;&#31867;&#22411;&#25351;&#38024;&#24517;&#39035;&#32463;&#36807;&#26174;&#24335;&#30340;&#31867;&#22411;&#36716;&#25442;&#25165;&#33021;&#36171;&#20540;&#32473;&#20854;&#20182;&#25351;&#38024;</span>
+<span style="color: #af8700;">double</span>* <span style="color: #0087ff;">p2</span> = (<span style="color: #af8700;">double</span>*)p1;
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26080;&#31867;&#22411;&#25351;&#38024;&#21487;&#20197;&#30452;&#25509;&#21644;&#20854;&#20182;&#31867;&#22411;&#30340;&#25351;&#38024;&#36827;&#34892;&#22320;&#22336;&#20540;&#30340;&#27604;&#36739;</span>
+<span style="color: #00afaf;">std</span>::cout &lt;&lt; (p1 == p2) &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26080;&#31867;&#22411;&#25351;&#38024;&#21482;&#26377;&#36827;&#34892;&#24378;&#21046;&#31867;&#22411;&#36716;&#25442;&#21518;&#25165;&#21487;&#20197;&#36827;&#34892;&#23545;&#25152;&#25351;&#21521;&#30340;&#23545;&#35937;&#36827;&#34892;&#25805;&#20316;</span>
+<span style="color: #00afaf;">std</span>::cout &lt;&lt; *(<span style="color: #af8700;">double</span>*)p1 &lt;&lt; <span style="color: #00afaf;">std</span>::endl;
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26080;&#31867;&#22411;&#25351;&#38024;&#20316;&#20026;&#20989;&#25968;&#30340;&#36755;&#20837;/&#36755;&#20986;&#26102;&#65292;&#34920;&#31034;&#21487;&#20197;&#25509;&#21463;&#20219;&#24847;&#31867;&#22411;&#30340;&#36755;&#20837;&#25351;&#38024;/&#36755;&#20986;&#20219;&#24847;&#31867;&#22411;&#30340;&#25351;&#38024;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb532ba7" class="outline-3">
+<h3 id="orgb532ba7"><span class="section-number-3">1.8</span> 简述 C++ 中的函数指针</h3>
+<div class="outline-text-3" id="text-1-8">
+<p>
+函数指针是指向函数的指针变量。在 C/C++ 程序编译时，每一个函数都有一个入口地址，即相应的函数指针所指的地址。函数指针存在两个用途：调用函数和作为函数的参数。<br>
+</p>
+
+<p>
+对于调用函数，可以参考如下代码<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">f</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">x</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">y</span>) { <span style="color: #5f8700;">return</span> x + y; }
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22768;&#26126;&#19968;&#20010;&#20989;&#25968;&#25351;&#38024;&#65292;&#25512;&#33616;&#20351;&#29992;typedef&#20851;&#38190;&#23383;&#20197;&#36991;&#20813;&#26576;&#20123;&#32534;&#35793;&#22120;&#25253;&#38169;</span>
+<span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">int</span> (*<span style="color: #af8700;">PF</span>)(<span style="color: #af8700;">int</span>, <span style="color: #af8700;">int</span>); <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38656;&#35201;&#22768;&#26126;&#20989;&#25968;&#30340;&#21442;&#25968;&#31867;&#22411;</span>
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">arhc</span>, <span style="color: #af8700;">char</span>* <span style="color: #0087ff;">arhv</span>[]){
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span>=1, <span style="color: #0087ff;">b</span>=2;
+    <span style="color: #af8700;">PF</span> <span style="color: #0087ff;">pf</span> = f; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23450;&#20041;&#19968;&#20010;&#20989;&#25968;&#25351;&#38024;&#21464;&#37327;&#24182;&#36171;&#20540;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">c</span> = (*pf)(a, b); <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35843;&#29992;&#20989;&#25968;</span>
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+
+
+<p>
+函数指针的另一个用处是作为函数的参数，常见于 Windows 系统的回调函数<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #5f8700;">typedef</span> <span style="color: #af8700;">int</span> (*<span style="color: #af8700;">PF</span>)(<span style="color: #af8700;">int</span>, <span style="color: #af8700;">int</span>);
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">f1</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">x</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">y</span>) { <span style="color: #5f8700;">return</span> x + y; }
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">f2</span>(<span style="color: #af8700;">PF</span> <span style="color: #0087ff;">pf</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">t</span>) { <span style="color: #5f8700;">return</span> (*pf)(t, t); }
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">argc</span>, <span style="color: #af8700;">char</span>* <span style="color: #0087ff;">argv</span>[]){
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">c</span> = f2(f1, 1);
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org400ad88" class="outline-3">
+<h3 id="org400ad88"><span class="section-number-3">1.9</span> const 关键字的作用是什么</h3>
+<div class="outline-text-3" id="text-1-9">
+<ul class="org-ul">
+<li>用于修饰变量，const 变量在初始化之后无法被修改<br></li>
+<li>在一个函数声明中，表示相应的形参在函数内部不可被改变，常用于修饰引用参数和指针参数<br></li>
+<li>对于类的成员函数，表示该函数不会修改类的任何成员变量，不能够调用非 const 的成员函数，并且不能和 static 关键字同时使用<br></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org786480c" class="outline-3">
+<h3 id="org786480c"><span class="section-number-3">1.10</span> C++中const和#define在实现常量时有何区别</h3>
+<div class="outline-text-3" id="text-1-10">
+<ul class="org-ul">
+<li>#define 由预处理程序进行宏替换，不占用内存空间；const 由编译器处理，是内存中不可被修改的变量。<br></li>
+<li>const 具有数据类型，可以进行类型安全检查，而 #define 只是简单的字符替换<br></li>
+<li>在定义局部变量时，const 变量的作用域仅限于局部变量所在的代码块；而在不使用 #undef 的情况下，#define 的作用域由定义位置开始直到程序结束<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5d02a7a" class="outline-3">
+<h3 id="org5d02a7a"><span class="section-number-3">1.11</span> 分析 inline 关键字的作用</h3>
+<div class="outline-text-3" id="text-1-11">
+<p>
+inline 关键字用于解决频繁调用的小型函数消耗栈空间的问题，在编译阶段建议编译器将某个函数以内联的方式展开。inline 函数需要满足：<br>
+</p>
+
+<ul class="org-ul">
+<li>不能修饰直接递归函数；<br></li>
+<li>函数体中不能包含复杂的结构控制语句，比如 while 和 switch<br></li>
+</ul>
+<p>
+在类内定义函数体的成员函数默认是内联的<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3963e15" class="outline-3">
+<h3 id="org3963e15"><span class="section-number-3">1.12</span> 静态全局变量和全局变量的区别</h3>
+<div class="outline-text-3" id="text-1-12">
+<ul class="org-ul">
+<li>如果程序由一个源文件构成，全局变量与全局静态变量没有区别。<br></li>
+<li>如果程序包含多个源文件，静态全局变量仅对其所在的源文件有效。<br></li>
+<li>具有外部链接的静态变量可以在其他文件通过 extern 关键字调用。<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9bdcdfd" class="outline-2">
+<h2 id="org9bdcdfd"><span class="section-number-2">2</span> STL 容器与算法</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgc5124f2" class="outline-3">
+<h3 id="orgc5124f2"><span class="section-number-3">2.1</span> unordered_map 和 unordered_set 是怎样实现的</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+STL 中这两种容器都是使用链地址法的哈希表实现的。在进行哈希时，会将基本数据类型以及至整数据映射成 size_t 的哈希值。当容器保存的数据过多（过少）时，会进行扩容（缩容）以保持存取效率，该操作时间复杂度至少为 [公式]<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdf2e517" class="outline-3">
+<h3 id="orgdf2e517"><span class="section-number-3">2.2</span> vector 是怎样实现的</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+C++ 中，容器vector底层是一段连续的线性内存空间，包含了 3 个迭代器（指针），分别表示容器的起始位置、最后一个元素的末未直接和容器所占用内存空间的末未直接。初始时 3 个迭代器均为 nullptr。<br>
+</p>
+
+<p>
+vector 满载时，需要进行扩容：<br>
+</p>
+
+<ul class="org-ul">
+<li>申请更大的内存空间；<br></li>
+<li>将旧内存空间中的数据按原有顺序移动至新的空间中；<br></li>
+<li>释放旧的内存空间<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org378a8fb" class="outline-3">
+<h3 id="org378a8fb"><span class="section-number-3">2.3</span> C++ 智能指针是如何实现的</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+智能指针用于解决动态内存容易出现的两种问题：忘记释放内存以及在还有指针指向的情况下释放内存。C++ 包含了 3 种智能指针：shared_ptr、unique_ptr 和不能独立存在的 weak_ptr。创建智能指针时必须声明指针的类型。默认情况下智能指针初始化为 nullptr。<br>
+</p>
+
+<p>
+个人在实现 shared_ptr 和 unique_ptr 时，底层包含了指向具体数据的指针以及指向计数器的指针。计数器包含了该地址的两种智能指针的数量。当 shared_ptr 的数量为 0 时释放具体数据的内存空间，当两个数值均为0时释放计数器的内存空间。<br>
+</p>
+
+<p>
+引入 weak_ptr 是为了解决循环引用的问题，例如：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #5f8700;">template</span>&lt;<span style="color: #5f8700;">class</span> <span style="color: #af8700;">T</span>&gt;
+<span style="color: #5f8700;">struct</span> <span style="color: #af8700;">Node</span>{
+    <span style="color: #af8700;">T</span> <span style="color: #0087ff;">data</span>;
+    <span style="color: #af8700;">shared_ptr</span>&lt;<span style="color: #af8700;">Node</span>&gt; <span style="color: #0087ff;">next</span>;
+    <span style="color: #af8700;">shared_ptr</span>&lt;<span style="color: #af8700;">Node</span>&gt; <span style="color: #0087ff;">prev</span>;
+    <span style="color: #0087ff;">Node</span>(<span style="color: #af8700;">T</span> <span style="color: #0087ff;">data</span>=T()): data(data), next(<span style="color: #00afaf;">NULL</span>), prev(<span style="color: #00afaf;">NULL</span>) {}
+    ~<span style="color: #0087ff;">Node</span>() { cout &lt;&lt; <span style="color: #00afaf;">"Call ~Node().\n"</span>; }
+}
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">test</span>(){
+    <span style="color: #af8700;">shared_ptr</span>&lt;<span style="color: #af8700;">Node</span>&lt;<span style="color: #af8700;">int</span>&gt;&gt;<span style="color: #0087ff;">sp1</span>(<span style="color: #5f8700;">new</span> Node&lt;<span style="color: #af8700;">int</span>&gt;(1));
+    <span style="color: #af8700;">shared_ptr</span>&lt;<span style="color: #af8700;">Node</span>&lt;<span style="color: #af8700;">int</span>&gt;&gt;<span style="color: #0087ff;">sp2</span>(<span style="color: #5f8700;">new</span> Node&lt;<span style="color: #af8700;">int</span>&gt;(2));
+    cout &lt;&lt; sp1.use_count() &lt;&lt; endl;<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">1</span>
+    cout &lt;&lt; sp2.use_count() &lt;&lt; endl;<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">1</span>
+    sp1-&gt;Pnext = sp2;
+    sp2-&gt;Ppre = sp1;
+    cout &lt;&lt; sp1.use_count() &lt;&lt; endl;<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">2</span>
+    cout &lt;&lt; sp2.use_count() &lt;&lt; endl;<span style="color: #8a8a8a;">//</span><span style="color: #8a8a8a;">2</span>
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#35813;&#20989;&#25968;&#25191;&#34892;&#23436;&#25104;&#20043;&#21518;&#19981;&#20250;&#35843;&#29992;&#26512;&#26500;&#20989;&#25968;</span>
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf730494" class="outline-3">
+<h3 id="orgf730494"><span class="section-number-3">2.4</span> STL 进行了哪些内存优化</h3>
+<div class="outline-text-3" id="text-2-4">
+<ul class="org-ul">
+<li>二级内存配置器：<br></li>
+<li>第一级配置器：使用 malloc 等函数执行实际的内存配置、释放等操作，用于分配大于 128 字节的内存空间；<br></li>
+<li>第二级配置器：用于处理小于 128 字节的内存空间，避免小区块所导致的内存碎片。使用内存池进行管理，并维护 16 个空闲链表以管理不同大小的内存块。<br></li>
+<li>二级内存池：<br></li>
+<li>空间配置函数 allocate：首先检查申请空间的大小，对于小于 128 字节的空间，检查对应大小的空闲列表，如果没有可用数据块，就调用 refile 函数为链表填充新的空间。<br></li>
+<li>空间释放函数 deallocate：检查数据块的大小并插入到合适的空闲链表<br></li>
+<li>refill 函数：如果空闲链表没有可用数据块，就从内存池取出默认 20 个数据块。如果内存池干涸则使用 malloc 从堆中申请内存<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfde487b" class="outline-3">
+<h3 id="orgfde487b"><span class="section-number-3">2.5</span> STL 为什么要提供迭代器</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+迭代器是一种抽象的设计理念，用于在不暴露容器内部实现细节的情况下提供依序访问容器内部元素的方法。提供迭代器的原因包括：<br>
+</p>
+
+<ul class="org-ul">
+<li>通过迭代器避免访问容器的代码出错，并隐藏容器的具体实现。<br></li>
+<li>保证对所有容器提供相同的基本遍历方式，分离数据结构/容器与算法。<br></li>
+<li>提供 C++ 指针所不具备的功能。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org388e29f" class="outline-3">
+<h3 id="org388e29f"><span class="section-number-3">2.6</span> STL 容器是否线程安全</h3>
+<div class="outline-text-3" id="text-2-6">
+<ul class="org-ul">
+<li>对于同一容器的不同读取者，STL 是容器安全的；<br></li>
+<li>对于不同容器的多个写入者是线程安全的；<br></li>
+<li>对于同一容器的包含写者在内的多个线程，需要程序员完成线程安全。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgeb0dd45" class="outline-3">
+<h3 id="orgeb0dd45"><span class="section-number-3">2.7</span> STL 迭代器会在哪些情况下失效</h3>
+<div class="outline-text-3" id="text-2-7">
+<ul class="org-ul">
+<li>序列式容器：当前元素被删除后，其后所有元素的迭代器都会失效，因为 erase() 执行后会移动其后的每一个元素。<br></li>
+<li>对于 vector 容器，push_back() 和 pop_back() 会导致 end() 返回的迭代器失效。如果导致容器空间的重新的分配，还会使所有迭代器失效；<br></li>
+<li>对于 deque 容器，对于任意位置的插入会导致所有迭代器失效，对于首尾之外任何位置的删除会导致全部迭代器失效；对于首尾的删除操作只会导致相应迭代器失效。<br></li>
+<li>关联式容器：删除操作会导致当前迭代器失效<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1ddf97e" class="outline-3">
+<h3 id="org1ddf97e"><span class="section-number-3">2.8</span> C++ 的 sort 函数底层如何实现</h3>
+<div class="outline-text-3" id="text-2-8">
+<p>
+在 C++ 中，sort 包含了快速排序 、插入排序和堆排序。对于待排序的数据，首先使用快排；当产生的分段较小（16）时，为了避免快排递归调用导致的额外负荷，改用插入排序；如果递归层数过深，则改用堆排序处理分段。<br>
+</p>
+
+<p>
+由于 sort() 底层实现中边界检测的实现方式，如果函数参数中的 comparator 算子在 a==b 时返回 true，就可能导致程序出错<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5c92687" class="outline-3">
+<h3 id="org5c92687"><span class="section-number-3">2.9</span> 红黑树与二叉平衡树有何区别？为什么 STL 选择使用红黑树？</h3>
+<div class="outline-text-3" id="text-2-9">
+<p>
+红黑树和二叉平衡树都能维护查找树的平衡。红黑树的特点是为每个节点添加了一个属性（节点颜色），并要求：<br>
+</p>
+
+<ul class="org-ul">
+<li>所有底层的叶子节点（nullptr）是黑色的，根节点也是黑色的；<br></li>
+<li>每个红色节点的子节点是黑色的；<br></li>
+<li>从红黑树任意节点到其每个叶子节点的路径都包含相同数量的黑色节点。<br></li>
+</ul>
+<p>
+相比于二叉平衡树，红黑树具有两个特点：<br>
+</p>
+
+<ul class="org-ul">
+<li>同一根节点下没有一条路径的长度是其他任一路径长度的两倍以上；<br></li>
+<li>在插入和删除节点时，所需要的旋转操作少于二叉平衡树。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb5e84fc" class="outline-3">
+<h3 id="orgb5e84fc"><span class="section-number-3">2.10</span> tuple 类的底层原理</h3>
+<div class="outline-text-3" id="text-2-10">
+<p>
+tuple 用于存储任意数量的多个不同类型的对象，其底层通过递归的方式实现，以如下代码为例：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #00afaf;">std</span>::<span style="color: #af8700;">tuple</span>&lt;<span style="color: #af8700;">int</span>, <span style="color: #00afaf;">std</span>::string, <span style="color: #af8700;">double</span>&gt; <span style="color: #0087ff;">t</span> = <span style="color: #00afaf;">std</span>::make_tuple(1, <span style="color: #00afaf;">"Hello World!"</span>, 0.0);
+</pre>
+</div>
+
+<p>
+底层递归过程如下：<br>
+</p>
+
+<ul class="org-ul">
+<li>第1层：准备存储第一个元素1，调用std::tuple&lt;std::string, double&gt;的构造函数<br></li>
+<li>第2层：准备存储第二个元素std::string("Hello World!")，调用std::tuple&lt;double&gt;的构造函数<br></li>
+<li>第3层：存储元素0.0，结束递归<br></li>
+<li>返回步骤2，存储变量std::string("Hello World!")<br></li>
+<li>返回步骤1， 存储变量1<br></li>
+</ul>
+<p>
+因此，容器中元素的构造顺序与声明顺序相反。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc7b4d5d" class="outline-3">
+<h3 id="orgc7b4d5d"><span class="section-number-3">2.11</span> C++ 中 vector&lt;bool&gt; 有何特殊性</h3>
+<div class="outline-text-3" id="text-2-11">
+<p>
+C++ 中对 std::vector&lt;bool&gt; 进行了特化以节省内存空间，其底层可以视为动态的 std::bitset 容器，只是接口符合 std::vector。在 C++ 中，将 unsigned long 定义为 _Bit_type，用于存储 32/64 个 bool 类型的变量。<br>
+</p>
+
+<p>
+STL 使用类 std::_Bit_reference 将 bool 类型变量映射到 _Bit_type 中的一个比特，该类是 std::vector&lt;bool&gt; 的基本存储单位，并且能够隐式转化为 bool 类型和接受 bool 类型赋值。该类包含了一个 _Bit_type 的指针和一个掩码，用于精确定位某一个比特。<br>
+</p>
+
+<p>
+由于 std::vector&lt;bool&gt; 的底层实现，不能支持一部分容器的基本操作，例如：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #af8700;">vector</span>&lt;<span style="color: #af8700;">bool</span>&gt; <span style="color: #0087ff;">arr</span>{ <span style="color: #00afaf;">false</span>, <span style="color: #00afaf;">true</span>, <span style="color: #00afaf;">false</span>, <span style="color: #00afaf;">true</span>, <span style="color: #00afaf;">false</span> };
+<span style="color: #af8700;">bool</span>&amp; <span style="color: #0087ff;">a</span> = arr[0];  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38169;&#35823;&#65292;&#19981;&#33021;&#32534;&#35793;&#65292;&#22240;&#20026;arr[0]&#26159;&#19968;&#20010;&#20989;&#25968;&#36820;&#22238;&#26102;&#29983;&#25104;&#30340;&#20020;&#26102;&#37327;</span>
+<span style="color: #af8700;">bool</span>* <span style="color: #0087ff;">b</span> = &amp;arr[0]; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38169;&#35823;&#65292;&#19981;&#33021;&#32534;&#35793;&#65292;&#22240;&#20026;arr[0]&#26159;&#19968;&#20010;&#20989;&#25968;&#36820;&#22238;&#26102;&#29983;&#25104;&#30340;&#20020;&#26102;&#37327;</span>
+</pre>
+</div>
+
+<p>
+此外，还会导致一些内存安全方面的问题，例如：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #af8700;">vector</span>&lt;<span style="color: #af8700;">bool</span>&gt; <span style="color: #0087ff;">arr</span>{ <span style="color: #00afaf;">false</span>, <span style="color: #00afaf;">true</span>, <span style="color: #00afaf;">false</span>, <span style="color: #00afaf;">true</span>, <span style="color: #00afaf;">false</span> };
+<span style="color: #5f8700;">auto</span> <span style="color: #0087ff;">d</span> = c[0]; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">d&#30340;&#31867;&#22411;&#20026;std::_Bit_reference</span>
+d = <span style="color: #00afaf;">true</span>;      <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23545;d&#30340;&#20462;&#25913;&#20250;&#23548;&#33268;arr&#20013;&#30456;&#24212;&#20540;&#30340;&#21464;&#21270;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org26631a8" class="outline-2">
+<h2 id="org26631a8"><span class="section-number-2">3</span> C++ 面向对象</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org11f9e0e" class="outline-3">
+<h3 id="org11f9e0e"><span class="section-number-3">3.1</span> 构造函数和析构函数的作用是什么？能不能是虚函数</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+构造函数和析构函数是C++类定义中的特殊成员函数，均没有返回类型。每个类拥有至少两个构造函数（默认和拷贝）以及唯一的一个析构函数。构造函数用于初始化对象，在类对象创建的时候自动调用。析构参数唯一且不能接收参数。<br>
+</p>
+
+<p>
+构造函数不能是虚函数，原因有二：<br>
+</p>
+
+<ul class="org-ul">
+<li>虚函数的调用是通过虚函数表实现，虚函数表由实例化对象的虚函数表指针指向。对于构造函数，在初始化之前没有虚函数表指针，不能够调用虚函数。<br></li>
+<li>虚函数的目的是实现多态，根据传入的对象类型调用函数，例如通过父类的指针或引用调用子类的成员函数。而构造函数是在创建对象时主动调用的，不可能通过父类的指针或者引用进行调用。<br></li>
+</ul>
+<p>
+析构函数可以并且经常是虚函数。当存在继承关系时，析构函数必须是虚函数，以避免通过基类指针或引用调用析构函数时只释放了基类占用的内存空间，出现内存泄露。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7edd95c" class="outline-3">
+<h3 id="org7edd95c"><span class="section-number-3">3.2</span> 多态是什么？</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+C++中多态包含静态多态和动态多态，两种多态都是在调用同一函数名时实际执行了不同的函数代码，并产生不同的行为。<br>
+</p>
+
+<ul class="org-ul">
+<li><code>静态多态</code> 静态多态是在编译期间完成的多态，包括两种不同类型，即<br>
+<ul class="org-ul">
+<li>函数重载：多个参数列表不同的具有相同函数名的函数实现；<br></li>
+<li>函数模版的使用。<br></li>
+</ul></li>
+<li><code>动态多态</code> 动态多态是在程序运行过程中实现的多态，根据指针指向对象的实际类型调用相应的方法。动态多态通过继承和虚函数实现。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9528760" class="outline-3">
+<h3 id="org9528760"><span class="section-number-3">3.3</span> 解释虚函数表的原理</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+C++ 为每个对象实例维护一个虚函数表指针，指向该类所对应的虚函数表。理论上，虚表指针应该位于对象实例内存空间的起始位置，以保证在多层继承时虚函数表性能不受影响。<br>
+</p>
+
+<ul class="org-ul">
+<li>一般继承（无虚函数覆盖）：函数指针按照声明顺序放入表中，父类的虚函数位于子类虚函数之前；<br></li>
+<li>一般继承（有虚函数覆盖）：被覆盖的虚函数位于原来父类虚函数的位置，其余函数依旧；<br></li>
+<li>多个父类/多重继承（无虚函数覆盖）：按照声明顺序为每个父类构建一张对应的虚函数表，子类的成员函数位于第一个父类的虚函数表中；<br></li>
+<li>多个父类/多重继承（有虚函数覆盖）：被覆盖的虚函数位于原来父类虚函数的位置，其余函数依旧；<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org33b4cae" class="outline-3">
+<h3 id="org33b4cae"><span class="section-number-3">3.4</span> C++中struct和class的区别</h3>
+<div class="outline-text-3" id="text-3-4">
+<ul class="org-ul">
+<li>使用class时，成员默认为private；而struct的成员默认为public；<br></li>
+<li>class默认使用private继承，而struct默认使用public继承；<br></li>
+<li>class可以使用模版，struct不能。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0303b8c" class="outline-3">
+<h3 id="org0303b8c"><span class="section-number-3">3.5</span> C++类内如何定义引用成员</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+需要遵循3个规则：<br>
+</p>
+
+<ul class="org-ul">
+<li>不能使用默认构造函数初始化；<br></li>
+<li>构造函数相对应的形参必须是引用类型；<br></li>
+<li>不能再构造函数的函数体赋值，必须使用初始化列表；<br></li>
+</ul>
+<p>
+例如<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #5f8700;">class</span> <span style="color: #af8700;">node</span>
+{
+<span style="color: #5f8700;">public</span>:
+    <span style="color: #0087ff;">node</span>(<span style="color: #af8700;">int</span> &amp;<span style="color: #0087ff;">target</span>) :st(target) { cout &lt;&lt; <span style="color: #00afaf;">"lalala"</span> &lt;&lt; endl; }
+        <span style="color: #0087ff;">node</span>() = <span style="color: #5f8700;">delete</span>;
+    <span style="color: #af8700;">void</span> <span style="color: #0087ff;">printst</span>() { cout &lt;&lt; st &lt;&lt; endl; }
+<span style="color: #5f8700;">private</span>:
+    <span style="color: #af8700;">int</span> &amp;<span style="color: #0087ff;">st</span>;
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfe7f18f" class="outline-3">
+<h3 id="orgfe7f18f"><span class="section-number-3">3.6</span> C++类的编译顺序是怎样的</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+C++中类的变异顺序分为4步<br>
+</p>
+
+<ul class="org-ul">
+<li>确定类名；<br></li>
+<li>编译类成员的名称；<br></li>
+<li>编译成员函数的返回值和形参；<br></li>
+<li>完成成员函数函数体的编译。<br></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #5f8700;">class</span> <span style="color: #af8700;">Test</span>; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22768;&#26126; Test &#30340;&#31867;&#21517;&#65292;&#20174;&#32780;&#20801;&#35768; Test2 &#30340;&#26500;&#36896;&#20989;&#25968;&#20013;&#35843;&#29992; Test &#30340;&#25351;&#38024;</span>
+<span style="color: #5f8700;">class</span> <span style="color: #af8700;">Test2</span>
+{
+<span style="color: #5f8700;">public</span>:
+    <span style="color: #0087ff;">Test2</span>(<span style="color: #af8700;">Test</span>* <span style="color: #0087ff;">p</span>):<span style="color: #0087ff;">ptr</span>(p) {}
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">getTestValue</span>(); <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31867;&#30340;&#25104;&#21592;&#20989;&#25968;&#24517;&#39035;&#22312;&#31867;&#20869;&#22768;&#26126;</span>
+<span style="color: #5f8700;">private</span>:
+    <span style="color: #af8700;">Test</span>* <span style="color: #0087ff;">ptr</span>;
+};
+
+<span style="color: #5f8700;">class</span> <span style="color: #af8700;">Test</span>
+{
+<span style="color: #5f8700;">public</span>:
+    <span style="color: #5f8700;">const</span> <span style="color: #af8700;">Test2</span> <span style="color: #0087ff;">generateTest2</span>() {<span style="color: #5f8700;">return</span> Test2(<span style="color: #5f8700;">this</span>);}
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">square</span>() {<span style="color: #5f8700;">return</span> getValue() * getValue();} <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#32534;&#35793;&#22120;&#39318;&#20808;&#35782;&#21035;&#20989;&#25968;&#21517;&#65292;&#28982;&#21518;&#32534;&#35793;&#20989;&#25968;&#20307;&#65292;&#22240;&#27492;&#21487;&#20197;&#22312;&#31867;&#30340;&#20989;&#25968;&#20307;&#20869;&#37096;&#35843;&#29992;&#21518;&#32493;&#22768;&#26126;&#30340;&#31867;&#25104;&#21592;&#20989;&#25968;</span>
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">getValue</span>() {<span style="color: #5f8700;">return</span> value;}
+    <span style="color: #af8700;">void</span> <span style="color: #0087ff;">setValue</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">val</span>) {value = val;}
+<span style="color: #5f8700;">private</span>:
+    <span style="color: #af8700;">int</span> <span style="color: #0087ff;">value</span>;
+};
+
+<span style="color: #af8700;">int</span> <span style="color: #00afaf;">Test2</span>::<span style="color: #0087ff;">getTestValue</span> () { <span style="color: #5f8700;">return</span> (*ptr).getValue(); } <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">getTestValue() &#30340;&#20989;&#25968;&#20307;&#23450;&#20041;&#22312;&#22806;&#37096;&#65292;&#22240;&#20026;&#20989;&#25968;&#20869;&#37096;&#38656;&#35201;&#35843;&#29992; Test &#30340;&#25104;&#21592;&#20989;&#25968;&#65292;&#22240;&#27492;&#38656;&#35201;&#22312; Test::getValue() &#22768;&#26126;&#20043;&#21518;&#36827;&#34892;&#23450;&#20041;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9bf1ad2" class="outline-3">
+<h3 id="org9bf1ad2"><span class="section-number-3">3.7</span> 什么事 PIMPL 模式</h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+PIMPL 是指通过一个私有的成员类的指针，在private的基础上对类的内部数据进行进一步的隐藏，其优点是：<br>
+</p>
+
+<ul class="org-ul">
+<li>核心数据成员被隐藏，不会暴露在头文件中，提高了程序的安全性。<br></li>
+<li>降低编译依赖，提高编译速度：由于原来头文件中的一些私有成员变量可能是自定义类型，需要在当前类的头文件中声明，使用PIMPL可以将这些声明移至cpp文件，因而在其他文件引用当前类的头文件时依赖的类型更少。<br></li>
+<li>接口与实现的分离：使用PIMPL之后，可以进一步避免类实现细节改变对函数接口的影响。<br></li>
+</ul>
+<p>
+例如：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #5f8700;">class</span> <span style="color: #af8700;">SocketClient</span>{
+<span style="color: #5f8700;">public</span>:
+    <span style="color: #0087ff;">SocketClient</span>();
+    ~<span style="color: #0087ff;">SocketClient</span>();
+    <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21508;&#31181;&#25509;&#21475;&#20989;&#25968;</span>
+<span style="color: #5f8700;">private</span>:
+    <span style="color: #5f8700;">class</span> <span style="color: #af8700;">Impl</span>;
+    <span style="color: #af8700;">Impl</span>* <span style="color: #0087ff;">m_impl</span>; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20351;&#29992;&#19968;&#20010;&#31169;&#26377;&#31867;&#23553;&#35013;&#25104;&#21592;&#21464;&#37327;</span>
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8135354" class="outline-3">
+<h3 id="org8135354"><span class="section-number-3">3.8</span> 继承时构造和析构函数的执行顺序</h3>
+<div class="outline-text-3" id="text-3-8">
+<ul class="org-ul">
+<li>构造函数：<br></li>
+<li>单一继承：首先执行父类的构造函数，然后执行子类的构造函数；<br></li>
+<li>多重继承：按照继承的声明顺序执行父类的构造函数，最后执行子类的构造函数；<br></li>
+<li>析构函数：<br></li>
+<li>单一继承：首先执行子类的析构函数，然后执行父类的析构函数；<br></li>
+<li>多重继承：首先执行子类的析构函数，然后按照继承声明的相反顺序执行父类的析构函数。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org67660fd" class="outline-3">
+<h3 id="org67660fd"><span class="section-number-3">3.9</span> 一个空类在什么情况下非空</h3>
+<div class="outline-text-3" id="text-3-9">
+<p>
+编译器会根据程序的需要，为空类提供下列函数：<br>
+</p>
+
+<ul class="org-ul">
+<li>默认构造函数；<br></li>
+<li>拷贝构造函数；<br></li>
+<li>析构函数；<br></li>
+<li>赋值运算符号。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org479a45b" class="outline-3">
+<h3 id="org479a45b"><span class="section-number-3">3.10</span> 在 C++ 的继承中，类所占用的内存有多大？</h3>
+<div class="outline-text-3" id="text-3-10">
+<p>
+在计算一个类所占用的内存大小时，有5条基本规则：<br>
+</p>
+
+<ul class="org-ul">
+<li>空类占用1个字；<br></li>
+<li>静态成员变量和普通成员函数不占用内存；<br></li>
+<li>只要函数虚函数，对象占用至少1个字，即虚函数表指针；<br></li>
+<li>所有非静态成员变量均会占用内存空间；<br></li>
+<li>类成员需要进行字节的对齐。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4b81220" class="outline-3">
+<h3 id="org4b81220"><span class="section-number-3">3.11</span> 构造和析构函数的执行顺序与访问权限</h3>
+<div class="outline-text-3" id="text-3-11">
+<p>
+C++中，构造函数的调用顺序为：基类构造函数-&gt;成员对象构造函数-&gt;派生类构造函数。析构函数的调用顺序相反：派生类析构函数-&gt;成员对象析构函数-&gt;基类析构函数。<br>
+</p>
+
+<p>
+默认情况下构造和析构函数的访问权限都是public类型，但是有些情况下回设置为其他类型。常见的情况有：<br>
+</p>
+
+<ul class="org-ul">
+<li>构造函数设置为private类型，一般用于实现单例模式，不能从外部获取对象，但是可以通过static成员方法来创建对象。<br></li>
+<li>将析构函数设置为private类型，构造函数设置为public类型。由于不能再对象离开作用域时调用析构函数，因此只能通过new在堆上进行分配，并且通过定义public接口调用析构函数进行清理。<br></li>
+<li>构造函数设置为protected，避免从外部直接调用基类的构造函数，常被用于抽象基类中。<br></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orge4ce107" class="outline-2">
+<h2 id="orge4ce107"><span class="section-number-2">4</span> C++11/17</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgd5b67c8" class="outline-3">
+<h3 id="orgd5b67c8"><span class="section-number-3">4.1</span> 右值引用与移动语义</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+右值引用由C++11引入，使用符号&amp;&amp;表示，用于辅助移动语义的实现。右值引用的特点是无法被寻址或者赋值。<br>
+</p>
+
+<p>
+移动语义用于解决自定义对象在使用拷贝构造函数需要对指针成员进行数据复制，产生大量堆操作的问题。通过右值引用和移动语义，可以将临时对象所占用的内存资源移动至新构造的对象中，减少程序的堆操作次数。例如：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #5f8700;">class</span> <span style="color: #af8700;">demo</span>{
+    <span style="color: #af8700;">int</span>* <span style="color: #0087ff;">num</span>;
+<span style="color: #5f8700;">public</span>:
+    <span style="color: #0087ff;">demo</span>(): num(<span style="color: #5f8700;">new</span> <span style="color: #af8700;">int</span>(0)) {}
+    <span style="color: #0087ff;">demo</span>(<span style="color: #5f8700;">const</span> <span style="color: #af8700;">demo</span>&amp; <span style="color: #0087ff;">d</span>): num(<span style="color: #5f8700;">new</span> <span style="color: #af8700;">int</span>(*d.num)) {} <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25335;&#36125;&#26500;&#36896;&#20989;&#25968;</span>
+    <span style="color: #0087ff;">demo</span>(<span style="color: #af8700;">demo</span>&amp;&amp; <span style="color: #0087ff;">d</span>): <span style="color: #0087ff;">num</span>(d.num){ <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31227;&#21160;&#26500;&#36896;&#20989;&#25968;</span>
+        d.num = <span style="color: #00afaf;">NULL</span>; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#23558;d.num&#37325;&#32622;&#65292;&#36991;&#20813;&#21518;&#32493;&#30340;delete&#38169;&#35823;</span>
+    } 
+    <span style="color: #af8700;">demo</span>&amp; <span style="color: #5f8700;">operator</span><span style="color: #0087ff;">=</span>(<span style="color: #af8700;">demo</span>&amp;&amp; <span style="color: #0087ff;">d</span>) { num = d.num; d.num = <span style="color: #00afaf;">nullptr</span>; }
+    ~<span style="color: #0087ff;">demo</span>() { <span style="color: #5f8700;">delete</span> num; }
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1c95475" class="outline-3">
+<h3 id="org1c95475"><span class="section-number-3">4.2</span> 什么是 lambda 表达式</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Lambda表达式可以在程序中创建一个匿名函数实现某些小的功能模块，其声明方式如下：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #5f8700;">auto</span> <span style="color: #0087ff;">fadd</span> = [](<span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">b</span>) { <span style="color: #5f8700;">return</span> a+b; }
+<span style="color: #5f8700;">auto</span> <span style="color: #0087ff;">fsub</span> = [](<span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span>, <span style="color: #af8700;">int</span> <span style="color: #0087ff;">b</span>)-&gt;<span style="color: #af8700;">int</span> { <span style="color: #5f8700;">return</span> a-b; } <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#26174;&#24335;&#22768;&#26126;&#36820;&#22238;&#20540;&#30340;&#25968;&#25454;&#31867;&#22411;</span>
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">val</span> = 1;
+<span style="color: #5f8700;">auto</span> <span style="color: #0087ff;">fadd</span> = [&amp;](<span style="color: #af8700;">int</span> <span style="color: #0087ff;">a</span>)-&gt;<span style="color: #af8700;">int</span> { <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38656;&#35201;&#20351;&#29992;&#22806;&#37096;&#21464;&#37327;&#26102;&#65292;&#38656;&#35201;&#22312;[]&#20013;&#25351;&#26126;&#21464;&#37327;&#25130;&#21462;&#26041;&#24335;</span>
+    <span style="color: #8a8a8a;">/*</span>
+<span style="color: #8a8a8a;">        [&amp;]&#34920;&#31034;&#20197;&#24341;&#29992;&#26041;&#24335;&#25130;&#21462;&#25152;&#26377;&#22806;&#37096;&#21464;&#37327; [=]&#34920;&#31034;&#20197;&#25335;&#36125;&#30340;&#26041;&#24335;&#25130;&#21462;&#25152;&#26377;&#22806;&#37096;&#21464;&#37327;</span>
+<span style="color: #8a8a8a;">        [bar]&#34920;&#31034;&#20165;&#20197;&#25335;&#36125;&#30340;&#26041;&#24335;&#25130;&#21462;&#21464;&#37327;bar</span>
+<span style="color: #8a8a8a;">        [=, &amp;bar]&#34920;&#31034;&#20197;&#25335;&#36125;&#30340;&#26041;&#24335;&#25130;&#21462;&#25152;&#26377;&#22806;&#37096;&#21464;&#37327;&#65292;&#20294;&#26159;&#23545;bar&#20351;&#29992;&#24341;&#29992;&#26041;&#24335;</span>
+<span style="color: #8a8a8a;">    */</span>
+    <span style="color: #5f8700;">return</span> val = a + val;
+}
+</pre>
+</div>
+
+<p>
+编译器会为lambda表达式生成一个匿名对象，并重载该函数的函数调用运算符，即()<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcdb3e3e" class="outline-3">
+<h3 id="orgcdb3e3e"><span class="section-number-3">4.3</span> 为什么要引入 nullptr</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+在C++中，传统的空指针NULL被定义为地址0，具有明确的数值，因而在静态多态中存在程序出错的可能，例如<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #d75f00;">#include</span><span style="color: #00afaf;">&lt;iostream&gt;</span>
+<span style="color: #5f8700;">using</span> <span style="color: #5f8700;">namespace</span> <span style="color: #00afaf;">std</span>;
+
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">int</span> <span style="color: #0087ff;">num</span>) { cout &lt;&lt; <span style="color: #00afaf;">"reveive a num."</span> &lt;&lt; endl; }
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">fun</span>(<span style="color: #af8700;">void</span>* <span style="color: #0087ff;">p</span>) { cout &lt;&lt; <span style="color: #00afaf;">"reveive a pointer."</span> &lt;&lt; endl; }
+
+<span style="color: #af8700;">int</span> <span style="color: #0087ff;">main</span>(){
+    <span style="color: #af8700;">void</span>* <span style="color: #0087ff;">p</span> = <span style="color: #00afaf;">NULL</span>;
+    fun(p); <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">reveive a pointer.</span>
+    fun(<span style="color: #00afaf;">NULL</span>); <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">reveive a num.</span>
+    fun(<span style="color: #00afaf;">nullptr</span>); <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">reveive a pointer.</span>
+    <span style="color: #5f8700;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb753322" class="outline-3">
+<h3 id="orgb753322"><span class="section-number-3">4.4</span> C++11 类型推导有哪些原则</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+C++11 中引入了 auto 和 decltype 关键字用于在编译期推导变量或者表达式的数据类型。对于 auto 变量，需要注意：<br>
+</p>
+
+<ul class="org-ul">
+<li>不能出现在函数的形参列表中，例如void fun(auto a)<br></li>
+<li>不能作为类的非静态成员变量，例如class A { auto a = 1; };<br></li>
+<li>不能声明数组，例如auto c[10];<br></li>
+<li>不能作为模版的参数，例如vector&lt;auto&gt; arr;<br></li>
+<li>必须在定义时立即完成初始化 。<br></li>
+</ul>
+<p>
+对于表达式，使用decltype推导数据类型，例如：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #af8700;">int</span> <span style="color: #0087ff;">fun</span>() { <span style="color: #5f8700;">return</span> 0; }
+<span style="color: #5f8700;">decltype</span>(fun()) <span style="color: #0087ff;">i</span>;
+</pre>
+</div>
+
+<p>
+在推导函数返回值的情况下，需要auto和decltype配合使用，即：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#38169;&#35823;&#29992;&#27861;</span>
+<span style="color: #5f8700;">template</span>&lt;<span style="color: #5f8700;">typename</span> <span style="color: #af8700;">T</span>, <span style="color: #5f8700;">typename</span> <span style="color: #af8700;">U</span>&gt;
+<span style="color: #5f8700;">decltype</span>(t + u) <span style="color: #0087ff;">add</span>(<span style="color: #af8700;">T</span> <span style="color: #0087ff;">t</span>, <span style="color: #af8700;">U</span> <span style="color: #0087ff;">u</span>) { <span style="color: #5f8700;">return</span> t + u;} <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#22312;&#25512;&#23548;&#34920;&#36798;&#24335;&#25968;&#25454;&#31867;&#22411;&#26102;&#65292;t&#21644;u&#23578;&#26410;&#23450;&#20041;</span>
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#27491;&#30830;&#29992;&#27861;</span>
+<span style="color: #5f8700;">template</span>&lt;<span style="color: #5f8700;">typename</span> <span style="color: #af8700;">T</span>, <span style="color: #5f8700;">typename</span> <span style="color: #af8700;">U</span>&gt;
+<span style="color: #5f8700;">auto</span> <span style="color: #0087ff;">add</span>(<span style="color: #af8700;">T</span> <span style="color: #0087ff;">t</span>, <span style="color: #af8700;">U</span> <span style="color: #0087ff;">u</span>) -&gt; <span style="color: #5f8700;">decltype</span>(t + u) { <span style="color: #5f8700;">return</span> t + u; }
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org39abf2b" class="outline-2">
+<h2 id="org39abf2b"><span class="section-number-2">5</span> 其他</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org2efde79" class="outline-3">
+<h3 id="org2efde79"><span class="section-number-3">5.1</span> C++ 程序的内存结构</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+C++ 程序包括了代码段、数据段、堆栈和系统内核<br>
+</p>
+
+<ul class="org-ul">
+<li>代码段：位于程序地址空间的最低区域；<br></li>
+<li>数据段：包括初始化数据（保存程序中已经初始化的非零全局变量）和未初始化数据（保存程序中未初始化的和零值全局变量，程序开始时会被清零），数据段是静态分配的<br></li>
+<li>堆：程序的动态内存空间，按内存地址由低到高生长，速度较慢，使用比较自由，由程序员动态申请和分配<br></li>
+<li>映射区：存储动态链接库以及调用mmap函数进行的文件映射<br></li>
+<li>栈：程序的动态内存空间，按地址由高到低生长，速度较快，有程序自动分配<br></li>
+<li>系统内核<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0482263" class="outline-3">
+<h3 id="org0482263"><span class="section-number-3">5.2</span> 一个C++源码文件从文本到可执行文件经历的过程</h3>
+<div class="outline-text-3" id="text-5-2">
+<ul class="org-ul">
+<li>预处理阶段：对源代码中头文件、宏定义等进行分析和替换，生成预编译文件；<br></li>
+<li>编译阶段：将预编译文件转换成汇编代码，生成汇编文件；<br></li>
+<li>汇编阶段：将汇编文件转化为机器码，生成可重定位目标文件；<br></li>
+<li>链接阶段：将多个目标文件及所需的库连接得到最终的可执行目标文件。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org92b9e08" class="outline-3">
+<h3 id="org92b9e08"><span class="section-number-3">5.3</span> 描述C++常规文件调用函数的原理</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+在C++中，常规文件操作的运行过程是：<br>
+</p>
+
+<ul class="org-ul">
+<li>进程发起读文件请求；<br></li>
+<li>内核查找进程文件符表，定位到内核已打开文件集上的文件信息，从而找到文件的inode；<br></li>
+<li>查找请求的文件页是否已缓存，如果是，直接返回相应的内容；否则将数据从磁盘复制到页缓存，然后在其发起读页面过程。<br></li>
+</ul>
+<p>
+该机制提高了读写效率，并保护了磁盘，缺点是增加了一次数据拷贝的过程，并且页缓存位于用户空间，不能直接寻址。<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7d4aa99" class="outline-3">
+<h3 id="org7d4aa99"><span class="section-number-3">5.4</span> 分析mmap()函数的原理和作用</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+mmap()函数是一个内存映射文件的方法，将一个文件或者其他对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段区域（通常是在堆和栈之间）的一一对应。实现映射关系后，进程可以使用指针读写内存，而系统会自动将脏页面回写到磁盘，而不需要调用read/write等函数。同时，内核空间对相应磁盘区域的修改也会直接反映在用户空间，从而实现进程之间的文件共享。<br>
+</p>
+
+<p>
+mmap函数的详细运行过程可以分为3个阶段：<br>
+</p>
+
+<ul class="org-ul">
+<li>进程启动映射过程，并在虚拟空间中创建对应的虚拟映射区域；<br></li>
+<li>调用内核空间的系统调用函数mmap（不同于用户空间的mmap），实现文件物理地址和进程虚拟地址的映射；<br></li>
+<li>进程发起对映射空间的访问，引发缺页异常，实现文件内容到物理内存的拷贝。<br></li>
+</ul>
+<p>
+相较于常规的C++文件操作，mmap具有如下优点：<br>
+</p>
+
+<ul class="org-ul">
+<li>对文件的读取操作跨过了页缓存，减少了数据的拷贝次数，并且使用内存读写代替了I/O操作，提高了文件读取效率；<br></li>
+<li>实现了用户空间和内核空间的高效交互，对任一空间的修改操作都可以直接反映在对方空间中；<br></li>
+<li>提供了进程间贡献内存和相互通信的方式；<br></li>
+<li>可以实现高效的大规模数据传输，摆脱内存空间的限制。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf6c2531" class="outline-3">
+<h3 id="orgf6c2531"><span class="section-number-3">5.5</span> 什么是内存泄漏？</h3>
+<div class="outline-text-3" id="text-5-5">
+<p>
+内存泄漏是指程序的错误导致程序不能释放已经不再使用的内存空间，即应用程序在分配某段内存之后，由于设计错误失去了对该控件的控制，可以进一步分为3种：<br>
+</p>
+
+<ul class="org-ul">
+<li>堆内存泄露：使用new/malloc从堆中分配空间后，没有调用相应的delete/free释放空间。<br></li>
+<li>系统资源泄露：程序使用系统分配的handle和socket等资源之后没有使用相应的函数释放。<br></li>
+<li>没有将基类的析构函数定义为虚函数，导致当基类指针指向子类对象时，子类的内存空间没有被正确释放。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgef4f2f2" class="outline-3">
+<h3 id="orgef4f2f2"><span class="section-number-3">5.6</span> 为什么要进行结构体对齐和字节对齐</h3>
+<div class="outline-text-3" id="text-5-6">
+<ul class="org-ul">
+<li>某些硬件平台只能在特定地址处存取特定类型的数据，否则会抛出硬件异常；<br></li>
+<li>数据结构应该尽可能在自然边界上对齐，以减少处理器所需的内存访问次数。<br></li>
+</ul>
+<p>
+可以通过预编译指令#pragam pack(n)调整数据对齐<br>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0da63fa" class="outline-3">
+<h3 id="org0da63fa"><span class="section-number-3">5.7</span> 预编译期主要进行哪些操作</h3>
+<div class="outline-text-3" id="text-5-7">
+<p>
+预编译主要处理源代码中的预编译指令，需要完成的工作包括：<br>
+</p>
+
+<ul class="org-ul">
+<li>删除所有的 #define ，替换为相关的宏定义；<br></li>
+<li>处理所有的条件预编译指令，包括 #if #endif #elif #else<br></li>
+<li>删除所有的注释<br></li>
+<li>保留 #pragma 编译器指令<br></li>
+<li>添加行号和文件标识，方便调试和报错<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0ce616e" class="outline-3">
+<h3 id="org0ce616e"><span class="section-number-3">5.8</span> 如何用C++实现单例模式</h3>
+<div class="outline-text-3" id="text-5-8">
+<p>
+懒汉式：延迟加载，即对象在首次访问时才被创建，之后每次调用都会返回同一个实例的指针。代码实现如下：<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #d75f00;">#include</span> <span style="color: #00afaf;">&lt;mutex&gt;</span>
+<span style="color: #5f8700;">using</span> <span style="color: #5f8700;">namespace</span> <span style="color: #00afaf;">std</span>;
+
+<span style="color: #af8700;">mutex</span> <span style="color: #0087ff;">mut</span>; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">C++11&#20013;&#22686;&#21152;&#30340;&#38145;&#21464;&#37327;</span>
+
+<span style="color: #5f8700;">class</span> <span style="color: #af8700;">CSingleton</span> {
+    <span style="color: #0087ff;">CSingleton</span>() {}
+    <span style="color: #5f8700;">static</span> <span style="color: #af8700;">CSingleton</span>* <span style="color: #0087ff;">ptr</span>;
+<span style="color: #5f8700;">public</span>:
+    <span style="color: #5f8700;">static</span> <span style="color: #af8700;">CSingleton</span>* <span style="color: #0087ff;">GetInstance</span>() {
+        <span style="color: #5f8700;">if</span>(ptr == <span style="color: #00afaf;">NULL</span>){
+            mut.lock(); <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#25277;&#35937;&#30340;&#38145;</span>
+            <span style="color: #5f8700;">if</span>(ptr == <span style="color: #00afaf;">NULL</span>) 
+                ptr = <span style="color: #5f8700;">new</span> <span style="color: #af8700;">CSingleton</span>();
+            mut.unlock();
+        }
+        <span style="color: #5f8700;">return</span> ptr;
+    }
+};
+</pre>
+</div>
+
+<p>
+饿汉式：在初始时完成实例的创建，需要注意存在多个单例类相互调用时的初始化顺序<br>
+</p>
+<div class="org-src-container">
+<pre class="src src-cpp"><span style="color: #5f8700;">class</span> <span style="color: #af8700;">ASingleton</span> {
+<span style="color: #5f8700;">protected</span>:
+    <span style="color: #5f8700;">static</span> <span style="color: #af8700;">ASingleton</span> <span style="color: #0087ff;">a</span>; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#31867;&#20869;&#22768;&#26126;&#65292;&#31867;&#22806;&#23450;&#20041;</span>
+    <span style="color: #0087ff;">ASingleton</span>();
+<span style="color: #5f8700;">public</span>:
+    <span style="color: #5f8700;">static</span> <span style="color: #af8700;">ASingleton</span>* <span style="color: #0087ff;">getInstance</span>() { <span style="color: #5f8700;">return</span> &amp;a; }
+};
+
+<span style="color: #5f8700;">class</span> <span style="color: #af8700;">BSingleton</span> {
+<span style="color: #5f8700;">protected</span>:
+    <span style="color: #5f8700;">static</span> <span style="color: #af8700;">BSingleton</span> <span style="color: #0087ff;">b</span>;
+<span style="color: #5f8700;">public</span>:
+    <span style="color: #5f8700;">static</span> <span style="color: #af8700;">BSingleton</span>* <span style="color: #0087ff;">getInstance</span>() { <span style="color: #5f8700;">return</span> &amp;b; }
+};
+
+<span style="color: #af8700;">BSingleton</span> <span style="color: #00afaf;">BSingleton</span>::<span style="color: #0087ff;">b</span>;
+<span style="color: #af8700;">ASingleton</span> <span style="color: #00afaf;">ASingleton</span>::<span style="color: #0087ff;">a</span>; <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#36890;&#36807;&#31867;&#22806;&#23450;&#20041;&#25511;&#21046;&#21333;&#20363;&#23545;&#35937;&#30340;&#21021;&#22987;&#21270;&#39034;&#24207;</span>
+<span style="color: #00afaf;">ASingleton</span>::<span style="color: #0087ff;">ASingleton</span>() { <span style="color: #00afaf;">BSingleton</span>::getInstance(); }
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfe1b6c5" class="outline-3">
+<h3 id="orgfe1b6c5"><span class="section-number-3">5.9</span> C++ 整型变量赋值操作是否具有原子性</h3>
+<div class="outline-text-3" id="text-5-9">
+<p>
+C++ 中整型变量的操作一般不具有原子性。以整型变量赋值为例，下述语句int a = 1最直接的编译结果是原子的，即mov dword ptr [a], 2。实际上，上述结果的出现频率很低，因为现代编译器一般会对程序进行优化，如果变量a的值可以在编译期间计算出来，纳闷很可能被常量替代。<br>
+</p>
+
+<p>
+对于变量的自增/自减操作，包括++ &#x2013; += -= 等，在编译后对应3条汇编指令，例如++a的编译结果：<br>
+</p>
+<pre class="example">
+mov eax, dword ptr [a]
+inc eax
+mov dword ptr [a], eax
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org7ab1194" class="outline-3">
+<h3 id="org7ab1194"><span class="section-number-3">5.10</span> 什么是编程语言的垃圾回收机制</h3>
+<div class="outline-text-3" id="text-5-10">
+<p>
+垃圾回收器是一种动态存储分配器，自动释放程序不再需要的已分配内存块。在支持垃圾收集的语言中，程序显示地申请内存，但是不需要显式的私房内存，而是由垃圾回收器定期识别和释放。常见的垃圾回收算法有：<br>
+</p>
+
+<ul class="org-ul">
+<li><code>引用计数</code> 即C++智能指针的解决方案，缺陷是可能出现循环引用。<br></li>
+<li><code>Mark &amp; Sweep算法</code> 由标记阶段和回首节点组成。标记阶段会标记所有由不在堆中的根节点出发可达的节点，回收阶段清除所有未标记的节点。<br></li>
+<li><code>节点复制算法</code> MS算法在回收大量对象时开销很大。节点复制算法思路相反，从根节点开始，复制所有被引用的对象，然后释放原来的整个内存区域。<br></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf850c74" class="outline-3">
+<h3 id="orgf850c74"><span class="section-number-3">5.11</span> C 和 C++ 的区别</h3>
+<div class="outline-text-3" id="text-5-11">
+<ul class="org-ul">
+<li>C 语言结构只有成员变量，没有成员函数；<br></li>
+<li>C 语言是面向过程的，而 C++ 既可以面向过程，也可以面向对象；<br></li>
+<li>C 语言仅支持通过参数列表实现的静态多态，C++ 支持动态多态，并且可以通过模版实现静态多态；<br></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>本笔记系统由
+    <a href="">时中贺</a> 搭建和维护，使用
+    <a href="https://www.gnu.org/software/emacs/">Emacs</a>
+    <a href="http://orgmode.org/">Org mode</a> 编辑和构建
+    <br />
+    email: shi_zhonghe@163.com
+</p>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
+</div>
+</body>
+</html>

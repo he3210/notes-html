@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-08-20 Fri 15:39 -->
+<!-- 2022-01-12 Wed 04:56 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>docker 笔记 —— 容器</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -101,6 +101,7 @@ $ docker run -d -p 80 --name website -v $<span style="color: #0087ff;">PWD</span
 $ docker run --name notes -v /root/notes-html:/root/notes-html:ro -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro -d -p 80:80 nginx
 $ docker run -d --net=app --name db he3210/redis    <span style="color: #8a8a8a;"># </span><span style="color: #8a8a8a;">&#31532;&#19968;&#26412;Docker&#20070; page121</span>
 $ docker run -d -P --volumes-from he_blog --name server_blog he3210/apache
+$ docker run -d --cap-add sys_ptrace -v /Users/he/code/algorithm:/home/dev/code/algorithm:rw -p 127.0.0.1:2222:22/tcp --name clion_remote_env clion/remote-cpp-env:1.0
 </pre>
 </div>
 
@@ -112,8 +113,8 @@ $ docker run -d -P --volumes-from he_blog --name server_blog he3210/apache
 <li><code>--restart=always</code> 容器停止运行时重启该容器<br></li>
 <li><code>--restart=on-failure:5</code> 如果容器停止运行，退出码非 0，docker会尝试重启该容器，最多尝试 5 次<br></li>
 <li><code>-p 80</code> 告诉 Docker ，容器的 80 端口需要映射到宿主机，Docker会在宿主机随机选择一个位于 32768～61000 的端口映射到容器<br></li>
-<li><code>-p 8080:80</code> 将容器的 80 端口映射到宿主机到 8080 端口<br></li>
-<li><code>-p 127.0.0.1:8080:80</code> 映射到宿主机这个 IP 127.0.0.1 的 8080 端口。这样就可以使用宿主机的 IP 地址连接到容器中的进程了<br></li>
+<li><code>-p 8080:80</code> 将容器的 80 端口映射到宿主机到 8080 端口，默认 tcp<br></li>
+<li><code>-p 127.0.0.1:2222:22/tcp</code> 容器 80 端口映射到宿主机 127.0.0.1:8080 端口。这样就可以使宿主机通过 IP 地址连接到容器了<br></li>
 <li><code>-P</code> 将容器的端口映射到宿主机的随机端口<br></li>
 <li><code>-w /var/log</code> 将容器内的工作目录设置为 /var/log ，会覆盖掉 Dockerfile 中 WORKDIR 指令设置的工作目录<br></li>
 <li><code>-v $PWD/website:/var/www/html/website</code> 将宿主机下的目录 $PWD/website 作为卷挂载到容器中的 website 目录。该标签可以重复使用来挂载多个目录<br></li>
@@ -122,6 +123,7 @@ $ docker run -d -P --volumes-from he_blog --name server_blog he3210/apache
 <li><code>--rm</code> 创建容器时，如果容器已存在，先删除该容器，在创建新容器。<br></li>
 <li><code>-h hostname</code> 设置容器主机名，该主机名可被本地 DNS 服务正确解析<br></li>
 <li><code>--volumes-from he_blog</code> 把容器 he_blog 的所有卷都加入到新创建的容器里<br></li>
+<li><code>--cap-add sys_ptrace</code> 为容器添加权限，添加 sys_ptrace 权限，该权限允许容器使用 gdb 调试，否则 gdb 调试时会报错 ptrace 被禁止<br></li>
 </ul>
 </div>
 </div>
@@ -285,8 +287,8 @@ $ docker rm -f 9b8edf8426f1    <span style="color: #8a8a8a;"># </span><span styl
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

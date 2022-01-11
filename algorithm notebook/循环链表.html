@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-08-20 Fri 15:39 -->
+<!-- 2022-01-12 Wed 04:56 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>循环链表</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -37,21 +37,21 @@
 <li><a href="#orgf6f002e">1. 判断单链表是否有环</a></li>
 <li><a href="#org839ae97">2. 寻找循环链表的入口</a>
 <ul>
-<li><a href="#org48f031f">2.1. 问题</a></li>
-<li><a href="#orgd023542">2.2. 分析</a></li>
+<li><a href="#org39688cf">2.1. 问题</a></li>
+<li><a href="#org50fbde5">2.2. 分析</a></li>
 </ul>
 </li>
 <li><a href="#org82bd950">3. 找出两个单链表的第一个公共结点</a>
 <ul>
-<li><a href="#org5278785">3.1. 问题</a></li>
-<li><a href="#org399402f">3.2. 分析</a></li>
-<li><a href="#org205cc60">3.3. 代码</a></li>
+<li><a href="#orgba61c25">3.1. 问题</a></li>
+<li><a href="#orgdd2683e">3.2. 分析</a></li>
+<li><a href="#orgcc46c7c">3.3. 代码</a></li>
 </ul>
 </li>
 <li><a href="#orgb38b564">4. 环状单向链表去重</a>
 <ul>
-<li><a href="#orgbff8bc7">4.1. 问题</a></li>
-<li><a href="#orge239cc6">4.2. 代码</a></li>
+<li><a href="#orgbd6da94">4.1. 问题</a></li>
+<li><a href="#orgeb2a019">4.2. 代码</a></li>
 </ul>
 </li>
 </ul>
@@ -85,8 +85,8 @@
 <h2 id="org839ae97"><span class="section-number-2">2</span> 寻找循环链表的入口</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org48f031f" class="outline-3">
-<h3 id="org48f031f"><span class="section-number-3">2.1</span> 问题</h3>
+<div id="outline-container-org39688cf" class="outline-3">
+<h3 id="org39688cf"><span class="section-number-3">2.1</span> 问题</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 假设一链表存在环，如何找到环的入口<br>
@@ -94,8 +94,8 @@
 </div>
 </div>
 
-<div id="outline-container-orgd023542" class="outline-3">
-<h3 id="orgd023542"><span class="section-number-3">2.2</span> 分析</h3>
+<div id="outline-container-org50fbde5" class="outline-3">
+<h3 id="org50fbde5"><span class="section-number-3">2.2</span> 分析</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 设链表起始点到环入口长度为 a，环长度为 r<br>
@@ -146,8 +146,8 @@
 <h2 id="org82bd950"><span class="section-number-2">3</span> 找出两个单链表的第一个公共结点</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org5278785" class="outline-3">
-<h3 id="org5278785"><span class="section-number-3">3.1</span> 问题</h3>
+<div id="outline-container-orgba61c25" class="outline-3">
+<h3 id="orgba61c25"><span class="section-number-3">3.1</span> 问题</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 两个单向链表，判断它们是否相交。若相交，找出它们的第一个公共结点<br>
@@ -155,8 +155,8 @@
 </div>
 </div>
 
-<div id="outline-container-org399402f" class="outline-3">
-<h3 id="org399402f"><span class="section-number-3">3.2</span> 分析</h3>
+<div id="outline-container-orgdd2683e" class="outline-3">
+<h3 id="orgdd2683e"><span class="section-number-3">3.2</span> 分析</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 首先判断2个单链表是否有环，分为三种情况<br>
@@ -173,8 +173,8 @@
 </div>
 </div>
 
-<div id="outline-container-org205cc60" class="outline-3">
-<h3 id="org205cc60"><span class="section-number-3">3.3</span> 代码</h3>
+<div id="outline-container-orgcc46c7c" class="outline-3">
+<h3 id="orgcc46c7c"><span class="section-number-3">3.3</span> 代码</h3>
 <div class="outline-text-3" id="text-3-3">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #5f8700;">typedef</span> <span style="color: #5f8700;">struct</span> <span style="color: #af8700;">node</span>
@@ -291,8 +291,8 @@
 <h2 id="orgb38b564"><span class="section-number-2">4</span> 环状单向链表去重</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgbff8bc7" class="outline-3">
-<h3 id="orgbff8bc7"><span class="section-number-3">4.1</span> 问题</h3>
+<div id="outline-container-orgbd6da94" class="outline-3">
+<h3 id="orgbd6da94"><span class="section-number-3">4.1</span> 问题</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 编码实现环状单向链表（尾指针直接指向头指针，中间没有空结点），去除连续的重复元素的操作<br>
@@ -302,8 +302,8 @@
 </div>
 </div>
 
-<div id="outline-container-orge239cc6" class="outline-3">
-<h3 id="orge239cc6"><span class="section-number-3">4.2</span> 代码</h3>
+<div id="outline-container-orgeb2a019" class="outline-3">
+<h3 id="orgeb2a019"><span class="section-number-3">4.2</span> 代码</h3>
 <div class="outline-text-3" id="text-4-2">
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20998;&#26512;&#65306;&#36941;&#21382;&#27599;&#19968;&#20010;&#32467;&#28857;&#65292;&#36793;&#36941;&#21382;&#36793;&#21435;&#38500;&#20854;&#21518;&#30340;&#37325;&#22797;&#20803;&#32032;</span>
@@ -351,8 +351,8 @@
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>

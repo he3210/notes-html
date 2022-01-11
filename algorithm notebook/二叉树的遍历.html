@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2021-08-20 Fri 15:39 -->
+<!-- 2022-01-12 Wed 04:56 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>二叉树的遍历</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
-<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
+<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
+        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -45,7 +45,7 @@
 <li><a href="#org068aff0">4.4. 后序遍历（借助栈）</a></li>
 </ul>
 </li>
-<li><a href="#org3f0ece7">5. morris traversal（非递归、不借助栈）</a>
+<li><a href="#org7359bb8">5. 迭代法（morris traversal）</a>
 <ul>
 <li><a href="#orgd9fbc94">5.1. 中序遍历</a></li>
 <li><a href="#org223d74b">5.2. 先序遍历</a></li>
@@ -66,7 +66,7 @@
 <a href="../images/bitree.tar.gz">bitree.tar.gz</a><br>
 </p>
 
-<pre class="example" id="orga1fb270">
+<pre class="example" id="orga51c898">
 ├── queue.h
 ├── stack.h
 ├── tree.cpp
@@ -192,6 +192,24 @@
         }
     }
 }
+
+<span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#21478;&#19968;&#31181;&#20889;&#27861;</span>
+<span style="color: #af8700;">void</span> <span style="color: #0087ff;">PreOrder2x</span>(<span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">T</span>)
+{
+    <span style="color: #af8700;">stack</span> <span style="color: #0087ff;">S</span>;
+    init_stack(S);
+    <span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">t</span>;
+    push(S, root);
+    <span style="color: #5f8700;">while</span>(<span style="color: #d70000;">!</span>is_empty(S))
+    {
+        pop(S, t);
+        visit(t);
+        <span style="color: #5f8700;">if</span>(t-&gt;rchild)
+            push(S, t-&gt;rchild);
+        <span style="color: #5f8700;">if</span>(t-&gt;lchild)
+            push(S, t-&gt;lchild);
+    }
+}
 </pre>
 </div>
 </div>
@@ -271,20 +289,34 @@
 </div>
 </div>
 
-<div id="outline-container-org3f0ece7" class="outline-2">
-<h2 id="org3f0ece7"><span class="section-number-2">5</span> morris traversal（非递归、不借助栈）</h2>
+<div id="outline-container-org7359bb8" class="outline-2">
+<h2 id="org7359bb8"><span class="section-number-2">5</span> 迭代法（morris traversal）</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 空间复杂度 O(1)<br>
 时间复杂度 O(n)<br>
 morris traversal 用到了线索二叉树的思想，在 morris 方法中不需要为每个节点额外分配指针指向其前驱（predecessor）和后继节点（successor），只需要利用叶子节点中的左右空指针指向某种顺序遍历下的前驱结点或后继结点就可以了。<br>
 </p>
+
+<p>
+需要思考的问题？（以中序遍历为例）<br>
+</p>
+<ul class="org-ul">
+<li><code>为什么要线索化？</code> 假设某个二叉树的二叉子树为 root。先遍历 root 的左子树，遍历完后需要回溯到 root 节点，才能遍历右子树。如何回溯到 root 节点呢？<br>
+<ol class="org-ol">
+<li>使用栈。先让 root 入栈，回溯时出栈可以解决这个问题，但需要栈空间 O(n)<br></li>
+<li>对 root 进行线索化。设 pre 为 root 左子树中序遍历的最后一个节点（肯定是叶节点）。 可以将 pre 的右指针指向 root，当中序遍历到 pre 时，就可以借助 pre-&gt;right 直接回溯到 root<br></li>
+</ol></li>
+<li><code>如何去掉线索，保证二叉树不变？</code> 当遍历完 pre，回溯到 root 时，回溯时会处理遍历到的序列，处理完后，就可以去掉线索了<br></li>
+<li><code>如何防止重复线索化？</code> 对 root 左子树向下一层一层线索化，线索化到最后时，到了 root 的最左的一颗左子树了，然后需要一层一层向上回溯，回溯时如何判断 root 的左子树是否已线索化过呢？当 <code>pre-&gt;right != root</code> 时，root 已线索化过。此时需要执行回溯操作<br></li>
+</ul>
 </div>
+
 <div id="outline-container-orgd9fbc94" class="outline-3">
 <h3 id="orgd9fbc94"><span class="section-number-3">5.1</span> 中序遍历</h3>
 <div class="outline-text-3" id="text-5-1">
 
-<div id="orgcefa01a" class="figure">
+<div id="orgf7f8d34" class="figure">
 <p><img src="../images/bitree1.jpg" alt="bitree1.jpg"><br>
 </p>
 </div>
@@ -294,10 +326,10 @@ morris traversal 用到了线索二叉树的思想，在 morris 方法中不需�
     <span style="color: #af8700;">BiTree</span> <span style="color: #0087ff;">cur</span> = T, <span style="color: #0087ff;">prev</span> = <span style="color: #00afaf;">NULL</span>;
     <span style="color: #5f8700;">while</span> (cur)
     {
-        <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>cur-&gt;lchild)       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">1. &#24038;&#23376;&#26641;&#20026; NULL&#65292;&#35775;&#38382;&#24403;&#21069;&#32467;&#28857;&#65292;&#36941;&#21382;&#21491;&#23376;&#26641;&#65307;&#25110;&#32773;&#25442;&#21477;&#35805;&#35828;&#65292;&#27493;&#39588; 2 &#25913;&#21160;&#20102;&#20108;&#21449;&#26641;&#65292;&#36890;&#36807;&#27493;&#39588; 1 &#26469;&#25226;&#24403;&#21069;&#32467;&#28857;&#22238;&#28335;&#21040;&#21518;&#32487;&#32467;&#28857;</span>
+        <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>cur-&gt;lchild)       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">1. &#27809;&#26377;&#24038;&#23376;&#26641;&#30340;&#33410;&#28857;&#30340;&#22788;&#29702;</span>
         {
             visit(cur);
-            cur = cur-&gt;rchild;
+            cur = cur-&gt;rchild;  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">&#20004;&#31181;&#24773;&#20917; 1.&#22238;&#28335; 2.&#22788;&#29702;&#21491;&#23376;&#26641;</span>
         }
         <span style="color: #5f8700;">else</span>
         {
@@ -306,12 +338,12 @@ morris traversal 用到了线索二叉树的思想，在 morris 方法中不需�
             <span style="color: #5f8700;">while</span> (prev-&gt;rchild &amp;&amp; prev-&gt;rchild != cur)
                 prev = prev-&gt;rchild;
 
-            <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>prev-&gt;rchild)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">2. &#25913;&#21160;&#20108;&#21449;&#26641;&#65306;&#20351;&#21069;&#39537;&#32467;&#28857;&#30340;&#21491;&#23401;&#23376;&#25351;&#21521;&#24403;&#21069;&#32467;&#28857;</span>
+            <span style="color: #5f8700;">if</span> (<span style="color: #d70000;">!</span>prev-&gt;rchild)  <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">2. &#27809;&#26377;&#21491;&#23376;&#26641;&#30340;&#33410;&#28857;&#30340;&#22788;&#29702;&#12290;&#25191;&#34892;&#32447;&#32034;&#21270;&#25805;&#20316;</span>
             {
                 prev-&gt;rchild = cur;
                 cur = cur-&gt;lchild;
             }
-            <span style="color: #5f8700;">else</span>                       <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">3. &#24674;&#22797;&#20108;&#21449;&#26641;&#65306;&#20351;&#21069;&#39537;&#32467;&#28857;&#30340;&#21491;&#23401;&#23376;&#24674;&#22797;&#20026; NULL&#12290;&#27492;&#26102;&#24038;&#23376;&#26641;&#24050;&#32463;&#36941;&#21382;&#36807;&#20102;&#65292;&#25152;&#20197;&#38656;&#35201;&#24674;&#22797;&#24403;&#21069;&#32467;&#28857;&#30340;&#21069;&#39537;&#32467;&#28857;&#30340;&#21491;&#23401;&#23376;&#20026; NULL&#65292;&#24182;&#24320;&#22987;&#36941;&#21382;&#21491;&#23401;&#23376;</span>
+            <span style="color: #5f8700;">else</span>                <span style="color: #8a8a8a;">// </span><span style="color: #8a8a8a;">3. &#24050;&#32447;&#32034;&#21270;&#30340;&#33410;&#28857;&#30340;&#22788;&#29702;&#12290;&#21435;&#25481;&#32447;&#32034;&#65292;&#25191;&#34892;&#22238;&#28335;&#25805;&#20316;</span>
             {
                 prev-&gt;rchild = <span style="color: #00afaf;">NULL</span>;
                 visit(cur);
@@ -329,7 +361,7 @@ morris traversal 用到了线索二叉树的思想，在 morris 方法中不需�
 <h3 id="org223d74b"><span class="section-number-3">5.2</span> 先序遍历</h3>
 <div class="outline-text-3" id="text-5-2">
 
-<div id="org116ad4a" class="figure">
+<div id="orge079e53" class="figure">
 <p><img src="../images/bitree2.jpg" alt="bitree2.jpg"><br>
 </p>
 </div>
@@ -373,7 +405,7 @@ morris traversal 用到了线索二叉树的思想，在 morris 方法中不需�
 <h3 id="org85a6f50"><span class="section-number-3">5.3</span> 后序遍历</h3>
 <div class="outline-text-3" id="text-5-3">
 
-<div id="orgfdaec54" class="figure">
+<div id="org2a52892" class="figure">
 <p><img src="../images/bitree3.jpg" alt="bitree3.jpg"><br>
 </p>
 </div>
@@ -455,8 +487,8 @@ morris traversal 用到了线索二叉树的思想，在 morris 方法中不需�
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
-<script src="http://www.langdebuqing.com/css/main.js"></script>
+<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
+<script src="file:/Users/he/notes/html/css/main.js"></script>
 </div>
 </body>
 </html>
