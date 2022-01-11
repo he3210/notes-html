@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2022-01-12 Wed 04:56 -->
+<!-- 2022-01-12 Wed 05:21 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>consistent hashing</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
-<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -83,7 +83,7 @@ consistent hashing 也是取模的算法，例如，它对 2<sup>32</sup> 进行
 整个哈希环如下：<br>
 </p>
 
-<div id="org6ef073f" class="figure">
+<div id="orga5d23ef" class="figure">
 <p><img src="../images/consistent hashing-1.jpg" alt="consistent hashing-1.jpg" width="25%"><br>
 </p>
 </div>
@@ -97,7 +97,7 @@ consistent hashing 也是取模的算法，例如，它对 2<sup>32</sup> 进行
 假设将四台 Redis 服务器使用 IP 地址哈希后在环空间的位置如下：<br>
 </p>
 
-<div id="org42d3973" class="figure">
+<div id="org73ebcab" class="figure">
 <p><img src="../images/consistent hashing-2.jpg" alt="consistent hashing-2.jpg" width="35%"><br>
 </p>
 </div>
@@ -115,7 +115,7 @@ consistent hashing 也是取模的算法，例如，它对 2<sup>32</sup> 进行
 例如我们有 Object A、Object B、Object C、Object D 四个数据对象，经过哈希计算后，在环空间上的位置如下：<br>
 </p>
 
-<div id="org6d3c0a8" class="figure">
+<div id="org2864b03" class="figure">
 <p><img src="../images/consistent hashing-3.jpg" alt="consistent hashing-3.jpg" width="40%"><br>
 </p>
 </div>
@@ -129,7 +129,7 @@ consistent hashing 也是取模的算法，例如，它对 2<sup>32</sup> 进行
 假设 Node C 不幸宕机，可以看到此时对象 A、B、D 不会受到影响，只有 C 对象被重定位到 Node D。一般的，在 consistent hashing 算法中，如果一台服务器不可用，则受影响的数据仅仅是此服务器到其环空间中前一台服务器（即沿着逆时针方向行走遇到的第一台服务器）之间数据，其它不会受到影响，如下所示：<br>
 </p>
 
-<div id="org22438e5" class="figure">
+<div id="orgf2acbb3" class="figure">
 <p><img src="../images/consistent hashing-4.jpg" alt="consistent hashing-4.jpg" width="40%"><br>
 </p>
 </div>
@@ -183,8 +183,8 @@ consistent hashing 算法在服务结点太少时，容易因为结点分布不�
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
-<script src="file:/Users/he/notes/html/css/main.js"></script>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
 </div>
 </body>
 </html>

@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2022-01-12 Wed 04:56 -->
+<!-- 2022-01-12 Wed 05:20 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>mac clion 通过 docker debian10 调试 redis</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
-<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -166,7 +166,7 @@ clion 远程调试有多种：<br>
 docker 容器中编译好的 gdb 位于 <code>/usr/local/bin/gdb</code><br>
 </p>
 
-<div id="orgb9c01bf" class="figure">
+<div id="org66a5fff" class="figure">
 <p><img src="../images/clion_toolchains_conf_docker.png" alt="clion_toolchains_conf_docker.png" width="50%"><br>
 </p>
 </div></li>
@@ -190,7 +190,7 @@ clion 此时会执行 build 操作，分为 2 步<br>
 此时会报错。报错提示进入了目录 <code>/tmp/tmp.UYeUotPS8H</code> ，目录肯定进错了，暂时不管这个错误，继续向下走<br>
 </p>
 
-<div id="orgd1c206c" class="figure">
+<div id="orgd3d295e" class="figure">
 <p><img src="../images/clion_build_makefile_analyze.png" alt="clion_build_makefile_analyze.png" width="50%"><br>
 </p>
 </div></li>
@@ -199,7 +199,7 @@ clion 此时会执行 build 操作，分为 2 步<br>
 toolchains 调整为刚才配置的 docker Toolchain<br>
 </p>
 
-<div id="org2073451" class="figure">
+<div id="org5d36bd3" class="figure">
 <p><img src="../images/clion_makefile_conf.png" alt="clion_makefile_conf.png" width="50%"><br>
 </p>
 </div></li>
@@ -211,7 +211,7 @@ toolchains 调整为刚才配置的 docker Toolchain<br>
 <li><code>In place</code> 表示项目已经在它该在的位置上了，项目不用执行同步操作。<br></li>
 </ul>
 
-<div id="org7d0c628" class="figure">
+<div id="org7ec68d3" class="figure">
 <p><img src="../images/clion_deployment_connection.png" alt="clion_deployment_connection.png" width="50%"><br>
 </p>
 </div>
@@ -220,7 +220,7 @@ toolchains 调整为刚才配置的 docker Toolchain<br>
 首次点进 Mappings 页时，红圈 <code>Deployment path</code> 项不存在，需要点击 <code>Add New Mapping</code> 把它搞出来。搞出来后，它的值是 <code>/tmp/tmp.UYeUotPS8H</code> ，所以步骤 2 报错，改完就好了<br>
 </p>
 
-<div id="org4c84418" class="figure">
+<div id="orgec5b33f" class="figure">
 <p><img src="../images/clion_deployment_mappings.png" alt="clion_deployment_mappings.png" width="40%"><br>
 </p>
 </div>
@@ -229,7 +229,7 @@ toolchains 调整为刚才配置的 docker Toolchain<br>
 然后进入步骤 2 的界面 <code>Reload Makefile Project</code> ，然后执行完步骤 2 后，clion 会提取到一些 Makefile 信息，如下图<br>
 </p>
 
-<div id="orgb00814d" class="figure">
+<div id="orgd007521" class="figure">
 <p><img src="../images/clion_makefile_application_debug.png" alt="clion_makefile_application_debug.png" width="30%"><br>
 </p>
 </div></li>
@@ -243,7 +243,7 @@ toolchains 调整为刚才配置的 docker Toolchain<br>
 <li><code>Working directory</code> 项填 <code>/Users/he/code/redis</code> （为什么是本机目录而非 remote host 目录呢？clion 会把本机目录映射为 remote host 目录的），否则会默认为 redis-server 二进制文件所在目录<br></li>
 </ul>
 
-<div id="org428d1a7" class="figure">
+<div id="org22375e3" class="figure">
 <p><img src="../images/clion_makefile_application_conf.png" alt="clion_makefile_application_conf.png" width="50%"><br>
 </p>
 </div></li>
@@ -316,8 +316,8 @@ end
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
-<script src="file:/Users/he/notes/html/css/main.js"></script>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
 </div>
 </body>
 </html>

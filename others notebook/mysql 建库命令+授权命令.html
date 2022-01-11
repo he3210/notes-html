@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- 2022-01-12 Wed 04:56 -->
+<!-- 2022-01-12 Wed 05:21 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>mysql 建库命令+授权命令</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="时中贺">
-<link rel="stylesheet" type="text/css" href="file:/Users/he/notes/html/css/style.css" />
-<link rel="shortcut icon" href="file:/Users/he/notes/html/images/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="http://www.langdebuqing.com/css/style.css" />
+<link rel="shortcut icon" href="http://www.langdebuqing.com/images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 <div id="preamble" class="status">
 <div id="navbar">
     <ul>
-        <li id="site-master"><a href="file:/Users/he/notes/html/index.html">浪的不轻</a></li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/gallery.html">Gallery</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/notebooks.html">Notebooks</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/links.html">Links</a> </li>
-        <li><a class="navbar-item" href="file:/Users/he/notes/html/about.html">About</a> </li>
+        <li id="site-master"><a href="http://www.langdebuqing.com">浪的不轻</a></li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/gallery.html">Gallery</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/notebooks.html">Notebooks</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/links.html">Links</a> </li>
+        <li><a class="navbar-item" href="http://www.langdebuqing.com/about.html">About</a> </li>
         <li class="search">
             <form action="http://google.com/search" method="get" accept-charset="utf-8">
                 <input type="search" id="search" name="q" autocomplete="off" maxlength="30" placeholder="Google..">
@@ -65,7 +65,7 @@
 <div id="outline-container-orgd2892eb" class="outline-2">
 <h2 id="orgd2892eb"><span class="section-number-2">2</span> 显示数据库 使用数据库</h2>
 <div class="outline-text-2" id="text-2">
-<pre class="example" id="org1f4e54b">
+<pre class="example" id="org5ae6550">
 mysql&gt; show databases;
 mysql&gt; use MovierDC;
 </pre>
@@ -75,7 +75,7 @@ mysql&gt; use MovierDC;
 <div id="outline-container-org2a7a03b" class="outline-2">
 <h2 id="org2a7a03b"><span class="section-number-2">3</span> 建库 删库</h2>
 <div class="outline-text-2" id="text-3">
-<pre class="example" id="org733d461">
+<pre class="example" id="org823c710">
 mysql&gt; create database MovierDC; # 使用 root 用户登录数据库
 mysql&gt; drop database MovierDC;
 </pre>
@@ -85,7 +85,7 @@ mysql&gt; drop database MovierDC;
 <div id="outline-container-org9ba271e" class="outline-2">
 <h2 id="org9ba271e"><span class="section-number-2">4</span> 创建用户</h2>
 <div class="outline-text-2" id="text-4">
-<pre class="example" id="org1faf0ae">
+<pre class="example" id="orgea5533c">
 mysql&gt; CREATE USER 'WangLi'@'%' IDENTIFIED BY 'WL123'; # 创建密码为 WL123 的用户 WangLi，该用户可以在任意地址登陆数据库
 </pre>
 </div>
@@ -99,7 +99,7 @@ mysql&gt; CREATE USER 'WangLi'@'%' IDENTIFIED BY 'WL123'; # 创建密码为 WL12
 grant 权限 on 数据库对象 to 用户<br>
 </p>
 
-<pre class="example" id="org106098a">
+<pre class="example" id="orgd9da2dd">
 mysql&gt; grant select on MovierDC.* to movier@'10.0.0.137'; # @后面表示 IP 地址，% 表示所有 IP，该句表示授予数据库 MovierDC 的查权限给从 IP 地址 10.0.0.137 登陆的 movier 账户
 mysql&gt; grant insert on MovierDC.* to movier@'%'; # 该句表示授予数据库 MovierDC 的插权限给从任意 IP 地址登陆的 movier 账户
 mysql&gt; grant update on MovierDC.* to movier@'%';
@@ -108,7 +108,7 @@ mysql&gt; grant delete on MovierDC.* to movier@'%';
 <p>
 或<br>
 </p>
-<pre class="example" id="org7934a2c">
+<pre class="example" id="org84c3a41">
 mysql&gt; grant select, insert, update, delete on MovierDC.* to movier@'%';
 </pre>
 </div>
@@ -117,7 +117,7 @@ mysql&gt; grant select, insert, update, delete on MovierDC.* to movier@'%';
 <div id="outline-container-org249cc68" class="outline-2">
 <h2 id="org249cc68"><span class="section-number-2">6</span> 把权限授权给movier账户  表的增删改</h2>
 <div class="outline-text-2" id="text-6">
-<pre class="example" id="org0239456">
+<pre class="example" id="org612e20c">
 mysql&gt; grant create on MovierDC.* to movier@'192.168.0.%'; # 授建表权给从 "192.168.0.%" 登陆数据库的 movier 账户，% 代表任意
 mysql&gt; grant alter on MovierDC.* to movier@'%'; # 授修改表权给从 "192.168.0.%" 登陆数据库的 movier 账户
 mysql&gt; grant drop  on MovierDC.* to movier@'%';
@@ -125,7 +125,7 @@ mysql&gt; grant drop  on MovierDC.* to movier@'%';
 <p>
 或<br>
 </p>
-<pre class="example" id="orgafecd0a">
+<pre class="example" id="org5c7e42b">
 mysql&gt; grant create, alter, drop  on MovierDC.* to movier@'%';
 </pre>
 </div>
@@ -133,7 +133,7 @@ mysql&gt; grant create, alter, drop  on MovierDC.* to movier@'%';
 <div id="outline-container-org4251937" class="outline-2">
 <h2 id="org4251937"><span class="section-number-2">7</span> 授权操作外键权限</h2>
 <div class="outline-text-2" id="text-7">
-<pre class="example" id="orgbc8c41c">
+<pre class="example" id="orge6c47f5">
 mysql&gt; grant references on MovierDC.* to movier@'%';
 </pre>
 </div>
@@ -142,7 +142,7 @@ mysql&gt; grant references on MovierDC.* to movier@'%';
 <div id="outline-container-orga747656" class="outline-2">
 <h2 id="orga747656"><span class="section-number-2">8</span> 授权操作临时表权限</h2>
 <div class="outline-text-2" id="text-8">
-<pre class="example" id="org258faca">
+<pre class="example" id="org3912561">
 mysql&gt; grant create temporary tables on MovierDC.* to movier@'192.168.0.%';
 </pre>
 </div>
@@ -151,7 +151,7 @@ mysql&gt; grant create temporary tables on MovierDC.* to movier@'192.168.0.%';
 <div id="outline-container-org870fd84" class="outline-2">
 <h2 id="org870fd84"><span class="section-number-2">9</span> 授权操作索引权限</h2>
 <div class="outline-text-2" id="text-9">
-<pre class="example" id="org3bbcad8">
+<pre class="example" id="orgf4dec2b">
 mysql&gt; grant index on MovierDC.* to movier@'%';
 </pre>
 </div>
@@ -160,7 +160,7 @@ mysql&gt; grant index on MovierDC.* to movier@'%';
 <div id="outline-container-org912066b" class="outline-2">
 <h2 id="org912066b"><span class="section-number-2">10</span> 授权操作视图、查看视图源码权限</h2>
 <div class="outline-text-2" id="text-10">
-<pre class="example" id="org481d82b">
+<pre class="example" id="org443ce85">
 mysql&gt; grant create view on MovierDC.* to movier@'%'; 
 mysql&gt; grant show  view on MovierDC.* to movier@'%';
 </pre>
@@ -170,7 +170,7 @@ mysql&gt; grant show  view on MovierDC.* to movier@'%';
 <div id="outline-container-org04f39f5" class="outline-2">
 <h2 id="org04f39f5"><span class="section-number-2">11</span> 授权操作存储过程、函数权限</h2>
 <div class="outline-text-2" id="text-11">
-<pre class="example" id="org2ba1a52">
+<pre class="example" id="org615066c">
 mysql&gt; grant create routine on MovierDC.* to movier@'%'; -- now, can show procedure status;
 mysql&gt; grant alter routine on MovierDC.* to movier@'%'; -- now, you can drop a procedure;
 mysql&gt; grant execute on MovierDC.* to movier@'%';
@@ -181,7 +181,7 @@ mysql&gt; grant execute on MovierDC.* to movier@'%';
 <div id="outline-container-org746e55c" class="outline-2">
 <h2 id="org746e55c"><span class="section-number-2">12</span> 授权普通DBA管理数据库</h2>
 <div class="outline-text-2" id="text-12">
-<pre class="example" id="org3711355">
+<pre class="example" id="org6ed8e18">
 mysql&gt; grant all privileges on MovierDC.* to movier@'localhost';
 </pre>
 </div>
@@ -190,7 +190,7 @@ mysql&gt; grant all privileges on MovierDC.* to movier@'localhost';
 <div id="outline-container-orge79cf19" class="outline-2">
 <h2 id="orge79cf19"><span class="section-number-2">13</span> 授权高级DBA管理所有数据库</h2>
 <div class="outline-text-2" id="text-13">
-<pre class="example" id="org3327bff">
+<pre class="example" id="org65d99b8">
 mysql&gt; grant all on *.* to movier@'localhost';
 </pre>
 </div>
@@ -199,7 +199,7 @@ mysql&gt; grant all on *.* to movier@'localhost';
 <div id="outline-container-org9eea298" class="outline-2">
 <h2 id="org9eea298"><span class="section-number-2">14</span> 取消授权</h2>
 <div class="outline-text-2" id="text-14">
-<pre class="example" id="orgf8c25a9">
+<pre class="example" id="org5305b04">
 mysql&gt; revoke all privileges on MovierDC.* from movier@'%';
 </pre>
 </div>
@@ -208,7 +208,7 @@ mysql&gt; revoke all privileges on MovierDC.* from movier@'%';
 <div id="outline-container-org55729d3" class="outline-2">
 <h2 id="org55729d3"><span class="section-number-2">15</span> 查看用户权限</h2>
 <div class="outline-text-2" id="text-15">
-<pre class="example" id="org3c5377f">
+<pre class="example" id="orgf92aaad">
 mysql&gt; show grants; # 查看当前用户权限
 mysql&gt; show grants for movier@'%'; # 查看 movier 用户权限
 </pre>
@@ -223,8 +223,8 @@ mysql&gt; show grants for movier@'%'; # 查看 movier 用户权限
     <br />
     email: shi_zhonghe@163.com
 </p>
-<script src="file:/Users/he/notes/html/css/jquery-2.1.3.min.js"></script>
-<script src="file:/Users/he/notes/html/css/main.js"></script>
+<script src="http://www.langdebuqing.com/css/jquery-2.1.3.min.js"></script>
+<script src="http://www.langdebuqing.com/css/main.js"></script>
 </div>
 </body>
 </html>
